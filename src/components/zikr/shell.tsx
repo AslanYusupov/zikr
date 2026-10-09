@@ -1,0 +1,438 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Award, BarChart3, ChevronLeft, ListChecks, Maximize2, Minimize2, Moon, Settings, Volume2, VolumeX } from "lucide-react";
+import { useZikr } from "@/lib/zikr/store";
+import { cn } from "@/lib/cn";
+import { Celebrate } from "./celebrate";
+import { Counter, ModeStrip } from "./counter";
+import { QuranView } from "./quran-view";
+import { Backdrop } from "./pattern";
+import { isRtl, t, tx } from "@/lib/zikr/i18n";
+import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
+import { onlineNow } from "@/lib/zikr/api";
+import { formatNum, todayKey } from "@/lib/zikr/format";
+import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
+import { DuaView } from "./dua-view";
+import { QuestsView } from "./quests-view";
+import { RewardsView } from "./rewards-view";
+import { RatingView } from "./rating-view";
+import { SettingsView } from "./settings-view";
+import { Library } from "./library";
+
+type Tab = "zikr" | "quests" | "dua" | "rewards" | "rating";
+
+const TABS: { id: Tab; icon?: typeof Award }[] = [
+  { id: "zikr", icon: Moon },
+  { id: "quests", icon: ListChecks },
+  { id: "dua" },
+  { id: "rewards", icon: Award },
+  { id: "rating", icon: BarChart3 },
+];
+
+export function Splash({ onEnter }: { onEnter: () => void }) {
+  const done = useRef(false);
+  const close = useCallback(() => {
+    if (done.current) return;
+    done.current = true;
+    onEnter();
+  }, [onEnter]);
+
+  useEffect(() => {
+    if (document.documentElement.classList.contains("app-go")) {
+      onEnter();
+      return;
+    }
+    const timer = window.setTimeout(onEnter, 1500);
+    return () => window.clearTimeout(timer);
+  }, [onEnter]);
+
+  return (
+    <div className="bismillah-splash" onClick={close} suppressHydrationWarning>
+      <span className="bismillah-glow" aria-hidden />
+      <span className="bismillah-sky" aria-hidden />
+      <span
+        className="comet comet-live splash-pass"
+        aria-hidden
+        style={{
+          ["--x" as string]: "104vw",
+          ["--y" as string]: "-6vh",
+          ["--mx" as string]: "46vw",
+          ["--my" as string]: "16vh",
+          ["--x2" as string]: "-32vw",
+          ["--y2" as string]: "30vh",
+          ["--rot" as string]: "-18deg",
+          ["--flip" as string]: "1",
+          ["--dur" as string]: "1.2s",
+          ["--len" as string]: "9rem",
+          ["--bright" as string]: "0.82",
+        }}
+      >
+        <span className="comet-tail" />
+        <span className="comet-head" />
+      </span>
+      <p className="bismillah-words" dir="rtl" lang="ar">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
+    </div>
+  );
+}
+
+export function Shell() {
+  const hydrated = useHydrated();
+  const cloud = useCloud(hydrated);
+  useWorldSync(hydrated && cloud.ready);
+  const theme = useZikr((s) => s.theme);
+  const lang = useZikr((s) => s.lang);
+  const sound = useZikr((s) => s.sound);
+  const setSound = useZikr((s) => s.setSound);
+  const achievements = useZikr((s) => s.achievements);
+  const celebrated = useZikr((s) => s.celebrated);
+  const [tab, setTab] = useState<Tab>("zikr");
+  const [home, setHome] = useState<"dhikr" | "quran">("dhikr");
+  const [dhikrList, setDhikrList] = useState(false);
+  const [namesOpen, setNamesOpen] = useState(false);
+  const [settings, setSettings] = useState(false);
+  const [library, setLibrary] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [full, setFull] = useState(false);
+  const [updateReady, setUpdateReady] = useState(false);
+  const [online, setOnline] = useState<number | null>(null);
+  const [entered, setEntered] = useState(false);
+  const [dayStamp, setDayStamp] = useState(todayKey);
+  const noticeId = useRef(0);
+  const pull = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((reg) => {
+        reg.unregister().catch(() => {});
+      });
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const syncDay = () => {
+      const next = todayKey();
+      setDayStamp((cur) => (cur === next ? cur : next));
+      useZikr.getState().rollDay();
+    };
+    const id = window.setInterval(syncDay, 30000);
+    document.addEventListener("visibilitychange", syncDay);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", syncDay);
+    };
+  }, []);
+
+  useEffect(() => {
+    const sync = () => setFull(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", bg || "#050505");
+  }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = isRtl(lang) ? "rtl" : "ltr";
+  }, [lang]);
+
+  useEffect(() => {
+    const apply = () => {
+      document.documentElement.dataset.rest = document.hidden ? "1" : "";
+    };
+    apply();
+    document.addEventListener("visibilitychange", apply);
+    return () => document.removeEventListener("visibilitychange", apply);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    let stop = false;
+    const load = () => {
+      if (document.hidden) return;
+      void onlineNow()
+        .then((res) => {
+          if (!stop) setOnline(res.online);
+        })
+        .catch(() => {});
+    };
+    const start = window.setTimeout(load, 800);
+    const id = window.setInterval(load, 4000);
+    const onLive = () => load();
+    window.addEventListener("zikr-live", onLive);
+    return () => {
+      stop = true;
+      window.clearTimeout(start);
+      window.clearInterval(id);
+      window.removeEventListener("zikr-live", onLive);
+    };
+  }, [hydrated]);
+
+  useEffect(() => {
+    let stop = false;
+    const probe = async () => {
+      if (document.hidden) return;
+      try {
+        const state = await checkUpdate();
+        if (stop || state === "same" || state === "unknown") return;
+        setUpdateReady(true);
+      } catch {
+        /* offline */
+      }
+    };
+    const start = window.setTimeout(() => void probe(), 1500);
+    const onVis = () => {
+      if (document.visibilityState === "visible") void probe();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    const id = window.setInterval(() => void probe(), 120_000);
+    return () => {
+      stop = true;
+      window.clearTimeout(start);
+      document.removeEventListener("visibilitychange", onVis);
+      window.clearInterval(id);
+    };
+  }, []);
+
+  function closeOverlays() {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    setSettings(false);
+    setLibrary(false);
+    setTab("zikr");
+  }
+
+  function openSettings() {
+    setSettings(true);
+  }
+
+  function openLibrary() {
+    setLibrary(true);
+  }
+
+  function selectTab(next: Tab) {
+    setSettings(false);
+    setLibrary(false);
+    if (next === tab) {
+      setHome("dhikr");
+      setDhikrList(false);
+      if (next !== "zikr") setTab("zikr");
+      return;
+    }
+    setTab(next);
+  }
+
+  function pushNotice(text: string) {
+    const id = ++noticeId.current;
+    setNotice(text);
+    window.setTimeout(() => {
+      if (noticeId.current === id) setNotice(null);
+    }, 3200);
+  }
+
+  function toggleSound() {
+    setSound(sound === "off" ? "on" : "off");
+  }
+
+  function refreshApp() {
+    void takeUpdate();
+  }
+
+  async function toggleFullscreen() {
+    const root = document.documentElement;
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        setFull(false);
+        return;
+      }
+      await root.requestFullscreen();
+      setFull(true);
+    } catch {
+      pushNotice(tx(lang, "installNotice"));
+    }
+  }
+
+  const unseen = achievements.some((at) => !celebrated.includes(at));
+  const title = t(lang, tab);
+  const enter = useCallback(() => {
+    setEntered(true);
+    document.documentElement.classList.add("app-go");
+  }, []);
+
+  return (
+    <div className="app-frame" data-day={dayStamp}>
+      <div className="app-column">
+        <Backdrop />
+        <header
+          className="safe-top relative z-20 flex shrink-0 items-center justify-between gap-2 px-3 pb-1"
+          onTouchStart={(event) => {
+            pull.current = event.touches[0]?.clientY ?? null;
+          }}
+          onTouchEnd={(event) => {
+            const start = pull.current;
+            pull.current = null;
+            const end = event.changedTouches[0]?.clientY ?? 0;
+            if (start !== null && end - start > 64) refreshApp();
+          }}
+        >
+          <div className="flex shrink-0 items-center gap-2">
+            {tab === "zikr" ? (
+              <button
+                type="button"
+                onClick={toggleSound}
+                className="grid h-11 w-11 place-items-center rounded-full border border-line bg-chip text-gold"
+                aria-label={sound === "off" ? tx(lang, "soundOnAria") : tx(lang, "soundOffAria")}
+              >
+                {sound === "off" ? <VolumeX className="size-5" strokeWidth={1.5} /> : <Volume2 className="size-5" strokeWidth={1.5} />}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => selectTab("zikr")}
+                className="flex h-11 items-center gap-1 rounded-full border border-line bg-chip px-3 text-sm text-gold"
+              >
+                <ChevronLeft className="size-5" strokeWidth={1.6} />
+                {t(lang, "zikr")}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => void toggleFullscreen()}
+              className="grid h-11 w-11 place-items-center rounded-full border border-line bg-chip text-gold"
+              aria-label={full ? tx(lang, "fullOn") : tx(lang, "fullOff")}
+            >
+              {full ? <Minimize2 className="size-5" strokeWidth={1.5} /> : <Maximize2 className="size-5" strokeWidth={1.5} />}
+            </button>
+          </div>
+          <div className="min-w-0 text-center">
+            {tab === "zikr" && <p className="font-arabic text-2xl leading-none text-gold">ذِكْر</p>}
+            <p className="flex items-center justify-center gap-1.5 text-sm text-fg">
+              <span className="truncate">{title}</span>
+              {tab === "zikr" ? (
+                <span
+                  className="inline-flex shrink-0 items-center gap-1 text-muted"
+                  aria-label={online === null ? tx(lang, "onlineAria") : `${tx(lang, "onlineAria")} ${formatNum(online)}`}
+                >
+                  <svg className="live-moon" viewBox="0 0 24 24" aria-hidden>
+                    <path
+                      fill="currentColor"
+                      d="M14.6 2.1A9.4 9.4 0 1 0 22 16.4 7.5 7.5 0 1 1 14.6 2.1z"
+                    />
+                  </svg>
+                  <span className="text-xs tabular-nums">{online === null ? "…" : formatNum(online)}</span>
+                </span>
+              ) : null}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openSettings}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-chip text-gold"
+            aria-label={tx(lang, "settingsAria")}
+          >
+            <Settings className="size-5" strokeWidth={1.5} />
+          </button>
+        </header>
+
+        {updateReady ? (
+          <button
+            type="button"
+            onClick={refreshApp}
+            className="relative z-20 mx-3 mb-1 rounded-2xl border border-line bg-surface px-3 py-2 text-left"
+          >
+            <span className="block text-sm font-bold text-fg">{tx(lang, "updateHere")}</span>
+          </button>
+        ) : null}
+
+        <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
+          {tab === "zikr" && (
+            <ModeStrip
+              quranOn={home === "quran"}
+              listOn={home === "dhikr" && dhikrList}
+              namesOn={home === "dhikr" && namesOpen}
+              onQuran={() => {
+                setDhikrList(false);
+                setNamesOpen(false);
+                setHome((current) => (current === "quran" ? "dhikr" : "quran"));
+              }}
+              onList={() => {
+                setNamesOpen(false);
+                setHome("dhikr");
+                setDhikrList((open) => (home === "quran" ? true : !open));
+              }}
+              onNames={() => {
+                setDhikrList(false);
+                setHome("dhikr");
+                setNamesOpen((open) => (home === "quran" ? true : !open));
+              }}
+              onLeave={() => {
+                setHome("dhikr");
+                setDhikrList(false);
+                setNamesOpen(false);
+              }}
+            />
+          )}
+          {tab === "zikr" && home === "dhikr" && (
+            <Counter
+              onNotice={pushNotice}
+              onOpenLibrary={openLibrary}
+              listOpen={dhikrList}
+              onListClose={() => setDhikrList(false)}
+              namesOpen={namesOpen}
+              onNamesClose={() => setNamesOpen(false)}
+            />
+          )}
+          {tab === "zikr" && home === "quran" && <QuranView />}
+          {tab === "quests" && <QuestsView onBegin={() => selectTab("zikr")} />}
+          {tab === "dua" && <DuaView />}
+          {tab === "rewards" && <RewardsView />}
+          {tab === "rating" && <RatingView meta={cloud.meta} />}
+        </div>
+
+        {notice && (
+          <div className="pointer-events-none absolute inset-x-4 bottom-24 z-20">
+            <p className="notice-in rounded-2xl border border-line bg-surface px-3 py-2 text-center text-sm text-fg">{notice}</p>
+          </div>
+        )}
+
+        <nav className="app-nav safe-bottom z-30 grid shrink-0 grid-cols-5 border-t border-line bg-bg">
+          {TABS.map((item) => {
+            const active = tab === item.id;
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => selectTab(item.id)}
+                className={cn(
+                  "flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 text-[0.7rem] leading-tight",
+                  active ? "text-gold" : "text-muted",
+                )}
+              >
+                <span className="relative">
+                  {item.id === "dua" ? (
+                    <span className="nav-dua" aria-hidden />
+                  ) : Icon ? (
+                    <Icon className="size-5" strokeWidth={1.5} />
+                  ) : null}
+                  {item.id === "rewards" && unseen && <span className="absolute -top-0.5 -right-1 h-1.5 w-1.5 rounded-full bg-gold" />}
+                </span>
+                {t(lang, item.id)}
+              </button>
+            );
+          })}
+        </nav>
+
+        <Celebrate armed={hydrated} />
+        {library && <Library onClose={closeOverlays} />}
+        {settings && <SettingsView onClose={closeOverlays} meta={cloud.meta} status={cloud.user ? cloud.status : "local"} />}
+      </div>
+      {!entered && <Splash onEnter={enter} />}
+    </div>
+  );
+}

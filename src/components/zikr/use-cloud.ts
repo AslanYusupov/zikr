@@ -1,0 +1,328 @@
+import { useEffect, useState } from "react";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { beatPresence, loadSave, publishWorld, pullDevice, pushDevice, pushSave, type CloudMeta, type DeviceSave } from "@/lib/zikr/api";
+import { todayKey } from "@/lib/zikr/format";
+import { bindTapPulse, currentTapSince } from "@/lib/zikr/live";
+import { mergeState, snapshot, useZikr } from "@/lib/zikr/store";
+
+const INVITE_KEY = "nur-zikr-invite";
+
+export function rememberInviteFromUrl() {
+  const code = new URLSearchParams(window.location.search).get("i")?.trim() ?? "";
+  if (!code) return;
+  let next = "";
+  if (/^\d{8}$/.test(code)) next = code;
+  else if (/^[A-Za-z0-9]{6}$/.test(code)) next = code.toUpperCase();
+  if (!next) return;
+  try {
+    const own = useZikr.getState().publicId;
+    if (next === own) return;
+    const prev = localStorage.getItem(INVITE_KEY) ?? "";
+    if (/^\d{8}$/.test(prev)) return;
+    localStorage.setItem(INVITE_KEY, next);
+  } catch {
+    /* private mode */
+  }
+}
+
+export function storedInvite(): string | undefined {
+  try {
+    const v = localStorage.getItem(INVITE_KEY) ?? "";
+    if (/^\d{8}$/.test(v)) return v;
+    return /^[A-Z0-9]{6}$/.test(v) ? v : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function useHydrated() {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    let stop = false;
+    const done = () => {
+      if (!stop) setHydrated(true);
+    };
+    if (useZikr.persist.hasHydrated()) done();
+    const unsub = useZikr.persist.onFinishHydration(done);
+    const backup = window.setTimeout(done, 300);
+    return () => {
+      stop = true;
+      unsub();
+      window.clearTimeout(backup);
+    };
+  }, []);
+  return hydrated;
+}
+
+export function useCloud(hydrated: boolean) {
+  const { user, isPending } = useCurrentUserState();
+  const [meta, setMeta] = useState<CloudMeta | null>(null);
+  const [status, setStatus] = useState<"local" | "saving" | "saved" | "error">("local");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    rememberInviteFromUrl();
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || !user?.id) return;
+    let stop = false;
+    let unsub = () => {};
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    setReady(false);
+
+    const send = async () => {
+      if (!navigator.onLine) {
+        setStatus("local");
+        return null;
+      }
+      const s = snapshot(useZikr.getState());
+      const next = await pushSave({
+        data: {
+          displayName: s.displayName,
+          publicBoard: s.publicBoard,
+          total: s.total,
+          bestDay: s.bestDay,
+          inviteCodeToApply: storedInvite(),
+          payload: JSON.stringify(s),
+        },
+      });
+      if (stop) return next;
+      setMeta(next);
+      setStatus("saved");
+      if (next.displayName && !useZikr.getState().displayName) {
+        useZikr.getState().setDisplayName(next.displayName);
+      }
+      return next;
+    };
+
+    const pull = async () => {
+      if (!navigator.onLine) {
+        setStatus("local");
+        if (!stop) setReady(true);
+        return;
+      }
+      setStatus("saving");
+      try {
+        const remote = await loadSave();
+        if (stop) return;
+        if (remote.payload) {
+          try {
+            const merged = mergeState(snapshot(useZikr.getState()), JSON.parse(remote.payload) as unknown);
+            useZikr.getState().apply(merged);
+          } catch {
+            /* a broken cloud copy must not erase the phone */
+          }
+        }
+        if (remote.meta) setMeta(remote.meta);
+        await send();
+      } catch {
+        if (!stop) setStatus(navigator.onLine ? "error" : "local");
+      } finally {
+        if (!stop) setReady(true);
+      }
+    };
+
+    void pull();
+    const onOnline = () => {
+      void pull();
+    };
+    window.addEventListener("online", onOnline);
+    unsub = useZikr.subscribe(() => {
+      setStatus(navigator.onLine ? "saving" : "local");
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        void send().catch(() => {
+          if (!stop) setStatus(navigator.onLine ? "error" : "local");
+        });
+      }, 900);
+    });
+
+    return () => {
+      stop = true;
+      unsub();
+      window.removeEventListener("online", onOnline);
+      if (timer) clearTimeout(timer);
+    };
+  }, [hydrated, user?.id]);
+
+  useEffect(() => {
+    if (!hydrated || isPending) return;
+    if (!user) setReady(true);
+  }, [hydrated, isPending, user]);
+
+  return { user, isPending, meta, status, ready };
+}
+
+const SYNC_KEY = "zikr-sync-key";
+
+function validKey(value: string | null | undefined): string {
+  return value && /^[A-Za-z0-9_-]{16,48}$/.test(value) ? value : "";
+}
+
+function makeSyncKey(): string {
+  const bytes = new Uint8Array(18);
+  crypto.getRandomValues(bytes);
+  let raw = "";
+  for (const byte of bytes) raw += String.fromCharCode(byte);
+  return btoa(raw).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function rememberSyncKey(key: string) {
+  try {
+    localStorage.setItem(SYNC_KEY, key);
+  } catch {
+    /* private mode */
+  }
+  document.cookie = `zikr_k=${key}; Max-Age=31536000; Path=/; SameSite=Lax`;
+}
+
+function storedSyncKey(): string {
+  try {
+    const saved = validKey(localStorage.getItem(SYNC_KEY));
+    if (saved) return saved;
+  } catch {
+    /* private mode */
+  }
+  const cookie = document.cookie.split("; ").find((row) => row.startsWith("zikr_k="))?.slice(7) ?? "";
+  return validKey(decodeURIComponent(cookie));
+}
+
+function telegramUserId(): string {
+  try {
+    const fromApp = (window as unknown as { Telegram?: { WebApp?: { initDataUnsafe?: { user?: { id?: number | string } } } } }).Telegram?.WebApp?.initDataUnsafe?.user?.id;
+    const direct = String(fromApp ?? "");
+    if (/^\d{4,20}$/.test(direct)) return direct;
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const raw = hash.get("tgWebAppData") || new URLSearchParams(window.location.search).get("tgWebAppData") || "";
+    if (!raw) return "";
+    const user = new URLSearchParams(raw).get("user");
+    if (!user) return "";
+    const id = String((JSON.parse(user) as { id?: number | string }).id ?? "");
+    return /^\d{4,20}$/.test(id) ? id : "";
+  } catch {
+    return "";
+  }
+}
+
+function showKey(key: string) {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("k") === key) return;
+  url.searchParams.set("k", key);
+  history.replaceState(history.state, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
+function adoptDevice(remote: DeviceSave) {
+  if (!remote.payload) return;
+  const local = snapshot(useZikr.getState());
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(remote.payload);
+  } catch {
+    return;
+  }
+  const merged = mergeState(local, parsed);
+  useZikr.getState().apply(merged);
+  if (validKey(remote.syncKey)) rememberSyncKey(remote.syncKey);
+}
+
+export function useWorldSync(hydrated: boolean) {
+  const publicId = useZikr((s) => s.publicId);
+  const ensurePublicId = useZikr((s) => s.ensurePublicId);
+  const [linked, setLinked] = useState(false);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    let stop = false;
+    const urlKey = validKey(new URLSearchParams(window.location.search).get("k"));
+    let key = urlKey || storedSyncKey() || makeSyncKey();
+    rememberSyncKey(key);
+    const tgId = telegramUserId();
+
+    const pull = async () => {
+      if (!navigator.onLine) return;
+      const remote = await pullDevice({ data: { key, ...(tgId ? { tgId } : {}) } });
+      if (stop || !remote) return;
+      const local = useZikr.getState();
+      const empty = local.total === 0 && !/^\d{8}$/.test(local.publicId);
+      if (empty || remote.syncKey === key) adoptDevice(remote);
+      if (validKey(remote.syncKey) && empty) key = remote.syncKey;
+    };
+
+    const push = async () => {
+      if (!navigator.onLine) return;
+      const id = useZikr.getState().ensurePublicId();
+      const state = snapshot(useZikr.getState());
+      const saved = await pushDevice({
+        data: { key, publicId: id, total: state.total, payload: JSON.stringify(state), ...(tgId ? { tgId } : {}) },
+      });
+      if (stop || !saved) return;
+      const local = useZikr.getState();
+      if (saved.syncKey !== key && local.total === 0) adoptDevice(saved);
+    };
+
+    void (async () => {
+      try {
+        await pull();
+        if (!stop) await push();
+      } catch {
+        if (!stop) ensurePublicId();
+      } finally {
+        if (!stop) {
+          showKey(storedSyncKey() || key);
+          setLinked(true);
+        }
+      }
+    })();
+
+    return () => {
+      stop = true;
+    };
+  }, [hydrated, ensurePublicId]);
+
+  useEffect(() => {
+    if (!hydrated || !linked || !/^\d{8}$/.test(publicId)) return;
+    const key = storedSyncKey();
+    const tgId = telegramUserId();
+    const send = () => {
+      if (document.hidden || !navigator.onLine) return;
+      const state = useZikr.getState();
+      const day = todayKey();
+      const dayTotal = state.days[day]?.total ?? 0;
+      if (state.total > 0) {
+        const host = storedInvite();
+        if (host && host === publicId) {
+          try {
+            localStorage.removeItem(INVITE_KEY);
+          } catch {
+            /* private mode */
+          }
+        }
+        const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
+        void publishWorld({ data: { publicId, total: state.total + state.quranLetters, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
+      }
+      if (key) {
+        const snap = snapshot(state);
+        void pushDevice({
+          data: { key, publicId, total: snap.total, payload: JSON.stringify(snap), ...(tgId ? { tgId } : {}) },
+        }).catch(() => {});
+      }
+      void beatPresence({
+        data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: currentTapSince() },
+      })
+        .then(() => window.dispatchEvent(new Event("zikr-live")))
+        .catch(() => {});
+    };
+    const unbind = bindTapPulse(send);
+    const first = window.setTimeout(send, 1500);
+    const timer = window.setInterval(send, 20000);
+    const onOnline = () => send();
+    window.addEventListener("online", onOnline);
+    return () => {
+      unbind();
+      window.clearTimeout(first);
+      window.clearInterval(timer);
+      window.removeEventListener("online", onOnline);
+    };
+  }, [hydrated, linked, publicId]);
+}

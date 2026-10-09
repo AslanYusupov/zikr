@@ -1,0 +1,355 @@
+import type { LangId } from "./types";
+
+export type Dua = {
+  id: string;
+  arabic: string;
+  name: string;
+  meaning: string;
+  forWhat: string;
+  gives: string;
+  source: string;
+};
+
+/** Лучшие дуа, текст и польза которых пришли в Коране и достоверной сунне. */
+export const DUAS: Dua[] = [
+  {
+    id: "rabbana",
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    name: "Раббана атина фид-дунья хьасанатан",
+    meaning: "Господь наш, дай нам в этом мире благо и в Последней жизни благо, и защити нас от наказания Огня",
+    forWhat: "Для блага в обоих мирах и защиты от Огня",
+    gives: "Эту дуа Посланник Аллах1а ﷺ произносил чаще других.",
+    source: "Коран, 2:201; аль-Бухари",
+  },
+  {
+    id: "bakr",
+    arabic: "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ",
+    name: "Аллах1умма инни заламту нафси зульман кясиран",
+    meaning: "О Аллах1, я много обидел себя, а грехи прощает только Ты. Прости меня прощением от Тебя и помилуй меня",
+    forWhat: "Для прощения и милости",
+    gives: "Пророк ﷺ научил этому Абу Бакра, радыяллах1у анху, чтобы он говорил это в намазе.",
+    source: "аль-Бухари, Муслим",
+  },
+  {
+    id: "sayyid",
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَىٰ عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+    name: "Саййидуль-истигфар",
+    meaning: "О Аллах1, Ты мой Господь, нет божества, кроме Тебя. Ты создал меня, и я Твой раб. Я держусь договора с Тобой, насколько могу. Прибегаю к Тебе от зла того, что совершил. Признаю Твою милость и признаю свой грех. Прости меня: грехи прощает только Ты",
+    forWhat: "Лучшая мольба о прощении, утром и вечером",
+    gives: "Кто скажет её утром с убеждённостью и умрёт в этот день, будет из обитателей Рая. То же вечером.",
+    source: "аль-Бухари",
+  },
+  {
+    id: "yunus",
+    arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    name: "Ля иляха илля анта субхьанака инни кунту миназ-залимин",
+    meaning: "Нет божества, кроме Тебя. Пречист Ты. Воистину, я был из несправедливых",
+    forWhat: "В тесноте, беде и любой нужде",
+    gives: "Не обращается с этими словами мусульманин ни о чём, чтобы Аллах1 не ответил ему.",
+    source: "Коран, 21:87; ат-Тирмизи",
+  },
+  {
+    id: "afuww",
+    arabic: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+    name: "Аллах1умма иннака 1афуввун тухьиббуль-1афва фа1фу 1анни",
+    meaning: "О Аллах1, Ты Снисходительный, любишь снисхождение, так прояви снисхождение ко мне",
+    forWhat: "Если застанешь ночь Предопределения",
+    gives: "Пророк ﷺ велел Аише, радыяллах1у анха, говорить это, если она застанет Ляйлятуль-Къадр.",
+    source: "ат-Тирмизи, Ибн Маджа",
+  },
+  {
+    id: "qulub",
+    arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَىٰ دِينِكَ",
+    name: "Я мукъаллибаль-къулюб саббит къальби аля диник",
+    meaning: "О Переворачивающий сердца, утверди моё сердце на Твоей религии",
+    forWhat: "Чтобы сердце осталось на религии",
+    gives: "Пророк ﷺ часто говорил эту дуа.",
+    source: "ат-Тирмизи",
+  },
+  {
+    id: "huda",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَىٰ وَالتُّقَىٰ وَالْعَفَافَ وَالْغِنَىٰ",
+    name: "Аллах1умма инни ас-алюкаль-худа ват-тукъа валь-1афафа валь-г1ина",
+    meaning: "О Аллах1, я прошу у Тебя прямого пути, богобоязненности, целомудрия и достатка",
+    forWhat: "Для прямого пути, богобоязненности, целомудрия и достатка",
+    gives: "Эту дуа произносил Пророк ﷺ.",
+    source: "Муслим",
+  },
+  {
+    id: "aslih",
+    arabic: "اللَّهُمَّ أَصْلِحْ لِي دِينِيَ الَّذِي هُوَ عِصْمَةُ أَمْرِي وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي وَاجْعَلِ الْحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ وَاجْعَلِ الْمَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ",
+    name: "Аллах1умма аслихь ли дини",
+    meaning: "О Аллах1, исправь мне мою религию, которая хранит всё моё дело, исправь мне этот мир, в котором моя жизнь, и исправь мне Последнюю жизнь, в которую я вернусь. Сделай жизнь прибавлением всякого блага, а смерть — покоем от всякого зла",
+    forWhat: "Для религии, жизни в этом мире и Последней жизни",
+    gives: "Эту дуа произносил Пророк ﷺ.",
+    source: "Муслим",
+  },
+  {
+    id: "hamm",
+    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",
+    name: "Аллах1умма инни аъузу бика миналь-хамми валь-хьазан",
+    meaning: "О Аллах1, я прибегаю к Тебе от заботы и печали, от бессилия и лени, от трусости и скупости, от бремени долга и притеснения людей",
+    forWhat: "От печали, слабости, долга и притеснения",
+    gives: "Этими словами Пророк ﷺ прибегал к Аллах1у.",
+    source: "аль-Бухари",
+  },
+  {
+    id: "ilm",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا",
+    name: "Аллах1умма инни ас-алюка 1ильман нафи1ан",
+    meaning: "О Аллах1, я прошу у Тебя полезного знания, благого удела и принятого дела",
+    forWhat: "Для знания, удела и принятого дела",
+    gives: "Пророк ﷺ просил об этом после приветствия утреннего намаза.",
+    source: "Ибн Маджа",
+  },
+  {
+    id: "zidni",
+    arabic: "رَبِّ زِدْنِي عِلْمًا",
+    name: "Рабби зидни 1ильма",
+    meaning: "Господь мой, прибавь мне знания",
+    forWhat: "Для прибавления знания",
+    gives: "Это дуа, которой Аллах1 научил Своего Пророка ﷺ.",
+    source: "Коран, 20:114",
+  },
+  {
+    id: "tuzigh",
+    arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً إِنَّكَ أَنتَ الْوَهَّابُ",
+    name: "Раббана ля тузиг1 къулюбана",
+    meaning: "Господь наш, не уклоняй наши сердца после того, как Ты повёл нас прямым путём, и даруй нам милость от Себя. Воистину, Ты — Дарующий",
+    forWhat: "Чтобы сердце не сбилось после прямого пути",
+    gives: "Дуа твёрдых в знании, как пришло в Коране.",
+    source: "Коран, 3:8",
+  },
+  {
+    id: "qurra",
+    arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+    name: "Раббана хьаб ляна мин азваджина",
+    meaning: "Господь наш, даруй нам отраду глаз в супругах и потомстве и сделай нас образцом для богобоязненных",
+    forWhat: "Для семьи и потомства",
+    gives: "Дуа рабов Милостивого в Коране.",
+    source: "Коран, 25:74",
+  },
+  {
+    id: "parents",
+    arabic: "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+    name: "Рабби рхьамхума кяма раббаяни саг1ира",
+    meaning: "Господь мой, помилуй их, как они растили меня в детстве",
+    forWhat: "Для милости к родителям",
+    gives: "Аллах1 велел говорить это о родителях.",
+    source: "Коран, 17:24",
+  },
+  {
+    id: "ainni",
+    arabic: "اللَّهُمَّ أَعِنِّي عَلَىٰ ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+    name: "Аллах1умма а1инни аля зикрика ва шукрика ва хьусни 1ибадатика",
+    meaning: "О Аллах1, помоги мне поминать Тебя, благодарить Тебя и хорошо поклоняться Тебе",
+    forWhat: "Для поминания, благодарности и поклонения",
+    gives: "Пророк ﷺ велел Муазу, радыяллах1у анху, не оставлять эти слова после каждого намаза.",
+    source: "Абу Давуд, ан-Насаи",
+  },
+  {
+    id: "janna",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+    name: "Аллах1умма инни ас-алюкаль-джанна ва аъузу бика минан-нар",
+    meaning: "О Аллах1, я прошу у Тебя Рая и прибегаю к Тебе от Огня",
+    forWhat: "Для Рая и защиты от Огня",
+    gives: "Кто трижды попросит у Аллах1а Рая, Рай скажет: о Аллах1, введи его в Рай. Кто трижды попросит защиты от Огня, Огонь скажет: о Аллах1, защити его от Огня.",
+    source: "Абу Давуд, ат-Тирмизи",
+  },
+  {
+    id: "qabr",
+    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ وَمِنْ عَذَابِ الْقَبْرِ وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ",
+    name: "Аллах1умма инни аъузу бика мин азаби джаханнам",
+    meaning: "О Аллах1, я прибегаю к Тебе от наказания Геенны, от наказания могилы, от испытания жизни и смерти и от зла испытания Лжемессии",
+    forWhat: "После ташаххуда, до приветствия",
+    gives: "Пророк ﷺ велел прибегать этими словами к Аллах1у в конце намаза.",
+    source: "Муслим",
+  },
+  {
+    id: "halim",
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
+    name: "Ля иляха илляллах1уль-1азыймуль-хьалим",
+    meaning: "Нет божества, кроме Аллах1а Великого, Сдержанного. Нет божества, кроме Аллах1а, Господа великого Трона. Нет божества, кроме Аллах1а, Господа небес, земли и благородного Трона",
+    forWhat: "В тревоге и беде",
+    gives: "Пророк ﷺ говорил эти слова, когда его что-то печалило.",
+    source: "аль-Бухари, Муслим",
+  },
+  {
+    id: "hasbuna",
+    arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+    name: "Хьасбуналлах1у ва ни1маль-вакиль",
+    meaning: "Довольно нам Аллах1а, и как прекрасен Он Покровитель",
+    forWhat: "Когда страшно и когда сил мало",
+    gives: "Так сказал Ибрах1им, мир ему, когда его бросали в огонь. Так сказали верующие. Они вернулись с милостью Аллах1а, и зло их не коснулось.",
+    source: "Коран, 3:173; аль-Бухари",
+  },
+];
+
+type Line = { name: string; meaning: string; forWhat: string; gives: string };
+
+const EN: Record<string, Line> = {
+  rabbana: { name: "Rabbana atina fid-dunya hasanah", meaning: "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire", forWhat: "For good in both worlds and protection from the Fire", gives: "The Messenger of Allah ﷺ said this supplication more than any other." },
+  bakr: { name: "Allahumma inni zalamtu nafsi", meaning: "O Allah, I have wronged myself greatly, and none forgives sins but You. Forgive me and have mercy on me", forWhat: "For forgiveness and mercy", gives: "The Prophet ﷺ taught this to Abu Bakr, may Allah be pleased with him, to say in the prayer." },
+  sayyid: { name: "Sayyidul-istighfar", meaning: "O Allah, You are my Lord. None has the right to be worshipped but You. You created me and I am Your servant. I seek refuge in You from the evil of what I have done. I admit Your favor and I admit my sin. Forgive me, for none forgives sins but You", forWhat: "The best prayer for forgiveness, morning and evening", gives: "Whoever says it in the morning with certainty and dies that day is among the people of Paradise. The same in the evening." },
+  yunus: { name: "La ilaha illa anta subhanaka", meaning: "None has the right to be worshipped but You. Glory be to You. I have been among the wrongdoers", forWhat: "In distress and any need", gives: "No Muslim calls with these words for anything except that Allah answers him." },
+  afuww: { name: "Allahumma innaka afuwwun", meaning: "O Allah, You are Pardoning and love to pardon, so pardon me", forWhat: "If you reach the Night of Decree", gives: "The Prophet ﷺ told Aishah, may Allah be pleased with her, to say this if she reached Laylat al-Qadr." },
+  qulub: { name: "Ya muqallibal-qulub", meaning: "O Turner of the hearts, keep my heart firm upon Your religion", forWhat: "So the heart stays upon the religion", gives: "The Prophet ﷺ often said this supplication." },
+  huda: { name: "Allahumma inni as'alukal-huda", meaning: "O Allah, I ask You for guidance, piety, chastity, and sufficiency", forWhat: "For guidance, piety, chastity, and sufficiency", gives: "The Prophet ﷺ used to say this." },
+  aslih: { name: "Allahumma aslih li dini", meaning: "O Allah, set right my religion, my worldly life, and my Hereafter. Make life an increase in every good, and death a rest from every evil", forWhat: "For the religion, this life, and the Hereafter", gives: "The Prophet ﷺ used to say this." },
+  hamm: { name: "Allahumma inni a'udhu bika minal-hammi", meaning: "O Allah, I seek refuge in You from worry and grief, from inability and laziness, from cowardice and miserliness, and from being overcome by debt and overpowered by men", forWhat: "From grief, weakness, debt, and being overpowered", gives: "With these words the Prophet ﷺ sought refuge in Allah." },
+  ilm: { name: "Allahumma inni as'aluka ilman nafi'an", meaning: "O Allah, I ask You for beneficial knowledge, good provision, and accepted deeds", forWhat: "For knowledge, provision, and an accepted deed", gives: "The Prophet ﷺ asked for this after the salam of the morning prayer." },
+  zidni: { name: "Rabbi zidni ilma", meaning: "My Lord, increase me in knowledge", forWhat: "For an increase in knowledge", gives: "This is the supplication Allah taught His Prophet ﷺ." },
+  tuzigh: { name: "Rabbana la tuzigh qulubana", meaning: "Our Lord, do not let our hearts deviate after You have guided us, and grant us mercy from Yourself", forWhat: "So the heart is not turned after guidance", gives: "The supplication of those firm in knowledge, as it came in the Quran." },
+  qurra: { name: "Rabbana hab lana min azwajina", meaning: "Our Lord, grant us from our spouses and children comfort to our eyes, and make us an example for the righteous", forWhat: "For family and children", gives: "The supplication of the servants of the Most Merciful in the Quran." },
+  parents: { name: "Rabbi rhamhuma", meaning: "My Lord, have mercy on them as they raised me when I was small", forWhat: "For mercy upon one's parents", gives: "Allah commanded that this be said for the parents." },
+  ainni: { name: "Allahumma a'inni ala dhikrika", meaning: "O Allah, help me to remember You, thank You, and worship You well", forWhat: "For remembrance, gratitude, and worship", gives: "The Prophet ﷺ told Muadh, may Allah be pleased with him, not to leave these words after every prayer." },
+  janna: { name: "Allahumma inni as'alukal-jannah", meaning: "O Allah, I ask You for Paradise and I seek refuge in You from the Fire", forWhat: "For Paradise and protection from the Fire", gives: "Whoever asks Allah for Paradise three times, Paradise says: O Allah, admit him into Paradise. Whoever seeks refuge from the Fire three times, the Fire says: O Allah, protect him from the Fire." },
+  qabr: { name: "Allahumma inni a'udhu bika min adhabi jahannam", meaning: "O Allah, I seek refuge in You from the punishment of Hell, the punishment of the grave, the trial of life and death, and the evil of the trial of the False Messiah", forWhat: "After the tashahhud, before the salam", gives: "The Prophet ﷺ commanded seeking refuge with these words at the end of the prayer." },
+  halim: { name: "La ilaha illallahul-Azimul-Halim", meaning: "None has the right to be worshipped but Allah, the Magnificent, the Forbearing, Lord of the mighty Throne, Lord of the heavens, the earth, and the noble Throne", forWhat: "In anxiety and distress", gives: "The Prophet ﷺ said these words when something grieved him." },
+  hasbuna: { name: "Hasbunallahu wa ni'mal-wakil", meaning: "Allah is sufficient for us, and He is the best Disposer of affairs", forWhat: "When there is fear and one's strength is small", gives: "Ibrahim, peace be upon him, said this when he was thrown into the fire. The believers said it too. They returned with Allah's favor, and no harm touched them." },
+};
+
+const AR: Record<string, Line> = {
+  rabbana: { name: "ربنا آتنا في الدنيا حسنة", meaning: "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار", forWhat: "لخير الدارين والوقاية من النار", gives: "كان رسول الله ﷺ يكثر من هذا الدعاء." },
+  bakr: { name: "اللهم إني ظلمت نفسي", meaning: "اللهم إني ظلمت نفسي ظلمًا كثيرًا فاغفر لي وارحمني", forWhat: "للمغفرة والرحمة", gives: "علّمه النبي ﷺ أبا بكر رضي الله عنه ليقوله في صلاته." },
+  sayyid: { name: "سيد الاستغفار", meaning: "اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، أبوء بنعمتك وأبوء بذنبي فاغفر لي", forWhat: "أفضل الاستغفار صباحًا ومساءً", gives: "من قالها موقنًا بها حين يصبح فمات من يومه دخل الجنة. وكذلك حين يمسي." },
+  yunus: { name: "لا إله إلا أنت سبحانك", meaning: "لا إله إلا أنت سبحانك إني كنت من الظالمين", forWhat: "في الكرب وكل حاجة", gives: "ما دعا بها مسلم في شيء إلا استجاب الله له." },
+  afuww: { name: "اللهم إنك عفو", meaning: "اللهم إنك عفو تحب العفو فاعف عني", forWhat: "إذا وافقت ليلة القدر", gives: "أمر النبي ﷺ عائشة رضي الله عنها أن تقولها إن وافقت ليلة القدر." },
+  qulub: { name: "يا مقلب القلوب", meaning: "يا مقلب القلوب ثبت قلبي على دينك", forWhat: "لثبوت القلب على الدين", gives: "كان النبي ﷺ يكثر من هذا الدعاء." },
+  huda: { name: "أسألك الهدى والتقى", meaning: "اللهم إني أسألك الهدى والتقى والعفاف والغنى", forWhat: "للهداية والتقوى والعفاف والغنى", gives: "كان النبي ﷺ يدعو بها." },
+  aslih: { name: "اللهم أصلح لي ديني", meaning: "أصلح لي ديني ودنياي وآخرتي، واجعل الحياة زيادة في كل خير", forWhat: "للدين والدنيا والآخرة", gives: "كان النبي ﷺ يدعو بها." },
+  hamm: { name: "أعوذ بك من الهم والحزن", meaning: "أعوذ بك من الهم والحزن والعجز والكسل والجبن والبخل وغلبة الدين وقهر الرجال", forWhat: "من الحزن والضعف والدين والقهر", gives: "كان النبي ﷺ يتعوذ بهذه الكلمات." },
+  ilm: { name: "أسألك علمًا نافعًا", meaning: "اللهم إني أسألك علمًا نافعًا ورزقًا طيبًا وعملًا متقبلًا", forWhat: "للعلم والرزق والعمل المقبول", gives: "كان النبي ﷺ يقولها بعد سلام صلاة الفجر." },
+  zidni: { name: "رب زدني علمًا", meaning: "رب زدني علمًا", forWhat: "لزيادة العلم", gives: "دعاء علّمه الله نبيه ﷺ." },
+  tuzigh: { name: "ربنا لا تزغ قلوبنا", meaning: "ربنا لا تزغ قلوبنا بعد إذ هديتنا وهب لنا من لدنك رحمة", forWhat: "حتى لا يزيغ القلب بعد الهداية", gives: "دعاء الراسخين في العلم كما جاء في القرآن." },
+  qurra: { name: "ربنا هب لنا من أزواجنا", meaning: "هب لنا من أزواجنا وذرياتنا قرة أعين واجعلنا للمتقين إمامًا", forWhat: "للأسرة والذرية", gives: "دعاء عباد الرحمن في القرآن." },
+  parents: { name: "رب ارحمهما", meaning: "رب ارحمهما كما ربياني صغيرًا", forWhat: "للرحمة بالوالدين", gives: "أمر الله أن تُقال في الوالدين." },
+  ainni: { name: "اللهم أعني على ذكرك", meaning: "اللهم أعني على ذكرك وشكرك وحسن عبادتك", forWhat: "للذكر والشكر وحسن العبادة", gives: "أمر النبي ﷺ معاذًا رضي الله عنه ألا يدعها بعد كل صلاة." },
+  janna: { name: "أسألك الجنة", meaning: "اللهم إني أسألك الجنة وأعوذ بك من النار", forWhat: "للجنة والوقاية من النار", gives: "من سأل الله الجنة ثلاث مرات قالت الجنة: اللهم أدخله الجنة. ومن استعاذ من النار ثلاثًا قالت النار: اللهم أجره من النار." },
+  qabr: { name: "أعوذ بك من عذاب جهنم", meaning: "أعوذ بك من عذاب جهنم والقبر وفتنة المحيا والممات وشر فتنة المسيح الدجال", forWhat: "بعد التشهد وقبل السلام", gives: "أمر النبي ﷺ بالتعوذ بهذه الكلمات في آخر الصلاة." },
+  halim: { name: "لا إله إلا الله العظيم الحليم", meaning: "لا إله إلا الله العظيم الحليم، رب العرش العظيم، رب السماوات والأرض", forWhat: "عند الكرب", gives: "كان النبي ﷺ يقولها إذا كربه أمر." },
+  hasbuna: { name: "حسبنا الله ونعم الوكيل", meaning: "حسبنا الله ونعم الوكيل", forWhat: "عند الخوف وقلة الحيلة", gives: "قالها إبراهيم عليه السلام حين أُلقي في النار، وقالها المؤمنون. فانقلبوا بنعمة ولم يمسسهم سوء." },
+};
+
+const ID: Record<string, Line> = {
+  rabbana: { name: "Rabbana atina fid-dunya hasanah", meaning: "Ya Tuhan kami, berilah kami kebaikan di dunia dan di akhirat, dan lindungilah kami dari azab neraka", forWhat: "Untuk kebaikan dua alam dan perlindungan dari neraka", gives: "Rasulullah ﷺ paling banyak membaca doa ini." },
+  bakr: { name: "Allahumma inni zalamtu nafsi", meaning: "Ya Allah, aku telah menzalimi diriku dengan sangat, dan tidak ada yang mengampuni dosa selain Engkau. Ampunilah aku dan rahmatilah aku", forWhat: "Untuk ampunan dan rahmat", gives: "Nabi ﷺ mengajarkan ini kepada Abu Bakar radhiyallahu anhu agar dibaca dalam salat." },
+  sayyid: { name: "Sayyidul-istighfar", meaning: "Ya Allah, Engkau Tuhanku, tidak ada tuhan selain Engkau. Engkau menciptakanku dan aku hamba-Mu. Aku mengakui nikmat-Mu dan dosaku. Ampunilah aku", forWhat: "Istighfar yang paling utama, pagi dan petang", gives: "Siapa membacanya dengan yakin di pagi hari lalu wafat hari itu, ia termasuk penghuni surga. Demikian pula di petang hari." },
+  yunus: { name: "La ilaha illa anta subhanaka", meaning: "Tidak ada tuhan selain Engkau. Mahasuci Engkau. Sungguh aku termasuk orang yang zalim", forWhat: "Dalam kesempitan dan setiap hajat", gives: "Tidaklah seorang muslim berdoa dengannya kecuali Allah mengabulkannya." },
+  afuww: { name: "Allahumma innaka afuwwun", meaning: "Ya Allah, Engkau Maha Pemaaf dan menyukai maaf, maka maafkanlah aku", forWhat: "Jika bertemu Lailatul Qadar", gives: "Nabi ﷺ menyuruh Aisyah radhiyallahu anha mengucapkannya jika bertemu Lailatul Qadar." },
+  qulub: { name: "Ya muqallibal-qulub", meaning: "Wahai yang membolak-balikkan hati, teguhkan hatiku di atas agama-Mu", forWhat: "Agar hati tetap di atas agama", gives: "Nabi ﷺ sering membaca doa ini." },
+  huda: { name: "Allahumma inni as-alukal-huda", meaning: "Ya Allah, aku mohon kepada-Mu petunjuk, ketakwaan, kesucian, dan kecukupan", forWhat: "Untuk petunjuk, ketakwaan, kesucian, dan kecukupan", gives: "Nabi ﷺ biasa berdoa dengan ini." },
+  aslih: { name: "Allahumma aslih li dini", meaning: "Ya Allah, perbaikilah agamaku, duniaku, dan akhiratku. Jadikan hidup tambahan segala kebaikan, dan kematian istirahat dari segala keburukan", forWhat: "Untuk agama, dunia, dan akhirat", gives: "Nabi ﷺ biasa berdoa dengan ini." },
+  hamm: { name: "A'udzu bika minal-hammi", meaning: "Aku berlindung kepada-Mu dari kegelisahan dan kesedihan, kelemahan dan kemalasan, sifat pengecut dan kikir, serta lilitan utang dan tekanan orang", forWhat: "Dari kesedihan, kelemahan, utang, dan tekanan", gives: "Dengan kalimat ini Nabi ﷺ berlindung kepada Allah." },
+  ilm: { name: "As-aluka ilman nafian", meaning: "Ya Allah, aku mohon ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima", forWhat: "Untuk ilmu, rezeki, dan amal yang diterima", gives: "Nabi ﷺ memohon ini setelah salam salat subuh." },
+  zidni: { name: "Rabbi zidni ilma", meaning: "Ya Tuhanku, tambahkanlah ilmuku", forWhat: "Untuk tambahan ilmu", gives: "Doa yang Allah ajarkan kepada Nabi-Nya ﷺ." },
+  tuzigh: { name: "Rabbana la tuzig qulubana", meaning: "Ya Tuhan kami, jangan condongkan hati kami setelah Engkau beri petunjuk, dan anugerahkan rahmat dari sisi-Mu", forWhat: "Agar hati tidak menyimpang setelah hidayah", gives: "Doa orang-orang yang mendalam ilmunya, sebagaimana dalam Al-Quran." },
+  qurra: { name: "Rabbana hab lana min azwajina", meaning: "Ya Tuhan kami, anugerahkan kepada kami penyejuk mata dari pasangan dan keturunan, dan jadikan kami teladan bagi orang bertakwa", forWhat: "Untuk keluarga dan keturunan", gives: "Doa hamba-hamba Ar-Rahman dalam Al-Quran." },
+  parents: { name: "Rabbi rhamhuma", meaning: "Ya Tuhanku, rahmatilah keduanya sebagaimana mereka merawatku di waktu kecil", forWhat: "Untuk rahmat kepada kedua orang tua", gives: "Allah memerintahkan agar ini diucapkan untuk kedua orang tua." },
+  ainni: { name: "Allahumma a'inni ala dzikrika", meaning: "Ya Allah, tolonglah aku mengingat-Mu, bersyukur kepada-Mu, dan beribadah kepada-Mu dengan baik", forWhat: "Untuk zikir, syukur, dan ibadah", gives: "Nabi ﷺ menyuruh Mu'adz radhiyallahu anhu agar tidak meninggalkannya sesudah setiap salat." },
+  janna: { name: "As-alukal-jannah", meaning: "Ya Allah, aku mohon surga kepada-Mu dan aku berlindung kepada-Mu dari neraka", forWhat: "Untuk surga dan perlindungan dari neraka", gives: "Siapa memohon surga tiga kali, surga berkata: Ya Allah, masukkan dia ke surga. Siapa memohon perlindungan dari neraka tiga kali, neraka berkata: Ya Allah, lindungilah dia dari neraka." },
+  qabr: { name: "A'udzu bika min adzabi jahannam", meaning: "Aku berlindung kepada-Mu dari azab neraka, azab kubur, fitnah hidup dan mati, dan kejahatan fitnah Dajjal", forWhat: "Setelah tasyahud, sebelum salam", gives: "Nabi ﷺ memerintahkan berlindung dengan kalimat ini di akhir salat." },
+  halim: { name: "La ilaha illallahul-Azhimul-Halim", meaning: "Tidak ada tuhan selain Allah Yang Mahaagung lagi Maha Penyantun, Tuhan Arasy yang agung, Tuhan langit, bumi, dan Arasy yang mulia", forWhat: "Ketika gundah dan dalam kesulitan", gives: "Nabi ﷺ mengucapkannya ketika sesuatu menyusahkannya." },
+  hasbuna: { name: "Hasbunallahu wa ni'mal-wakil", meaning: "Cukuplah Allah bagi kami, dan Dia sebaik-baik pelindung", forWhat: "Ketika takut dan kekuatan terasa kecil", gives: "Ibrahim alaihis-salam mengatakannya ketika dilempar ke api. Orang-orang beriman pun mengatakannya. Mereka kembali dengan nikmat dan tidak ditimpa keburukan." },
+};
+
+const TR: Record<string, Line> = {
+  rabbana: { name: "Rabbenâ âtinâ fid-dünyâ haseneten", meaning: "Rabbimiz, bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateşin azabından koru", forWhat: "İki cihanda iyilik ve ateşten korunmak için", gives: "Allah’ın Elçisi ﷺ bu duayı diğerlerinden daha çok okurdu." },
+  bakr: { name: "Allahümme innî zalemtu nefsî", meaning: "Allah’ım, nefsime çok zulmettim. Günahları ancak Sen bağışlarsın. Beni bağışla ve bana merhamet et", forWhat: "Bağışlanma ve rahmet için", gives: "Peygamber ﷺ bunu Ebû Bekir’e, radıyallahu anh, namazda söylemesi için öğretti." },
+  sayyid: { name: "Seyyidü’l-istiğfar", meaning: "Allah’ım, Sen benim Rabbimsin. Senden başka ilah yoktur. Beni Sen yarattın, ben Senin kulunum. Nimetini ve günahımı itiraf ederim. Beni bağışla", forWhat: "Sabah ve akşam en faziletli istiğfar", gives: "Sabah inanarak söyleyip o gün ölen cennet ehlindendir. Akşam da böyledir." },
+  yunus: { name: "Lâ ilâhe illâ ente subhâneke", meaning: "Senden başka ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum", forWhat: "Sıkıntıda ve her ihtiyaçta", gives: "Bir Müslüman bu sözle dua eder de Allah ona icabet etmez, öyle bir şey yoktur." },
+  afuww: { name: "Allahümme inneke afüvvün", meaning: "Allah’ım, Sen çok affedicisin, affetmeyi seversin. Beni affet", forWhat: "Kadir gecesine denk gelirsen", gives: "Peygamber ﷺ, Âişe’ye, radıyallahu anhâ, Kadir gecesine denk gelirse bunu söylemesini emretti." },
+  qulub: { name: "Yâ mukallibel-kulûb", meaning: "Ey kalpleri çeviren, kalbimi dinin üzere sabit kıl", forWhat: "Kalbin din üzere kalması için", gives: "Peygamber ﷺ bu duayı çok okurdu." },
+  huda: { name: "Allahümme innî es’elükel-hüdâ", meaning: "Allah’ım, Senden hidayet, takva, iffet ve gönül tokluğu isterim", forWhat: "Hidayet, takva, iffet ve yeterlilik için", gives: "Peygamber ﷺ bu duayı ederdi." },
+  aslih: { name: "Allahümme aslih lî dînî", meaning: "Allah’ım, dinimi, dünyamı ve ahiretimi düzelt. Hayatı her hayırda artış, ölümü her şerden rahat kıl", forWhat: "Din, dünya ve ahiret için", gives: "Peygamber ﷺ bu duayı ederdi." },
+  hamm: { name: "Eûzü bike minel-hemmi vel-hazen", meaning: "Tasa ve hüzünden, acizlik ve tembellikten, korkaklık ve cimrilikten, borcun ezmesinden ve insanların kahrından Sana sığınırım", forWhat: "Hüzün, zayıflık, borç ve kahırdan", gives: "Peygamber ﷺ bu sözlerle Allah’a sığınırdı." },
+  ilm: { name: "Es’elüke ilmen nâfian", meaning: "Allah’ım, Senden faydalı ilim, temiz rızık ve kabul olunmuş amel isterim", forWhat: "İlim, rızık ve kabul edilen amel için", gives: "Peygamber ﷺ bunu sabah namazının selâmından sonra isterdi." },
+  zidni: { name: "Rabbi zidnî ilmâ", meaning: "Rabbim, ilmimi artır", forWhat: "İlmin artması için", gives: "Allah’ın Peygamberine ﷺ öğrettiği duadır." },
+  tuzigh: { name: "Rabbenâ lâ tüziğ kulûbenâ", meaning: "Rabbimiz, bizi hidayete erdirdikten sonra kalplerimizi saptırma ve katından bize rahmet ver", forWhat: "Hidayetten sonra kalbin sapmaması için", gives: "Kur’an’da ilimde derinleşenlerin duasıdır." },
+  qurra: { name: "Rabbenâ heb lenâ min ezvâcinâ", meaning: "Rabbimiz, eşlerimizden ve çocuklarımızdan bize göz aydınlığı ver ve bizi takva sahiplerine önder kıl", forWhat: "Aile ve çocuklar için", gives: "Kur’an’da Rahman’ın kullarının duasıdır." },
+  parents: { name: "Rabbi rhamhumâ", meaning: "Rabbim, onlar beni küçükken nasıl yetiştirdilerse Sen de onlara merhamet et", forWhat: "Anne babaya rahmet için", gives: "Allah bunu anne baba için söylemeyi emretti." },
+  ainni: { name: "Allahümme a'innî alâ zikrike", meaning: "Allah’ım, Seni anmam, Sana şükretmem ve Sana güzel ibadet etmem için bana yardım et", forWhat: "Zikir, şükür ve ibadet için", gives: "Peygamber ﷺ bunu Muâz’a, radıyallahu anh, her namazdan sonra bırakmamasını söyledi." },
+  janna: { name: "Es’elükel-cenneh", meaning: "Allah’ım, Senden cennet isterim ve ateşten Sana sığınırım", forWhat: "Cennet ve ateşten korunmak için", gives: "Kim cenneti üç kez isterse cennet: Allah’ım, onu cennete al, der. Kim ateşten üç kez sığınırsa ateş: Allah’ım, onu ateşten koru, der." },
+  qabr: { name: "Eûzü bike min azâbi cehennem", meaning: "Cehennem azabından, kabir azabından, hayatın ve ölümün fitnesinden ve Deccal fitnesinin şerrinden Sana sığınırım", forWhat: "Teşehhüdden sonra, selâmdan önce", gives: "Peygamber ﷺ namazın sonunda bu sözlerle sığınmayı emretti." },
+  halim: { name: "Lâ ilâhe illallahül-Azîmül-Halîm", meaning: "Azîm ve Halîm olan Allah’tan başka ilah yoktur. Yüce Arş’ın, göklerin, yerin ve kerîm Arş’ın Rabbi", forWhat: "Sıkıntı ve kederde", gives: "Peygamber ﷺ bir şey kendisini üzdüğünde bunu söylerdi." },
+  hasbuna: { name: "Hasbünallahu ve ni'mel-vekîl", meaning: "Allah bize yeter, O ne güzel vekîldir", forWhat: "Korku ve gücün az olduğu zamanda", gives: "İbrahim aleyhisselam ateşe atılırken bunu söyledi. Müminler de söyledi. Nimetle döndüler, onlara kötülük dokunmadı." },
+};
+
+const UR: Record<string, Line> = {
+  rabbana: { name: "ربنا آتنا في الدنيا حسنة", meaning: "اے ہمارے رب، ہمیں دنیا میں بھلائی دے اور آخرت میں بھلائی دے، اور ہمیں آگ کے عذاب سے بچا", forWhat: "دونوں جہان کی بھلائی اور آگ سے حفاظت کے لیے", gives: "رسول اللہ ﷺ یہ دعا سب سے زیادہ مانگتے تھے۔" },
+  bakr: { name: "اللهم إني ظلمت نفسي", meaning: "اے اللہ، میں نے اپنے آپ پر بہت ظلم کیا، اور گناہ تیری سوا کوئی نہیں بخشتا۔ مجھے بخش دے اور مجھ پر رحم فرما", forWhat: "بخشش اور رحمت کے لیے", gives: "نبی ﷺ نے یہ ابو بکر رضی اللہ عنہ کو سکھائی تاکہ نماز میں پڑھیں۔" },
+  sayyid: { name: "سید الاستغفار", meaning: "اے اللہ، تو میرا رب ہے۔ تیرے سوا کوئی معبود نہیں۔ تو نے مجھے پیدا کیا اور میں تیرا بندہ ہوں۔ میں تیری نعمت اور اپنے گناہ کا اقرار کرتا ہوں۔ مجھے بخش دے", forWhat: "صبح و شام بہترین استغفار", gives: "جو صبح یقین کے ساتھ پڑھے اور اسی دن وفات پائے وہ جنتی ہے۔ شام کا بھی یہی حکم ہے۔" },
+  yunus: { name: "لا إله إلا أنت سبحانك", meaning: "تیرے سوا کوئی معبود نہیں۔ تو پاک ہے۔ بے شک میں ظالموں میں سے تھا", forWhat: "تنگی اور ہر حاجت میں", gives: "کوئی مسلمان اس سے دعا نہیں کرتا مگر اللہ اسے قبول فرماتا ہے۔" },
+  afuww: { name: "اللهم إنك عفو", meaning: "اے اللہ، تو معاف کرنے والا ہے، معافی کو پسند کرتا ہے، پس مجھے معاف فرما", forWhat: "اگر لیلۃ القدر پائے", gives: "نبی ﷺ نے عائشہ رضی اللہ عنہا سے فرمایا کہ اگر لیلۃ القدر پائے تو یہ پڑھے۔" },
+  qulub: { name: "يا مقلب القلوب", meaning: "اے دلوں کو پھیرنے والے، میرے دل کو اپنے دین پر ثابت رکھ", forWhat: "تاکہ دل دین پر قائم رہے", gives: "نبی ﷺ یہ دعا کثرت سے مانگتے تھے۔" },
+  huda: { name: "أسألك الهدى والتقى", meaning: "اے اللہ، میں تجھ سے ہدایت، تقویٰ، پاکدامنی اور بے نیازی مانگتا ہوں", forWhat: "ہدایت، تقویٰ، پاکدامنی اور کفایت کے لیے", gives: "نبی ﷺ یہ دعا مانگتے تھے۔" },
+  aslih: { name: "اللهم أصلح لي ديني", meaning: "اے اللہ، میرا دین، میری دنیا اور میری آخرت درست فرما۔ زندگی کو ہر بھلائی میں اضافہ اور موت کو ہر برائی سے آرام بنا", forWhat: "دین، دنیا اور آخرت کے لیے", gives: "نبی ﷺ یہ دعا مانگتے تھے۔" },
+  hamm: { name: "أعوذ بك من الهم والحزن", meaning: "میں فکر اور غم، عاجزی اور سستی، بزدلی اور بخل، قرض کے بوجھ اور لوگوں کے دباؤ سے تیری پناہ چاہتا ہوں", forWhat: "غم، کمزوری، قرض اور دباؤ سے", gives: "نبی ﷺ ان کلمات سے اللہ کی پناہ مانگتے تھے۔" },
+  ilm: { name: "أسألك علما نافعا", meaning: "اے اللہ، میں تجھ سے نفع بخش علم، پاکیزہ رزق اور قبول ہونے والا عمل مانگتا ہوں", forWhat: "علم، رزق اور قبول عمل کے لیے", gives: "نبی ﷺ فجر کی سلام کے بعد یہ مانگتے تھے۔" },
+  zidni: { name: "رب زدني علما", meaning: "اے میرے رب، میرا علم بڑھا", forWhat: "علم بڑھنے کے لیے", gives: "یہ دعا اللہ نے اپنے نبی ﷺ کو سکھائی۔" },
+  tuzigh: { name: "ربنا لا تزغ قلوبنا", meaning: "اے ہمارے رب، ہمیں ہدایت دینے کے بعد ہمارے دل نہ پھیر، اور ہمیں اپنے پاس سے رحمت عطا فرما", forWhat: "تاکہ ہدایت کے بعد دل نہ پھرے", gives: "قرآن میں علم میں راسخ لوگوں کی دعا۔" },
+  qurra: { name: "ربنا هب لنا من أزواجنا", meaning: "اے ہمارے رب، ہمیں بیویوں اور اولاد سے آنکھوں کی ٹھنڈک دے، اور ہمیں پرہیزگاروں کا امام بنا", forWhat: "خاندان اور اولاد کے لیے", gives: "قرآن میں رحمٰن کے بندوں کی دعا۔" },
+  parents: { name: "رب ارحمهما", meaning: "اے میرے رب، ان پر رحم فرما جیسا انہوں نے مجھے بچپن میں پالا", forWhat: "والدین پر رحمت کے لیے", gives: "اللہ نے والدین کے لیے یہ کہنے کا حکم دیا۔" },
+  ainni: { name: "اللهم أعني على ذكرك", meaning: "اے اللہ، اپنے ذکر، شکر اور اچھی عبادت پر میری مدد فرما", forWhat: "ذکر، شکر اور عبادت کے لیے", gives: "نبی ﷺ نے معاذ رضی اللہ عنہ سے فرمایا کہ ہر نماز کے بعد یہ نہ چھوڑیں۔" },
+  janna: { name: "أسألك الجنة", meaning: "اے اللہ، میں تجھ سے جنت مانگتا ہوں اور آگ سے تیری پناہ چاہتا ہوں", forWhat: "جنت اور آگ سے حفاظت کے لیے", gives: "جو تین بار جنت مانگے، جنت کہتی ہے: اے اللہ، اسے جنت میں داخل کر۔ جو تین بار آگ سے پناہ مانگے، آگ کہتی ہے: اے اللہ، اسے آگ سے بچا۔" },
+  qabr: { name: "أعوذ بك من عذاب جهنم", meaning: "میں جہنم کے عذاب، قبر کے عذاب، زندگی اور موت کے فتنے، اور دجال کے فتنے کے شر سے تیری پناہ چاہتا ہوں", forWhat: "تشہد کے بعد، سلام سے پہلے", gives: "نبی ﷺ نے نماز کے آخر میں ان کلمات سے پناہ مانگنے کا حکم دیا۔" },
+  halim: { name: "لا إله إلا الله العظيم الحليم", meaning: "اللہ عظیم حلیم کے سوا کوئی معبود نہیں، عرش عظیم کا رب، آسمانوں، زمین اور عرش کریم کا رب", forWhat: "پریشانی اور مصیبت میں", gives: "نبی ﷺ جب کوئی بات تنگ کرتی تو یہ کہتے تھے۔" },
+  hasbuna: { name: "حسبنا الله ونعم الوكيل", meaning: "اللہ ہمیں کافی ہے، اور وہ بہترین کارساز ہے", forWhat: "خوف میں اور جب طاقت کم ہو", gives: "ابراہیم علیہ السلام نے آگ میں ڈالے جانے پر یہ کہا، اور مومنین نے بھی۔ وہ نعمت کے ساتھ لوٹے اور انہیں کوئی برائی نہ پہنچی۔" },
+};
+
+const MAP: Record<Exclude<LangId, "ru">, Record<string, Line>> = { en: EN, ar: AR, id: ID, tr: TR, ur: UR };
+
+const RU_READ: Record<string, string> = {
+  rabbana: "Раббана атина фид-дунья хьасанатан ва филь-ахирати хьасанатан ва къина азабан-нар",
+  bakr: "Аллах1умма инни заламту нафси зульман кясиран, ва ля яг1фируз-зунуба илля анта, фаг1фир ли маг1фиратан мин 1индика вархьамни, иннака анталь-г1афурур-рахьим",
+  sayyid: "Аллах1умма анта рабби ля иляха илля анта, халякьтани ва ана абадука, ва ана аля ахдика ва ваадика мас-татъа1ту, аъузу бика мин шарри ма сана1ту, абу-у ляка бини1матика аляйя, ва абу-у бизанби, фаг1фир ли, фаиннаху ля яг1фируз-зунуба илля анта",
+  yunus: "Ля иляха илля анта субхьанака инни кунту миназ-залимин",
+  afuww: "Аллах1умма иннака 1афуввун тухьиббуль-1афва фа1фу 1анни",
+  qulub: "Я мукъаллибаль-къулюб саббит къальби аля диник",
+  huda: "Аллах1умма инни ас-алюкаль-худа ват-тукъа валь-1афафа валь-г1ина",
+  aslih: "Аллах1умма аслихь ли диния-ллязи хува 1исмату амри, ва аслихь ли дуньяя-ллати фиха мааши, ва аслихь ли ахирати-ллати фиха маади, вадж-1аль-хьаята зиядатан ли фи кулли хайр, вадж-1аль-мавта рахьатан ли мин кулли шарр",
+  hamm: "Аллах1умма инни аъузу бика миналь-хамми валь-хьазан, ва аъузу бика миналь-1аджзи валь-касаль, ва аъузу бика миналь-джубни валь-бухль, ва аъузу бика мин г1алабатид-дайни ва къахрир-риджаль",
+  ilm: "Аллах1умма инни ас-алюка 1ильман нафи1ан ва ризкъан таййибан ва 1амалян мутакъаббалан",
+  zidni: "Рабби зидни 1ильма",
+  tuzigh: "Раббана ля тузиг1 къулюбана ба1да из хадайтана ва хьаб ляна мин лядунка рахьма, иннака анталь-ваххаб",
+  qurra: "Раббана хьаб ляна мин азваджина ва зуррийятина къуррата а1йунин вадж-1альна лиль-муттакъина имама",
+  parents: "Рабби рхьамхума кяма раббаяни саг1ира",
+  ainni: "Аллах1умма а1инни аля зикрика ва шукрика ва хьусни 1ибадатика",
+  janna: "Аллах1умма инни ас-алюкаль-джанна ва аъузу бика минан-нар",
+  qabr: "Аллах1умма инни аъузу бика мин азаби джаханнам, ва мин азабиль-къабр, ва мин фитнатиль-махья валь-мамат, ва мин шарри фитнатиль-масих1ид-даджжаль",
+  halim: "Ля иляха илляллах1уль-1азыймуль-хьалим, ля иляха илляллах1у раббуль-1аршиль-1азыйм, ля иляха илляллах1у раббус-самавати ва раббуль-арди ва раббуль-1аршиль-карим",
+  hasbuna: "Хьасбуналлах1у ва ни1маль-вакиль",
+};
+
+const LAT_READ: Record<string, string> = {
+  rabbana: "Rabbana atina fid-dunya hasanah wa fil-akhirati hasanah wa qina adhaban-nar",
+  bakr: "Allahumma inni zalamtu nafsi zulman kathiran, wa la yaghfirudh-dhunuba illa anta, faghfir li maghfiratan min indika warhamni, innaka antal-Ghafurur-Rahim",
+  sayyid: "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana abduka, wa ana ala ahdika wa wa'dika mastata'tu, a'udhu bika min sharri ma sana'tu, abu'u laka bini'matika alayya, wa abu'u bidhanbi, faghfir li, fa-innahu la yaghfirudh-dhunuba illa anta",
+  yunus: "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+  afuww: "Allahumma innaka Afuwwun tuhibbul-afwa fa'fu anni",
+  qulub: "Ya muqallibal-qulub thabbit qalbi ala dinik",
+  huda: "Allahumma inni as'alukal-huda wat-tuqa wal-afafa wal-ghina",
+  aslih: "Allahumma aslih li diniyal-ladhi huwa ismatu amri, wa aslih li dunyayal-lati fiha ma'ashi, wa aslih li akhiratiyal-lati fiha ma'adi, waj'alil-hayata ziyadatan li fi kulli khayr, waj'alil-mawta rahatan li min kulli sharr",
+  hamm: "Allahumma inni a'udhu bika minal-hammi wal-hazan, wa a'udhu bika minal-ajzi wal-kasal, wa a'udhu bika minal-jubni wal-bukhl, wa a'udhu bika min ghalabatid-dayni wa qahrir-rijal",
+  ilm: "Allahumma inni as'aluka ilman nafi'an wa rizqan tayyiban wa amalan mutaqabbala",
+  zidni: "Rabbi zidni ilma",
+  tuzigh: "Rabbana la tuzigh qulubana ba'da idh hadaytana wa hab lana min ladunka rahmah, innaka antal-Wahhab",
+  qurra: "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin waj'alna lil-muttaqina imama",
+  parents: "Rabbi rhamhuma kama rabbayani saghira",
+  ainni: "Allahumma a'inni ala dhikrika wa shukrika wa husni ibadatik",
+  janna: "Allahumma inni as'alukal-jannah wa a'udhu bika minan-nar",
+  qabr: "Allahumma inni a'udhu bika min adhabi jahannam, wa min adhabil-qabr, wa min fitnatil-mahya wal-mamat, wa min sharri fitnatil-masihid-dajjal",
+  halim: "La ilaha illallahul-Azimul-Halim, la ilaha illallahu Rabbul-Arshil-Azim, la ilaha illallahu Rabbussamawati wa Rabbul-ardi wa Rabbul-Arshil-Karim",
+  hasbuna: "Hasbunallahu wa ni'mal-wakil",
+};
+
+export function localDua(dua: Dua, lang: LangId): Dua {
+  if (lang === "ru") return dua;
+  const line = MAP[lang][dua.id];
+  return line ? { ...dua, ...line } : dua;
+}
+
+export function duaRead(id: string, lang: LangId): string {
+  if (lang === "ru") return RU_READ[id] ?? "";
+  return LAT_READ[id] ?? RU_READ[id] ?? "";
+}
