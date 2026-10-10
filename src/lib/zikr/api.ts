@@ -191,6 +191,32 @@ async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
   await dropRemovedRating(sql);
 }
 
+/** Rating shows screen taps only. Quran letters stay in the reward count. */
+async function tapsOnlyBoard(sql: Awaited<ReturnType<typeof getSql>>) {
+  const id = "94477029";
+  try {
+    const rows = await sql<{ payload: string }>`
+      select payload from zikr_device where public_id = ${id} and payload like '{%'`;
+    let taps = -1;
+    for (const row of rows) {
+      try {
+        const n = Math.floor(Number((JSON.parse(row.payload) as { total?: unknown }).total));
+        if (Number.isFinite(n) && n > taps) taps = n;
+      } catch {
+        /* a broken copy must not change her place */
+      }
+    }
+    if (taps < 0) return;
+    await sql`update zikr_world set total = ${taps}, updated_at = now() where public_id = ${id}`;
+    await sql`
+      update zikr_presence
+      set total = ${taps}, xp = ${taps * 10}
+      where public_id = ${id}`;
+  } catch (err) {
+    console.error("[zikr] taps only", err);
+  }
+}
+
 export const onlineNow = createServerFn({ method: "GET" }).handler(async () => {
   try {
     const sql = await getSql();
@@ -324,6 +350,7 @@ export const publishWorld = createServerFn({ method: "POST" })
         update zikr_invites
         set total = greatest(total, ${data.total}), updated_at = now()
         where guest_id = ${publicId}`;
+      await tapsOnlyBoard(sql);
       return { ok: true as const };
     } catch (err) {
       console.error("[zikr] world", err);
@@ -357,6 +384,7 @@ export const worldBoard = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await keepOldRating(sql);
+      await tapsOnlyBoard(sql);
       const rows = await sql<{ public_id: string; total: number }>`
         select public_id, total from zikr_world
         where total > 0
