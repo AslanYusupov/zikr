@@ -118,7 +118,7 @@ const baseURL = explicitBaseURL ?? {
 
 // Origins Better Auth accepts on credentialed POSTs (sign-up/sign-in, etc.).
 // Missing entries here surface as FORBIDDEN "Invalid origin".
-const APP_ORIGINS = ["https://zikr.grok.me", "https://www.zikr.grok.me"];
+const APP_ORIGINS = ["https://zikr-five.vercel.app"];
 const trustedOrigins: string[] = explicitBaseURL
   ? [...APP_ORIGINS, explicitBaseURL, ...LOCAL_DEV_ORIGINS]
   : [

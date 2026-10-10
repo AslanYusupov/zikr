@@ -39,12 +39,14 @@ export function rewardWord(n: number): string {
   return plural(n, "награда", "награды", "наград");
 }
 
+const SITE = "https://zikr-five.vercel.app";
+
 export function inviteLink(code?: string | null): string {
   const clean = (code ?? "").trim();
-  if (/^\d{8}$/.test(clean)) return `https://zikr.grok.me/?i=${clean}`;
+  if (/^\d{8}$/.test(clean)) return `${SITE}/?i=${clean}`;
   const up = clean.toUpperCase();
-  if (/^[A-Z0-9]{6}$/.test(up)) return `https://zikr.grok.me/?i=${up}`;
-  return "https://zikr.grok.me";
+  if (/^[A-Z0-9]{6}$/.test(up)) return `${SITE}/?i=${up}`;
+  return SITE;
 }
 
 export function inviteText(link: string): string {
