@@ -289,16 +289,16 @@ export function useWorldSync(hydrated: boolean) {
       const state = useZikr.getState();
       const day = todayKey();
       const dayTotal = state.days[day]?.total ?? 0;
-      if (state.total > 0) {
-        const host = storedInvite();
-        if (host && host === publicId) {
-          try {
-            localStorage.removeItem(INVITE_KEY);
-          } catch {
-            /* private mode */
-          }
+      const host = storedInvite();
+      if (host && host === publicId) {
+        try {
+          localStorage.removeItem(INVITE_KEY);
+        } catch {
+          /* private mode */
         }
-        const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
+      }
+      const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
+      if (state.total > 0 || invitedBy) {
         void publishWorld({ data: { publicId, total: state.total, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
       }
       if (key) {

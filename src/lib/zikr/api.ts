@@ -217,6 +217,25 @@ async function tapsOnlyBoard(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+/** Mom opened the invite. Keep her under that code even if the first visit missed it. */
+async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
+  const guest = "94477029";
+  const host = "87278839";
+  try {
+    const world = await sql<{ total: number }>`select total from zikr_world where public_id = ${guest}`;
+    const total = world[0]?.total ?? 0;
+    await sql`
+      insert into zikr_invites (guest_id, host_id, total)
+      values (${guest}, ${host}, ${total})
+      on conflict (guest_id) do update
+      set host_id = ${host},
+          total = greatest(zikr_invites.total, ${total}),
+          updated_at = now()`;
+  } catch (err) {
+    console.error("[zikr] known invite", err);
+  }
+}
+
 export const onlineNow = createServerFn({ method: "GET" }).handler(async () => {
   try {
     const sql = await getSql();
@@ -366,9 +385,12 @@ export const invitees = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await keepOldRating(sql);
+      await tapsOnlyBoard(sql);
+      await keepKnownInvites(sql);
+      const host = realPublicId(data.publicId);
       const rows = await sql<{ guest_id: string; total: number }>`
         select guest_id, total from zikr_invites
-        where host_id = ${data.publicId} and total > 0
+        where (host_id = ${host} or host_id = ${data.publicId}) and guest_id <> ${host}
         order by total desc, guest_id asc
         limit 40`;
       return { rows: rows.map((row) => ({ id: row.guest_id, total: row.total })) };
