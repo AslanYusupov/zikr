@@ -81,7 +81,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 }
 
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
-const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455"];
+const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327"];
 /** A second number made on the same account. Counts stay on the first number. */
 const FOLDED_IDS: Record<string, string> = { "88880455": "96995742" };
 
@@ -152,10 +152,7 @@ async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
 }
 
 async function restoreKeptScores(sql: Awaited<ReturnType<typeof getSql>>) {
-  const kept: [string, number][] = [
-    ["87278839", 55],
-    ["60912327", 6],
-  ];
+  const kept: [string, number][] = [["87278839", 73]];
   for (const [id, total] of kept) {
     try {
       await sql.query(
