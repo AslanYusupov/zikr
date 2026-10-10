@@ -147,7 +147,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
   async function share() {
     const code = /^\d{8}$/.test(publicId) ? publicId : useZikr.getState().ensurePublicId();
     const link = inviteLink(code);
-    const text = `${t(lang, "inviteShare")}\n${link.replace(/^https?:\/\//, "")}`;
+    const text = `${t(lang, "inviteShare")}\n${link}`;
     try {
       if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text });
       else {
@@ -247,11 +247,6 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{tx(lang, "namedList")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{tx(lang, "namedLead")}</p>
       {isPending && <p className="mt-3 text-sm text-muted">{tx(lang, "whoIn")}</p>}
-      {!isPending && !user && (
-        <a href="/login" className="mt-3 block rounded-2xl border border-line bg-surface px-4 py-3 text-sm text-fg">
-          {tx(lang, "signNames")}
-        </a>
-      )}
       {user && error && <p className="mt-3 text-sm text-muted">{t(lang, "numbersSafe")}</p>}
       {user && rows && rows.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "quietHere")}</p>}
       {user && rows && rows.length > 0 && (

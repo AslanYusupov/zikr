@@ -50,7 +50,7 @@ export function inviteLink(code?: string | null): string {
 }
 
 export function inviteText(link: string): string {
-  const short = link.replace(/^https?:\/\//, "");
+  const short = link;
   return `Давай поминать Аллах1а вместе.\nسُبْحَانَ اللَّهِ وَبِحَمْدِهِ\nСубхьаналлах1и ва бихьамдихи\nСахих аль-Бухари и Сахих Муслим.\n${short}`;
 }
 

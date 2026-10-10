@@ -55,10 +55,17 @@ export type CurrentUserState = {
  * `authEnabled` is a module-level constant fixed at load, so the guarded hook
  * call keeps a stable hook order across every render of a given component.
  */
+/** Last session that loaded. A failed refetch must not look like a sign-out. */
+let heldUser: AppUser | null = null;
+
+export function clearHeldUser() {
+  heldUser = null;
+}
+
 export function useCurrentUserState(): CurrentUserState {
   if (!authEnabled) return { user: DEV_USER, isPending: false };
   // eslint-disable-next-line react-hooks/rules-of-hooks -- authEnabled is constant for the app's lifetime
-  const { data, isPending } = authClient.useSession();
+  const { data, isPending, error } = authClient.useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   const [gaveUp, setGaveUp] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
@@ -79,17 +86,21 @@ export function useCurrentUserState(): CurrentUserState {
     return () => window.removeEventListener("online", retry);
   }, []);
   const user = data?.user;
+  const next: AppUser | null = user
+    ? {
+        id: user.id,
+        displayName: user.name ?? null,
+        primaryEmail: user.email ?? null,
+        profileImageUrl: user.image ?? null,
+        isDevFallback: false,
+      }
+    : null;
+  if (next) heldUser = next;
+  else if (!isPending && !error) heldUser = null;
+  const shown = next ?? heldUser;
   return {
-    user: user
-      ? {
-          id: user.id,
-          displayName: user.name ?? null,
-          primaryEmail: user.email ?? null,
-          profileImageUrl: user.image ?? null,
-          isDevFallback: false,
-        }
-      : null,
-    isPending: isPending && !gaveUp,
+    user: shown,
+    isPending: !shown && isPending && !gaveUp,
   };
 }
 
