@@ -65,7 +65,7 @@ export function clearHeldUser() {
 export function useCurrentUserState(): CurrentUserState {
   if (!authEnabled) return { user: DEV_USER, isPending: false };
   // eslint-disable-next-line react-hooks/rules-of-hooks -- authEnabled is constant for the app's lifetime
-  const { data, isPending, error } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   const [gaveUp, setGaveUp] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
@@ -96,7 +96,6 @@ export function useCurrentUserState(): CurrentUserState {
       }
     : null;
   if (next) heldUser = next;
-  else if (!isPending && !error) heldUser = null;
   const shown = next ?? heldUser;
   return {
     user: shown,

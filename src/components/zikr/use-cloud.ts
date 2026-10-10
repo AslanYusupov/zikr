@@ -299,7 +299,7 @@ export function useWorldSync(hydrated: boolean) {
           }
         }
         const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
-        void publishWorld({ data: { publicId, total: state.total + state.quranLetters, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
+        void publishWorld({ data: { publicId, total: state.total, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
       }
       if (key) {
         const snap = snapshot(state);
