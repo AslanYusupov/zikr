@@ -206,7 +206,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
       <InviteButtons />
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
-      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums break-all text-fg">{allTaps === null ? "…" : formatNum(allTaps * 10)}</p>
+      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums break-all text-fg">{allTaps === null ? "…" : formatNum(allTaps)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
       <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? "…" : formatNum(online)}</p>
       {live && live.length > 0 ? <Board rows={live} publicId={publicId} empty="" namesOnly lang={lang} /> : null}
@@ -237,7 +237,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
                 {row.id}
                 {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
               </span>
-              <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.total * 10)}</span>
+              <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.total)}</span>
             </li>
           ))}
         </ol>
@@ -261,7 +261,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
                 {row.name}
                 {row.mine ? ` · ${tx(lang, "you")}` : ""}
               </span>
-              <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.total * 10)}</span>
+              <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.total)}</span>
             </li>
           ))}
         </ol>
@@ -276,7 +276,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
             {guests.map((row) => (
               <li key={row.id} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-bg px-3 py-2">
                 <span className="text-sm tabular-nums text-fg">{row.id}</span>
-                <span className="text-sm tabular-nums text-gold">{formatNum(row.total * 10)} {t(lang, "sawab")}</span>
+                <span className="text-sm tabular-nums text-gold">{formatNum(row.total)}</span>
               </li>
             ))}
           </ol>
@@ -285,7 +285,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
         )}
         {guests && guests.length > 0 ? (
           <p className="mt-3 text-sm text-fg">
-            {tx(lang, "cameBy").replace("{n}", formatNum(guests.length))} {tx(lang, "theirHasanat").replace("{n}", formatNum(guests.reduce((sum, row) => sum + row.total * 10, 0)))}
+            {tx(lang, "cameBy").replace("{n}", formatNum(guests.length))} {tx(lang, "theirHasanat").replace("{n}", formatNum(guests.reduce((sum, row) => sum + row.total, 0)))}
           </p>
         ) : null}
       </article>
@@ -322,7 +322,7 @@ function Board({
             {row.id}
             {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
           </span>
-          {namesOnly ? null : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value * 10)}</span>}
+          {namesOnly ? null : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value)}</span>}
         </li>
       ))}
     </ol>
