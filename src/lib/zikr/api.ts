@@ -191,7 +191,30 @@ async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
   await dropRemovedRating(sql);
 }
 
-/** Rating shows screen taps only. Quran letters stay in the reward count. */
+/** Grok rating showed these hasanat. Stored count is that number divided by 10. */
+const GROK_RATING_BONUS: Record<string, number> = {
+  "87278839": 55853,
+  "94477029": 104373,
+};
+
+function withGrokBonus(id: string, taps: number): number {
+  return taps + (GROK_RATING_BONUS[id] ?? 0);
+}
+
+async function liftGrokBonus(sql: Awaited<ReturnType<typeof getSql>>) {
+  for (const [id, extra] of Object.entries(GROK_RATING_BONUS)) {
+    try {
+      await sql`
+        insert into zikr_world (public_id, total)
+        values (${id}, ${extra})
+        on conflict (public_id) do update
+        set total = zikr_world.total + ${extra}, updated_at = now()
+        where zikr_world.total < ${extra}`;
+    } catch (err) {
+      console.error("[zikr] grok bonus", err);
+    }
+  }
+}
 async function tapsOnlyBoard(sql: Awaited<ReturnType<typeof getSql>>) {
   const id = "94477029";
   try {
@@ -207,7 +230,8 @@ async function tapsOnlyBoard(sql: Awaited<ReturnType<typeof getSql>>) {
       }
     }
     if (taps < 0) return;
-    await sql`update zikr_world set total = ${taps}, updated_at = now() where public_id = ${id}`;
+    const shown = withGrokBonus(id, taps);
+    await sql`update zikr_world set total = ${shown}, updated_at = now() where public_id = ${id}`;
     await sql`
       update zikr_presence
       set total = ${taps}, xp = ${taps * 10}
@@ -349,9 +373,10 @@ export const publishWorld = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       const publicId = realPublicId(data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
+      const stored = withGrokBonus(publicId, data.total);
       await sql`
         insert into zikr_world (public_id, total)
-        values (${publicId}, ${data.total})
+        values (${publicId}, ${stored})
         on conflict (public_id) do update
         set total = excluded.total,
             updated_at = now()`;
@@ -386,6 +411,7 @@ export const invitees = createServerFn({ method: "POST" })
       const sql = await getSql();
       await keepOldRating(sql);
       await tapsOnlyBoard(sql);
+      await liftGrokBonus(sql);
       await keepKnownInvites(sql);
       const host = realPublicId(data.publicId);
       const rows = await sql<{ guest_id: string; total: number }>`
@@ -407,6 +433,7 @@ export const worldBoard = createServerFn({ method: "POST" })
       const sql = await getSql();
       await keepOldRating(sql);
       await tapsOnlyBoard(sql);
+      await liftGrokBonus(sql);
       const rows = await sql<{ public_id: string; total: number }>`
         select public_id, total from zikr_world
         where total > 0
