@@ -81,7 +81,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 }
 
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
-const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "87278839", "60912327"];
+const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455"];
 /** A second number made on the same account. Counts stay on the first number. */
 const FOLDED_IDS: Record<string, string> = { "88880455": "96995742" };
 
@@ -151,6 +151,34 @@ async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+async function restoreKeptScores(sql: Awaited<ReturnType<typeof getSql>>) {
+  const kept: [string, number][] = [
+    ["87278839", 55],
+    ["60912327", 6],
+  ];
+  for (const [id, total] of kept) {
+    try {
+      await sql.query(
+        `insert into zikr_world (public_id, total) values ($1, $2)
+         on conflict (public_id) do update
+         set total = greatest(zikr_world.total, excluded.total)`,
+        [id, total],
+      );
+      await sql.query(
+        `insert into zikr_presence (public_id, country, day_key, day_total, xp, total)
+         values ($1, '', '2026-10-10', $2, $3, $2)
+         on conflict (public_id) do update set
+           total = greatest(zikr_presence.total, excluded.total),
+           xp = greatest(zikr_presence.xp, excluded.xp),
+           day_total = greatest(zikr_presence.day_total, excluded.day_total)`,
+        [id, total, total * 10],
+      );
+    } catch (err) {
+      console.error("[zikr] restore rating", err);
+    }
+  }
+}
+
 async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
   const steps = [
     `create table if not exists zikr_world (
@@ -189,6 +217,7 @@ async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
     }
   }
   await dropRemovedRating(sql);
+  await restoreKeptScores(sql);
 }
 
 export const onlineNow = createServerFn({ method: "GET" }).handler(async () => {
