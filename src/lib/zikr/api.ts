@@ -512,6 +512,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await keepOldRating(sql);
+      await liftGrokBonus(sql);
       const online = await sql<{ n: number }>`
       select count(*)::int as n from zikr_presence where last_tap_at > now() - interval '30 seconds'`;
     const remembering = await sql<{ n: number }>`
@@ -534,7 +535,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
     const self = await sql<{ day_total: number; xp: number; day_key: string }>`
       select day_total, xp, day_key from zikr_presence where public_id = ${data.publicId}`;
     const together = await sql<{ n: string | number }>`
-      select coalesce(sum(total), 0) as n from zikr_presence`;
+      select coalesce(sum(total), 0) as n from zikr_world`;
     let dailyRank: number | null = null;
     let worldRank: number | null = null;
     if (self[0] && self[0].day_key === data.dayKey) {

@@ -206,7 +206,7 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
       <InviteButtons />
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
-      <p className="mt-1 text-2xl tabular-nums text-fg">{allTaps === null ? "…" : formatNum(allTaps)}</p>
+      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums break-all text-fg">{allTaps === null ? "…" : formatNum(allTaps * 10)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
       <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? "…" : formatNum(online)}</p>
       {live && live.length > 0 ? <Board rows={live} publicId={publicId} empty="" namesOnly lang={lang} /> : null}
