@@ -96,7 +96,9 @@ function trimDays(days: Record<string, DayLog>): Record<string, DayLog> {
 }
 
 function canonicalPublicId(id: string): string {
-  return id === "88880455" ? "96995742" : id;
+  if (id === "88880455") return "96995742";
+  if (id === "62012303") return "87278839";
+  return id;
 }
 
 export function normalize(raw: unknown): ZikrState {

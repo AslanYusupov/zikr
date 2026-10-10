@@ -55,7 +55,8 @@ export function SettingsView({
   }, []);
 
   async function copyInvite() {
-    const link = inviteLink(s.publicId);
+    const code = /^\d{8}$/.test(s.publicId) ? s.publicId : s.ensurePublicId();
+    const link = inviteLink(code);
     const text = `${t(s.lang, "inviteShare")}\nسُبْحَانَ اللَّهِ وَبِحَمْدِهِ\n${t(s.lang, "invitePhrase")}\n${t(s.lang, "inviteFoam")}\n${link.replace(/^https?:\/\//, "")}`;
     try {
       if (navigator.share) await navigator.share({ title: t(s.lang, "zikr"), text });
@@ -441,28 +442,37 @@ function InstallApp({ lang }: { lang: LangId }) {
 
 export function InviteButtons() {
   const publicId = useZikr((s) => s.publicId);
+  const ensurePublicId = useZikr((s) => s.ensurePublicId);
   const lang = useZikr((s) => s.lang);
+  useEffect(() => {
+    if (!/^\d{8}$/.test(publicId)) ensurePublicId();
+  }, [publicId, ensurePublicId]);
   const link = inviteLink(publicId);
   const text = `${t(lang, "inviteShare")}\nسُبْحَانَ اللَّهِ وَبِحَمْدِهِ\n${t(lang, "invitePhrase")}\n${t(lang, "inviteFoam")}\n${link.replace(/^https?:\/\//, "")}`;
   return (
-    <div className="mt-2 grid grid-cols-2 gap-2">
-      <a
-        className="flex h-11 items-center justify-center rounded-full bg-gold text-sm font-bold text-ink"
-        href={whatsappHref(text)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        WhatsApp
-      </a>
-      <a
-        className="flex h-11 items-center justify-center rounded-full border border-line text-sm font-bold text-fg"
-        href={telegramHref(link, text)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Telegram
-      </a>
-    </div>
+    <>
+      {/^\d{8}$/.test(publicId) ? (
+        <p className="mt-2 text-center text-sm tabular-nums text-fg">{tx(lang, "inviteCode")}: {publicId}</p>
+      ) : null}
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <a
+          className="flex h-11 items-center justify-center rounded-full bg-gold text-sm font-bold text-ink"
+          href={whatsappHref(text)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp
+        </a>
+        <a
+          className="flex h-11 items-center justify-center rounded-full border border-line text-sm font-bold text-fg"
+          href={telegramHref(link, text)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Telegram
+        </a>
+      </div>
+    </>
   );
 }
 

@@ -83,7 +83,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
 const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327"];
 /** A second number made on the same account. Counts stay on the first number. */
-const FOLDED_IDS: Record<string, string> = { "88880455": "96995742" };
+const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839" };
 
 function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;

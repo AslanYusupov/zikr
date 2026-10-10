@@ -145,7 +145,8 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
   }, [user?.id]);
 
   async function share() {
-    const link = inviteLink(publicId);
+    const code = /^\d{8}$/.test(publicId) ? publicId : useZikr.getState().ensurePublicId();
+    const link = inviteLink(code);
     const text = `${t(lang, "inviteShare")}\n${link.replace(/^https?:\/\//, "")}`;
     try {
       if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text });
