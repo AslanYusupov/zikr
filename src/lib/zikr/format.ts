@@ -41,11 +41,7 @@ export function rewardWord(n: number): string {
 
 const SITE = "https://zikr-five.vercel.app";
 
-export function inviteLink(code?: string | null): string {
-  const clean = (code ?? "").trim();
-  if (/^\d{8}$/.test(clean)) return `${SITE}/?i=${clean}`;
-  const up = clean.toUpperCase();
-  if (/^[A-Z0-9]{6}$/.test(up)) return `${SITE}/?i=${up}`;
+export function inviteLink(_code?: string | null): string {
   return SITE;
 }
 

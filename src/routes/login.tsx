@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { GROK_PROVIDERS, authClient, authEnabled, signIn } from "@/lib/auth/client";
+import { authClient, authEnabled } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Backdrop, Emblem } from "@/components/zikr/pattern";
 import { isRtl, tx } from "@/lib/zikr/i18n";
@@ -95,8 +95,6 @@ function Login() {
     }
   }
 
-  const providerName = (label: string) => (label === "X" ? "X" : "Google");
-
   return (
     <div className="app-frame">
       <div className="app-column">
@@ -110,22 +108,7 @@ function Login() {
           <p className="mt-2 text-sm leading-relaxed text-muted">{tx(lang, "loginLead")}</p>
           {authEnabled ? (
             <>
-              <div className="mt-5 grid gap-2">
-                {GROK_PROVIDERS.map((p) => {
-                  const google = p.providerId === "grok-google";
-                  return (
-                  <button
-                    key={p.providerId}
-                    type="button"
-                    onClick={() => void signIn(p.providerId, { callbackURL: "/", requestSignUp: google })}
-                    className="h-11 rounded-full border border-line bg-surface text-sm text-fg"
-                  >
-                    {google ? tx(lang, "loginGoogle") : tx(lang, "loginVia").replace("{name}", providerName(p.label))}
-                  </button>
-                  );
-                })}
-              </div>
-              <form onSubmit={(e) => void submit(e)} className="mt-4 grid gap-2">
+              <form onSubmit={(e) => void submit(e)} className="mt-5 grid gap-2">
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
