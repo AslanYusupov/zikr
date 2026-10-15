@@ -86,12 +86,12 @@ export const QUOTE_FIX: Record<string, FixedQuote> = {
     tr: "Allah hiç kimseye gücünün yeteceğinden fazlasını yüklemez. Kazandığı lehine, kazandığı aleyhinedir. “Rabbimiz, unutur veya yanılırsak bizi sorumlu tutma. Rabbimiz, bizden öncekilere yüklediğin gibi bize ağır yük yükleme. Rabbimiz, gücümüzün yetmediğini bize taşıtma. Bizi affet, bağışla ve bize merhamet et. Sensin Mevlâmız. Kâfir kavme karşı bize yardım et.”",
     ur: "اللہ کسی جان پر اس کی طاقت سے زیادہ بوجھ نہیں ڈالتا۔ جو اس نے کمایا اس کے لیے ہے، اور جو اس نے کمایا اس کے خلاف ہے۔ «اے ہمارے رب، اگر ہم بھول جائیں یا غلطی کریں تو ہماری گرفت نہ فرما۔ اے ہمارے رب، ہم پر وہ بوجھ نہ ڈال جو تو نے ہم سے پہلے لوگوں پر ڈالا۔ اے ہمارے رب، ہم پر وہ نہ لاد جس کی ہمیں طاقت نہیں۔ ہمیں معاف فرما، بخش دے اور ہم پر رحم فرما۔ تو ہمارا کارساز ہے، تو کافروں کے مقابل ہماری مدد فرما».",
   },
-  "Он наделяет его уделом оттуда, откуда тот не ожидает. А кто уповает на Аллах1а, тому достаточно Его. Воистину, Аллах1 доводит Своё дело до конца. Он установил для каждой вещи меру.": {
-    en: "He will provide for him from where he does not expect. Whoever relies upon Allah, He is sufficient for him. Indeed Allah brings His matter to completion. He has set a measure for everything.",
-    ar: "وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ إِنَّ اللَّهَ بَالِغُ أَمْرِهِ قَدْ جَعَلَ اللَّهُ لِكُلِّ شَيْءٍ قَدْرًا",
-    id: "Dia memberinya rezeki dari arah yang tidak ia sangka. Siapa bertawakal kepada Allah, Dia mencukupinya. Sungguh Allah menyelesaikan urusan-Nya. Allah telah menetapkan ukuran bagi segala sesuatu.",
-    tr: "Onu hesaba katmadığı yerden rızıklandırır. Kim Allah’a tevekkül ederse O ona yeter. Şüphesiz Allah işini sonuca ulaştırır. Allah her şey için bir ölçü koymuştur.",
-    ur: "وہ اسے وہاں سے رزق دیتا ہے جہاں سے اس کا گمان نہیں۔ جو اللہ پر بھروسہ کرے اسے اللہ کافی ہے۔ بے شک اللہ اپنا کام پورا کرنے والا ہے۔ اللہ نے ہر چیز کے لیے ایک اندازہ مقرر کیا ہے۔",
+  "Кто боится Аллах1а, тому Он даст выход и наделит уделом оттуда, откуда тот не ожидает. А кто уповает на Аллах1а, тому достаточно Его. Воистину, Аллах1 доводит Своё дело до конца. Он установил для каждой вещи меру.": {
+    en: "Whoever fears Allah, He will make a way out for him and provide for him from where he does not expect. Whoever relies upon Allah, He is sufficient for him. Indeed Allah brings His matter to completion. He has set a measure for everything.",
+    ar: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ إِنَّ اللَّهَ بَالِغُ أَمْرِهِ قَدْ جَعَلَ اللَّهُ لِكُلِّ شَيْءٍ قَدْرًا",
+    id: "Siapa bertakwa kepada Allah, Dia memberinya jalan keluar dan rezeki dari arah yang tidak ia sangka. Siapa bertawakal kepada Allah, Dia mencukupinya. Sungguh Allah menyelesaikan urusan-Nya. Allah telah menetapkan ukuran bagi segala sesuatu.",
+    tr: "Kim Allah’tan korkarsa O ona bir çıkış yolu açar ve onu hesaba katmadığı yerden rızıklandırır. Kim Allah’a tevekkül ederse O ona yeter. Şüphesiz Allah işini sonuca ulaştırır. Allah her şey için bir ölçü koymuştur.",
+    ur: "جو اللہ سے ڈرے، اللہ اس کے لیے نکلنے کا راستہ بنا دیتا ہے اور اسے وہاں سے رزق دیتا ہے جہاں سے اس کا گمان نہیں۔ جو اللہ پر بھروسہ کرے اسے اللہ کافی ہے۔ بے شک اللہ اپنا کام پورا کرنے والا ہے۔ اللہ نے ہر چیز کے لیے ایک اندازہ مقرر کیا ہے۔",
   },
   "Скажи: «О рабы Мои, которые преступили против самих себя! Не отчаивайтесь в милости Аллах1а. Воистину, Аллах1 прощает грехи полностью. Воистину, Он — Прощающий, Милосердный».": {
     en: "Say: “O My servants who have transgressed against themselves, do not despair of Allah’s mercy. Indeed Allah forgives sins entirely. Indeed He is Forgiving, Merciful.”",
