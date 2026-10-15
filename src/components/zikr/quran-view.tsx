@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, Repeat1 } from "lucide-react";
 import { rewardPoints } from "@/lib/zikr/content";
 import { formatNum, plural } from "@/lib/zikr/format";
 import { t } from "@/lib/zikr/i18n";
@@ -35,6 +35,26 @@ function hearWord(lang: string, stop: boolean) {
     ur: "روکیں",
   }[lang] ?? "Stop";
   return stop ? halt : play;
+}
+
+function loopWord(lang: string, on: boolean) {
+  const start = {
+    ru: "Снова и снова, для заучивания",
+    en: "Repeat this ayah, for memorizing",
+    ar: "كرر الآية للحفظ",
+    id: "Ulangi ayat, untuk hafalan",
+    tr: "Ayeti tekrar et, ezber için",
+    ur: "آیت بار بار، حفظ کے لیے",
+  }[lang] ?? "Repeat this ayah, for memorizing";
+  const halt = {
+    ru: "Остановить повтор",
+    en: "Stop repeating",
+    ar: "إيقاف التكرار",
+    id: "Hentikan ulang",
+    tr: "Tekrarı durdur",
+    ur: "دہرانا روکیں",
+  }[lang] ?? "Stop repeating";
+  return on ? halt : start;
 }
 
 function hearFail(lang: string) {
@@ -116,6 +136,7 @@ export function QuranView() {
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
+  const [looping, setLooping] = useState<string | null>(null);
 
   const [attempt, setAttempt] = useState(0);
 
@@ -152,7 +173,10 @@ export function QuranView() {
     const el = new Audio();
     el.preload = "none";
     audio.current = el;
-    const ended = () => setPlaying(null);
+    const ended = () => {
+      setPlaying(null);
+      setLooping(null);
+    };
     el.addEventListener("ended", ended);
     return () => {
       el.pause();
@@ -163,24 +187,59 @@ export function QuranView() {
   }, []);
 
   useEffect(() => {
-    audio.current?.pause();
+    const el = audio.current;
+    if (!el) return;
+    el.pause();
+    el.loop = false;
     setPlaying(null);
+    setLooping(null);
   }, [open]);
+
+  function stopAyah(el: HTMLAudioElement) {
+    el.pause();
+    el.loop = false;
+    setPlaying(null);
+    setLooping(null);
+  }
+
+  function startAyah(el: HTMLAudioElement, key: string, surahNo: number, ayahNo: number, repeat: boolean) {
+    el.loop = repeat;
+    const url = ayahAudio(surahNo, ayahNo);
+    if (el.src !== url) el.src = url;
+    else el.currentTime = 0;
+    setPlaying(key);
+    setLooping(repeat ? key : null);
+    void el.play().catch(() => {
+      el.loop = false;
+      setPlaying(null);
+      setLooping(null);
+      setNote(hearFail(lang));
+    });
+  }
 
   function toggleAyah(key: string, surahNo: number, ayahNo: number) {
     const el = audio.current;
     if (!el) return;
     if (playing === key) {
-      el.pause();
-      setPlaying(null);
+      stopAyah(el);
       return;
     }
-    el.src = ayahAudio(surahNo, ayahNo);
-    setPlaying(key);
-    void el.play().catch(() => {
-      setPlaying(null);
-      setNote(hearFail(lang));
-    });
+    startAyah(el, key, surahNo, ayahNo, false);
+  }
+
+  function toggleLoop(key: string, surahNo: number, ayahNo: number) {
+    const el = audio.current;
+    if (!el) return;
+    if (looping === key) {
+      stopAyah(el);
+      return;
+    }
+    if (playing === key && !el.paused) {
+      el.loop = true;
+      setLooping(key);
+      return;
+    }
+    startAyah(el, key, surahNo, ayahNo, true);
   }
 
   const reads = useMemo(() => {
@@ -455,6 +514,14 @@ export function QuranView() {
             >
               {playing === `${surah.n}:b` ? <Pause size={13} /> : <Play size={13} />}
             </button>
+            <button
+              type="button"
+              className={cn("ayah-play", looping === `${surah.n}:b` && "on")}
+              aria-label={loopWord(lang, looping === `${surah.n}:b`)}
+              onClick={() => toggleLoop(`${surah.n}:b`, 1, 1)}
+            >
+              <Repeat1 size={13} />
+            </button>
           </div>
           <button type="button" className="ayah-hit" onClick={() => claim(bismillahPiece)}>
             <span className="ayah-ar" dir="rtl" lang="ar">
@@ -512,6 +579,14 @@ export function QuranView() {
                       onClick={() => toggleAyah(key, surah.n, ayah.n)}
                     >
                       {playing === key ? <Pause size={13} /> : <Play size={13} />}
+                    </button>
+                    <button
+                      type="button"
+                      className={cn("ayah-play", looping === key && "on")}
+                      aria-label={loopWord(lang, looping === key)}
+                      onClick={() => toggleLoop(key, surah.n, ayah.n)}
+                    >
+                      <Repeat1 size={13} />
                     </button>
                     <span className="ayah-no">{ayah.n}</span>
                   </div>
