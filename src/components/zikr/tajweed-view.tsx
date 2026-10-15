@@ -27,9 +27,10 @@ export function TajweedView() {
   const lang = useZikr((s) => s.lang);
   const [passed, setPassed] = useState<string[]>(readPassed);
   const [mod, setMod] = useState(TAJWEED_COURSE[0].id);
-  const [open, setOpen] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(TAJWEED_COURSE[0].lessons[0].id);
   const [picks, setPicks] = useState<Record<string, number>>({});
   const [result, setResult] = useState<Record<string, "ok" | "bad">>({});
+  const [hint, setHint] = useState("");
   const card = useRef<HTMLElement | null>(null);
 
   const say = (ru: string, en: string, ar: string, id: string, tr: string, ur: string) =>
@@ -53,6 +54,12 @@ export function TajweedView() {
   }
 
   function check(lesson: CourseLesson) {
+    const missing = lesson.quiz.some((_, index) => picks[`${lesson.id}:${index}`] == null);
+    if (missing) {
+      setHint(lesson.id);
+      return;
+    }
+    setHint("");
     const ok = lesson.quiz.every((item, index) => picks[`${lesson.id}:${index}`] === item.answer);
     setResult((current) => ({ ...current, [lesson.id]: ok ? "ok" : "bad" }));
     if (ok && !passed.includes(lesson.id)) save([...passed, lesson.id]);
@@ -97,7 +104,7 @@ export function TajweedView() {
               key={item.id}
               type="button"
               className={cn("taj-mod", mod === item.id && "on")}
-              onClick={() => { setMod(item.id); setOpen(null); }}
+              onClick={() => { setMod(item.id); setOpen(item.lessons[0]?.id ?? null); setHint(""); }}
             >
               {index + 1}
               <span>{got}/{item.lessons.length}</span>
@@ -124,14 +131,14 @@ export function TajweedView() {
                     <p className={cn("taj-letters", TONE[lesson.tone])} dir="rtl" lang="ar">{lesson.letters}</p>
                   ) : null}
                   <p className="taj-lab">{say("Как звучит", "How it sounds", "كيف يُنطق", "Bagaimana bunyinya", "Nasıl duyulur", "کیسے سنائی دیتا ہے")}</p>
-                  <p className="text-sm leading-relaxed text-fg">{lesson.mechanism[lang]}</p>
+                  <p className="taj-lines text-sm leading-relaxed text-fg">{lesson.mechanism[lang]}</p>
                   <p className="taj-lab">{say("Примеры", "Examples", "أمثلة", "Contoh", "Örnekler", "مثالیں")}</p>
                   {lesson.examples.map((row) => (
                     <div key={row.ar + row.where} className="taj-row">
                       <p className={cn("taj-ar", TONE[lesson.tone])} dir="rtl" lang="ar">{row.ar}</p>
                       {lang === "ru" ? <p className="taj-read">{row.read}</p> : null}
                       {lang !== "ru" && lang !== "ar" ? <p className="taj-read">{row.lat}</p> : null}
-                      <p className="taj-gloss">{row.where}</p>
+                      <p className="taj-gloss">{/^\d+:\d+/.test(row.where) ? `${say("сура", "surah", "سورة", "surah", "sure", "سورہ")} ${row.where.replace(":", ", " + say("аят", "ayah", "آية", "ayat", "ayet", "آیت") + " ")}` : say(row.where === "мера" ? "мера" : "знак", row.where === "мера" ? "a count" : "a sign", row.where === "мера" ? "مقدار" : "علامة", row.where === "мера" ? "kadar" : "tanda", row.where === "мера" ? "miktar" : "işaret", row.where === "мера" ? "مقدار" : "نشان")}</p>
                     </div>
                   ))}
                   <p className="taj-lab">{say("Чего избегать", "What to avoid", "ما يُجتنب", "Yang dielakkan", "Kaçınılacak", "جس سے بچیں")}</p>
@@ -155,6 +162,7 @@ export function TajweedView() {
                             )}
                             onClick={() => {
                               setPicks((current) => ({ ...current, [key]: choiceIndex }));
+                              setHint("");
                               setResult((current) => {
                                 const next = { ...current };
                                 delete next[lesson.id];
@@ -171,6 +179,9 @@ export function TajweedView() {
                   <button type="button" className="quran-claim mt-3" onClick={() => check(lesson)}>
                     {say("Проверить", "Check", "تحقق", "Semak", "Kontrol et", "دیکھیں")}
                   </button>
+                  {hint === lesson.id ? (
+                    <p className="mt-2 text-sm text-muted">{say("Сначала выбери ответ.", "Choose an answer first.", "اختر جوابًا أولًا.", "Pilih jawapan dahulu.", "Önce bir cevap seç.", "پہلے جواب چنیں۔")}</p>
+                  ) : null}
                   {state === "bad" ? (
                     <p className="mt-2 text-sm text-muted">{say("Не то. Верный ответ отмечен.", "Not that. The right answer is marked.", "ليس هذا. الصواب موضَّح.", "Bukan itu. Jawapan betul ditanda.", "O değil. Doğru cevap işaretli.", "یہ نہیں۔ درست جواب نشان زد ہے۔")}</p>
                   ) : null}

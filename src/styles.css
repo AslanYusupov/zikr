@@ -3281,6 +3281,7 @@ html, body {
 .taj-mod span { color: var(--muted); font-size: .58rem; font-weight: 700; }
 .taj-mod.on { border-color: var(--gold); color: var(--gold); }
 .taj-lab { margin: .75rem 0 .2rem; color: var(--gold); font-size: .68rem; font-weight: 800; }
+.taj-lines { white-space: pre-line; }
 @media (orientation: landscape) and (max-height: 520px) {
   .app-column { max-width: none; }
   header.safe-top { padding-top: max(.15rem, env(safe-area-inset-top)); padding-bottom: 0; }
