@@ -136,6 +136,8 @@ export function QuranView() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
+  const loopingRef = useRef<string | null>(null);
+  const playToken = useRef(0);
   const [playing, setPlaying] = useState<string | null>(null);
   const [looping, setLooping] = useState<string | null>(null);
 
@@ -175,6 +177,15 @@ export function QuranView() {
     el.preload = "none";
     audio.current = el;
     const ended = () => {
+      if (loopingRef.current) {
+        el.currentTime = 0;
+        void el.play().catch(() => {
+          loopingRef.current = null;
+          setPlaying(null);
+          setLooping(null);
+        });
+        return;
+      }
       setPlaying(null);
       setLooping(null);
     };
@@ -183,6 +194,7 @@ export function QuranView() {
       el.pause();
       el.removeEventListener("ended", ended);
       el.src = "";
+      loopingRef.current = null;
       audio.current = null;
     };
   }, []);
@@ -190,13 +202,17 @@ export function QuranView() {
   useEffect(() => {
     const el = audio.current;
     if (!el) return;
+    playToken.current += 1;
     el.pause();
     el.loop = false;
+    loopingRef.current = null;
     setPlaying(null);
     setLooping(null);
   }, [open]);
 
   function stopAyah(el: HTMLAudioElement) {
+    playToken.current += 1;
+    loopingRef.current = null;
     el.pause();
     el.loop = false;
     setPlaying(null);
@@ -204,13 +220,17 @@ export function QuranView() {
   }
 
   function startAyah(el: HTMLAudioElement, key: string, surahNo: number, ayahNo: number, repeat: boolean) {
-    el.loop = repeat;
+    const mine = ++playToken.current;
+    el.loop = false;
+    loopingRef.current = repeat ? key : null;
     const url = ayahAudio(surahNo, ayahNo);
     if (el.src !== url) el.src = url;
     else el.currentTime = 0;
     setPlaying(key);
     setLooping(repeat ? key : null);
     void el.play().catch(() => {
+      if (mine !== playToken.current) return;
+      loopingRef.current = null;
       el.loop = false;
       setPlaying(null);
       setLooping(null);
@@ -236,7 +256,7 @@ export function QuranView() {
       return;
     }
     if (playing === key && !el.paused) {
-      el.loop = true;
+      loopingRef.current = key;
       setLooping(key);
       return;
     }

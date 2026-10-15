@@ -426,7 +426,7 @@ export const invitees = createServerFn({ method: "POST" })
       return { rows: rows.map((row) => ({ id: row.guest_id, total: row.total })) };
     } catch (err) {
       console.error("[zikr] invitees", err);
-      return { rows: [] as Invitee[] };
+      throw err;
     }
   });
 
@@ -455,7 +455,7 @@ export const worldBoard = createServerFn({ method: "POST" })
       };
     } catch (err) {
       console.error("[zikr] world board", err);
-      return { rows: [], mine: null };
+      throw err;
     }
   });
 
@@ -563,16 +563,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
     };
     } catch (err) {
       console.error("[zikr] presence board", err);
-      return {
-        online: 0,
-        remembering: 0,
-        allTaps: 0,
-        live: [] as PresenceRow[],
-        daily: [],
-        world: [],
-        dailyRank: null,
-        worldRank: null,
-      };
+      throw err;
     }
   });
 

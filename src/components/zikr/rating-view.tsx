@@ -75,7 +75,7 @@ export function RatingView() {
           if (!stop) setGuests(shown(res.rows));
         })
         .catch(() => {
-          if (!stop) setGuests([]);
+          if (!stop) setGuests((prev) => prev ?? []);
         });
     };
     load();
