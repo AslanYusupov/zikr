@@ -2643,9 +2643,10 @@ details.fold>:not(summary) {
   -webkit-user-drag: none;
 }
 .sun-body {
-  width: calc(1.598rem * 621 / 505);
-  height: calc(1.598rem * 640 / 505);
-  transform: translate(-50.15%, -53.07%);
+  width: calc(1.598rem * 720 / 601.73);
+  height: calc(1.598rem * 720 / 601.73);
+  transform: translate(-49.784%, -50.129%);
+  filter: drop-shadow(0 0 2px #ffe7a8d9) drop-shadow(0 0 8px #ff8a1e59);
 }
 .orbit-moon {
   bottom: -.15rem;
@@ -2654,6 +2655,7 @@ details.fold>:not(summary) {
   width: calc(1.598rem * 630 / 628);
   height: calc(1.598rem * 640 / 628);
   transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 2px #ffffffeb) drop-shadow(0 0 7px #c5d6ee8c) drop-shadow(0 0 13px #9eb4d459);
 }
 @keyframes orbit-spin {
   to {
