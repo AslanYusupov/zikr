@@ -391,7 +391,7 @@ export function Shell() {
           {tab === "quests" && <QuestsView onBegin={() => selectTab("zikr")} />}
           {tab === "dua" && <DuaView />}
           {tab === "rewards" && <RewardsView />}
-          {tab === "rating" && <RatingView meta={cloud.meta} />}
+          {tab === "rating" && <RatingView />}
         </div>
 
         {notice && (

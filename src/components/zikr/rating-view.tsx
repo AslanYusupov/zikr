@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { invitees, leaderboard, presenceBoard, worldBoard, type BoardRow, type CloudMeta, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
+import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, inviteLink, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { InviteButtons } from "./settings-view";
 import { t, tx } from "@/lib/zikr/i18n";
@@ -39,11 +38,10 @@ function shown<T extends { id: string }>(rows: T[] | null | undefined): T[] {
   return (rows ?? []).filter((row) => !HIDDEN_RATING_IDS.has(row.id));
 }
 
-export function RatingView({ meta }: { meta: CloudMeta | null }) {
+export function RatingView() {
   const days = useZikr((s) => s.days);
   const bestDay = useZikr((s) => s.bestDay);
   const goal = useZikr((s) => s.goal);
-  const { user, isPending } = useCurrentUserState();
   const publicId = useZikr((s) => s.publicId);
   const lang = useZikr((s) => s.lang);
   const [world, setWorld] = useState<WorldRow[] | null>(null);
@@ -54,9 +52,6 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
   const [live, setLive] = useState<PresenceRow[] | null>(null);
   const [daily, setDaily] = useState<PresenceRow[] | null>(null);
   const [dailyRank, setDailyRank] = useState<number | null>(null);
-  const [rows, setRows] = useState<BoardRow[] | null>(null);
-  const [boardMeta, setBoardMeta] = useState(meta);
-  const [error, setError] = useState(false);
   const [guests, setGuests] = useState<Invitee[] | null>(null);
   const [copied, setCopied] = useState(false);
   const day = todayKey();
@@ -65,10 +60,6 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
   const week = thisWeek(days, day);
   const chart = recentDays(days, 14, day);
   const mark = Math.max(record, today);
-
-  useEffect(() => {
-    setBoardMeta(meta);
-  }, [meta]);
 
   useEffect(() => {
     if (!/^\d{8}$/.test(publicId)) return;
@@ -126,23 +117,6 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
       window.removeEventListener("zikr-live", onLive);
     };
   }, [publicId, day]);
-
-  useEffect(() => {
-    if (!user?.id) return;
-    let stop = false;
-    leaderboard()
-      .then((res) => {
-        if (stop) return;
-        setRows(res.rows);
-        if (res.meta) setBoardMeta(res.meta);
-      })
-      .catch(() => {
-        if (!stop) setError(true);
-      });
-    return () => {
-      stop = true;
-    };
-  }, [user?.id]);
 
   async function share() {
     const code = /^\d{8}$/.test(publicId) ? publicId : useZikr.getState().ensurePublicId();
@@ -243,30 +217,6 @@ export function RatingView({ meta }: { meta: CloudMeta | null }) {
         </ol>
       )}
       {worldRank && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "yourPlace")}: {formatNum(worldRank)}.</p> : null}
-
-      <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{tx(lang, "namedList")}</h2>
-      <p className="mt-1 text-sm leading-relaxed text-muted">{tx(lang, "namedLead")}</p>
-      {isPending && <p className="mt-3 text-sm text-muted">{tx(lang, "whoIn")}</p>}
-      {user && error && <p className="mt-3 text-sm text-muted">{t(lang, "numbersSafe")}</p>}
-      {user && rows && rows.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "quietHere")}</p>}
-      {user && rows && rows.length > 0 && (
-        <ol className="mt-3 grid gap-1.5">
-          {rows.map((row, i) => (
-            <li
-              key={`${row.name}-${i}`}
-              className={cn("flex items-center justify-between gap-3 rounded-2xl border px-3 py-2", row.mine ? "border-gold bg-surface" : "border-line bg-surface")}
-            >
-              <span className="min-w-0 truncate text-sm text-fg">
-                <span className="mr-2 text-muted">{i + 1}</span>
-                {row.name}
-                {row.mine ? ` · ${tx(lang, "you")}` : ""}
-              </span>
-              <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.total)}</span>
-            </li>
-          ))}
-        </ol>
-      )}
-      {user && boardMeta?.rank ? <p className="mt-2 text-sm text-muted">{t(lang, "placeAbout")} {formatNum(boardMeta.rank)}.</p> : null}
 
       <article className="mt-5 rounded-3xl border border-line bg-surface px-4 py-4">
         <h2 className="text-lg text-fg">{tx(lang, "pointGood")}</h2>
