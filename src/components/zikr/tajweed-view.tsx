@@ -174,7 +174,7 @@ export function TajweedView() {
                   {state === "bad" ? (
                     <p className="mt-2 text-sm text-muted">{say("Не то. Верный ответ отмечен.", "Not that. The right answer is marked.", "ليس هذا. الصواب موضَّح.", "Bukan itu. Jawapan betul ditanda.", "O değil. Doğru cevap işaretli.", "یہ نہیں۔ درست جواب نشان زد ہے۔")}</p>
                   ) : null}
-                  {state === "ok" ? (
+                  {state === "ok" && TAJWEED_FLAT.findIndex((item) => item.id === lesson.id) < TAJWEED_FLAT.length - 1 ? (
                     <button type="button" className="quran-claim" onClick={() => goNext(lesson)}>
                       {say("Дальше", "Next", "التالي", "Seterusnya", "Sonraki", "آگے")}
                     </button>

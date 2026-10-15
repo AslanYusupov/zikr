@@ -145,7 +145,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         examples: [
           { ar: "قُلْ", read: "къуль — къ из глубины", lat: "qul — q from deep back", where: "112:1" },
           { ar: "الضَّالِّينَ", read: "ад-даллин — дад", lat: "ad-dallin — dad", where: "1:7" },
-          { ar: "الثَّمَرَاتِ", read: "ас-самарати — са между зубами", lat: "ath-thamarat — tha between the teeth", where: "2:22" },
+          { ar: "ٱلثَّمَرَٰتِ", read: "ас-самарати — са между зубами", lat: "ath-thamarat — tha between the teeth", where: "2:22" },
         ],
         mistakes: L(
           "Не делай дад обычным д и не дрожи ра. Къ не опускай на место к.",
@@ -241,7 +241,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           "ہمس، سانس جاتا ہے: ف ح ث ه ش خ ص س ك ت۔ شدت، آواز رکتی ہے: ء ج د ق ط ب ك ت۔ ان کے بیچ، آواز نہ رکتی ہے نہ پوری چلتی: ل ن ع م ر۔ ہمیشہ موٹے: خ ص ض غ ط ق ظ۔ اور بند: ص ض ط ظ۔ باقی پتلے، جب تک الگ حکم ر یا ل کو موٹا نہ کرے۔",
         ),
         examples: [
-          { ar: "صِرَاطَ", read: "сырата — сад твёрдый", lat: "sirata — sad is heavy", where: "1:6" },
+          { ar: "ٱلصِّرَٰطَ", read: "ас-сырата — сад твёрдый", lat: "as-sirata — sad is heavy", where: "1:6" },
           { ar: "كَتَبَ", read: "катаба — к тонкий", lat: "kataba — kaf is light", where: "6:12" },
         ],
         mistakes: L(
@@ -288,7 +288,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         examples: [
           { ar: "قَدْ أَفْلَحَ", read: "къад афляхьа — отскок на д", lat: "qad aflaha — echo on dal", where: "23:1" },
           { ar: "خَوْفٌ", read: "хауфун — вав мягкий, не тяни", lat: "khawfun — a soft waw, do not hold it", where: "2:38" },
-          { ar: "الصِّرَاطَ", read: "ас-сырата — свист сада", lat: "as-sirata — the whistle of sad", where: "1:6" },
+          { ar: "ٱلصِّرَٰطَ", read: "ас-сырата — свист сада", lat: "as-sirata — the whistle of sad", where: "1:6" },
         ],
         mistakes: L(
           "Отскок не превращай в гласный «а» или «и». Ра не кати несколько раз.",
@@ -576,7 +576,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "تَرْمِيهِم بِحِجَارَةٍ", read: "тармихим бихьиджара — мим скрыт", lat: "tarmihim bihijara — meem is hidden", where: "105:4" },
-          { ar: "لَهُم مَّا", read: "ляхум-ма — вошёл", lat: "lahum-ma — it entered", where: "2:25" },
+          { ar: "لَهُم مَّا", read: "ляхум-ма — вошёл", lat: "lahum-ma — it entered", where: "36:57" },
           { ar: "أَنْعَمْتَ", read: "ан1амта — мим ясен", lat: "an'amta — meem is clear", where: "1:7" },
         ],
         mistakes: L(
@@ -679,7 +679,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           "ایک جیسے حرف پورا داخل ہوتے ہیں: قُل لَّا۔ ایک جگہ سے: د ت میں داخل، جیسے قَد تَّبَيَّنَ۔ أَحَطتُ کی بھاری ط نشان چھوڑتی ہے۔ ب م میں داخل: ارْكَب مَّعَنَا۔ حفص میں ق ک میں داخل ہوتی ہے نَخْلُقكُّمْ میں۔",
         ),
         examples: [
-          { ar: "قُل لَّا", read: "къул-ля — одинаковые", lat: "qul la — the same letter", where: "109:2" },
+          { ar: "قُل لَّا", read: "къул-ля — одинаковые", lat: "qul la — the same letter", where: "5:100" },
           { ar: "قَد تَّبَيَّنَ", read: "къат-табаййана", lat: "qat-tabayyana", where: "2:256" },
           { ar: "أَحَطتُ", read: "ахатту — след та остался", lat: "ahattu — a trace of the ta remains", where: "27:22" },
           { ar: "ارْكَب مَّعَنَا", read: "иркам-ма1ана", lat: "irkam ma'ana", where: "11:42" },
@@ -781,7 +781,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         examples: [
           { ar: "الضَّالِّينَ", read: "ад-даллин — шесть", lat: "ad-dallin — six", where: "1:7" },
           { ar: "الم", read: "лам и мим — по шесть, алиф без протяжки", lat: "lam and mim — six each; alif is not lengthened", where: "2:1" },
-          { ar: "الْعَالَمِينَ", read: "на остановке две, четыре или шесть", lat: "when stopping: two, four or six", where: "1:2" },
+          { ar: "ٱلْعَٰلَمِينَ", read: "на остановке две, четыре или шесть", lat: "when stopping: two, four or six", where: "1:2" },
         ],
         mistakes: L(
           "«Ад-даллин» не сокращай до двух. И не тяни мягкий вав в «хауф», пока не остановился.",
@@ -926,7 +926,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           { ar: "رَحْمَةٌ", read: "в остановке рахьмах", lat: "when stopping: rahmah", where: "2:157" },
           { ar: "عَلِيمًا", read: "в остановке 1алима", lat: "when stopping: alima", where: "4:11" },
           { ar: "ٱهْدِنَا", read: "ихдина — начали с и", lat: "ihdina — start with i", where: "1:6" },
-          { ar: "وَالْكِتَابِ", read: "валь-китаби — хамзу пропустили", lat: "wal-kitabi — the hamza is dropped", where: "43:2" },
+          { ar: "وَٱلْكِتَٰبِ", read: "валь-китаби — хамзу пропустили", lat: "wal-kitabi — the hamza is dropped", where: "43:2" },
         ],
         mistakes: L(
           "Не читай маленькую хамзу в середине аята. И не оставляй танвин, когда уже остановился.",
@@ -977,8 +977,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "عِوَجًا قَيِّمًا", read: "1иважа · къаййима — без вдоха", lat: "iwaja · qayyima — no breath", where: "18:1-2" },
-          { ar: "مَجْرَاهَا", read: "маджреха — а ближе к и", lat: "majraha — the a is closer to i", where: "11:41" },
-          { ar: "أَأَعْجَمِيٌّ", read: "вторая хамза облегчена", lat: "the second hamza is eased", where: "41:44" },
+          { ar: "مَجْر۪ىٰهَا", read: "маджреха — а ближе к и", lat: "majraha — the a is closer to i", where: "11:41" },
+          { ar: "ءَا۬عْجَمِىٌّ", read: "вторая хамза облегчена", lat: "the second hamza is eased", where: "41:44" },
           { ar: "تَأْمَنَّا", read: "губы чуть к у", lat: "the lips move a little toward u", where: "12:11" },
         ],
         mistakes: L(
