@@ -1568,6 +1568,8 @@ details.fold>:not(summary) {
 }
 .reminder {
   padding: .4rem .7rem .45rem;
+  max-height: 12rem;
+  overflow-y: auto;
 }
 .reminder-ar {
   display: block;
@@ -3297,8 +3299,7 @@ html, body {
   .phrase-read { max-height: 2.4rem; margin-top: 0; padding-top: .1rem; }
   .stats-dock { margin-top: 0; padding-bottom: 0; }
   .day-line { padding-top: 0; line-height: 1.15; }
-  .reminder { margin-bottom: .1rem; padding: .1rem .55rem; }
-  .reminder p.line-clamp-6 { -webkit-line-clamp: 2; }
+  .reminder { margin-bottom: .1rem; padding: .1rem .55rem; max-height: 8rem; }
   .reminder .reminder-ar { display: block; }
 }
 @media (min-width: 960px) and (min-height: 640px) {

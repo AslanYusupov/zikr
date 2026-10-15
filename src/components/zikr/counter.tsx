@@ -412,7 +412,7 @@ const quote = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length]
                 {shownQuote.arabic && s.lang !== "ar" && s.lang !== "ur" ? (
                   <p className="reminder-ar font-arabic text-sm leading-relaxed text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
                 ) : null}
-                <p className="mt-0.5 line-clamp-6 text-xs leading-snug text-fg">{shownQuote.text}</p>
+                <p className="mt-0.5 text-xs leading-snug text-fg">{shownQuote.text}</p>
                 <p className="mt-0.5 text-[0.65rem] text-muted">{shownQuote.source}</p>
               </button>
             ) : null}
