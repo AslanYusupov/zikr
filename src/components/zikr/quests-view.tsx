@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { dhikrById } from "@/lib/zikr/content";
 import { formatNum, todayKey, zikrWord } from "@/lib/zikr/format";
+import { questText } from "@/lib/zikr/quest-i18n";
 import { SUNNAH_QUESTS, sunnahQuestById, type SunnahQuest } from "@/lib/zikr/quests";
-import { phraseOf } from "@/lib/zikr/tr";
+import { cite, phraseOf } from "@/lib/zikr/tr";
 import { t } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
@@ -37,15 +38,16 @@ export function QuestsView({ onBegin }: { onBegin: () => void }) {
   }, []);
   const active = sunnahQuestById(activeQuestId);
   const step = active?.steps[questStep];
+  const activeText = active ? questText(active, lang) : null;
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
     <div className="pane px-4 pt-2 pb-8">
       {active && step ? (
         <article className="mt-4 rounded-3xl border border-line bg-surface px-4 py-4">
-          <h2 className="text-lg text-fg">{active.title}</h2>
+          <h2 className="text-lg text-fg">{activeText?.title}</h2>
           <p className="mt-2 text-base text-fg">
-            {step.label ? `${step.label}: ` : ""}
+            {step.label ? `${activeText?.label(step.label)}: ` : ""}
             «{phraseOf(dhikrById(step.dhikrId), lang).short}» · {formatNum(questStepProgress)} / {formatNum(step.count)}
           </p>
           <div className="mt-2 h-1 overflow-hidden rounded-full bg-bg-deep">
@@ -104,30 +106,31 @@ function QuestCard({
   onTake: () => void;
   lang: LangId;
 }) {
+  const text = questText(quest, lang);
   return (
     <article className="rounded-2xl border border-line bg-surface px-3 py-3">
       <button type="button" onClick={onOpen} className="w-full text-left">
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-base text-fg">
             {done ? <span className="mr-1 text-gold">✓</span> : null}
-            {quest.title}
+            {text.title}
           </h3>
         </div>
         <ol className="mt-2 grid gap-1">
           {quest.steps.map((step, i) => (
             <li key={`${quest.id}-${i}`} className="text-sm text-muted">
-              {i + 1}. {step.label ? `${step.label} · ` : ""}
+              {i + 1}. {step.label ? `${text.label(step.label)} · ` : ""}
               {phraseOf(dhikrById(step.dhikrId), lang).short} · {formatNum(step.count)} {zikrWord(step.count, lang)}
             </li>
           ))}
         </ol>
-        <p className="mt-2 text-sm leading-snug text-muted">{quest.note}</p>
-        <p className="mt-1 text-xs text-muted">{quest.source}</p>
+        <p className="mt-2 text-sm leading-snug text-muted">{text.note}</p>
+        <p className="mt-1 text-xs text-muted">{cite(quest.source, lang)}</p>
         {done ? <p className="mt-2 text-sm text-gold">✓ {t(lang, "questDone")}</p> : null}
       </button>
       {open
         ? quest.steps.map((step, i) => (
-            <DhikrSunnah key={`${quest.id}-info-${i}`} id={step.dhikrId} lang={lang} label={step.label} />
+            <DhikrSunnah key={`${quest.id}-info-${i}`} id={step.dhikrId} lang={lang} label={text.label(step.label)} />
           ))
         : null}
       <button
@@ -154,7 +157,7 @@ function DhikrSunnah({ id, lang, label }: { id: string; lang: LangId; label?: st
       <p className="mt-2 text-center text-sm font-extrabold leading-snug text-fg">{line.name}</p>
       <p className="mt-1 text-center text-sm leading-snug text-muted">{line.meaning}</p>
       <p className="mt-2 text-sm leading-relaxed text-fg">{line.reward}</p>
-      <p className="mt-1 text-xs text-gold">{d.source}</p>
+      <p className="mt-1 text-xs text-gold">{cite(d.source, lang)}</p>
     </div>
   );
 }

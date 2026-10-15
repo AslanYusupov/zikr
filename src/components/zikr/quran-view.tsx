@@ -4,6 +4,7 @@ import { rewardPoints } from "@/lib/zikr/content";
 import { formatNum, plural } from "@/lib/zikr/format";
 import { t } from "@/lib/zikr/i18n";
 import { loadMeaning, loadQuran, quranCopy, type QuranAyah, type QuranBook, type QuranMeaning } from "@/lib/zikr/quran";
+import { surahSpoken } from "@/lib/zikr/surah-name";
 import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
@@ -418,7 +419,7 @@ export function QuranView() {
                   <span className="block font-arabic text-lg leading-loose text-fg" dir="rtl" lang="ar">
                     {item.name}
                   </span>
-                  {lang !== "ar" ? <span className="block text-xs text-muted">{lang === "ru" ? item.ru : item.en}</span> : null}
+                  {lang !== "ar" ? <span className="block text-xs text-muted">{lang === "ru" ? item.ru : surahSpoken(lang, item.n, item.en)}</span> : null}
                 </span>
                 <span className="shrink-0 text-right text-[0.65rem] leading-tight text-gold">
                   {formatNum(letters)} {copy.letters}
@@ -444,8 +445,8 @@ export function QuranView() {
   const surahIndex = book.surahs.findIndex((item) => item.n === surah.n);
   const prevSurah = surahIndex > 0 ? book.surahs[surahIndex - 1] : null;
   const nextSurah = surahIndex >= 0 ? book.surahs[surahIndex + 1] : null;
-  const surahLabel = (item: { name: string; ru: string; en: string }) =>
-    lang === "ar" ? item.name : lang === "ru" ? item.ru : item.en;
+  const surahLabel = (item: { n: number; name: string; ru: string; en: string }) =>
+    lang === "ar" ? item.name : lang === "ru" ? item.ru : surahSpoken(lang, item.n, item.en);
 
   return (
     <div

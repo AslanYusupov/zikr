@@ -9,7 +9,7 @@ import { noteTap } from "@/lib/zikr/live";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { quranCopy } from "@/lib/zikr/quran";
-import { localQuote, nameText, phraseOf } from "@/lib/zikr/tr";
+import { cite, localQuote, nameText, phraseOf } from "@/lib/zikr/tr";
 import { cn } from "@/lib/cn";
 import { Crescent } from "./pattern";
 
@@ -314,7 +314,7 @@ const quote = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length]
               <div className="mt-1 text-xs leading-snug text-muted">
                 {phrase.full && s.lang === "ru" ? <p className="text-fg">{phrase.full}</p> : null}
                 <p className="mt-1">{spoken.reward}</p>
-                <p className="mt-1 text-[0.65rem]">{phrase.source}</p>
+                <p className="mt-1 text-[0.65rem]">{cite(phrase.source, s.lang)}</p>
               </div>
             ) : (
               <p className="mt-0.5 text-xs leading-snug text-muted">{showPhrase ? spoken.meaning : ""}</p>

@@ -1,5 +1,6 @@
 import type { Dhikr, Quote } from "./content";
 import type { AllahName } from "./names";
+import { QUOTE_FIX } from "./quote-fix";
 import type { LangId } from "./types";
 
 type Line = { name: string; short: string; meaning: string; reward: string; full?: string };
@@ -836,32 +837,68 @@ function srcOf(source: string, lang: LangId): string {
   if (lang === "ru") return source;
   const map: Record<LangId, [string, string][]> = {
     ru: [],
-    en: [["Коран", "Quran"], ["аль-Бухари", "Bukhari"], ["Муслим", "Muslim"], ["ат-Тирмизи", "Tirmidhi"], ["Абу Давуд", "Abu Dawud"], ["ан-Насаи", "Nasai"], ["Ахмад", "Ahmad"]],
-    ar: [["Коран", "القرآن"], ["аль-Бухари", "البخاري"], ["Муслим", "مسلم"], ["ат-Тирмизи", "الترمذي"], ["Абу Давуд", "أبو داود"], ["ан-Насаи", "النسائي"], ["Ахмад", "أحمد"]],
-    id: [["Коран", "Quran"], ["аль-Бухари", "Bukhari"], ["Муслим", "Muslim"], ["ат-Тирмизи", "Tirmidzi"], ["Абу Давуд", "Abu Dawud"], ["ан-Насаи", "Nasai"], ["Ахмад", "Ahmad"]],
-    tr: [["Коран", "Kur’an"], ["аль-Бухари", "Buhârî"], ["Муслим", "Müslim"], ["ат-Тирмизи", "Tirmizî"], ["Абу Давуд", "Ebû Dâvûd"], ["ан-Насаи", "Nesâî"], ["Ахмад", "Ahmed"]],
-    ur: [["Коран", "قرآن"], ["аль-Бухари", "بخاری"], ["Муслим", "مسلم"], ["ат-Тирмизи", "ترمذی"], ["Абу Давуд", "ابو داؤد"], ["ан-Насаи", "نسائی"], ["Ахмад", "احمد"]],
+    en: [["Коран", "Quran"], ["аль-Бухари", "Bukhari"], ["Муслим", "Muslim"], ["ат-Тирмизи", "Tirmidhi"], ["Абу Давуд", "Abu Dawud"], ["ан-Насаи", "Nasai"], ["Ибн Маджа", "Ibn Majah"], ["Ахмад", "Ahmad"]],
+    ar: [["Коран", "القرآن"], ["аль-Бухари", "البخاري"], ["Муслим", "مسلم"], ["ат-Тирмизи", "الترمذي"], ["Абу Давуд", "أبو داود"], ["ан-Насаи", "النسائي"], ["Ибн Маджа", "ابن ماجه"], ["Ахмад", "أحمد"]],
+    id: [["Коран", "Quran"], ["аль-Бухари", "Bukhari"], ["Муслим", "Muslim"], ["ат-Тирмизи", "Tirmidzi"], ["Абу Давуд", "Abu Dawud"], ["ан-Насаи", "Nasai"], ["Ибн Маджа", "Ibnu Majah"], ["Ахмад", "Ahmad"]],
+    tr: [["Коран", "Kur’an"], ["аль-Бухари", "Buhârî"], ["Муслим", "Müslim"], ["ат-Тирмизи", "Tirmizî"], ["Абу Давуд", "Ebû Dâvûd"], ["ан-Насаи", "Nesâî"], ["Ибн Маджа", "İbn Mâce"], ["Ахмад", "Ahmed"]],
+    ur: [["Коран", "قرآن"], ["аль-Бухари", "بخاری"], ["Муслим", "مسلم"], ["ат-Тирмизи", "ترمذی"], ["Абу Давуд", "ابو داؤد"], ["ан-Насаи", "نسائی"], ["Ибн Маджа", "ابن ماجہ"], ["Ахмад", "احمد"]],
   };
   return map[lang].reduce((s, [a, b]) => s.replaceAll(a, b), source);
 }
 
-function quoteText(map: Record<string, string>, text: string): string {
-  const direct = map[text];
-  if (direct) return direct;
-  const key = text.toLowerCase().replace(/ё/g, "е").replace(/[«»"'.,!?—–\-:]/g, "").replace(/\s+/g, " ").trim();
+export function cite(source: string, lang: LangId): string {
+  return srcOf(source, lang);
+}
+
+function loose(text: string) {
+  return text.toLowerCase().replace(/ё/g, "е").replace(/[«»"'.,!?—–\-:]/g, "").replace(/\s+/g, " ").trim();
+}
+
+function tokens(text: string) {
+  return new Set(loose(text).split(" ").filter((word) => word.length > 3));
+}
+
+function near(map: Record<string, string>, text: string): string | null {
+  const key = loose(text);
+  let bestKey = "";
+  let best = 0;
+  let second = 0;
+  const own = tokens(text);
   for (const item of Object.keys(map)) {
-    const loose = item.toLowerCase().replace(/ё/g, "е").replace(/[«»"'.,!?—–\-:]/g, "").replace(/\s+/g, " ").trim();
-    if (loose === key) return map[item]!;
+    if (loose(item) === key) return map[item]!;
+    const theirs = tokens(item);
+    let shared = 0;
+    for (const word of theirs) if (own.has(word)) shared += 1;
+    const score = shared / Math.max(own.size, theirs.size, 1);
+    if (score > best) {
+      second = best;
+      best = score;
+      bestKey = item;
+    } else if (score > second) second = score;
   }
-  return text;
+  if (best >= 0.5 && best - second >= 0.08) return map[bestKey]!;
+  return null;
+}
+
+function quoteText(map: Record<string, string>, text: string): string {
+  return map[text] ?? near(map, text) ?? text;
 }
 
 export function localQuote(q: Quote, lang: LangId): Quote {
   const arabic = q.arabic;
   if (lang === "ru") return q;
+  const fixed = QUOTE_FIX[q.text];
+  if (fixed) {
+    const text = lang === "ar" ? arabic || fixed.ar : fixed[lang];
+    return { text, source: srcOf(q.source, lang), arabic };
+  }
   if (lang === "en") return { text: quoteText(Q_EN, q.text), source: srcOf(q.source, lang), arabic };
-  if (lang === "ar") return { text: quoteText(Q_AR, q.text), source: srcOf(q.source, lang), arabic };
-  if (lang === "ur") return { text: quoteText(Q_UR, q.text) !== q.text ? quoteText(Q_UR, q.text) : quoteText(Q_AR, q.text), source: srcOf(q.source, lang), arabic };
+  if (lang === "ar") return { text: quoteText(Q_AR, q.text) !== q.text ? quoteText(Q_AR, q.text) : arabic || q.text, source: srcOf(q.source, lang), arabic };
+  if (lang === "ur") {
+    const ur = quoteText(Q_UR, q.text);
+    const text = ur !== q.text ? ur : quoteText(Q_AR, q.text) !== q.text ? quoteText(Q_AR, q.text) : arabic || q.text;
+    return { text, source: srcOf(q.source, lang), arabic };
+  }
   if (lang === "id") return { text: quoteText(Q_ID, q.text), source: srcOf(q.source, lang), arabic };
   if (lang === "tr") return { text: quoteText(Q_TR, q.text), source: srcOf(q.source, lang), arabic };
   return { text: q.text, source: srcOf(q.source, lang), arabic };

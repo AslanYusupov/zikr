@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DUAS, duaRead, localDua } from "@/lib/zikr/duas";
 import { t } from "@/lib/zikr/i18n";
+import { cite } from "@/lib/zikr/tr";
 import { useZikr } from "@/lib/zikr/store";
 
 export function DuaView() {
@@ -33,7 +34,7 @@ export function DuaView() {
                   <p className="mt-4 text-sm leading-relaxed text-gold">{t(lang, "duaFor")}</p>
                   <p className="mt-1 text-base leading-relaxed text-fg">{line.forWhat}</p>
                   <p className="mt-4 text-base leading-relaxed text-fg">{line.gives}</p>
-                  <p className="mt-3 text-sm text-gold">{dua.source}</p>
+                  <p className="mt-3 text-sm text-gold">{cite(dua.source, lang)}</p>
                 </div>
               ) : null}
             </button>
