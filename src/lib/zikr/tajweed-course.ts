@@ -242,7 +242,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "صِرَاطَ", read: "сырата — сад твёрдый", lat: "sirata — sad is heavy", where: "1:6" },
-          { ar: "كَتَبَ", read: "катаба — к тонкий", lat: "kataba — kaf is light", where: "2:79" },
+          { ar: "كَتَبَ", read: "катаба — к тонкий", lat: "kataba — kaf is light", where: "6:12" },
         ],
         mistakes: L(
           "Не делай все горловые твёрдыми. Твёрдые всегда только семь: خ ص ض غ ط ق ظ.",
@@ -324,8 +324,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "ر · ل",
         mechanism: L(
-          "Ра с а и у — толще, с и — тоньше. Если на ра нет гласного, смотри гласный перед ней. Короткий и в самом начале слова её не утоньшает. Твёрдая буква сразу после неё в том же слове делает её толстой. На остановке после и или после й без гласного она тонкая. Лям в «Аллах1» толще после а и у и тоньше после и.",
-          "Ra with a and u is heavier, with i it is lighter. If ra has no vowel, look at the vowel before it. A short i at the very start of the word does not make it light. A heavy letter right after it in the same word makes it heavy. When you stop after i, or after a vowelless ya, it is light. The lam in Allah is heavier after a and u, and lighter after i.",
+          "Ра с а и у — толще, с и — тоньше. Если на ра нет гласного, смотри гласный перед ней. Короткий и самой хамзы соединения, как в начале ارْجِعِي, её не утоньшает. Твёрдая буква сразу после неё в том же слове делает её толстой. На остановке после и или после й без гласного она тонкая. Лям в «Аллах1» толще после а и у и тоньше после и.",
+          "Ra with a and u is heavier, with i it is lighter. If ra has no vowel, look at the vowel before it. A short i that belongs only to the joining hamza, as at the start of irji'i, does not make it light. A heavy letter right after it in the same word makes it heavy. When you stop after i, or after a vowelless ya, it is light. The lam in Allah is heavier after a and u, and lighter after i.",
           "الراء مع الفتح والضم أغلظ، ومع الكسر أدق. فإن سكنت فانظر إلى ما قبلها. وكسرة الابتداء لا ترققها، وحرف الاستعلاء بعدها في كلمتها يفخمها. وعند الوقف بعد الكسر أو الياء الساكنة ترقق. ولام «الله» أغلظ بعد الفتح والضم وأدق بعد الكسر.",
           "Ra dengan a dan u lebih tebal, dengan i lebih nipis. Jika ra sukun, lihat vokal sebelumnya. I pendek di awal kata tidak menipiskannya. Huruf tebal terus selepasnya dalam kata yang sama menebalkannya. Berhenti selepas i atau ya sukun: nipis. Lam pada Allah lebih tebal selepas a dan u, lebih nipis selepas i.",
           "Ra a ve u ile kalın, i ile incedir. Ra sükûnluysa öncesine bak. Kelime başındaki kısa i onu inceltmez. Aynı kelimede hemen sonraki kalın harf onu kalınlaştırır. İ'den veya sessiz ya'dan sonra durunca incedir. Allah'taki lam a ve u'dan sonra kalın, i'den sonra incedir.",
@@ -424,8 +424,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "ي ن م و · ل ر",
         mechanism: L(
-          "В й, н, м и в вход с гунной, две меры. В л и р вход полный, без гунны. Четыре слова не сливаются: الدُّنْيَا، بُنْيَان، قِنْوَان، صِنْوَان. Там н остаётся ясным.",
-          "Into ya, nun, mim and waw the entry is with ghunnah, two counts. Into lam and ra the entry is complete, without ghunnah. Four words do not merge: ad-dunya, bunyan, qinwan, sinwan. There the n stays clear.",
+          "В й и в вход неполный: н уходит, гунна остаётся на две меры. В н и м вход полный, тоже с гунной. В л и р вход полный, без гунны. Четыре слова не сливаются: الدُّنْيَا، بُنْيَان، قِنْوَان، صِنْوَان. Там н остаётся ясным.",
+          "Into ya and waw the entry is incomplete: the n goes, and the ghunnah stays for two counts. Into nun and mim the entry is complete, also with ghunnah. Into lam and ra the entry is complete, without ghunnah. Four words do not merge: ad-dunya, bunyan, qinwan, sinwan. There the n stays clear.",
           "في ي ن م و الإدغام بغنة حركتين. وفي ل ر الإدغام كامل بلا غنة. وأربع كلمات لا تُدغم: الدنيا وبنيان وقنوان وصنوان. النون فيها مظهرة.",
           "Ke ya, nun, mim dan waw masuk dengan ghunnah, dua harakat. Ke lam dan ra masuk penuh, tanpa ghunnah. Empat kata tidak lebur: ad-dunya, bunyan, qinwan, sinwan. Di situ n kekal jelas.",
           "Ya, nun, mim ve vav'a giriş gunneyle, iki miktar. Lam ve ra'ya giriş tamdır, gunnesiz. Dört kelime kaynaşmaz: ed-dünya, bünyan, kınvan, sınvan. Orada n açık kalır.",
@@ -479,7 +479,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "مِن بَعْدِ", read: "мим ба1ди", lat: "mim ba'di", where: "2:27" },
-          { ar: "سَمِيعٌ بَصِيرٌ", read: "сами1ум басир", lat: "sami'um basir", where: "17:1" },
+          { ar: "سَمِيعٌ بَصِيرٌ", read: "сами1ум басир", lat: "sami'um basir", where: "22:61" },
         ],
         mistakes: L(
           "Не читай ясный н перед б и не смыкай губы так сильно, чтобы гунна пропала.",
@@ -671,8 +671,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "مثل · ط د ت · ظ ذ ث · ب م · ق ك",
         mechanism: L(
-          "Одинаковые входят полностью: قُل لَّا. Из одного места: د входит в ت, как قَد تَّبَيَّنَ. Твёрдая ط в أَحَطتُ оставляет след, слышно ахатту. ب входит в м: ارْكَب مَّعَنَا. У Хафса ق входит в ك в نَخْلُقكُّمْ, слышно нахьлукъкум.",
-          "Two of the same letter enter completely: qul la. From one place: dal enters ta, as in qad tabayyana. The heavy ta in ahattu leaves a trace, and it is heard ahattu. Ba enters mim: irkam ma'ana. In Hafs, qaf enters kaf in nakhlukkum, heard nakhlukkum.",
+          "Одинаковые входят полностью: قُل لَّا. Из одного места: د входит в ت, как قَد تَّبَيَّنَ. Твёрдая ط в أَحَطتُ оставляет след, слышно ахатту. ب входит в м: ارْكَب مَّعَنَا. У Хафса ق входит в ك в نَخْلُقكُّمْ полностью: слышно нахьлуккум, къ уже нет.",
+          "Two of the same letter enter completely: qul la. From one place: dal enters ta, as in qad tabayyana. The heavy ta in ahattu leaves a trace, and it is heard ahattu. Ba enters mim: irkam ma'ana. In Hafs, qaf enters kaf completely in nakhlukum: the qaf is no longer heard.",
           "المتماثلان يدخلان كاملًا: قل لا. ومن مخرج واحد: الدال في التاء، كـ«قد تبين». والطاء في «أحطت» يبقى أثرها: أحطّ. والباء في الميم: اركب معنا. وعند حفص تدخل القاف في الكاف في «نخلقكم»، فتُسمع نخلّكم.",
           "Dua huruf sama masuk penuh: qul la. Dari satu tempat: dal masuk ke ta, seperti qad tabayyana. Ta yang berat pada ahattu meninggalkan bekas. Ba masuk ke mim: irkam ma'ana. Pada Hafs, qaf masuk ke kaf dalam nakhlukkum.",
           "Aynı iki harf tam girer: kul la. Aynı yerden: dal, ta'ya girer, qad tabeyyene gibi. Ahattu'daki kalın tı iz bırakır. Ba, mim'e girer: irkam meana. Hafs'ta qaf, nahlukküm'de kaf'a girer.",
@@ -735,7 +735,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           { ar: "قَالَ", read: "къаля — две", lat: "qala — two", where: "2:30" },
           { ar: "جَاءَ", read: "джаа — четыре или пять", lat: "jaa — four or five", where: "110:1" },
           { ar: "آمَنَ", read: "амана — две", lat: "amana — two", where: "2:62" },
-          { ar: "بِهِ إِنَّ", read: "бихи инна — две, четыре или пять", lat: "bihi inna — two, four or five", where: "2:26" },
+          { ar: "بِهِ إِنَّ", read: "бихи инна — две, четыре или пять", lat: "bihi inna — two, four or five", where: "26:31" },
         ],
         mistakes: L(
           "Не тяни обычное «къаля» на четыре. И не тяни «амана» больше двух.",
@@ -780,7 +780,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "الضَّالِّينَ", read: "ад-даллин — шесть", lat: "ad-dallin — six", where: "1:7" },
-          { ar: "الم", read: "алиф лам мим — шесть", lat: "alif lam mim — six", where: "2:1" },
+          { ar: "الم", read: "лам и мим — по шесть, алиф без протяжки", lat: "lam and mim — six each; alif is not lengthened", where: "2:1" },
           { ar: "الْعَالَمِينَ", read: "на остановке две, четыре или шесть", lat: "when stopping: two, four or six", where: "1:2" },
         ],
         mistakes: L(
@@ -856,6 +856,52 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ],
       },
       {
+        id: "sun",
+        tone: "plain",
+        title: L("Лям в «аль»", "The lam of al-", "لام أل", "Lam pada al-", "El-'in lamı", "ال کا لام"),
+        definition: L(
+          "Лям в «аль» слышна перед лунными буквами и не слышна перед солнечными. Перед солнечной слышна сама эта буква, с шаддой.",
+          "The lam of al- is heard before the moon letters and is silent before the sun letters. Before a sun letter you hear that letter itself, with shadda.",
+          "لام «ال» تُنطق قبل الحروف القمرية، ولا تُنطق قبل الشمسية. وقبل الشمسي تُسمع ذلك الحرف مشددًا.",
+          "Lam pada al- kedengaran sebelum huruf qamariyah dan tidak kedengaran sebelum huruf syamsiah. Sebelum huruf syamsiah yang kedengaran huruf itu sendiri, bersyaddah.",
+          "El-'in lamı kameri harflerden önce duyulur, şemsi harflerden önce duyulmaz. Şemsi harften önce o harfin kendisi şeddeyle duyulur.",
+          "ال کا لام قمری حروف سے پہلے سنائی دیتا ہے اور شمسی حروف سے پہلے نہیں۔ شمسی حرف سے پہلے وہی حرف شدہ کے ساتھ سنائی دیتا ہے۔",
+        ),
+        letters: "ت ث د ذ ر ز س ش ص ض ط ظ ل ن",
+        mechanism: L(
+          "Солнечные — эти четырнадцать. Остальные лунные, включая хамзу. Хамза «аль» в середине речи не читается. Начал с «аль» — с а.",
+          "These fourteen are the sun letters. The rest are moon letters, including hamza. The hamza of al- is not read in the middle of speech. If you start on al-, start with a.",
+          "هذه الأربعة عشر شمسية. وسائر الحروف قمرية، ومنها الهمزة. وهمزة «ال» لا تُنطق في الدرج. وإن بدأت بـ«ال» فبالفتح.",
+          "Empat belas ini huruf syamsiah. Yang lain qamariyah, termasuk hamzah. Hamzah al- tidak dibaca di tengah ucapan. Jika mulai pada al-, mula dengan a.",
+          "Bu on dört şemsidir. Geri kalanı kameridir, hemze dahil. El-'in hemzesi sözün ortasında okunmaz. El- ile başladıysan a ile başla.",
+          "یہ چودہ شمسی ہیں۔ باقی قمری ہیں، ہمزہ سمیت۔ ال کی ہمزہ درمیان کلام میں نہیں پڑھی جاتی۔ ال سے شروع کریں تو ا سے۔",
+        ),
+        examples: [
+          { ar: "الْقَمَرُ", read: "аль-къамар — лям слышна", lat: "al-qamar — the lam is heard", where: "54:1" },
+          { ar: "وَالشَّمْسِ", read: "ваш-шамси — лям не слышна", lat: "wash-shamsi — the lam is silent", where: "91:1" },
+          { ar: "وَالنَّاسِ", read: "ван-нас — н с шаддой", lat: "wan-nas — nun with shadda", where: "114:6" },
+        ],
+        mistakes: L(
+          "Не произноси лям перед солнечной буквой и не убирай шадду с неё.",
+          "Do not pronounce the lam before a sun letter, and do not drop the shadda from that letter.",
+          "لا تنطق اللام قبل الشمسي ولا تحذف شدته.",
+          "Jangan sebut lam sebelum huruf syamsiah, dan jangan buang syaddahnya.",
+          "Şemsi harften önce lamı söyleme ve onun şeddesini düşürme.",
+          "شمسی حرف سے پہلے لام نہ بولیں اور اس کی شدہ نہ ہٹائیں۔",
+        ),
+        quiz: [
+          {
+            q: L("Что слышно в «ваш-шамси»?", "What is heard in wash-shamsi?", "ماذا يُسمع في «والشمس»؟", "Apa yang kedengaran pada wasy-syamsi?", "Veş-şemsi'de ne duyulur?", "وَالشَّمْسِ میں کیا سنائی دیتا ہے؟"),
+            choices: [
+              L("Ш с шаддой, без лям", "Sh with shadda, no lam", "شين مشددة بلا لام", "Syin bersyaddah, tanpa lam", "Şeddeli ş, lamsız", "ش شدہ کے ساتھ، بغیر لام"),
+              L("Лям и ш", "Lam and sh", "لام ثم شين", "Lam lalu syin", "Lam ve ş", "لام پھر ش"),
+              L("Только хамза", "Only the hamza", "الهمزة فقط", "Hanya hamzah", "Yalnız hemze", "صرف ہمزہ"),
+            ],
+            answer: A(0),
+          },
+        ],
+      },
+      {
         id: "stop-start",
         tone: "plain",
         title: L("Конец слова и хамза соединения", "The end of a word, and the joining hamza", "آخر الكلمة وهمزة الوصل", "Hujung kata dan hamzah wasal", "Kelime sonu ve vasıl hemzesi", "لفظ کا آخر اور ہمزہ وصل"),
@@ -869,9 +915,9 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "ة · ً ٍ ٌ · ٱ",
         mechanism: L(
-          "ة на остановке — лёгкий х, в чтении дальше — т. Танвин с а на остановке даёт алиф, кроме ة: там х. Танвин с и и у просто снимается. «Аль» начинай с а. У имени вроде «исм» начинай с и. У глагола: если третья буква с у, начинай с у, иначе с и.",
-          "Ta marbuta is a light h when you stop, and t when you continue. Tanwin with a gives an alif when you stop, except on ta marbuta: there it is h. Tanwin with i and u is simply dropped. Start al- with a. A noun such as ism starts with i. In a verb: if the third letter has u, start with u; otherwise start with i.",
-          "ة عند الوقف هاء خفيفة، وعند الوصل تاء. وتنوين الفتح عند الوقف يعطي ألفًا، إلا على ة فهي هاء. وتنوين الكسر والضم يسقط. وتُبدأ «ال» بالفتح. والاسم نحو «اسم» بالكسر. والفعل: إن كانت ثالثته مضمومة فبالضم، وإلا فبالكسر.",
+          "ة на остановке — лёгкий х, в чтении дальше — т. Танвин с а на остановке даёт алиф, кроме ة: там х. Танвин с и и у просто снимается. «Аль» начинай с а. У имени вроде «исм» начинай с и. У глагола: если третья буква с у, начинай с у, иначе с и. Если это у только от выпавшей йа, как в امْشُوا и اقْضُوا, начинай с и.",
+          "Ta marbuta is a light h when you stop, and t when you continue. Tanwin with a gives an alif when you stop, except on ta marbuta: there it is h. Tanwin with i and u is simply dropped. Start al- with a. A noun such as ism starts with i. In a verb: if the third letter has u, start with u; otherwise start with i. If that u is only there because a ya dropped, as in imshu and iqdu, start with i, not u.",
+          "ة عند الوقف هاء خفيفة، وعند الوصل تاء. وتنوين الفتح عند الوقف يعطي ألفًا، إلا على ة فهي هاء. وتنوين الكسر والضم يسقط. وتُبدأ «ال» بالفتح. والاسم نحو «اسم» بالكسر. والفعل: إن كانت ثالثته مضمومة فبالضم، وإلا فبالكسر. فإن كانت الضمة عارضة لسقوط الياء، كـ«امشوا» و«اقضوا»، فابدأ بالكسر لا بالضم.",
           "Ta marbutah ketika berhenti ialah h ringan, ketika disambung ialah t. Tanwin ber-a ketika berhenti memberi alif, kecuali pada ta marbutah: di situ h. Tanwin ber-i dan u gugur sahaja. Al- dimula dengan a. Nama seperti ism dimula dengan i. Pada kata kerja: jika huruf ketiga ber-u, mula dengan u; jika tidak, dengan i.",
           "Durunca te marbuta hafif h, sürdürürsen t. A'lı tenvin durunca elif verir, te marbuta hariç: orada h. İ'li ve u'lu tenvin düşer. El- a ile başlar. İsm gibi isim i ile başlar. Fiilde: üçüncü harf u ise u ile başla, değilse i ile.",
           "ة وقف پر ہلکی ہ، جوڑ کر پڑھیں تو ت۔ ا والا تنوین وقف پر الف دیتا ہے، سوائے ة کے: وہاں ہ۔ اِ اور اُ والا تنوین گر جاتا ہے۔ ال ا سے شروع کریں۔ اسم جیسے نام اِ سے۔ فعل میں: اگر تیسرا حرف اُ ہو تو اُ سے، ورنہ اِ سے۔",
@@ -880,7 +926,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           { ar: "رَحْمَةٌ", read: "в остановке рахьмах", lat: "when stopping: rahmah", where: "2:157" },
           { ar: "عَلِيمًا", read: "в остановке 1алима", lat: "when stopping: alima", where: "4:11" },
           { ar: "ٱهْدِنَا", read: "ихдина — начали с и", lat: "ihdina — start with i", where: "1:6" },
-          { ar: "وَالْكِتَابِ", read: "валь-китаби — хамзу пропустили", lat: "wal-kitabi — the hamza is dropped", where: "2:2" },
+          { ar: "وَالْكِتَابِ", read: "валь-китаби — хамзу пропустили", lat: "wal-kitabi — the hamza is dropped", where: "43:2" },
         ],
         mistakes: L(
           "Не читай маленькую хамзу в середине аята. И не оставляй танвин, когда уже остановился.",
@@ -922,12 +968,12 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "س · مجراها · ءأعجمي · تأمنا",
         mechanism: L(
-          "Четыре задержки без вдоха: عِوَجًا قَيِّمًا، مَرْقَدِنَا هَٰذَا، مَن رَاقٍ، بَلْ رَانَ. В مَجْرَاهَا алиф ближе к и, только здесь. В أَأَعْجَمِيّ вторая хамза облегчена, между хамзой и алифом. В تَأْمَنَّا губы чуть идут к у, отдельного у нет. Раум и ишмам при обычной остановке — разрешённый выбор на у и и, не отдельный аят.",
-          "Four holds without a breath: iwajan qayyima, marqadina hadha, man raq, bal rana. In majraha the alif is closer to i, only here. In a-a'jamiyy the second hamza is eased, between a hamza and an alif. In ta'manna the lips move a little toward u, with no separate u. Rawm and ishmam at an ordinary stop are an allowed choice on u and i, not a separate ayah.",
-          "أربع سكتات بلا تنفس: عوجًا قيّمًا، مرقدنا هذا، من راق، بل ران. وفي «مجراها» الألف أقرب إلى الياء، هنا فقط. وفي «أأعجمي» تُسهَّل الهمزة الثانية بين الهمزة والألف. وفي «تأمنا» تتحرك الشفتان قليلًا نحو الضم بلا ضمة مستقلة. والروم والإشمام في الوقف العادي وجه جائز على الضم والكسر، ليسا آية مستقلة.",
-          "Empat hentian tanpa napas: iwajan qayyima, marqadina hadha, man raq, bal rana. Pada majraha alif lebih dekat ke i, hanya di sini. Pada a-a'jamiyy hamzah kedua dipermudah, antara hamzah dan alif. Pada ta'manna bibir sedikit ke u, tanpa u yang tersendiri. Rawm dan isymam pada waqaf biasa ialah pilihan yang harus pada u dan i, bukan ayat yang tersendiri.",
-          "Dört nefessiz duruş: ivecen kayyima, merkadina haza, men rak, bel rane. Mecraha'da elif yalnız burada i'ye daha yakındır. E-a'cemiyy'de ikinci hemze, hemze ile elif arasında hafifletilir. Te'menna'da dudaklar ayrı bir u olmadan hafifçe u'ya gider. Olağan vakıfta revm ve işmam, u ve i üzerinde caiz bir tercihtir, ayrı bir ayet değildir.",
-          "چار رکاوٹیں بغیر سانس: عِوَجًا قَيِّمًا، مَرْقَدِنَا هَٰذَا، مَن رَاقٍ، بَلْ رَانَ۔ مَجْرَاهَا میں الف صرف یہیں اِ کے قریب ہے۔ أَأَعْجَمِيّ میں دوسری ہمزہ ہلکی ہے، ہمزہ اور الف کے بیچ۔ تَأْمَنَّا میں ہونٹ الگ اُ کے بغیر ہلکے سے اُ کی طرف جاتے ہیں۔ عام وقف پر روم اور اشمام اُ اور اِ پر جائز انتخاب ہیں، الگ آیت نہیں۔",
+          "Четыре задержки без вдоха: عِوَجًا قَيِّمًا، مَرْقَدِنَا هَٰذَا، مَن رَاقٍ، بَلْ رَانَ. В مَالِيَهْ هَلَكَ можно задержаться без вдоха или слить. В مَجْرَاهَا алиф ближе к и, только здесь, не в «марсаха». В أَأَعْجَمِيّ вторая хамза облегчена. В تَأْمَنَّا либо губы чуть идут к у без звука, либо слышен короткий след у. На обычной остановке ишмам — только после у: губы без звука. Раум — тихий короткий у или и, не а.",
+          "Four holds without a breath: iwajan qayyima, marqadina hadha, man raq, bal rana. In maliyah halak you may hold without a breath or merge. In majraha the alif is closer to i, only here, not in marsaha. In a-a'jamiyy the second hamza is eased. In ta'manna either the lips move toward u with no sound, or a short trace of u is heard. At an ordinary stop, ishmam is only after u: the lips, with no sound. Rawm is a quiet short u or i, not a.",
+          "أربع سكتات بلا تنفس: عوجًا قيّمًا، مرقدنا هذا، من راق، بل ران. وفي «ماليه هلك» يجوز السكت بلا تنفس أو الإدغام. وفي «مجراها» الألف أقرب إلى الياء، هنا فقط، لا في «مرساها». وفي «أأعجمي» تُسهَّل الهمزة الثانية. وفي «تأمنا» إما إشمام بلا صوت، وإما روم يُسمع منه أثر الضم. وفي الوقف العادي الإشمام بعد الضم فقط: الشفتان بلا صوت. والروم في الضم والكسر، لا في الفتح.",
+          "Empat hentian tanpa napas: iwajan qayyima, marqadina hadha, man raq, bal rana. Pada maliyah halak boleh henti tanpa napas atau dilebur. Pada majraha alif lebih dekat ke i, hanya di sini, bukan pada marsaha. Pada a-a'jamiyy hamzah kedua dipermudah. Pada ta'manna sama ada bibir ke u tanpa bunyi, atau jejak u yang pendek kedengaran. Pada waqaf biasa, isymam hanya selepas u. Rawm ialah u atau i yang perlahan, bukan a.",
+          "Dört nefessiz duruş: ivecen kayyima, merkadina haza, men rak, bel rane. Maliyeh heleke'de nefessiz durmak da kaynaşmak da olur. Mecraha'da elif yalnız burada i'ye daha yakındır, mersaha'da değil. E-a'cemiyy'de ikinci hemze hafifletilir. Te'menna'da ya dudaklar sessizce u'ya gider, ya kısa bir u izi duyulur. Olağan vakıfta işmam yalnız u'dan sonradır. Revm sessiz kısa u veya i'dir, a değildir.",
+          "چار رکاوٹیں بغیر سانس: عِوَجًا قَيِّمًا، مَرْقَدِنَا هَٰذَا، مَن رَاقٍ، بَلْ رَانَ۔ مَالِيَهْ هَلَكَ میں بغیر سانس رکنا بھی ہو سکتا ہے اور ملانا بھی۔ مَجْرَاهَا میں الف صرف یہیں اِ کے قریب ہے، مرساہا میں نہیں۔ أَأَعْجَمِيّ میں دوسری ہمزہ ہلکی ہے۔ تَأْمَنَّا میں یا ہونٹ بغیر آواز اُ کی طرف جاتے ہیں، یا اُ کا ہلکا نشان سنائی دیتا ہے۔ عام وقف پر اشمام صرف اُ کے بعد ہے۔ روم ہلکی اُ یا اِ ہے، ا نہیں۔",
         ),
         examples: [
           { ar: "عِوَجًا قَيِّمًا", read: "1иважа · къаййима — без вдоха", lat: "iwaja · qayyima — no breath", where: "18:1-2" },
