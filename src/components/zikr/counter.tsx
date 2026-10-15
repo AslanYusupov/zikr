@@ -327,12 +327,10 @@ const quote = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length]
               {s.orbit && (
                 <div className="orbit" aria-hidden>
                   <span className="orbit-sun">
-                    <span className="sun-corona" />
-                    <span className="sun-body" />
+                    <img className="sun-body" src="/orbit-sun.webp" alt="" draggable={false} />
                   </span>
                   <span className="orbit-moon">
-                    <span className="moon-body" />
-                    <span className="moon-shade" />
+                    <img className="moon-body" src="/orbit-moon.webp" alt="" draggable={false} />
                   </span>
                 </div>
               )}
