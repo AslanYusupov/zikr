@@ -2641,11 +2641,15 @@ details.fold>:not(summary) {
   inset: -55%;
 }
 .sun-body {
-  background: radial-gradient(circle at 40% 38%,#fff 0 8%,#ffe7b0 22%,#ff9a2e 55%,#d24c10 100%);
+  background: radial-gradient(circle closest-side at 36% 32%, #fff 0 9%, #ffe7b0 32%, #ffb03a 74%, #f07818 100%);
   border-radius: 999px;
   position: absolute;
-  inset: 22%;
-  box-shadow: 0 0 12px 3px #ffd278d9,0 0 28px 10px #ff781e59;
+  top: 50%;
+  left: 50%;
+  width: calc(2.35rem * .68);
+  height: calc(2.35rem * .68);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 12px 3px #ffd278d9, 0 0 28px 10px #ff781e59;
 }
 .orbit-moon {
   bottom: -.15rem;
@@ -2654,14 +2658,22 @@ details.fold>:not(summary) {
   background: radial-gradient(circle at 30% 28%,#fffffff2 0 1.5px,#0000 2.5px),radial-gradient(circle at 58% 36%,#5058648c 0 2.5px,#0000 4px),radial-gradient(circle at 42% 62%,#3c445080 0 3.5px,#0000 5px),radial-gradient(circle at 68% 70%,#ffffffb3 0 1.5px,#0000 2.5px),radial-gradient(circle at 24% 70%,#5a626e73 0 2px,#0000 3.5px),radial-gradient(circle at 46% 42%,#f7f8fb 0 26%,#d5dce6 52%,#8d98a8 100%);
   border-radius: 999px;
   position: absolute;
-  inset: 16%;
+  top: 50%;
+  left: 50%;
+  width: calc(2.35rem * .68);
+  height: calc(2.35rem * .68);
+  transform: translate(-50%, -50%);
   box-shadow: inset -7px -3px 10px #1e263473,0 0 12px 2px #dce4f059;
 }
 .moon-shade {
   background: linear-gradient(105deg,#0000 46%,#080c149e 72%);
   border-radius: 999px;
   position: absolute;
-  inset: 16%;
+  top: 50%;
+  left: 50%;
+  width: calc(2.35rem * .68);
+  height: calc(2.35rem * .68);
+  transform: translate(-50%, -50%);
 }
 @keyframes sun-burn {
   0%,to {
