@@ -70,6 +70,7 @@ export function QuranView() {
   const [note, setNote] = useState("");
   const [part, setPart] = useState<"surahs" | "tajweed">("surahs");
   const [glossMode, setGlossMode] = useState<"off" | "one" | "all">("off");
+  const [glossNext, setGlossNext] = useState<"one" | "all">("one");
   const [glossKey, setGlossKey] = useState<string | null>(null);
   const [glossSurah, setGlossSurah] = useState<number | null>(null);
   const [mean, setMean] = useState<QuranMeaning | null>(null);
@@ -133,6 +134,7 @@ export function QuranView() {
 
   function clearGloss() {
     setGlossMode("off");
+    setGlossNext("one");
     setGlossKey(null);
     setGlossSurah(null);
   }
@@ -142,18 +144,16 @@ export function QuranView() {
   }
 
   function onGloss(surahN: number, key: string) {
-    if (glossSurah !== surahN || glossMode === "off") {
-      setGlossSurah(surahN);
-      setGlossKey(key);
-      setGlossMode("one");
+    if (glossSurah === surahN && glossMode !== "off") {
+      setGlossNext(glossMode === "one" ? "all" : "one");
+      setGlossMode("off");
+      setGlossKey(null);
       return;
     }
-    if (glossMode === "one") {
-      setGlossMode("all");
-      return;
-    }
-    setGlossMode("off");
-    setGlossKey(null);
+    const next = glossSurah === surahN ? glossNext : "one";
+    setGlossSurah(surahN);
+    setGlossKey(key);
+    setGlossMode(next);
   }
 
   function claim(pieces: Piece[]) {
