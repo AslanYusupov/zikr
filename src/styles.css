@@ -3262,6 +3262,16 @@ html, body {
 .taj-ar { color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.45rem; font-weight: 700; line-height: 2.1; }
 .taj-read { margin-top: .15rem; color: var(--fg); font-size: .92rem; font-weight: 800; line-height: 1.35; }
 .taj-gloss { margin-top: .15rem; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.taj-key { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .6rem; }
+.taj-key span, .taj-letters { border-radius: 999px; padding: .15rem .5rem; font-size: .72rem; font-weight: 800; }
+.taj-letters { display: inline-block; margin-top: .45rem; font-family: var(--font-arabic), "Amiri", serif; font-size: 1.05rem; line-height: 1.8; }
+.taj-madd { color: #9b2c2c; background: #9b2c2c1a; }
+.taj-ghunnah { color: #1f7a4d; background: #1f7a4d1a; }
+.taj-qalqala { color: #1d4e89; background: #1d4e891a; }
+.taj-izhar { color: #5c6570; background: #5c65701f; }
+.taj-choice { border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: .8rem; min-height: 2.4rem; padding: .35rem .7rem; text-align: start; font-size: .86rem; font-weight: 700; }
+.taj-choice.on { border-color: var(--gold); color: var(--gold); }
+.taj-body fieldset { border: 0; margin: .7rem 0 0; padding: 0; min-inline-size: 0; }
 @media (orientation: landscape) and (max-height: 520px) {
   .app-column { max-width: none; }
   header.safe-top { padding-top: max(.15rem, env(safe-area-inset-top)); padding-bottom: 0; }
