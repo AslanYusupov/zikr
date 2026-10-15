@@ -114,11 +114,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Что такое танвин?", "What is tanwin?", "ما التنوين؟", "Apa itu tanwin?", "Tenvin nedir?", "تنوین کیا ہے؟"),
             choices: [
+              L("Буква дважды", "The letter twice", "الحرف مرتان", "Huruf dua kali", "Harf iki kez", "حرف دو بار"),
               L("Н на конце слова", "An n at the end of the word", "نون في آخر الكلمة", "N di hujung kata", "Kelime sonunda bir n", "لفظ کے آخر میں ن"),
               L("Долгий а", "A long a", "ألف مد", "A yang panjang", "Uzun a", "لمبی ا"),
-              L("Буква дважды", "The letter twice", "الحرف مرتان", "Huruf dua kali", "Harf iki kez", "حرف دو بار"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -160,11 +160,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Откуда выходит ح?", "Where does ha come from?", "من أين تخرج الحاء؟", "Dari mana ha keluar?", "Ha nereden çıkar?", "ح کہاں سے نکلتی ہے؟"),
             choices: [
-              L("Середина горла", "The middle of the throat", "وسط الحلق", "Tengah halkum", "Boğazın ortası", "حلق کا بیچ"),
               L("Губы", "The lips", "الشفتان", "Bibir", "Dudaklar", "ہونٹ"),
               L("Кончик языка", "The tip of the tongue", "طرف اللسان", "Hujung lidah", "Dil ucu", "زبان کی نوک"),
+              L("Середина горла", "The middle of the throat", "وسط الحلق", "Tengah halkum", "Boğazın ortası", "حلق کا بیچ"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },
@@ -173,8 +173,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         tone: "plain",
         title: L("Язык", "The tongue", "اللسان", "Lidah", "Dil", "زبان"),
         definition: L(
-          "Большая часть букв выходит из языка. У къ, к, дж, ш, й, д, л, н, р и у зубных букв места рядом, но не одни.",
-          "Most letters come from the tongue. Qaf, kaf, jim, shin, ya, dad, lam, nun, ra and the dental letters sit near each other, but not in the same place.",
+          "Большая часть букв выходит из языка. У къ, к, дж, ш, й, дад, л, н, р и у зубных букв места рядом, но не одни. Й здесь — согласный, не долгий и.",
+          "Most letters come from the tongue. Qaf, kaf, jim, shin, the consonant ya, dad, lam, nun, ra and the dental letters sit near each other, but not in the same place. This ya is the consonant, not the long i.",
           "أكثر الحروف من اللسان. القاف والكاف والجيم والشين والياء والضاد واللام والنون والراء وحروف الأسنان مواضعها متقاربة، وليست واحدة.",
           "Kebanyakan huruf keluar dari lidah. Qaf, kaf, jim, syin, ya, dad, lam, nun, ra dan huruf gigi berdekatan, tetapi bukan satu tempat.",
           "Harflerin çoğu dildendir. Qaf, kaf, cim, şin, ya, dad, lam, nun, ra ve diş harfleri yakındır, ama yerleri bir değildir.",
@@ -219,8 +219,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         tone: "ghunnah",
         title: L("Губы и нос", "The lips and the nose", "الشفتان والخيشوم", "Bibir dan hidung", "Dudaklar ve burun", "ہونٹ اور ناک"),
         definition: L(
-          "Фа — нижняя губа и верхние зубы. Ба, мим и вав — губы. Гунна н и м — нос.",
-          "Fa is the lower lip and the upper teeth. Ba, mim and waw are the lips. The ghunnah of nun and mim is the nose.",
+          "Фа — нижняя губа и верхние зубы. Ба, мим и вав как «в» — губы. Долгие «у» и «и» берутся из пустоты рта, не из губ. Гунна н и м — нос.",
+          "Fa is the lower lip and the upper teeth. Ba, mim and waw as a consonant are the lips. The long u and the long i come from the empty mouth, not from the lips. The ghunnah of nun and mim is the nose.",
           "الفاء من باطن الشفة السفلى وأطراف الثنايا. والباء والميم والواو من الشفتين. وغنة النون والميم من الخيشوم.",
           "Fa ialah bibir bawah dan gigi atas. Ba, mim dan waw ialah bibir. Ghunnah nun dan mim ialah hidung.",
           "Fa alt dudak ve üst dişlerdir. Ba, mim ve vav dudaklardır. Nun ve mim'in gunnesi burundandır.",
@@ -252,11 +252,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Откуда гунна?", "Where does ghunnah come from?", "من أين الغنة؟", "Dari mana ghunnah?", "Gunne nereden?", "غنہ کہاں سے؟"),
             choices: [
+              L("Из края языка", "From the side of the tongue", "من حافة اللسان", "Dari tepi lidah", "Dil kenarından", "زبان کے کنارے سے"),
               L("Из носа", "From the nose", "من الخيشوم", "Dari hidung", "Burundan", "ناک سے"),
               L("Из горла", "From the throat", "من الحلق", "Dari halkum", "Boğazdan", "حلق سے"),
-              L("Из края языка", "From the side of the tongue", "من حافة اللسان", "Dari tepi lidah", "Dil kenarından", "زبان کے کنارے سے"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -280,8 +280,8 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "همس/جهر · شدة/رخاوة · استعلاء/استفال · إطباق/انفتاح",
         mechanism: L(
-          "Шёпот, воздух идёт: ف ح ث ه ش خ ص س ك ت. Смычка, звук собран: ء ج د ق ط ب ك ت. Между ними, звук идёт не до конца: ل ن ع م ر. Всегда толще: خ ص ض غ ط ق ظ. Ещё закрытее: ص ض ط ظ. Остальные тонкие, пока отдельное правило не утолщит ра или лям.",
-          "A whisper, the breath continues: fa, ha, tha, ha, shin, kha, sad, sin, kaf, ta. A stop, the sound is held shut: hamza, jim, dal, qaf, ta, ba, kaf, ta. Between them, the sound neither stops nor runs free: lam, nun, ayn, mim, ra. Always heavy: kha, sad, dad, ghayn, ta, qaf, za. More closed still: sad, dad, ta, za. The rest are light, unless a separate rule thickens ra or lam.",
+          "Шёпот, воздух идёт: ف ح ث ه ش خ ص س ك ت. Смычка, звук собран: ء ج د ق ط ب ك ت. Между ними, звук идёт не до конца: ل ن ع م ر. У прочих букв звук идёт свободно. Всегда толще: خ ص ض غ ط ق ظ. Ещё закрытее: ص ض ط ظ. Остальные тонкие, пока отдельное правило не утолщит ра или лям.",
+          "A whisper, the breath continues: fa, ha, tha, ha, shin, kha, sad, sin, kaf, ta. A stop, the sound is held shut: hamza, jim, dal, qaf, ta, ba, kaf, ta. Between them, the sound neither stops nor runs free: lam, nun, ayn, mim, ra. Every letter outside those two groups lets the sound run. Always heavy: kha, sad, dad, ghayn, ta, qaf, za. More closed still: sad, dad, ta, za. The rest are light, unless a separate rule thickens ra or lam.",
           "الهمس يجري فيه النفس: ف ح ث ه ش خ ص س ك ت. والشدة ينحبس فيها الصوت: ء ج د ق ط ب ك ت. وبينهما توسط، لا ينحبس الصوت ولا يجري تمامًا: ل ن ع م ر. الاستعلاء دائمًا أغلظ: خ ص ض غ ط ق ظ. والإطباق أشد إغلاقًا: ص ض ط ظ. وسائر الحروف مستفلة حتى يفخّم حكمٌ الراء أو اللام.",
           "Hams, napas berjalan: fa ha tsa ha syin kha sad sin kaf ta. Syaddah, bunyi tertahan: hamzah jim dal qaf ta ba kaf ta. Antaranya, bunyi tidak tertahan dan tidak bebas: lam nun ain mim ra. Sentiasa tebal: kha sad dad ghain ta qaf za. Lebih tertutup: sad dad ta za. Yang lain nipis, kecuali hukum menebalkan ra atau lam.",
           "Hems, nefes gider: fe ha se he şin ha sad sin kef te. Şiddet, ses tutulur: hemze cim dal kaf tı be kef te. İkisinin arası, ses ne kapanır ne serbest akar: lam nun ayn mim ra. Hep kalın: ha sad dad ğayn tı kaf zı. Daha kapalı: sad dad tı zı. Diğerleri incedir, ta ki bir hüküm ra veya lamı kalınlaştırana kadar.",
@@ -303,11 +303,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Какая буква всегда твёрдая?", "Which letter is always heavy?", "أي حرف دائم التفخيم؟", "Huruf mana yang sentiasa tebal?", "Hangi harf hep kalındır?", "کون سا حرف ہمیشہ موٹا ہے؟"),
             choices: [
-              L("ص", "sad", "ص", "sad", "sad", "ص"),
               L("س", "sin", "س", "sin", "sin", "س"),
               L("ح", "ha", "ح", "ha", "ha", "ح"),
+              L("ص", "sad", "ص", "sad", "sad", "ص"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },
@@ -373,10 +373,10 @@ export const TAJWEED_COURSE: CourseModule[] = [
         mechanism: L(
           "Ра с а и у — толще, с и — тоньше. Если на ра нет гласного, смотри гласный перед ней. Короткий и самой хамзы соединения, как в начале ارْجِعِي, её не утоньшает. Твёрдая буква сразу после неё в том же слове делает её толстой. Если эта твёрдая сама с и, как в فِرْقٍ, у Хафса можно толсто и тонко. На остановке после и или после й без гласного она тонкая. Лям в «Аллах1» толще после а и у и тоньше после и.",
           "Ra with a and u is heavier, with i it is lighter. If ra has no vowel, look at the vowel before it. A short i that belongs only to the joining hamza, as at the start of irji'i, does not make it light. A heavy letter right after it in the same word makes it heavy. If that heavy letter itself has i, as in firq, Hafs allows both heavy and light. When you stop after i, or after a vowelless ya, it is light. The lam in Allah is heavier after a and u, and lighter after i.",
-          "الراء مع الفتح والضم أغلظ، ومع الكسر أدق. فإن سكنت فانظر إلى ما قبلها. وكسرة الابتداء لا ترققها، وحرف الاستعلاء بعدها في كلمتها يفخمها. وعند الوقف بعد الكسر أو الياء الساكنة ترقق. ولام «الله» أغلظ بعد الفتح والضم وأدق بعد الكسر.",
-          "Ra dengan a dan u lebih tebal, dengan i lebih nipis. Jika ra sukun, lihat vokal sebelumnya. I pendek di awal kata tidak menipiskannya. Huruf tebal terus selepasnya dalam kata yang sama menebalkannya. Berhenti selepas i atau ya sukun: nipis. Lam pada Allah lebih tebal selepas a dan u, lebih nipis selepas i.",
-          "Ra a ve u ile kalın, i ile incedir. Ra sükûnluysa öncesine bak. Kelime başındaki kısa i onu inceltmez. Aynı kelimede hemen sonraki kalın harf onu kalınlaştırır. İ'den veya sessiz ya'dan sonra durunca incedir. Allah'taki lam a ve u'dan sonra kalın, i'den sonra incedir.",
-          "را ا اور اُ کے ساتھ موٹی، اِ کے ساتھ پتلی۔ را ساکن ہو تو پہلے والی حرکت دیکھیں۔ لفظ کے شروع کی چھوٹی اِ اسے پتلا نہیں کرتی۔ اسی لفظ میں فوراً بعد بھارا حرف اسے موٹا کرتا ہے۔ اِ یا ساکن ی کے بعد رکیں تو پتلی۔ اللہ کی لام ا اور اُ کے بعد موٹی، اِ کے بعد پتلی۔",
+          "الراء مع الفتح والضم أغلظ، ومع الكسر أدق. فإن سكنت فانظر إلى ما قبلها. وكسرة الابتداء لا ترققها، وحرف الاستعلاء بعدها في كلمتها يفخمها. إلا إن كُسر حرف الاستعلاء، كـ«فرق»، فيجوز الوجهان. وعند الوقف بعد الكسر أو الياء الساكنة ترقق. ولام «الله» أغلظ بعد الفتح والضم وأدق بعد الكسر.",
+          "Ra dengan a dan u lebih tebal, dengan i lebih nipis. Jika ra sukun, lihat vokal sebelumnya. I pendek di awal kata tidak menipiskannya. Huruf tebal terus selepasnya dalam kata yang sama menebalkannya. Jika huruf tebal itu sendiri ber-i, seperti firq, kedua-duanya boleh. Berhenti selepas i atau ya sukun: nipis. Lam pada Allah lebih tebal selepas a dan u, lebih nipis selepas i.",
+          "Ra a ve u ile kalın, i ile incedir. Ra sükûnluysa öncesine bak. Kelime başındaki kısa i onu inceltmez. Aynı kelimede hemen sonraki kalın harf onu kalınlaştırır. O kalın harfin kendisi i ise, fırk gibi, ikisi de olur. İ'den veya sessiz ya'dan sonra durunca incedir. Allah'taki lam a ve u'dan sonra kalın, i'den sonra incedir.",
+          "را ا اور اُ کے ساتھ موٹی، اِ کے ساتھ پتلی۔ را ساکن ہو تو پہلے والی حرکت دیکھیں۔ لفظ کے شروع کی چھوٹی اِ اسے پتلا نہیں کرتی۔ اسی لفظ میں فوراً بعد بھارا حرف اسے موٹا کرتا ہے۔ اگر وہ بھارا حرف خود اِ ہو، جیسے فِرْقٍ، تو دونوں ہو سکتے ہیں۔ اِ یا ساکن ی کے بعد رکیں تو پتلی۔ اللہ کی لام ا اور اُ کے بعد موٹی، اِ کے بعد پتلی۔",
         ),
         examples: [
           { ar: "رَبِّ", read: "рабби — ра твёрдая", lat: "rabbi — ra is heavy", where: "1:2" },
@@ -398,11 +398,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Какая лям в «биллах1и»?", "How is the lam in billahi?", "كيف لام «بالله»؟", "Bagaimana lam pada billahi?", "Billahi'deki lam nasıl?", "باللہ میں لام کیسی ہے؟"),
             choices: [
+              L("Её нет", "It is silent", "لا تُنطق", "Tidak disebut", "Okunmaz", "پڑھی نہیں جاتی"),
               L("Тонкая", "Light", "مرققة", "Nipis", "İnce", "پتلی"),
               L("Всегда толстая", "Always heavy", "مفخمة دائمًا", "Sentiasa tebal", "Hep kalın", "ہمیشہ موٹی"),
-              L("Её нет", "It is silent", "لا تُنطق", "Tidak disebut", "Okunmaz", "پڑھی نہیں جاتی"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -450,11 +450,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Что с н в «ан1амта»?", "What happens to the n in an'amta?", "ما شأن النون في «أنعمت»؟", "Apa pada n dalam an'amta?", "An'amta'daki n ne olur?", "انْعَمْتَ میں ن کا کیا ہوتا ہے؟"),
             choices: [
-              L("Слышен ясно", "It is clearly heard", "تُظهر", "Jelas", "Açık duyulur", "واضح سنائی دیتی ہے"),
               L("Уходит в нос", "It goes into the nose", "تُخفى", "Masuk ke hidung", "Buruna gizlenir", "ناک میں چلی جاتی ہے"),
               L("Становится м", "It becomes m", "تُقلب ميمًا", "Menjadi m", "M olur", "م بن جاتی ہے"),
+              L("Слышен ясно", "It is clearly heard", "تُظهر", "Jelas", "Açık duyulur", "واضح سنائی دیتی ہے"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },
@@ -541,11 +541,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("На что меняется н перед б?", "What does the n become before ba?", "إلام تُقلب النون قبل الباء؟", "N menjadi apa sebelum ba?", "Ba'dan önce n neye döner?", "ب سے پہلے ن کس میں بدلتی ہے؟"),
             choices: [
+              L("Пропадает без следа", "It vanishes without a trace", "تسقط بلا أثر", "Hilang tanpa bekas", "İzsiz düşer", "بغیر نشان کے گرتی ہے"),
               L("На м с гунной", "Into m with ghunnah", "ميمًا بغنة", "Menjadi m dengan ghunnah", "Gunneyle m'e", "غنہ کے ساتھ م میں"),
               L("Остаётся ясным", "It stays clear", "تبقى مظهرة", "Kekal jelas", "Açık kalır", "واضح رہتی ہے"),
-              L("Пропадает без следа", "It vanishes without a trace", "تسقط بلا أثر", "Hilang tanpa bekas", "İzsiz düşer", "بغیر نشان کے گرتی ہے"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -565,7 +565,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         mechanism: L(
           "Кончик языка не ставит ясный н. Гунна две меры. Перед твёрдой буквой этот носовой звук толще, перед тонкой — тоньше.",
           "The tip of the tongue does not place a clear n. The ghunnah is two counts. Before a heavy letter this nasal sound is thicker, and before a light letter it is thinner.",
-          "لا يضع طرف اللسان نونًا مظهرة. الغنة حركتان. وقبل حرف الاستعلاء تكون أغنى وأغلظ، وقبل المستفل أرق.",
+          "لا يضع طرف اللسان نونًا مظهرة. الغنة حركتان. وقبل حرف الاستعلاء تكون أغلظ، وقبل المستفل أرق.",
           "Hujung lidah tidak meletakkan n yang jelas. Ghunnah dua harakat. Sebelum huruf tebal bunyi hidung ini lebih tebal, sebelum huruf nipis lebih nipis.",
           "Dil ucu açık bir n koymaz. Gunne iki miktardır. Kalın harften önce bu geniz sesi daha kalın, ince harften önce daha incedir.",
           "زبان کی نوک واضح ن نہیں لگاتی۔ غنہ دو حرکت۔ بھاری حرف سے پہلے یہ ناک والی آواز موٹی، پتلے سے پہلے پتلی۔",
@@ -587,11 +587,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Где звук н в «мин шарри»?", "Where is the n in min sharri?", "أين صوت النون في «من شر»؟", "Di mana bunyi n pada min sharri?", "Min şerri'de n'nin sesi nerede?", "مِن شَرِّ میں ن کی آواز کہاں ہے؟"),
             choices: [
-              L("В носу, две меры", "In the nose, two counts", "في الأنف حركتين", "Di hidung, dua harakat", "Burunda, iki miktar", "ناک میں، دو حرکت"),
               L("Ясный на языке", "Clear, on the tongue", "مظهرة على اللسان", "Jelas, di lidah", "Açık, dilde", "واضح، زبان پر"),
               L("Его нет", "It is gone", "لا صوت لها", "Tidak ada", "Yoktur", "ہے ہی نہیں"),
+              L("В носу, две меры", "In the nose, two counts", "في الأنف حركتين", "Di hidung, dua harakat", "Burunda, iki miktar", "ناک میں، دو حرکت"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },
@@ -691,11 +691,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Сколько мер у гунны в «инна»?", "How many counts is the ghunnah in inna?", "كم غنة «إن»؟", "Berapa harakat ghunnah pada inna?", "İnne'deki gunne kaç miktar?", "انَّ کی غنہ کتنی حرکت ہے؟"),
             choices: [
+              L("Её нет", "There is none", "لا غنة", "Tidak ada", "Yoktur", "ہے ہی نہیں"),
               L("Две", "Two", "حركتان", "Dua", "İki", "دو"),
               L("Шесть", "Six", "ست", "Enam", "Altı", "چھ"),
-              L("Её нет", "There is none", "لا غنة", "Tidak ada", "Yoktur", "ہے ہی نہیں"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -744,11 +744,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Что слышно в «ахатту»?", "What is heard in ahattu?", "ماذا يُسمع في «أحطت»؟", "Apa yang kedengaran pada ahattu?", "Ahattu'da ne duyulur?", "أَحَطتُ میں کیا سنائی دیتا ہے؟"),
             choices: [
-              L("т, и след твёрдой та", "t, with a trace of the heavy ta", "تاء مع أثر الطاء", "t, dengan bekas ta yang berat", "t, kalın tı'nın iziyle", "ت، اور بھاری ط کا نشان"),
               L("ясные та и та подряд", "a clear ta and then ta", "طاء ثم تاء واضحتان", "ta lalu ta, keduanya jelas", "açık tı sonra te", "واضح ط پھر ت"),
               L("только къ", "only qaf", "قاف فقط", "hanya qaf", "yalnız qaf", "صرف ق"),
+              L("т, и след твёрдой та", "t, with a trace of the heavy ta", "تاء مع أثر الطاء", "t, dengan bekas ta yang berat", "t, kalın tı'nın iziyle", "ت، اور بھاری ط کا نشان"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },
@@ -843,11 +843,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Сколько в «ад-даллин»?", "How many in ad-dallin?", "كم في «الضالين»؟", "Berapa pada ad-dallin?", "Ad-dallin'de kaç?", "الضَّالِّينَ میں کتنی؟"),
             choices: [
+              L("Четыре или пять", "Four or five", "أربع أو خمس", "Empat atau lima", "Dört veya beş", "چار یا پانچ"),
               L("Шесть", "Six", "ست", "Enam", "Altı", "چھ"),
               L("Две", "Two", "اثنتان", "Dua", "İki", "دو"),
-              L("Четыре или пять", "Four or five", "أربع أو خمس", "Empat atau lima", "Dört veya beş", "چار یا پانچ"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -869,7 +869,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           "İşaret burada durulacağını ya da geçileceğini söyler. Anlam için yardımdır, ayrı bir ses hükmü değildir.",
           "نشان بتاتا ہے یہاں رکنا ہے یا آگے بڑھنا۔ یہ معنی کی مدد ہے، آواز کا الگ حکم نہیں۔",
         ),
-        letters: "م · لا · ج · صلي · قلي · ∴ · س",
+        letters: "م · لا · ج · صلى · قلى · ∴ · س",
         mechanism: L(
           "م — здесь останавливаются. لا — здесь не останавливаются. ج — можно и так, и так. صلى — лучше идти дальше. قلى — лучше остановиться. Три точки — остановись на одной из двух, не на обеих. س — короткая задержка без вдоха.",
           "Mim: stop here. La: do not stop here. Jim: either is allowed. Sila: it is better to continue. Qala: it is better to stop. Three dots: stop at one of the two, not at both. Sin: a short hold, without taking a breath.",
@@ -895,11 +895,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Что значит صلى?", "What does sila mean?", "ماذا تعني صلى؟", "Apa makna sila?", "Sıla ne demektir?", "صلى کا کیا مطلب ہے؟"),
             choices: [
-              L("Лучше идти дальше", "It is better to continue", "الوصل أولى", "Lebih baik disambung", "Geçmek daha iyidir", "آگے بڑھنا بہتر ہے"),
               L("Обязательно стоять", "You must stop", "يجب الوقف", "Wajib berhenti", "Mutlaka dur", "رکنا لازمی ہے"),
               L("Задержка без вдоха", "A hold without a breath", "سكتة بلا نفس", "Hentian tanpa napas", "Nefessiz duruş", "سانس کے بغیر رکاوٹ"),
+              L("Лучше идти дальше", "It is better to continue", "الوصل أولى", "Lebih baik disambung", "Geçmek daha iyidir", "آگے بڑھنا بہتر ہے"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },
@@ -988,11 +988,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("С чего начинают «ихдина»?", "How do you start ihdina?", "بم تُبدأ «اهدنا»؟", "Dengan apa ihdina dimula?", "İhdina neyle başlar?", "اہْدِنَا کس سے شروع ہوتا ہے؟"),
             choices: [
+              L("Хамзу не читают и здесь", "The hamza is dropped here too", "لا تُنطق هنا أيضًا", "Di sini pun tidak dibaca", "Burada da okunmaz", "یہاں بھی نہیں پڑھی جاتی"),
               L("С и", "With i", "بالكسر", "Dengan i", "İ ile", "اِ سے"),
               L("С а", "With a", "بالفتح", "Dengan a", "A ile", "اَ سے"),
-              L("Хамзу не читают и здесь", "The hamza is dropped here too", "لا تُنطق هنا أيضًا", "Di sini pun tidak dibaca", "Burada da okunmaz", "یہاں بھی نہیں پڑھی جاتی"),
             ],
-            answer: A(0),
+            answer: A(1),
           },
         ],
       },
@@ -1041,11 +1041,11 @@ export const TAJWEED_COURSE: CourseModule[] = [
           {
             q: L("Где у Хафса алиф ближе к и?", "Where is the alif closer to i in Hafs?", "أين تكون الألف أقرب إلى الياء عند حفص؟", "Di mana alif lebih dekat ke i pada Hafs?", "Hafs'ta elif nerede i'ye daha yakındır?", "حفص میں الف کہاں اِ کے قریب ہے؟"),
             choices: [
-              L("Только «маджраха»", "Only majraha", "«مجراها» فقط", "Hanya majraha", "Yalnız mecraha", "صرف مجراہا"),
               L("В каждой протяжке", "In every lengthening", "في كل مد", "Pada setiap mad", "Her medde", "ہر مد میں"),
               L("В «амана»", "In amana", "في «آمن»", "Pada amana", "Amene'de", "آمن میں"),
+              L("Только «маджраха»", "Only majraha", "«مجراها» فقط", "Hanya majraha", "Yalnız mecraha", "صرف مجراہا"),
             ],
-            answer: A(0),
+            answer: A(2),
           },
         ],
       },

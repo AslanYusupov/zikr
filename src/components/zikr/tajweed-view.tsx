@@ -32,6 +32,7 @@ export function TajweedView() {
   const [result, setResult] = useState<Record<string, "ok" | "bad">>({});
   const [hint, setHint] = useState("");
   const card = useRef<HTMLElement | null>(null);
+  const skipScroll = useRef(true);
 
   const say = (ru: string, en: string, ar: string, id: string, tr: string, ur: string) =>
     lang === "ru" ? ru : lang === "ar" ? ar : lang === "id" ? id : lang === "tr" ? tr : lang === "ur" ? ur : en;
@@ -41,6 +42,10 @@ export function TajweedView() {
   const total = TAJWEED_FLAT.length;
 
   useEffect(() => {
+    if (skipScroll.current) {
+      skipScroll.current = false;
+      return;
+    }
     card.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [open]);
 
