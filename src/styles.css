@@ -3264,6 +3264,13 @@ html, body {
 .taj-ar { color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.45rem; font-weight: 700; line-height: 2.1; }
 .taj-read { margin-top: .15rem; color: var(--fg); font-size: .92rem; font-weight: 800; line-height: 1.35; }
 .taj-gloss { margin-top: .15rem; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.taj-meter { margin-top: .65rem; padding: .65rem .75rem .7rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.taj-pips { display: flex; gap: .35rem; min-height: .85rem; margin: .55rem 0 .45rem; }
+.taj-pips i { width: .7rem; height: .7rem; border-radius: 999px; background: var(--line); }
+.taj-pips i.on { background: var(--gold); }
+.taj-meter-row { display: flex; gap: .4rem; }
+.taj-meter-n { flex: 1; min-height: 2.2rem; border: 1px solid var(--line); border-radius: .8rem; background: transparent; color: var(--fg); font-size: .95rem; font-weight: 800; }
+.taj-meter-n.on { border-color: var(--gold); color: var(--gold); }
 .taj-key { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .6rem; }
 .taj-key span, .taj-letters { border-radius: 999px; padding: .15rem .5rem; font-size: .72rem; font-weight: 800; }
 .taj-letters { display: inline-block; margin-top: .45rem; font-family: var(--font-arabic), "Amiri", serif; font-size: 1.05rem; line-height: 1.8; }

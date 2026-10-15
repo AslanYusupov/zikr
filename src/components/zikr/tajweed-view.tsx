@@ -15,6 +15,77 @@ function readPassed(): string[] {
   }
 }
 
+function Measure({ say }: { say: (ru: string, en: string, ar: string, id: string, tr: string, ur: string) => string }) {
+  const [count, setCount] = useState<2 | 4 | 6>(2);
+  const [lit, setLit] = useState(0);
+
+  useEffect(() => {
+    let i = 0;
+    const timer = window.setInterval(() => {
+      i = i >= count ? 1 : i + 1;
+      setLit(i);
+    }, 450);
+    return () => window.clearInterval(timer);
+  }, [count]);
+
+  const note =
+    count === 2
+      ? say(
+          "Две меры — обычная протяжка: «баа», как «къаля».",
+          "Two counts is the ordinary lengthening: baa, as in qala.",
+          "حركتان: المد الطبيعي، كـ«قَالَ».",
+          "Dua harakat: mad biasa, seperti qala.",
+          "İki miktar: normal med, qale gibi.",
+          "دو حرکت: عام مد، جیسے قَالَ۔",
+        )
+      : count === 4
+        ? say(
+            "Четыре — если хамза в том же слове. В Хафсе это четыре или пять. Если хамза в следующем слове, можно и две, но в одном чтении держи одно.",
+            "Four is when the hamza is in the same word. In Hafs that is four or five. If the hamza is in the next word, two is also allowed, but keep one choice in one sitting.",
+            "أربع: إذا كانت الهمزة في الكلمة نفسها، وفي حفص أربع أو خمس. وإن كانت في الكلمة التالية جازت حركتان، مع لزوم وجه واحد في المجلس.",
+            "Empat: jika hamzah dalam kata yang sama. Dalam Hafs empat atau lima. Jika hamzah di kata berikutnya, dua juga boleh, tetapi satu pilihan dalam satu bacaan.",
+            "Dört: hemze aynı kelimedeyse. Hafs'ta bu dört veya beştir. Hemze sonraki kelimedeyse iki de olur, ama bir oturuşta birini seç.",
+            "چار: اگر ہمزہ اسی لفظ میں ہو۔ حفص میں چار یا پانچ۔ اگر اگلے لفظ میں ہو تو دو بھی ہو سکتی ہیں، مگر ایک نشست میں ایک ہی رکھیں۔",
+          )
+        : say(
+            "Шесть — протяжка, которую нельзя укоротить. В «алиф лам мим» так тянутся лам и мим, не алиф.",
+            "Six is the lengthening that cannot be shortened. In Alif Lam Mim, Lam and Mim are held this way, not the Alif.",
+            "ست: المد الواجب الذي لا يُقصر. وفي «الم» يُمدّ اللام والميم، لا الألف.",
+            "Enam: mad yang tidak boleh dipendekkan. Dalam Alif Lam Mim, yang dipanjangkan Lam dan Mim, bukan Alif.",
+            "Altı: kısaltılamayan med. Elif Lâm Mîm'de Lâm ve Mîm böyle uzar, Elif değil.",
+            "چھ: وہ مد جو چھوٹی نہیں ہوتی۔ الم میں لام اور میم ایسے کھینچے جاتے ہیں، الف نہیں۔",
+          );
+
+  return (
+    <div className="taj-meter">
+      <p className="text-xs font-extrabold text-gold">{say("Мера", "The count", "المقدار", "Kadar", "Miktar", "مقدار")}</p>
+      <p className="mt-1 text-sm leading-snug text-fg">
+        {say(
+          "Одна мера — короткое «ба». Считай вспышки вслух, в одном темпе.",
+          "One count is a short ba. Count the flashes aloud, at one steady speed.",
+          "الحركة كـ«بَ». عُدّ الومضات بصوت واحد.",
+          "Satu harakat ialah ba yang pendek. Hitung kelipan dengan suara, dalam satu tempo.",
+          "Bir miktar kısa ba'dır. Yanıp sönenleri aynı hızda sesli say.",
+          "ایک حرکت چھوٹی بَ ہے۔ چمک کو ایک رفتار سے زبان سے گنیں۔",
+        )}
+      </p>
+      <div className="taj-pips" aria-hidden>
+        {Array.from({ length: count }, (_, index) => (
+          <i key={index} className={index < lit ? "on" : ""} />
+        ))}
+      </div>
+      <div className="taj-meter-row">
+        {([2, 4, 6] as const).map((n) => (
+          <button key={n} type="button" className={cn("taj-meter-n", count === n && "on")} onClick={() => setCount(n)}>
+            {n}
+          </button>
+        ))}
+      </div>
+      <p className="mt-2 text-xs leading-snug text-muted">{note}</p>
+    </div>
+  );
+}
+
 const TONE: Record<CourseLesson["tone"], string> = {
   madd: "taj-madd",
   ghunnah: "taj-ghunnah",
@@ -95,12 +166,7 @@ export function TajweedView() {
         <span style={{ width: `${Math.round((done / total) * 100)}%` }} />
       </div>
       <p className="mt-1 text-xs font-bold tabular-nums text-gold">{done} / {total}</p>
-      <div className="taj-key">
-        <span className="taj-madd">{say("протяжка", "length", "مد", "mad", "med", "مد")}</span>
-        <span className="taj-ghunnah">{say("нос", "nose", "غنة", "hidung", "geniz", "غنہ")}</span>
-        <span className="taj-qalqala">{say("отскок", "echo", "قلقلة", "pantulan", "sekme", "پلٹ")}</span>
-        <span className="taj-izhar">{say("ясно", "clear", "إظهار", "jelas", "açık", "واضح")}</span>
-      </div>
+      <Measure say={say} />
       <div className="taj-mods">
         {TAJWEED_COURSE.map((item, index) => {
           const got = item.lessons.filter((lesson) => passed.includes(lesson.id)).length;
