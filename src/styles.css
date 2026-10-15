@@ -3245,7 +3245,10 @@ html, body {
 .ayah-read { margin-top: .4rem; color: var(--fg); font-size: .84rem; font-weight: 700; line-height: 1.45; text-align: center; }
 .ayah-gloss { margin-top: .28rem; color: var(--fg); font-size: .8rem; line-height: 1.45; text-align: center; }
 .ayah-btn.is-read { opacity: .72; }
-.ayah-no { display: block; margin-bottom: .15rem; color: var(--muted); font-size: .68rem; font-weight: 800; text-align: left; }
+.ayah-top { display: flex; align-items: center; justify-content: flex-start; gap: .4rem; margin-bottom: .15rem; }
+.ayah-play { display: grid; flex: none; place-items: center; width: 1.7rem; height: 1.7rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--fg); }
+.ayah-play.on { border-color: var(--gold); color: var(--gold); }
+.ayah-no { display: block; margin: 0; color: var(--muted); font-size: .68rem; font-weight: 800; text-align: left; }
 .ayah-ar { display: block; color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.35rem; font-weight: 700; line-height: 2.2; }
 .ayah-meta { display: block; margin-top: .2rem; color: var(--gold); font-size: .68rem; text-align: left; }
 .phrase-read { background: color-mix(in srgb, var(--bg) 90%, transparent); border-radius: 1rem; }

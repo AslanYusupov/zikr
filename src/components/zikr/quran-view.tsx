@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { Pause, Play } from "lucide-react";
 import { rewardPoints } from "@/lib/zikr/content";
 import { formatNum, plural } from "@/lib/zikr/format";
 import { t } from "@/lib/zikr/i18n";
@@ -10,6 +11,42 @@ import { cn } from "@/lib/cn";
 import { TajweedView } from "./tajweed-view";
 
 const DONE_KEY = "zikr-quran-done";
+const ALAFASY = "https://everyayah.com/data/Alafasy_128kbps";
+
+function ayahAudio(surah: number, ayah: number) {
+  return `${ALAFASY}/${String(surah).padStart(3, "0")}${String(ayah).padStart(3, "0")}.mp3`;
+}
+
+function hearWord(lang: string, stop: boolean) {
+  const play = {
+    ru: "Слушать аят. Мишари Рашид",
+    en: "Play this ayah. Mishary Rashid",
+    ar: "استمع للآية. مشاري راشد",
+    id: "Dengarkan ayat. Mishary Rashid",
+    tr: "Ayeti dinle. Mişari Raşid",
+    ur: "آیت سنیں۔ مشاری راشد",
+  }[lang] ?? "Play this ayah. Mishary Rashid";
+  const halt = {
+    ru: "Остановить",
+    en: "Stop",
+    ar: "إيقاف",
+    id: "Berhenti",
+    tr: "Durdur",
+    ur: "روکیں",
+  }[lang] ?? "Stop";
+  return stop ? halt : play;
+}
+
+function hearFail(lang: string) {
+  return {
+    ru: "Чтение не открылось. Проверь связь.",
+    en: "The recitation did not open. Check the connection.",
+    ar: "لم تُفتح التلاوة. تحقق من الاتصال.",
+    id: "Bacaan tidak terbuka. Periksa sambungan.",
+    tr: "Kıraat açılmadı. Bağlantıyı kontrol et.",
+    ur: "تلاوت نہیں کھلی۔ رابطہ دیکھیں۔",
+  }[lang] ?? "The recitation did not open. Check the connection.";
+}
 
 type Piece = { key: string; letters: number };
 type DoneMap = Record<string, true>;
@@ -77,6 +114,8 @@ export function QuranView() {
   const lastClaim = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
+  const audio = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState<string | null>(null);
 
   const [attempt, setAttempt] = useState(0);
 
@@ -108,6 +147,41 @@ export function QuranView() {
       stop = true;
     };
   }, [lang]);
+
+  useEffect(() => {
+    const el = new Audio();
+    el.preload = "none";
+    audio.current = el;
+    const ended = () => setPlaying(null);
+    el.addEventListener("ended", ended);
+    return () => {
+      el.pause();
+      el.removeEventListener("ended", ended);
+      el.src = "";
+      audio.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    audio.current?.pause();
+    setPlaying(null);
+  }, [open]);
+
+  function toggleAyah(key: string, surahNo: number, ayahNo: number) {
+    const el = audio.current;
+    if (!el) return;
+    if (playing === key) {
+      el.pause();
+      setPlaying(null);
+      return;
+    }
+    el.src = ayahAudio(surahNo, ayahNo);
+    setPlaying(key);
+    void el.play().catch(() => {
+      setPlaying(null);
+      setNote(hearFail(lang));
+    });
+  }
 
   const reads = useMemo(() => {
     const out: Record<string, string> = {};
@@ -372,6 +446,16 @@ export function QuranView() {
       )}
       {hasBismillah ? (
         <div className={cn("ayah-btn", done[`${surah.n}:b`] && "is-read")}>
+          <div className="ayah-top">
+            <button
+              type="button"
+              className={cn("ayah-play", playing === `${surah.n}:b` && "on")}
+              aria-label={hearWord(lang, playing === `${surah.n}:b`)}
+              onClick={() => toggleAyah(`${surah.n}:b`, 1, 1)}
+            >
+              {playing === `${surah.n}:b` ? <Pause size={13} /> : <Play size={13} />}
+            </button>
+          </div>
           <button type="button" className="ayah-hit" onClick={() => claim(bismillahPiece)}>
             <span className="ayah-ar" dir="rtl" lang="ar">
               {book.bismillah}
@@ -420,7 +504,17 @@ export function QuranView() {
                   key={ayah.n}
                   className={cn("ayah-btn", done[key] && "is-read")}
                 >
-                  <span className="ayah-no">{ayah.n}</span>
+                  <div className="ayah-top">
+                    <button
+                      type="button"
+                      className={cn("ayah-play", playing === key && "on")}
+                      aria-label={hearWord(lang, playing === key)}
+                      onClick={() => toggleAyah(key, surah.n, ayah.n)}
+                    >
+                      {playing === key ? <Pause size={13} /> : <Play size={13} />}
+                    </button>
+                    <span className="ayah-no">{ayah.n}</span>
+                  </div>
                   <button type="button" className="ayah-hit" onClick={() => claim([{ key, letters: ayah.l }])}>
                     <span className="ayah-ar" dir="rtl" lang="ar">
                       {ayah.t}
