@@ -81,7 +81,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 }
 
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
-const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327"];
+const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997"];
 /** A second number made on the same account. Counts stay on the first number. */
 const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839" };
 
@@ -373,6 +373,11 @@ export const publishWorld = createServerFn({ method: "POST" })
       const publicId = realPublicId(data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const stored = data.total;
+      if (stored <= 0) {
+        await sql`delete from zikr_world where public_id = ${publicId}`;
+        await sql`delete from zikr_invites where guest_id = ${publicId}`;
+        return { ok: true as const };
+      }
       await sql`
         insert into zikr_world (public_id, total)
         values (${publicId}, ${stored})
@@ -380,7 +385,7 @@ export const publishWorld = createServerFn({ method: "POST" })
         set total = excluded.total,
             updated_at = now()`;
       const host = data.invitedBy ? realPublicId(data.invitedBy) : undefined;
-      if (host && host !== publicId) {
+      if (host && host !== publicId && data.total > 0) {
         await sql`
           insert into zikr_invites (guest_id, host_id, total)
           values (${publicId}, ${host}, ${data.total})
@@ -415,7 +420,7 @@ export const invitees = createServerFn({ method: "POST" })
       const host = realPublicId(data.publicId);
       const rows = await sql<{ guest_id: string; total: number }>`
         select guest_id, total from zikr_invites
-        where (host_id = ${host} or host_id = ${data.publicId}) and guest_id <> ${host}
+        where (host_id = ${host} or host_id = ${data.publicId}) and guest_id <> ${host} and total > 0
         order by total desc, guest_id asc
         limit 40`;
       return { rows: rows.map((row) => ({ id: row.guest_id, total: row.total })) };
@@ -518,7 +523,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
       select count(*)::int as n from zikr_presence where last_tap_at > now() - interval '30 seconds'`;
     const live = await sql<{ public_id: string; country: string; day_total: number }>`
       select public_id, country, day_total from zikr_presence
-      where last_tap_at > now() - interval '30 seconds'
+      where last_tap_at > now() - interval '30 seconds' and day_total > 0
       order by day_total desc, public_id asc
       limit 20`;
     const daily = await sql<{ public_id: string; country: string; day_total: number }>`

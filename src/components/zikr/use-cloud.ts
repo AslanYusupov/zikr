@@ -298,7 +298,7 @@ export function useWorldSync(hydrated: boolean) {
         }
       }
       const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
-      if (state.total > 0 || invitedBy) {
+      if (state.total > 0) {
         void publishWorld({ data: { publicId, total: state.total, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
       }
       if (key) {

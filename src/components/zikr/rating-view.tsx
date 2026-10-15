@@ -9,7 +9,7 @@ import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 
-const HIDDEN_RATING_IDS = new Set(["89020984", "389020984", "31549154", "88880455", "62012303", "60912327"]);
+const HIDDEN_RATING_IDS = new Set(["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997"]);
 
 const FLAGS: Record<string, string> = {
   RU: "🇷🇺",
@@ -34,8 +34,13 @@ const FLAGS: Record<string, string> = {
   FR: "🇫🇷",
 };
 
-function shown<T extends { id: string }>(rows: T[] | null | undefined): T[] {
-  return (rows ?? []).filter((row) => !HIDDEN_RATING_IDS.has(row.id));
+function shown<T extends { id: string; total?: number; value?: number }>(rows: T[] | null | undefined): T[] {
+  return (rows ?? []).filter((row) => {
+    if (HIDDEN_RATING_IDS.has(row.id)) return false;
+    if (typeof row.total === "number" && row.total <= 0) return false;
+    if (typeof row.value === "number" && row.value <= 0) return false;
+    return true;
+  });
 }
 
 export function RatingView() {
