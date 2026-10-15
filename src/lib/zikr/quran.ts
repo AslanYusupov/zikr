@@ -140,7 +140,7 @@ let memory: QuranBook | null = null;
 
 export async function loadQuran(): Promise<QuranBook> {
   if (memory) return memory;
-  const cacheName = "zikr-quran-v1";
+  const cacheName = "zikr-quran-v2";
   try {
     const cache = await caches.open(cacheName);
     const hit = await cache.match("/quran.json");
