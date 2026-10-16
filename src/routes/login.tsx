@@ -71,7 +71,6 @@ function Login() {
           password,
           name: "—",
           callbackURL: "/",
-          rememberMe: true,
         });
         if (res.error) {
           setError(explainAuthError(lang, res.error, tx(lang, "loginUpFail")));
