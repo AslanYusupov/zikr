@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { authClient, authEnabled } from "./client";
 
 /** Normalized user shape used across the app, auth on or off. */
@@ -56,18 +56,52 @@ export type CurrentUserState = {
  * call keeps a stable hook order across every render of a given component.
  */
 /** Last session that loaded. A failed refetch must not look like a sign-out. */
+const HELD_KEY = "zikr-auth-user";
 let heldUser: AppUser | null = null;
+
+function readStoredUser(): AppUser | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(HELD_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as AppUser;
+    if (!parsed?.id || parsed.isDevFallback) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredUser(user: AppUser | null) {
+  if (typeof window === "undefined") return;
+  try {
+    if (!user) window.localStorage.removeItem(HELD_KEY);
+    else window.localStorage.setItem(HELD_KEY, JSON.stringify(user));
+  } catch {
+    /* private mode */
+  }
+}
 
 export function clearHeldUser() {
   heldUser = null;
+  writeStoredUser(null);
 }
 
 export function useCurrentUserState(): CurrentUserState {
   if (!authEnabled) return { user: DEV_USER, isPending: false };
   // eslint-disable-next-line react-hooks/rules-of-hooks -- authEnabled is constant for the app's lifetime
-  const { data, isPending } = authClient.useSession();
+  const { data, isPending, error } = authClient.useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   const [gaveUp, setGaveUp] = useState(false);
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
+  const [kept, setKept] = useState<AppUser | null>(null);
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
+  const sawPending = useRef(false);
+  if (isPending) sawPending.current = true;
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
+  useEffect(() => {
+    setKept(readStoredUser());
+  }, []);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   useEffect(() => {
     if (!isPending) {
@@ -95,8 +129,14 @@ export function useCurrentUserState(): CurrentUserState {
         isDevFallback: false,
       }
     : null;
-  if (next) heldUser = next;
-  const shown = next ?? heldUser;
+  if (next) {
+    heldUser = next;
+    writeStoredUser(next);
+  } else if (sawPending.current && !isPending && !error) {
+    heldUser = null;
+    writeStoredUser(null);
+  }
+  const shown = next ?? heldUser ?? (error || isPending ? kept : null);
   return {
     user: shown,
     isPending: !shown && isPending && !gaveUp,
