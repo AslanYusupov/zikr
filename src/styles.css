@@ -2533,15 +2533,19 @@ details.fold>:not(summary) {
 @keyframes comet-pass {
   0% {
     opacity: 0;
-    transform: translate3d(108vw, 14vh, 0) rotate(-18deg);
+    transform: translate3d(120vw, 6vh, 0) rotate(-12deg);
   }
-  6% {
-    opacity: .84;
-    transform: translate3d(55.5vw, 23vh, 0) rotate(-18deg);
+  3% {
+    opacity: .9;
+    transform: translate3d(90vw, 8.8vh, 0) rotate(-12deg);
   }
-  16%, 100% {
+  12% {
+    opacity: .9;
+    transform: translate3d(0vw, 17.2vh, 0) rotate(-12deg);
+  }
+  15%, 100% {
     opacity: 0;
-    transform: translate3d(-32vw, 38vh, 0) rotate(-18deg);
+    transform: translate3d(-30vw, 20vh, 0) rotate(-12deg);
   }
 }
 @keyframes star-flow {
@@ -3158,16 +3162,17 @@ html, body {
 @keyframes rain-fall { to { transform: translateY(120vh); } }
 .sky-shot { position: absolute; top: 0; left: 0; width: var(--len, 8rem); height: 6px; opacity: 0; pointer-events: none; }
 @keyframes comet-live {
-  0% { opacity: 0; transform: translate3d(108vw, 12vh, 0) rotate(-18deg); }
-  50% { opacity: var(--bright, .82); transform: translate3d(39vw, 24vh, 0) rotate(-18deg); }
-  100% { opacity: 0; transform: translate3d(-30vw, 36vh, 0) rotate(-18deg); }
+  0% { opacity: 0; transform: translate3d(120vw, 6vh, 0) rotate(-12deg); }
+  18% { opacity: var(--bright, .9); transform: translate3d(93vw, 8.5vh, 0) rotate(-12deg); }
+  78% { opacity: var(--bright, .9); transform: translate3d(4.6vw, 16.9vh, 0) rotate(-12deg); }
+  100% { opacity: 0; transform: translate3d(-28vw, 20vh, 0) rotate(-12deg); }
 }
 .bismillah-sky { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 42%, #1a2430, #000 72%); }
 .comet-live {
   width: var(--len, 9rem);
   height: 6px;
   opacity: 0;
-  animation: comet-live var(--dur, 1.2s) linear infinite;
+  animation: comet-live var(--dur, 1.35s) linear 1 both;
 }
 .app-nav { padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { min-height: 3.15rem; }
