@@ -118,7 +118,7 @@ export function ModeStrip({
   }, [s.mode, quranOn, listOn, namesOn]);
 
   return (
-    <div ref={scroller} className="scroll-x shrink-0 px-3 pt-1">
+    <div ref={scroller} className="mode-strip scroll-x shrink-0 px-3 pt-1">
       <div className="flex w-max gap-1.5 pb-1">
         <Chip active={s.mode === "random" && !busy} onClick={() => { onLeave(); s.setMode("random"); }}>
           {t(s.lang, "random")}
@@ -617,7 +617,7 @@ function Stat({ label, value, hint, reward }: { label: string; value: string; hi
   if (reward) {
     return (
       <div className="rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
-        <p className="whitespace-nowrap text-[0.68rem] font-bold text-muted">{label}</p>
+        <p className="truncate text-[0.68rem] font-bold text-muted">{label}</p>
         <p className="stat-value mt-0.5 text-base leading-none text-fg tabular-nums" suppressHydrationWarning>
           {value}
         </p>
@@ -632,7 +632,7 @@ function Stat({ label, value, hint, reward }: { label: string; value: string; hi
   }
   return (
     <div className="rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
-      <p className="whitespace-nowrap text-[0.68rem] font-bold text-muted">{label}</p>
+      <p className="truncate text-[0.68rem] font-bold text-muted">{label}</p>
       <p className="stat-value mt-0.5 text-base leading-none text-fg tabular-nums" suppressHydrationWarning>
         {value}
       </p>
