@@ -134,9 +134,11 @@ export function Backdrop() {
       )}
       {stars && (
         <>
-          <span className="comet comet-a" aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
+          <span className="meteor meteor-app" aria-hidden>
+            <span className="meteor-streak">
+              <span className="comet-tail" />
+              <span className="comet-head" />
+            </span>
           </span>
         </>
       )}

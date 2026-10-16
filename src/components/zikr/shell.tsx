@@ -41,7 +41,7 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
       onEnter();
       return;
     }
-    const timer = window.setTimeout(onEnter, 1500);
+    const timer = window.setTimeout(onEnter, 2400);
     return () => window.clearTimeout(timer);
   }, [onEnter]);
 
@@ -49,17 +49,11 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
     <div className="bismillah-splash" onClick={close} suppressHydrationWarning>
       <span className="bismillah-glow" aria-hidden />
       <span className="bismillah-sky" aria-hidden />
-      <span
-        className="comet comet-live splash-pass"
-        aria-hidden
-        style={{
-          ["--dur" as string]: "1.35s",
-          ["--len" as string]: "12rem",
-          ["--bright" as string]: "0.82",
-        }}
-      >
-        <span className="comet-tail" />
-        <span className="comet-head" />
+      <span className="meteor meteor-splash" aria-hidden>
+        <span className="meteor-streak">
+          <span className="comet-tail" />
+          <span className="comet-head" />
+        </span>
       </span>
       <p className="bismillah-words" dir="rtl" lang="ar">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
