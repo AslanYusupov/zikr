@@ -2511,19 +2511,12 @@ details.fold>:not(summary) {
   transform: rotate(-13deg);
   transform-origin: 0 50%;
 }
-.meteor-app { animation: meteor-pass 36s linear 4s infinite; }
-.meteor-splash { animation: meteor-splash 1.7s linear 1 both; }
+.meteor-app { animation: meteor-pass 36s linear 2.8s infinite; }
 @keyframes meteor-pass {
   0% { opacity: 0; transform: translate3d(110%, 6%, 0); }
-  2% { opacity: .92; transform: translate3d(90.7%, 8%, 0); }
-  11% { opacity: .92; transform: translate3d(3.9%, 17%, 0); }
-  14%, 100% { opacity: 0; transform: translate3d(-25%, 20%, 0); }
-}
-@keyframes meteor-splash {
-  0% { opacity: 0; transform: translate3d(110%, 8%, 0); }
-  14% { opacity: .92; transform: translate3d(91.1%, 10%, 0); }
-  82% { opacity: .92; transform: translate3d(-0.7%, 19.5%, 0); }
-  100% { opacity: 0; transform: translate3d(-25%, 22%, 0); }
+  1.6% { opacity: .92; transform: translate3d(90.7%, 8%, 0); }
+  8.6% { opacity: .92; transform: translate3d(3.9%, 17%, 0); }
+  11%, 100% { opacity: 0; transform: translate3d(-25%, 20%, 0); }
 }
 .comet-tail {
   z-index: 1;
