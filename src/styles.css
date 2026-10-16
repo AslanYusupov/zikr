@@ -1440,6 +1440,7 @@ details.fold>:not(summary) {
   }
   .reminder {
     padding: .28rem .6rem .32rem;
+    max-height: 6.6rem;
   }
 }
 @media (height<=520px) {
@@ -1532,7 +1533,7 @@ details.fold>:not(summary) {
   justify-content: center;
   align-items: center;
   min-height: 0;
-  padding: 5% 1.6rem .2rem;
+  padding: 5% 1.6rem 2.4rem;
   display: flex;
   position: relative;
   overflow: hidden;
@@ -1568,7 +1569,7 @@ details.fold>:not(summary) {
 }
 .reminder {
   padding: .4rem .7rem .45rem;
-  max-height: min(38svh, 18rem);
+  max-height: min(22svh, 9.25rem);
   overflow-y: auto;
 }
 .reminder-ar {
