@@ -228,6 +228,7 @@ function adoptDevice(remote: DeviceSave) {
 
 export function useWorldSync(hydrated: boolean) {
   const publicId = useZikr((s) => s.publicId);
+  const publicBoard = useZikr((s) => s.publicBoard);
   const ensurePublicId = useZikr((s) => s.ensurePublicId);
   const [linked, setLinked] = useState(false);
 
@@ -298,8 +299,23 @@ export function useWorldSync(hydrated: boolean) {
         }
       }
       const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
-      if (state.total > 0) {
-        void publishWorld({ data: { publicId, total: state.total, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
+      const listed = state.publicBoard;
+      if (!listed) {
+        void publishWorld({ data: { publicId, total: state.total, listed: false } }).catch(() => {});
+        void beatPresence({
+          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0, listed: false },
+        })
+          .then(() => window.dispatchEvent(new Event("zikr-live")))
+          .catch(() => {});
+      } else {
+        if (state.total > 0) {
+          void publishWorld({ data: { publicId, total: state.total, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
+        }
+        void beatPresence({
+          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: currentTapSince() },
+        })
+          .then(() => window.dispatchEvent(new Event("zikr-live")))
+          .catch(() => {});
       }
       if (key) {
         const snap = snapshot(state);
@@ -307,11 +323,6 @@ export function useWorldSync(hydrated: boolean) {
           data: { key, publicId, total: snap.total, payload: JSON.stringify(snap), ...(tgId ? { tgId } : {}) },
         }).catch(() => {});
       }
-      void beatPresence({
-        data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: currentTapSince() },
-      })
-        .then(() => window.dispatchEvent(new Event("zikr-live")))
-        .catch(() => {});
     };
     const unbind = bindTapPulse(send);
     const first = window.setTimeout(send, 1500);
@@ -324,5 +335,5 @@ export function useWorldSync(hydrated: boolean) {
       window.clearInterval(timer);
       window.removeEventListener("online", onOnline);
     };
-  }, [hydrated, linked, publicId]);
+  }, [hydrated, linked, publicId, publicBoard]);
 }

@@ -24,7 +24,8 @@ const THEME_PHOTO: Record<string, string> = {
 function explainAccount(lang: LangId, message: string | undefined, ok: "passwordChanged" | "deleteFail"): string {
   const text = (message ?? "").replace(/\s+/g, " ").trim();
   if (!text) return tx(lang, ok);
-  if (/cf-ray|x-request-id|session terminated|fetch failed|network|econn|aborted|internal server/i.test(text) || text.length > 160) {
+  const foreign = (lang === "ru" || lang === "ar" || lang === "ur") && /[A-Za-z]{5,}/.test(text);
+  if (foreign || /cf-ray|x-request-id|session terminated|fetch failed|network|econn|aborted|internal server/i.test(text) || text.length > 160) {
     return tx(lang, ok === "passwordChanged" ? "passwordFail" : "deleteFail");
   }
   return text;

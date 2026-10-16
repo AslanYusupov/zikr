@@ -360,6 +360,7 @@ const WorldInput = z.object({
   publicId: z.string().regex(/^\d{8}$/),
   total: z.number().int().min(0).max(100_000_000),
   invitedBy: z.string().regex(/^\d{8}$/).optional(),
+  listed: z.boolean().optional(),
 });
 
 export type WorldRow = { id: string; total: number; rank: number };
@@ -372,6 +373,10 @@ export const publishWorld = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       const publicId = realPublicId(data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
+      if (data.listed === false) {
+        await sql`delete from zikr_world where public_id = ${publicId}`;
+        return { ok: true as const };
+      }
       const stored = data.total;
       if (stored <= 0) {
         await sql`delete from zikr_world where public_id = ${publicId}`;
@@ -467,6 +472,7 @@ const BeatInput = z.object({
   xp: z.number().int().min(0).max(2_000_000_000),
   total: z.number().int().min(0).max(2_000_000_000),
   tapSince: z.number().int().min(0).max(10_000_000_000_000),
+  listed: z.boolean().optional(),
 });
 
 export type PresenceRow = { id: string; country: string; value: number; rank: number };
@@ -479,6 +485,10 @@ export const beatPresence = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       const publicId = realPublicId(data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
+      if (data.listed === false) {
+        await sql`delete from zikr_presence where public_id = ${publicId}`;
+        return { ok: true as const };
+      }
       const tapping = data.tapSince > 0 ? 1 : 0;
       const tapSec = tapping ? Math.floor(data.tapSince / 1000) : 0;
       await sql`
