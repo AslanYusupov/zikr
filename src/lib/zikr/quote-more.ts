@@ -2,7 +2,7 @@ import type { FixedQuote } from "./quote-fix";
 
 /** Полные тексты, которые старые короткие карты обрезали. */
 export const QUOTE_MORE: Record<string, FixedQuote> = {
-  "Те, которые уверовали и сердца которых успокаиваются при поминании Аллах1а. Воистину, поминанием Аллах1а успокаиваются сердца.": {
+  "Они уверовали, и их сердца утешаются поминанием Аллаха. Разве не поминанием Аллаха утешаются сердца?": {
     en: "Those who believe and whose hearts find rest in the remembrance of Allah. Unquestionably, by the remembrance of Allah hearts find rest.",
     ar: "الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ ۗ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
     id: "Orang-orang yang beriman dan hati mereka menjadi tenteram dengan mengingat Allah. Ketahuilah, hanya dengan mengingat Allah hati menjadi tenteram.",
@@ -16,28 +16,28 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Kim bir iyilikle gelirse ona on katı vardır. Kim bir kötülükle gelirse ancak misliyle cezalandırılır. Onlara zulmedilmez.",
     ur: "جو ایک نیکی لے کر آئے گا اس کے لیے اس جیسی دس ہیں، اور جو برائی لے کر آئے گا اسے اسی کے برابر بدلہ ہوگا، اور ان پر ظلم نہیں کیا جائے گا۔",
   },
-  "Читай то, что внушено тебе из Писания, и совершай намаз. Воистину, намаз оберегает от мерзости и предосудительного. А поминание Аллах1а — превыше. Аллах1 знает о том, что вы творите.": {
+  "Читай то, что внушено тебе из Писания, и совершай намаз. Воистину, намаз оберегает от мерзости и предосудительного. Но поминание Аллаха - гораздо важнее, и Аллах знает о том, что вы творите.": {
     en: "Recite what has been revealed to you of the Book, and establish prayer. Indeed prayer restrains from immorality and wrongdoing. And the remembrance of Allah is greater. Allah knows what you do.",
     ar: "اتْلُ مَا أُوحِيَ إِلَيْكَ مِنَ الْكِتَابِ وَأَقِمِ الصَّلَاةَ ۖ إِنَّ الصَّلَاةَ تَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنكَرِ ۗ وَلَذِكْرُ اللَّهِ أَكْبَرُ ۗ وَاللَّهُ يَعْلَمُ مَا تَصْنَعُونَ",
     id: "Bacalah apa yang diwahyukan kepadamu dari Kitab dan dirikanlah salat. Sungguh salat mencegah dari keji dan mungkar. Dan mengingat Allah lebih besar. Allah mengetahui apa yang kamu kerjakan.",
     tr: "Kitap’tan sana vahyedileni oku ve namazı kıl. Şüphesiz namaz hayâsızlıktan ve kötülükten alıkoyar. Allah’ı anmak ise daha büyüktür. Allah yaptıklarınızı bilir.",
     ur: "جو کتاب میں سے تجھ پر وحی کیا گیا ہے اسے پڑھ، اور نماز قائم کر۔ بے شک نماز بے حیائی اور برائی سے روکتی ہے۔ اور اللہ کا ذکر سب سے بڑھ کر ہے۔ اللہ جانتا ہے جو تم کرتے ہو۔",
   },
-  "Когда же намаз завершится, то разойдитесь по земле, ищите милость Аллах1а и часто поминайте Его, - быть может, вы преуспеете.": {
+  "Когда же намаз завершится, то разойдитесь по земле, ищите милость Аллаха и часто поминайте Его, - быть может, вы преуспеете.": {
     en: "When the prayer is finished, disperse in the land, seek the bounty of Allah, and remember Him much, so that you may succeed.",
     ar: "فَإِذَا قُضِيَتِ الصَّلَاةُ فَانتَشِرُوا فِي الْأَرْضِ وَابْتَغُوا مِن فَضْلِ اللَّهِ وَاذْكُرُوا اللَّهَ كَثِيرًا لَّعَلَّكُمْ تُفْلِحُونَ",
     id: "Apabila salat telah ditunaikan, bertebaranlah di bumi, carilah karunia Allah, dan ingatlah Allah banyak-banyak agar kamu beruntung.",
     tr: "Namaz kılınınca yeryüzüne dağılın, Allah’ın lütfunu arayın ve O’nu çok anın ki kurtuluşa eresiniz.",
     ur: "پھر جب نماز پوری ہو جائے تو زمین میں پھیل جاؤ، اللہ کا فضل تلاش کرو، اور اللہ کو کثرت سے یاد کرو تاکہ تم فلاح پاؤ۔",
   },
-  "Поминай своего Господа в душе, со смирением и страхом, негромко, утром и перед закатом, и не будь из числа беспечных.": {
+  "Поминай Аллаха с покорностью и страхом про себя и не громко по утрам и перед закатом и не будь одним из беспечных невежд.": {
     en: "Remember your Lord within yourself, in humility and fear, without raising your voice, in the morning and the evening, and do not be among the heedless.",
     ar: "وَاذْكُر رَّبَّكَ فِي نَفْسِكَ تَضَرُّعًا وَخِيفَةً وَدُونَ الْجَهْرِ مِنَ الْقَوْلِ بِالْغُدُوِّ وَالْآصَالِ وَلَا تَكُن مِّنَ الْغَافِلِينَ",
     id: "Ingatlah Tuhanmu dalam hatimu, dengan rendah hati dan rasa takut, tanpa mengeraskan suara, pada pagi dan petang, dan janganlah kamu termasuk orang-orang yang lalai.",
     tr: "Rabbini içinden, yalvararak, korkarak ve sözü yükseltmeden, sabah akşam an. Gafillerden olma.",
     ur: "اپنے رب کو اپنے دل میں عاجزی اور خوف کے ساتھ، آہستہ آواز سے، صبح اور شام یاد کر، اور غافلوں میں سے نہ ہو۔",
   },
-  "Они поминают Аллах1а стоя, сидя и на боку и размышляют о сотворении небес и земли: «Господь наш! Ты не сотворил это понапрасну. Пречист Ты! Защити же нас от мучений в Огне».": {
+  "Которые поминают Аллаха стоя, сидя и на боку и размышляют о сотворении небес и земли: «Господь наш! Ты не сотворил это понапрасну. Пречист Ты! Защити же нас от мучений в Огне.": {
     en: "They remember Allah standing, sitting, and lying on their sides, and reflect on the creation of the heavens and the earth: “Our Lord, You did not create this in vain. Glory be to You. Protect us from the punishment of the Fire.”",
     ar: "الَّذِينَ يَذْكُرُونَ اللَّهَ قِيَامًا وَقُعُودًا وَعَلَىٰ جُنُوبِهِمْ وَيَتَفَكَّرُونَ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ رَبَّنَا مَا خَلَقْتَ هَٰذَا بَاطِلًا سُبْحَانَكَ فَقِنَا عَذَابَ النَّارِ",
     id: "Mereka mengingat Allah sambil berdiri, duduk, dan berbaring, serta memikirkan penciptaan langit dan bumi: “Ya Tuhan kami, Engkau tidak menciptakan ini dengan sia-sia. Mahasuci Engkau. Lindungilah kami dari azab neraka.”",
@@ -65,14 +65,14 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Rabbini hamd ile tenzih et ve O’ndan bağışlanma dile. Şüphesiz O tövbeleri çok kabul edendir.",
     ur: "اپنے رب کی حمد کے ساتھ تسبیح کر اور اس سے بخشش مانگ۔ بے شک وہ توبہ قبول کرنے والا ہے۔",
   },
-  "Аллах1 - Тот, кроме Которого нет иного божества и у Которого самые прекрасные имена.": {
+  "Аллах - Тот, кроме Которого нет иного божества и у Которого самые прекрасные имена.": {
     en: "Allah — there is no deity except Him. To Him belong the most beautiful names.",
     ar: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ ۖ لَهُ الْأَسْمَاءُ الْحُسْنَىٰ",
     id: "Allah, tidak ada tuhan selain Dia. Milik-Nya nama-nama yang paling indah.",
     tr: "Allah, kendisinden başka ilah olmayandır. En güzel isimler O’nundur.",
     ur: "اللہ، اس کے سوا کوئی معبود نہیں۔ اسی کے لیے بہترین نام ہیں۔",
   },
-  "Нух1, мир ему, рассказал Аллах1у, что сказал своему народу: «Просите прощения у вашего Господа. Воистину, Он — Всепрощающий. Он будет ниспосылать вам с неба обильный дождь, поддержит вас имуществом и детьми, взрастит для вас сады и проведёт для вас реки».": {
+  "Я говорил: «Просите у вашего Господа прощения, ведь Он - Всепрощающий. Он ниспошлет вам с неба обильные дожди, поддержит вас имуществом и детьми, взрастит для вас сады и создаст для вас реки.": {
     en: "Nuh, peace be upon him, told Allah what he had said to his people: “Seek forgiveness of your Lord. Indeed He is ever Forgiving. He will send down upon you rain in abundance, support you with wealth and children, and make for you gardens and rivers.”",
     ar: "فَقُلْتُ اسْتَغْفِرُوا رَبَّكُمْ إِنَّهُ كَانَ غَفَّارًا يُرْسِلِ السَّمَاءَ عَلَيْكُم مِّدْرَارًا وَيُمْدِدْكُم بِأَمْوَالٍ وَبَنِينَ وَيَجْعَل لَّكُمْ جَنَّاتٍ وَيَجْعَل لَّكُمْ أَنْهَارًا",
     id: "Nuh, alaihissalam, menyampaikan kepada Allah apa yang ia katakan kepada kaumnya: “Mohonlah ampunan kepada Tuhanmu. Sungguh Dia Maha Pengampun. Dia akan menurunkan hujan lebat, menambah harta dan anak, serta menumbuhkan kebun dan mengalirkan sungai untukmu.”",
@@ -107,49 +107,49 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Sahih Müslim’de: kim Allah’ı Rab, İslam’ı din, Muhammed’i ﷺ resul olarak seçerse cennet ona vacip olur. Ayrıca sabah üç, akşam üç “Allah’ı Rab, İslam’ı din, Muhammed’i peygamber olarak seçtim” diyen için, kıyamet günü Allah’ın ondan razı olması hak olur.",
     ur: "صحیح مسلم میں: جو اللہ کو رب، اسلام کو دین اور محمد ﷺ کو رسول مان کر راضی ہو، اس کے لیے جنت واجب ہے۔ یہ بھی منقول ہے کہ جو صبح تین بار اور شام تین بار کہے: «میں اللہ کو رب، اسلام کو دین اور محمد کو نبی مان کر راضی ہوں»، تو قیامت کے دن اللہ کا اس سے راضی ہونا اس کا حق ہو جاتا ہے۔",
   },
-  "О те, которые уверовали! Пусть имущество и дети не отвлекают вас от поминания Аллах1а. Кто так поступает, тот в убытке.": {
+  "О те, которые уверовали! Пусть ваше имущество и ваши дети не отвлекают вас от поминания Аллаха. А те, которые поступают таким образом, окажутся потерпевшими убыток.": {
     en: "O you who believe, let not your wealth or your children distract you from the remembrance of Allah. Whoever does that, they are the losers.",
     ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا لَا تُلْهِكُمْ أَمْوَالُكُمْ وَلَا أَوْلَادُكُمْ عَن ذِكْرِ اللَّهِ ۚ وَمَن يَفْعَلْ ذَٰلِكَ فَأُولَٰئِكَ هُمُ الْخَاسِرُونَ",
     id: "Wahai orang-orang yang beriman, janganlah harta dan anak-anakmu melalaikanmu dari mengingat Allah. Siapa berbuat demikian, mereka itulah orang-orang yang rugi.",
     tr: "Ey iman edenler! Mallarınız ve çocuklarınız sizi Allah’ı anmaktan alıkoymasın. Kim böyle yaparsa işte onlar hüsrana uğrayanlardır.",
     ur: "اے ایمان والو! تمہارے مال اور اولاد تمہیں اللہ کے ذکر سے غافل نہ کر دیں۔ جو ایسا کرے وہی نقصان میں ہے۔",
   },
-  "Есть мужи, которых ни торговля, ни продажа не отвлекают от поминания Аллах1а, совершения намаза и выплаты закята. Они боятся Дня, когда перевернутся сердца и взоры.": {
+  "Мужи, которых ни торговля, ни купля-продажа не отвлекают от поминания Аллаха, совершения намаза и выплаты закята. Они боятся дня, когда перевернутся сердца и взоры,": {
     en: "There are men whom neither trade nor sale distracts from the remembrance of Allah, from establishing prayer, and from giving zakat. They fear a Day when hearts and eyes will turn about.",
     ar: "رِجَالٌ لَّا تُلْهِيهِمْ تِجَارَةٌ وَلَا بَيْعٌ عَن ذِكْرِ اللَّهِ وَإِقَامِ الصَّلَاةِ وَإِيتَاءِ الزَّكَاةِ ۙ يَخَافُونَ يَوْمًا تَتَقَلَّبُ فِيهِ الْقُلُوبُ وَالْأَبْصَارُ",
     id: "Ada orang-orang yang tidak dilalaikan oleh perniagaan dan jual beli dari mengingat Allah, mendirikan salat, dan menunaikan zakat. Mereka takut pada hari ketika hati dan penglihatan terbolak-balik.",
     tr: "Öyle adamlar vardır ki ne ticaret ne de alışveriş onları Allah’ı anmaktan, namazı kılmaktan ve zekâtı vermekten alıkoyar. Onlar kalplerin ve gözlerin altüst olacağı günden korkarlar.",
     ur: "کچھ مرد ایسے ہیں جنہیں نہ تجارت اور نہ خرید و فروخت اللہ کے ذکر، نماز قائم کرنے اور زکوٰۃ دینے سے غافل کرتی ہے۔ وہ اس دن سے ڈرتے ہیں جس میں دل اور نگاہیں الٹ جائیں گی۔",
   },
-  "Поминай имя твоего Господа утром и перед закатом.": {
+  "Поминай имя твоего Господа утром и перед закатом,": {
     en: "Remember the name of your Lord morning and evening.",
     ar: "وَاذْكُرِ اسْمَ رَبِّكَ بُكْرَةً وَأَصِيلًا",
     id: "Sebutlah nama Tuhanmu pada pagi dan petang.",
     tr: "Rabbinin adını sabah akşam an.",
     ur: "اپنے رب کا نام صبح اور شام یاد کر۔",
   },
-  "Воистину, Я - Аллах1! Нет божества, кроме Меня. Поклоняйся же Мне и совершай намаз, чтобы помнить обо Мне.": {
+  "Воистину, Я - Аллах! Нет божества, кроме Меня. Поклоняйся же Мне и совершай намаз, чтобы помнить обо Мне.": {
     en: "Indeed I am Allah. There is no deity except Me. So worship Me and establish prayer for My remembrance.",
     ar: "إِنَّنِي أَنَا اللَّهُ لَا إِلَٰهَ إِلَّا أَنَا فَاعْبُدْنِي وَأَقِمِ الصَّلَاةَ لِذِكْرِي",
     id: "Sungguh Aku ini Allah. Tidak ada tuhan selain Aku. Maka sembahlah Aku dan dirikanlah salat untuk mengingat-Ku.",
     tr: "Şüphesiz Ben Allah’ım. Benden başka ilah yoktur. Bana kulluk et ve Beni anmak için namaz kıl.",
     ur: "بے شک میں ہی اللہ ہوں۔ میرے سوا کوئی معبود نہیں۔ پس میری عبادت کر اور میرے ذکر کے لیے نماز قائم کر۔",
   },
-  "О те, которые уверовали! Когда вы сталкиваетесь с отрядом, то будьте стойки и многократно поминайте Аллах1а, - быть может, вы преуспеете.": {
+  "О те, которые уверовали! Когда вы сталкиваетесь с отрядом, то будьте стойки и многократно поминайте Аллаха, - быть может, вы преуспеете.": {
     en: "O you who believe, when you meet a company, stand firm and remember Allah much, so that you may succeed.",
     ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا لَقِيتُمْ فِئَةً فَاثْبُتُوا وَاذْكُرُوا اللَّهَ كَثِيرًا لَّعَلَّكُمْ تُفْلِحُونَ",
     id: "Wahai orang-orang yang beriman, apabila kamu bertemu pasukan maka berteguh hatilah dan ingatlah Allah banyak-banyak agar kamu beruntung.",
     tr: "Ey iman edenler! Bir toplulukla karşılaştığınızda sebat edin ve Allah’ı çok anın ki kurtuluşa eresiniz.",
     ur: "اے ایمان والو! جب تم کسی جماعت سے ٹکراؤ تو ثابت قدم رہو اور اللہ کو کثرت سے یاد کرو تاکہ تم فلاح پاؤ۔",
   },
-  "Воистину, вместе с тягостью — облегчение. Воистину, вместе с тягостью — облегчение.": {
+  "Воистину, за каждой тягостью наступает облегчение. За каждой тягостью наступает облегчение.": {
     en: "Indeed, with hardship comes ease. Indeed, with hardship comes ease.",
     ar: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا إِنَّ مَعَ الْعُسْرِ يُسْرًا",
     id: "Maka sungguh bersama kesulitan ada kemudahan. Sungguh bersama kesulitan ada kemudahan.",
     tr: "Şüphesiz zorlukla beraber bir kolaylık vardır. Şüphesiz zorlukla beraber bir kolaylık vardır.",
     ur: "پس بے شک تنگی کے ساتھ آسانی ہے۔ بے شک تنگی کے ساتھ آسانی ہے۔",
   },
-  "О те, которые уверовали! Обратитесь за помощью к терпению и намазу. Воистину, Аллах1 — с терпеливыми.": {
+  "О те, которые уверовали! Обратитесь за помощью к терпению и намазу. Воистину, Аллах - с терпеливыми.": {
     en: "O you who believe, seek help through patience and prayer. Indeed Allah is with the patient.",
     ar: "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
     id: "Wahai orang-orang yang beriman, mohonlah pertolongan dengan sabar dan salat. Sungguh Allah beserta orang-orang yang sabar.",
@@ -170,21 +170,21 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Rabbin sana verecek ve sen hoşnut olacaksın.",
     ur: "اور تیرا رب تجھے ضرور دے گا، پھر تو راضی ہو جائے گا۔",
   },
-  "Скажи: «Он — Аллах1 Единый, Аллах1, к Которому обращаются все».": {
+  "Скажи: «Он - Аллах Единый, Аллах Самодостаточный.": {
     en: "Say: He is Allah, One. Allah, the Eternal Refuge.",
     ar: "قُلْ هُوَ اللَّهُ أَحَدٌ اللَّهُ الصَّمَدُ",
     id: "Katakanlah: Dialah Allah Yang Maha Esa. Allah tempat bergantung.",
     tr: "De ki: O Allah birdir. Allah Samed’dir.",
     ur: "کہہ دو: وہ اللہ ایک ہے۔ اللہ بے نیاز ہے۔",
   },
-  "Которые, когда их постигает беда, говорят: «Воистину, мы принадлежим Аллах1у, и к Нему мы вернёмся».": {
+  "Которые, когда их постигает беда, говорят: «Воистину, мы принадлежим Аллаху, и к Нему мы вернемся».": {
     en: "Those who, when disaster strikes them, say: “Indeed we belong to Allah, and to Him we will return.”",
     ar: "الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ",
     id: "Orang-orang yang apabila ditimpa musibah berkata: “Sesungguhnya kami milik Allah dan kepada-Nya kami kembali.”",
     tr: "Onlar ki başlarına bir musibet geldiğinde “Biz Allah’a aidiz ve O’na döneceğiz” derler.",
     ur: "وہ جنہیں کوئی مصیبت پہنچے تو کہتے ہیں: «ہم اللہ ہی کے ہیں اور اسی کی طرف لوٹنے والے ہیں».",
   },
-  "Оберегайте намазы, и особенно средний намаз, и стойте перед Аллах1ом смиренно.": {
+  "Оберегайте намазы, и особенно, средний (послеполуденный) намаз. И стойте перед Аллахом смиренно.": {
     en: "Guard the prayers, and the middle prayer, and stand before Allah in humility.",
     ar: "حَافِظُوا عَلَى الصَّلَوَاتِ وَالصَّلَاةِ الْوُسْطَىٰ وَقُومُوا لِلَّهِ قَانِتِينَ",
     id: "Peliharalah salat-salat, terutama salat wusta, dan berdirilah di hadapan Allah dengan khusyuk.",
@@ -233,14 +233,14 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Ey huzura ermiş nefis! Rabbine razı olarak ve O’nu razı ederek dön. Kullarımın arasına gir. Cennetime gir.",
     ur: "اے اطمینان پانے والی جان! اپنے رب کی طرف لوٹ، اس حال میں کہ تو راضی اور وہ تجھ سے راضی۔ میرے بندوں میں داخل ہو جا۔ میری جنت میں داخل ہو جا۔",
   },
-  "«Мир!» — слово от Милосердного Господа.": {
+  "Милосердный Господь приветствует их словом: «Мир!».": {
     en: "“Peace” — a word from a Merciful Lord.",
     ar: "سَلَامٌ قَوْلًا مِّن رَّبٍّ رَّحِيمٍ",
     id: "“Salam” — ucapan dari Tuhan Yang Maha Penyayang.",
     tr: "“Selam” — merhametli bir Rabden bir söz.",
     ur: "«سلام» مہربان رب کی طرف سے ایک بات۔",
   },
-  "Воистину, обителью тех, которые уверовали и совершали праведные деяния, будут сады Фирдауса. Они пребудут там вечно и не захотят оттуда уйти.": {
+  "Воистину, обителью тех, которые уверовали и совершали праведные деяния, будут сады Фирдауса. Они пребудут в них вечно и не пожелают для себя перемен.": {
     en: "Indeed the home of those who believed and did righteous deeds will be the gardens of Paradise. They will abide there forever and will not wish to leave.",
     ar: "إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ كَانَتْ لَهُمْ جَنَّاتُ الْفِرْدَوْسِ نُزُلًا خَالِدِينَ فِيهَا لَا يَبْغُونَ عَنْهَا حِوَلًا",
     id: "Sungguh tempat orang-orang yang beriman dan beramal saleh adalah taman-taman Firdaus. Mereka kekal di dalamnya dan tidak ingin pindah darinya.",
@@ -254,28 +254,28 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "O, kullarının tövbesini kabul eden, kötülükleri bağışlayan ve yaptıklarınızı bilendir.",
     ur: "وہی اپنے بندوں کی توبہ قبول کرتا ہے، برائیوں سے درگزر کرتا ہے، اور جو تم کرتے ہو اسے جانتا ہے۔",
   },
-  "Если кто-либо совершит злодеяние или будет несправедлив по отношению к себе, а затем попросит у Аллах1а прощения, то он найдет Аллах1а Прощающим и Милосердным.": {
+  "Если кто-либо совершит злодеяние или будет несправедлив по отношению к себе, а затем попросит у Аллаха прощения, то он найдет Аллаха Прощающим и Милосердным.": {
     en: "Whoever does evil or wrongs himself, then seeks Allah’s forgiveness, will find Allah Forgiving and Merciful.",
     ar: "وَمَن يَعْمَلْ سُوءًا أَوْ يَظْلِمْ نَفْسَهُ ثُمَّ يَسْتَغْفِرِ اللَّهَ يَجِدِ اللَّهَ غَفُورًا رَّحِيمًا",
     id: "Siapa mengerjakan keburukan atau menzalimi dirinya lalu memohon ampunan kepada Allah, niscaya mendapati Allah Maha Pengampun lagi Maha Penyayang.",
     tr: "Kim bir kötülük işler veya kendine zulmeder, sonra Allah’tan bağışlanma dilerse Allah’ı çok bağışlayan ve merhametli bulur.",
     ur: "جو کوئی برائی کرے یا اپنی جان پر ظلم کرے، پھر اللہ سے بخشش مانگے، تو وہ اللہ کو بخشنے والا مہربان پائے گا۔",
   },
-  "Те, которые совершили дурное или поступили несправедливо к себе, помянули Аллах1а и попросили прощения за свои грехи. Кто прощает грехи, кроме Аллах1а? И они не упорствуют в том, что совершили, зная это. Воздаянием им будет прощение от их Господа и сады, в которых текут реки и в которых они пребудут вечно. Как прекрасно воздаяние поступающим так!": {
+  "Тем же, которые, совершив мерзкий поступок или несправедливо поступив против самих себя, помянули Аллаха и попросили прощения за свои грехи, - ведь кто прощает грехи, кроме Аллаха? - и тем, которые сознательно не упорствуют в том, что они совершили, воздаянием будут прощение от их Господа и Райские сады, в которых текут реки и в которых они пребудут вечно. Как же прекрасно воздаяние тружеников!": {
     en: "Those who, when they commit an indecency or wrong themselves, remember Allah and seek forgiveness for their sins. Who forgives sins except Allah? And they do not knowingly persist in what they did. Their reward is forgiveness from their Lord and gardens beneath which rivers flow, where they will abide forever. How excellent is the reward of those who act.",
     ar: "وَالَّذِينَ إِذَا فَعَلُوا فَاحِشَةً أَوْ ظَلَمُوا أَنفُسَهُمْ ذَكَرُوا اللَّهَ فَاسْتَغْفَرُوا لِذُنُوبِهِمْ وَمَن يَغْفِرُ الذُّنُوبَ إِلَّا اللَّهُ وَلَمْ يُصِرُّوا عَلَىٰ مَا فَعَلُوا وَهُمْ يَعْلَمُونَ أُولَٰئِكَ جَزَاؤُهُم مَّغْفِرَةٌ مِّن رَّبِّهِمْ وَجَنَّاتٌ تَجْرِي مِن تَحْتِهَا الْأَنْهَارُ خَالِدِينَ فِيهَا ۚ وَنِعْمَ أَجْرُ الْعَامِلِينَ",
     id: "Dan orang-orang yang apabila mengerjakan perbuatan keji atau menzalimi diri, mereka mengingat Allah lalu memohon ampunan atas dosa-dosa mereka. Siapa yang mengampuni dosa selain Allah? Mereka tidak meneruskan perbuatan itu sedang mereka mengetahuinya. Balasan mereka adalah ampunan dari Tuhan mereka dan surga yang mengalir di bawahnya sungai-sungai, mereka kekal di dalamnya. Itulah sebaik-baik pahala orang yang beramal.",
     tr: "Onlar ki bir kötülük yaptıklarında veya kendilerine zulmettiklerinde Allah’ı anar ve günahları için bağışlanma dilerler. Günahları Allah’tan başka kim bağışlar? Onlar yaptıklarında bile bile diretmezler. Ödülleri Rablerinden bir bağışlanma ve altından ırmaklar akan, içinde ebedî kalacakları cennetlerdir. Yapıp edenlerin karşılığı ne güzeldir.",
     ur: "اور وہ جو کوئی بے حیائی کریں یا اپنی جانوں پر ظلم کریں تو اللہ کو یاد کرتے ہیں اور اپنے گناہوں کی بخشش مانگتے ہیں۔ اللہ کے سوا گناہ کون بخشتا ہے؟ اور وہ جان بوجھ کر اپنے کیے پر اڑے نہیں رہتے۔ ان کا بدلہ ان کے رب کی بخشش اور باغ ہیں جن کے نیچے نہریں بہتی ہیں، وہ ان میں ہمیشہ رہیں گے۔ عمل کرنے والوں کا بدلہ کیا ہی اچھا ہے۔",
   },
-  "Сообщи Моим рабам, что Я — Прощающий, Милосердный, и что наказание Моё — наказание мучительное.": {
+  "Сообщи Моим рабам, что Я - Прощающий, Милосердный, но наказание Мое - наказание мучительное.": {
     en: "Tell My servants that I am the Forgiving, the Merciful, and that My punishment is a painful punishment.",
     ar: "نَبِّئْ عِبَادِي أَنِّي أَنَا الْغَفُورُ الرَّحِيمُ وَأَنَّ عَذَابِي هُوَ الْعَذَابُ الْأَلِيمُ",
     id: "Kabarkan kepada hamba-hamba-Ku bahwa Aku Maha Pengampun lagi Maha Penyayang, dan bahwa azab-Ku adalah azab yang pedih.",
     tr: "Kullarıma haber ver: Ben çok bağışlayan, merhamet edenim. Azabım da elem verici azaptır.",
     ur: "میرے بندوں کو بتا دے کہ میں بخشنے والا مہربان ہوں، اور یہ کہ میرا عذاب دردناک عذاب ہے۔",
   },
-  "Какую же из милостей вашего Господа вы оба — люди и джинны — считаете ложью?": {
+  "Какую же из милостей вашего Господа вы считаете ложью?": {
     en: "Which of the favors of your Lord will you two, mankind and jinn, deny?",
     ar: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ",
     id: "Maka nikmat Tuhanmu yang manakah yang kamu berdua, manusia dan jin, dustakan?",
@@ -296,28 +296,28 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Andolsun Kur’an’ı öğüt için kolaylaştırdık. Var mı düşünen?",
     ur: "ہم نے قرآن کو نصیحت کے لیے آسان کر دیا۔ تو ہے کوئی نصیحت قبول کرنے والا؟",
   },
-  "Это Писание, в котором нет сомнения, является верным руководством для богобоязненных.": {
+  "Это Писание, в котором нет сомнения, является верным руководством для богобоязненных,": {
     en: "This is the Book in which there is no doubt, a guidance for those who are mindful of Allah.",
     ar: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
     id: "Kitab ini, tidak ada keraguan padanya, petunjuk bagi orang-orang yang bertakwa.",
     tr: "Bu, kendisinde şüphe olmayan Kitap’tır. Allah’a karşı gelmekten sakınanlar için bir yol göstericidir.",
     ur: "یہ وہ کتاب ہے جس میں کوئی شک نہیں، پرہیزگاروں کے لیے ہدایت ہے۔",
   },
-  "Если вы станете считать милости Аллах1а, то не пересчитаете их. Воистину, Аллах1 — Прощающий, Милосердный.": {
+  "Если вы станете считать милости Аллаха, то не пересчитаете их! Воистину, Аллах - Прощающий, Милосердный.": {
     en: "If you tried to count the favors of Allah, you could not number them. Indeed Allah is Forgiving and Merciful.",
     ar: "وَإِن تَعُدُّوا نِعْمَةَ اللَّهِ لَا تُحْصُوهَا ۗ إِنَّ اللَّهَ لَغَفُورٌ رَّحِيمٌ",
     id: "Jika kamu menghitung nikmat Allah, niscaya kamu tidak akan mampu menghinggakannya. Sungguh Allah Maha Pengampun lagi Maha Penyayang.",
     tr: "Allah’ın nimetini saymaya kalksanız sayamazsınız. Şüphesiz Allah çok bağışlayan, çok merhamet edendir.",
     ur: "اگر تم اللہ کی نعمتیں گننے لگو تو انہیں شمار نہیں کر سکو گے۔ بے شک اللہ بخشنے والا مہربان ہے۔",
   },
-  "Клянусь предвечерним временем! Воистину, каждый человек в убытке, кроме тех, которые уверовали, совершали праведные деяния, заповедали друг другу истину и заповедали друг другу терпение!": {
+  "Клянусь предвечерним временем (или временем)! Воистину, каждый человек в убытке, кроме тех, которые уверовали, совершали праведные деяния, заповедали друг другу истину и заповедали друг другу терпение!": {
     en: "By the declining time. Indeed mankind is in loss, except those who believe, do righteous deeds, urge one another to the truth, and urge one another to patience.",
     ar: "وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ",
     id: "Demi masa. Sungguh manusia dalam kerugian, kecuali orang-orang yang beriman, beramal saleh, saling menasihati dalam kebenaran, dan saling menasihati dalam kesabaran.",
     tr: "Asra yemin olsun. İnsan hüsrandadır. Ancak iman eden, salih amel işleyen, birbirlerine hakkı tavsiye eden ve sabrı tavsiye edenler başka.",
     ur: "زمانے کی قسم۔ بے شک انسان نقصان میں ہے، سوائے ان کے جو ایمان لائے، نیک عمل کیے، ایک دوسرے کو حق کی نصیحت کی اور ایک دوسرے کو صبر کی نصیحت کی۔",
   },
-  "Разве Мы не раскрыли для тебя грудь твою и не сняли с тебя ношу, которая отягощала тебе спину?": {
+  "Разве Мы не раскрыли для тебя грудь твою? и не сняли с тебя ношу, которая отягощала твою спину?": {
     en: "Did We not expand your breast for you, and remove from you your burden which weighed down your back?",
     ar: "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ وَوَضَعْنَا عَنكَ وِزْرَكَ الَّذِي أَنقَضَ ظَهْرَكَ",
     id: "Bukankah Kami telah melapangkan dadamu, dan menurunkan bebanmu yang memberatkan punggungmu?",
