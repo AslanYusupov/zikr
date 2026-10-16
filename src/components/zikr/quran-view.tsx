@@ -3,7 +3,7 @@ import { Pause, Play, Repeat1 } from "lucide-react";
 import { rewardPoints } from "@/lib/zikr/content";
 import { formatNum, plural } from "@/lib/zikr/format";
 import { t } from "@/lib/zikr/i18n";
-import { loadMeaning, loadQuran, quranCopy, type QuranAyah, type QuranBook, type QuranMeaning } from "@/lib/zikr/quran";
+import { letterReward, loadMeaning, loadQuran, quranCopy, type QuranAyah, type QuranBook, type QuranMeaning } from "@/lib/zikr/quran";
 import { surahSpoken } from "@/lib/zikr/surah-name";
 import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
@@ -328,7 +328,7 @@ export function QuranView() {
     setDone(nextDone);
     writeDone(nextDone);
     const word = lang === "ru" ? plural(result.added, "буква", "буквы", "букв") : copy.letters;
-    setNote(`${formatNum(result.added)} ${word} · +${formatNum(result.added * 10)}`);
+    setNote(`${formatNum(result.added)} ${word} · +${formatNum(letterReward(result.added))}`);
     if (sound === "on") playTap(voice, volume);
   }
 
@@ -443,7 +443,7 @@ export function QuranView() {
                 </span>
                 <span className="shrink-0 text-right text-[0.65rem] leading-tight text-gold">
                   {formatNum(letters)} {copy.letters}
-                  <span className="mt-0.5 block">+{formatNum(letters * 10)}</span>
+                  <span className="mt-0.5 block">+{formatNum(letterReward(letters))}</span>
                 </span>
               </button>
             );
@@ -516,7 +516,7 @@ export function QuranView() {
         <button type="button" className="quran-claim" onClick={() => claim(surahPieces)}>
           {copy.surahBtn}
           <span className="mt-0.5 block text-[0.7rem] font-bold text-gold">
-            {formatNum(surahLeft)} {copy.letters} · +{formatNum(surahLeft * 10)}
+            {formatNum(surahLeft)} {copy.letters} · +{formatNum(letterReward(surahLeft))}
           </span>
         </button>
       ) : (
@@ -558,7 +558,7 @@ export function QuranView() {
             <p className="ayah-gloss">{mean.surahs[0][0]}</p>
           ) : null}
           <span className="ayah-meta">
-            {formatNum(book.bismillahLetters)} {copy.letters} · +{formatNum(book.bismillahLetters * 10)}
+            {formatNum(book.bismillahLetters)} {copy.letters} · +{formatNum(letterReward(book.bismillahLetters))}
           </span>
         </div>
       ) : null}
@@ -575,7 +575,7 @@ export function QuranView() {
                 <button type="button" className="quran-claim" onClick={() => claim(pieces)}>
                   {copy.page} {group.page} · {copy.pageBtn}
                   <span className="mt-0.5 block text-[0.7rem] font-bold text-gold">
-                    {formatNum(left)} {copy.letters} · +{formatNum(left * 10)}
+                    {formatNum(left)} {copy.letters} · +{formatNum(letterReward(left))}
                   </span>
                 </button>
               ) : (
@@ -623,7 +623,7 @@ export function QuranView() {
                   ) : null}
                   {glossOpen(surah.n, key) && meaning ? <p className="ayah-gloss">{meaning}</p> : null}
                   <span className="ayah-meta">
-                    {formatNum(ayah.l)} {copy.letters} · +{formatNum(ayah.l * 10)}
+                    {formatNum(ayah.l)} {copy.letters} · +{formatNum(letterReward(ayah.l))}
                   </span>
                 </div>
               );

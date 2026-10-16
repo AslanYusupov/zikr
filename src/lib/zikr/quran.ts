@@ -131,6 +131,25 @@ export function quranCopy(lang: LangId) {
   return COPY[lang] ?? COPY.ru;
 }
 
+/** Считает только буквы расма. Огласовки, шадда, алиф ханджария, знаки пауз, цифры и пробелы отбрасываются. */
+export function rasmLetters(text: string): number {
+  return text.replace(/[^\u0621-\u063F\u0641-\u064A\u0671]/gu, "").length;
+}
+
+/** Хадис ат-Тирмизи: за каждую букву — десять благих дел. */
+export function letterReward(letters: number): number {
+  if (!Number.isFinite(letters) || letters <= 0) return 0;
+  return Math.floor(letters) * 10;
+}
+
+function applyRasm(book: QuranBook): QuranBook {
+  book.bismillahLetters = rasmLetters(book.bismillah);
+  for (const surah of book.surahs) {
+    for (const ayah of surah.ayahs) ayah.l = rasmLetters(ayah.t);
+  }
+  return book;
+}
+
 export function readWait(letters: number, page = false): number {
   if (page) return Math.min(36000, Math.max(6000, Math.round(letters * 55)));
   return Math.min(10000, Math.max(900, Math.round(letters * 110)));
@@ -146,9 +165,9 @@ export async function loadQuran(): Promise<QuranBook> {
     const hit = await cache.match("/quran.json");
     if (hit) {
       const saved = (await hit.json()) as QuranBook;
-      if (saved?.surahs?.length === 114) {
-        memory = saved;
-        return saved;
+      if (saved?.surahs?.length === 114 && saved.bismillah) {
+        memory = applyRasm(saved);
+        return memory;
       }
     }
   } catch {
@@ -158,10 +177,10 @@ export async function loadQuran(): Promise<QuranBook> {
   if (!res.ok) throw new Error("quran");
   const data = (await res.json()) as QuranBook;
   if (!data?.surahs || data.surahs.length !== 114 || !data.bismillah) throw new Error("quran");
-  memory = data;
+  memory = applyRasm(data);
   try {
     const cache = await caches.open(cacheName);
-    await cache.put("/quran.json", new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } }));
+    await cache.put("/quran.json", new Response(JSON.stringify(memory), { headers: { "content-type": "application/json" } }));
   } catch {
     /* private mode */
   }
