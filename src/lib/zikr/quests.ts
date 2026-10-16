@@ -339,11 +339,8 @@ export const SUNNAH_QUESTS: SunnahQuest[] = [
     title: "Радиту утром и вечером",
     points: 150,
     source: "Абу Давуд, ат-Тирмизи",
-    note: "Три раза утром и три раза вечером.",
-    steps: [
-      { dhikrId: "raditu", count: 3, label: "Утром" },
-      { dhikrId: "raditu", count: 3, label: "Вечером" },
-    ],
+    note: "Три раза. Утром и вечером читают отдельно: сейчас три, вечером снова три.",
+    steps: [{ dhikrId: "raditu", count: 3 }],
   },
   {
     id: "juwayriya",
@@ -385,11 +382,8 @@ export const SUNNAH_QUESTS: SunnahQuest[] = [
     title: "Ля ядурру",
     points: 120,
     source: "Абу Давуд, ат-Тирмизи",
-    note: "Три раза утром и три раза вечером.",
-    steps: [
-      { dhikrId: "la-yadurru", count: 3, label: "Утром" },
-      { dhikrId: "la-yadurru", count: 3, label: "Вечером" },
-    ],
+    note: "Три раза. Утром и вечером читают отдельно: сейчас три, вечером снова три.",
+    steps: [{ dhikrId: "la-yadurru", count: 3 }],
   },
   {
     id: "kalimat",

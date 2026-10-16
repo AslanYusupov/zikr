@@ -20,11 +20,11 @@ const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
     ur: { title: "رضیت باللہ", note: "صبح تین بار: «میں نے اللہ کو رب، اسلام کو دین اور محمد ﷺ کو نبی مان کر رضا مندی ظاہر کی»." },
   },
   "raditu-both": {
-    en: { title: "Raditu morning and evening", note: "Three times in the morning and three times in the evening." },
-    ar: { title: "رضيت صباحًا ومساءً", note: "ثلاثًا في الصباح وثلاثًا في المساء." },
-    id: { title: "Raditu pagi dan petang", note: "Tiga kali pagi dan tiga kali petang." },
-    tr: { title: "Radîtu sabah ve akşam", note: "Sabah üç, akşam üç." },
-    ur: { title: "رضیت صبح و شام", note: "صبح تین بار اور شام تین بار۔" },
+    en: { title: "Raditu morning and evening", note: "Three times. Morning and evening are separate: three now, and three again in the evening." },
+    ar: { title: "رضيت صباحًا ومساءً", note: "ثلاث مرات. الصباح والمساء كلٌّ على حدة: الآن ثلاث، وفي المساء ثلاث أخرى." },
+    id: { title: "Raditu pagi dan petang", note: "Tiga kali. Pagi dan petang terpisah: sekarang tiga, petang nanti tiga lagi." },
+    tr: { title: "Radîtu sabah ve akşam", note: "Üç kez. Sabah ve akşam ayrıdır: şimdi üç, akşam yine üç." },
+    ur: { title: "رضیت صبح و شام", note: "تین بار۔ صبح اور شام الگ ہیں: اب تین، شام کو پھر تین۔" },
   },
   juwayriya: {
     en: { title: "The dhikr of Juwayriyyah, may Allah be pleased with her", note: "Three times: as many as the creation, as much as pleases Him, as the weight of the Throne, and as the ink of Allah’s words." },
@@ -48,11 +48,11 @@ const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
     ur: { title: "أستغفر الله اور أنت السلام", note: "تین بار «أستغفر الله»، پھر «أنت السلام»." },
   },
   "la-yadurru": {
-    en: { title: "La yadurru", note: "Three times in the morning and three times in the evening." },
-    ar: { title: "لا يضر", note: "ثلاثًا في الصباح وثلاثًا في المساء." },
-    id: { title: "La yadurru", note: "Tiga kali pagi dan tiga kali petang." },
-    tr: { title: "Lâ yadurru", note: "Sabah üç, akşam üç." },
-    ur: { title: "لا يضر", note: "صبح تین بار اور شام تین بار۔" },
+    en: { title: "La yadurru", note: "Three times. Morning and evening are separate: three now, and three again in the evening." },
+    ar: { title: "لا يضر", note: "ثلاث مرات. الصباح والمساء كلٌّ على حدة: الآن ثلاث، وفي المساء ثلاث أخرى." },
+    id: { title: "La yadurru", note: "Tiga kali. Pagi dan petang terpisah: sekarang tiga, petang nanti tiga lagi." },
+    tr: { title: "Lâ yadurru", note: "Üç kez. Sabah ve akşam ayrıdır: şimdi üç, akşam yine üç." },
+    ur: { title: "لا يضر", note: "تین بار۔ صبح اور شام الگ ہیں: اب تین، شام کو پھر تین۔" },
   },
   kalimat: {
     en: { title: "Kalimatillah", note: "Three times in the evening: I seek refuge in the perfect words of Allah from the evil of what He created." },

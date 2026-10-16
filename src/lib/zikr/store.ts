@@ -175,9 +175,23 @@ export function normalize(raw: unknown): ZikrState {
     celebrated,
     chainIndex: Math.min(1000, clampInt(r.chainIndex, 1000)),
     chainProgress: clampInt(r.chainProgress, 100_000),
-    activeQuestId: sunnahQuestById(typeof r.activeQuestId === "string" ? r.activeQuestId : null)?.id ?? null,
-    questStep: clampInt(r.questStep, 20),
-    questStepProgress: clampInt(r.questStepProgress, 100_000),
+    activeQuestId: (() => {
+      const id = sunnahQuestById(typeof r.activeQuestId === "string" ? r.activeQuestId : null)?.id ?? null;
+      const quest = sunnahQuestById(id);
+      return quest && clampInt(r.questStep, 20) < quest.steps.length ? id : null;
+    })(),
+    questStep: (() => {
+      const quest = sunnahQuestById(typeof r.activeQuestId === "string" ? r.activeQuestId : null);
+      const step = clampInt(r.questStep, 20);
+      return quest && step < quest.steps.length ? step : 0;
+    })(),
+    questStepProgress: (() => {
+      const quest = sunnahQuestById(typeof r.activeQuestId === "string" ? r.activeQuestId : null);
+      const stepIndex = clampInt(r.questStep, 20);
+      const step = quest?.steps[stepIndex];
+      const progress = clampInt(r.questStepProgress, 100_000);
+      return step && stepIndex < quest.steps.length ? Math.min(progress, step.count) : 0;
+    })(),
     questBonus,
     doneToday,
     displayName: typeof r.displayName === "string" ? r.displayName.replace(/\s+/g, " ").trim().slice(0, 24) : "",
