@@ -134,15 +134,11 @@ export function Backdrop() {
       )}
       {stars && (
         <>
-          <span className="comet comet-a" style={{ ["--tilt" as string]: "-16deg" }} aria-hidden>
+          <span className="comet comet-a" aria-hidden>
             <span className="comet-tail" />
             <span className="comet-head" />
           </span>
-          <span className="comet comet-b" style={{ ["--tilt" as string]: "-22deg" }} aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
-          </span>
-          <span className="comet comet-c" style={{ ["--tilt" as string]: "-12deg" }} aria-hidden>
+          <span className="comet comet-b" aria-hidden>
             <span className="comet-tail" />
             <span className="comet-head" />
           </span>

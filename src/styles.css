@@ -2497,11 +2497,13 @@ details.fold>:not(summary) {
 .comet {
   opacity: 0;
   pointer-events: none;
-  width: 11rem;
+  width: 9rem;
   height: 6px;
   position: absolute;
   top: 0;
   left: 0;
+  transform-origin: 0 50%;
+  will-change: transform;
 }
 .comet-tail {
   z-index: 1;
@@ -2528,26 +2530,33 @@ details.fold>:not(summary) {
   box-shadow: 0 0 3px 1px #fffffff2,0 0 8px 2px #bed2ff66;
 }
 .comet-a {
-  animation: 46s linear 8s infinite comet-pass;
+  --x: 112vw;
+  --y: -12vw;
+  --x2: -36vw;
+  --y2: 16vw;
+  --tilt: -11deg;
+  animation: 34s linear 2s infinite comet-pass;
 }
 .comet-b {
-  animation: 62s linear 27s infinite comet-pass;
-}
-.comet-c {
-  animation: 74s linear 44s infinite comet-pass;
+  --x: 118vw;
+  --y: -6vw;
+  --x2: -30vw;
+  --y2: 20vw;
+  --tilt: -10deg;
+  animation: 47s linear 21s infinite comet-pass;
 }
 @keyframes comet-pass {
   0% {
     opacity: 0;
-    transform: translate3d(110vw, -6vh, 0) rotate(var(--tilt, -18deg));
+    transform: translate3d(var(--x), var(--y), 0) rotate(var(--tilt));
   }
-  4% {
-    opacity: .72;
-    transform: translate3d(42vw, 1vh, 0) rotate(var(--tilt, -18deg));
+  8% {
+    opacity: .86;
+    transform: translate3d(calc(var(--x) + (var(--x2) - var(--x)) * .4), calc(var(--y) + (var(--y2) - var(--y)) * .4), 0) rotate(var(--tilt));
   }
-  14%, 100% {
+  20%, 100% {
     opacity: 0;
-    transform: translate3d(-28vw, 10vh, 0) rotate(var(--tilt, -18deg));
+    transform: translate3d(var(--x2), var(--y2), 0) rotate(var(--tilt));
   }
 }
 @keyframes star-flow {
@@ -3164,9 +3173,9 @@ html, body {
 @keyframes rain-fall { to { transform: translateY(120vh); } }
 .sky-shot { position: absolute; top: 0; left: 0; width: var(--len, 8rem); height: 6px; opacity: 0; pointer-events: none; }
 @keyframes comet-live {
-  0% { opacity: 0; transform: translate3d(var(--x, 100vw), var(--y, -8vh), 0) rotate(var(--rot, -18deg)); }
-  18% { opacity: var(--bright, .8); transform: translate3d(var(--mx, 40vw), var(--my, 12vh), 0) rotate(var(--rot, -18deg)); }
-  100% { opacity: 0; transform: translate3d(var(--x2, -30vw), var(--y2, 30vh), 0) rotate(var(--rot, -18deg)); }
+  0% { opacity: 0; transform: translate3d(var(--x, 110vw), var(--y, -8vw), 0) rotate(var(--rot, -11deg)); }
+  42% { opacity: var(--bright, .8); transform: translate3d(calc(var(--x, 110vw) + (var(--x2, -30vw) - var(--x, 110vw)) * .42), calc(var(--y, -8vw) + (var(--y2, 16vw) - var(--y, -8vw)) * .42), 0) rotate(var(--rot, -11deg)); }
+  100% { opacity: 0; transform: translate3d(var(--x2, -30vw), var(--y2, 16vw), 0) rotate(var(--rot, -11deg)); }
 }
 .bismillah-sky { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 42%, #1a2430, #000 72%); }
 .comet-live {
