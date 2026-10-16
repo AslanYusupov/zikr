@@ -53,13 +53,8 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
         className="comet comet-live splash-pass"
         aria-hidden
         style={{
-          ["--x" as string]: "112vw",
-          ["--y" as string]: "8vw",
-          ["--x2" as string]: "-34vw",
-          ["--y2" as string]: "36vw",
-          ["--rot" as string]: "-11deg",
-          ["--dur" as string]: "1.6s",
-          ["--len" as string]: "9rem",
+          ["--dur" as string]: "1.8s",
+          ["--len" as string]: "12rem",
           ["--bright" as string]: "0.82",
         }}
       >

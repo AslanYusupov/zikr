@@ -138,10 +138,6 @@ export function Backdrop() {
             <span className="comet-tail" />
             <span className="comet-head" />
           </span>
-          <span className="comet comet-b" aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
-          </span>
         </>
       )}
     </div>
