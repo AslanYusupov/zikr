@@ -161,7 +161,7 @@ export function Counter({
   onNamesClose,
 }: {
   onNotice: (text: string) => void;
-  onOpenLibrary: () => void;
+  onOpenLibrary: (quoteIndex: number) => void;
   listOpen: boolean;
   onListClose: () => void;
   namesOpen: boolean;
@@ -264,7 +264,8 @@ const [quoteAt, setQuoteAt] = useState(() => Math.floor(Date.now() / 90000));
   const name = showPhrase ? spoken.name : t(s.lang, "random");
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
-const quote = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length] ?? QUOTES[0];
+  const quoteIndex = (Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length;
+  const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
   const rewardRing = totalReward <= 0 ? 0 : 1 - 1 / (1 + totalReward / 800);
 
@@ -404,7 +405,7 @@ const quote = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length]
               <button
                 type="button"
                 key={`${quote.text}-${quoteAt}`}
-                onClick={onOpenLibrary}
+                onClick={() => onOpenLibrary(quoteIndex)}
                 className="reminder reminder-in mx-3 mb-1.5 block w-[calc(100%-1.5rem)] text-center"
               >
                 {shownQuote.arabic && s.lang !== "ar" && s.lang !== "ur" ? (

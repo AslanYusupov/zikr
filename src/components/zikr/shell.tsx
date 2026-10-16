@@ -91,7 +91,7 @@ export function Shell() {
   const [dhikrList, setDhikrList] = useState(false);
   const [namesOpen, setNamesOpen] = useState(false);
   const [settings, setSettings] = useState(false);
-  const [library, setLibrary] = useState(false);
+  const [library, setLibrary] = useState<number | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [full, setFull] = useState(false);
   const [updateReady, setUpdateReady] = useState(false);
@@ -202,7 +202,7 @@ export function Shell() {
   function closeOverlays() {
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     setSettings(false);
-    setLibrary(false);
+    setLibrary(null);
     setTab("zikr");
   }
 
@@ -210,13 +210,13 @@ export function Shell() {
     setSettings(true);
   }
 
-  function openLibrary() {
-    setLibrary(true);
+  function openLibrary(quoteIndex: number) {
+    setLibrary(quoteIndex);
   }
 
   function selectTab(next: Tab) {
     setSettings(false);
-    setLibrary(false);
+    setLibrary(null);
     if (next === tab) {
       setHome("dhikr");
       setDhikrList(false);
@@ -429,7 +429,7 @@ export function Shell() {
         </nav>
 
         <Celebrate armed={hydrated} />
-        {library && <Library onClose={closeOverlays} />}
+        {library !== null && <Library focus={library} onClose={closeOverlays} />}
         {settings && <SettingsView onClose={closeOverlays} meta={cloud.meta} status={cloud.user ? cloud.status : "local"} />}
       </div>
       {!entered && <Splash onEnter={enter} />}

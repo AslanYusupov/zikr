@@ -1,12 +1,23 @@
+import { useEffect, useRef } from "react";
 import { QUOTES, REMEMBRANCE } from "@/lib/zikr/content";
 import { tx } from "@/lib/zikr/i18n";
 import { useZikr } from "@/lib/zikr/store";
 import { localQuote, phraseOf } from "@/lib/zikr/tr";
+import { cn } from "@/lib/cn";
 import { Sheet } from "./pattern";
 
-export function Library({ onClose }: { onClose: () => void }) {
+export function Library({ focus, onClose }: { focus: number; onClose: () => void }) {
   const lang = useZikr((s) => s.lang);
   const arabicAside = lang !== "ar" && lang !== "ur";
+  const hit = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const node = hit.current;
+    if (!node) return;
+    const timer = window.setTimeout(() => node.scrollIntoView({ block: "start" }), 40);
+    return () => window.clearTimeout(timer);
+  }, [focus]);
+
   return (
     <Sheet title={tx(lang, "libraryTitle")} onClose={onClose}>
       <p className="text-sm leading-relaxed text-muted">{tx(lang, "libraryLead")}</p>
@@ -33,10 +44,18 @@ export function Library({ onClose }: { onClose: () => void }) {
 
       <h3 className="mt-5 text-xs tracking-wide text-gold uppercase">{tx(lang, "wisdom")}</h3>
       <div className="mt-2 grid gap-2">
-        {QUOTES.map((q) => {
+        {QUOTES.map((q, index) => {
           const line = localQuote(q, lang);
+          const open = index === focus;
           return (
-            <article key={q.text} className="rounded-2xl border border-line bg-surface px-3 py-3">
+            <article
+              key={q.text}
+              ref={open ? hit : undefined}
+              className={cn(
+                "scroll-mt-3 rounded-2xl border bg-surface px-3 py-3",
+                open ? "border-gold" : "border-line",
+              )}
+            >
               {line.arabic && arabicAside ? (
                 <p className="text-center font-arabic text-lg leading-snug text-fg" dir="rtl" lang="ar">
                   {line.arabic}
