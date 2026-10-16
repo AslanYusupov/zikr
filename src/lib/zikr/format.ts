@@ -1,4 +1,5 @@
 import type { DayLog, LangId } from "./types";
+import { t } from "./i18n";
 
 export function plural(n: number, one: string, few: string, many: string): string {
   const abs = Math.abs(Math.floor(n)) % 100;
@@ -49,9 +50,17 @@ export function inviteLink(code?: string | null): string {
   return SITE;
 }
 
-export function inviteText(link: string): string {
-  const short = link;
-  return `Давай поминать Аллах1а вместе.\nسُبْحَانَ اللَّهِ وَبِحَمْدِهِ\nСубхьаналлах1и ва бихьамдихи\nСахих аль-Бухари и Сахих Муслим.\n${short}`;
+export function inviteText(link: string, lang: LangId = "ru"): string {
+  return [
+    `✨ *${t(lang, "inviteShare")}*`,
+    "",
+    "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+    `_${t(lang, "invitePhrase")}_`,
+    "",
+    `📖 «${t(lang, "inviteQuote")}» _(${t(lang, "inviteSource")})_.`,
+    "",
+    `🔗 ${t(lang, "inviteJoin")}: ${link}`,
+  ].join("\n");
 }
 
 export function whatsappHref(text: string): string {

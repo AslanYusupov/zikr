@@ -3,7 +3,7 @@ import { UserButton } from "@/lib/auth/gates";
 import { authClient, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES } from "@/lib/zikr/content";
-import { formatNum, inviteLink, telegramHref, whatsappHref } from "@/lib/zikr/format";
+import { formatNum, inviteLink, inviteText, telegramHref, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { countryName, COUNTRY_IDS, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
@@ -57,7 +57,7 @@ export function SettingsView({
   async function copyInvite() {
     const code = /^\d{8}$/.test(s.publicId) ? s.publicId : s.ensurePublicId();
     const link = inviteLink(code);
-    const text = `${t(s.lang, "inviteShare")}\nسُبْحَانَ اللَّهِ وَبِحَمْدِهِ\n${t(s.lang, "invitePhrase")}\n${t(s.lang, "inviteFoam")}\n${link}`;
+    const text = inviteText(link, s.lang);
     try {
       if (navigator.share) await navigator.share({ title: t(s.lang, "zikr"), text });
       else await navigator.clipboard.writeText(text);
@@ -448,7 +448,7 @@ export function InviteButtons() {
     if (!/^\d{8}$/.test(publicId)) ensurePublicId();
   }, [publicId, ensurePublicId]);
   const link = inviteLink(publicId);
-  const text = `${t(lang, "inviteShare")}\nسُبْحَانَ اللَّهِ وَبِحَمْدِهِ\n${t(lang, "invitePhrase")}\n${t(lang, "inviteFoam")}\n${link}`;
+  const text = inviteText(link, lang);
   return (
     <>
       {/^\d{8}$/.test(publicId) ? (

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
-import { formatNum, bestWeek, goalStreak, inviteLink, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
+import { formatNum, bestWeek, goalStreak, inviteLink, inviteText, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { InviteButtons } from "./settings-view";
 import { t, tx } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
@@ -126,7 +126,7 @@ export function RatingView() {
   async function share() {
     const code = /^\d{8}$/.test(publicId) ? publicId : useZikr.getState().ensurePublicId();
     const link = inviteLink(code);
-    const text = `${t(lang, "inviteShare")}\n${link}`;
+    const text = inviteText(link, lang);
     try {
       if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text });
       else {
