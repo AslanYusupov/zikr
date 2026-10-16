@@ -151,14 +151,22 @@ export function stripInstallParams(url) {
   return rest ? `${path}?${rest}` : path;
 }
 
-export function renderInstallPageHtml(template, { host, url } = {}) {
+export function displayAppName(hostHeader, site = {}) {
+  const fromHost = appNameFromHost(hostHeader);
+  if (fromHost !== DEFAULT_APP_NAME) return fromHost;
+  const fromSite = String(site?.title ?? "").trim();
+  if (!fromSite || fromSite.toLowerCase() === "grok app") return "Zikr";
+  return fromSite.charAt(0).toUpperCase() + fromSite.slice(1);
+}
+
+export function renderInstallPageHtml(template, { host, url, site } = {}) {
   return String(template)
-    .replaceAll("{{APP_NAME}}", escapeHtml(appNameFromHost(host)))
+    .replaceAll("{{APP_NAME}}", escapeHtml(displayAppName(host, site)))
     .replaceAll("{{APP_URL}}", escapeHtml(stripInstallParams(url)));
 }
 
-export function renderWebManifest(hostHeader) {
-  const name = appNameFromHost(hostHeader);
+export function renderWebManifest(hostHeader, site = {}) {
+  const name = displayAppName(hostHeader, site);
   return JSON.stringify(
     {
       name,

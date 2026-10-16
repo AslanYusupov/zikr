@@ -21,8 +21,8 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black" },
-      { name: "apple-mobile-web-app-title", content: "zikr" },
-      { name: "application-name", content: "zikr" },
+      { name: "apple-mobile-web-app-title", content: "Zikr" },
+      { name: "application-name", content: "Zikr" },
       { name: "format-detection", content: "telephone=no" },
     ],
     links: [
