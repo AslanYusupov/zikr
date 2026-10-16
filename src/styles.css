@@ -2543,19 +2543,12 @@ details.fold>:not(summary) {
   transform: translate(-40%, -50%);
   box-shadow: 0 0 2px 1px #fff, 0 0 7px 2px #f4f7ff, 0 0 16px 3px #9eb6ff73;
 }
-.meteor-app { animation: meteor-pass 28s linear 6s infinite; }
-.meteor-splash { animation: meteor-splash 1.15s linear .35s 1 both; }
+.meteor-app { animation: meteor-pass 28s linear 3.2s infinite; }
 @keyframes meteor-pass {
   0% { opacity: 0; transform: translate3d(108%, 8%, 0); }
   1.5% { opacity: .95; transform: translate3d(92.3%, 10.1%, 0); }
   10% { opacity: .95; transform: translate3d(3%, 21.8%, 0); }
   12%, 100% { opacity: 0; transform: translate3d(-18%, 24.5%, 0); }
-}
-@keyframes meteor-splash {
-  0% { opacity: 0; transform: translate3d(108%, 10%, 0); }
-  12% { opacity: .95; transform: translate3d(92.9%, 12%, 0); }
-  84% { opacity: .95; transform: translate3d(2.2%, 24.3%, 0); }
-  100% { opacity: 0; transform: translate3d(-18%, 27%, 0); }
 }
 @keyframes star-flow {
   0% {
