@@ -2531,17 +2531,17 @@ details.fold>:not(summary) {
 }
 .comet-a {
   --x: 112vw;
-  --y: -12vw;
+  --y: 6vw;
   --x2: -36vw;
-  --y2: 16vw;
+  --y2: 34vw;
   --tilt: -11deg;
   animation: 34s linear 2s infinite comet-pass;
 }
 .comet-b {
   --x: 118vw;
-  --y: -6vw;
+  --y: 14vw;
   --x2: -30vw;
-  --y2: 20vw;
+  --y2: 40vw;
   --tilt: -10deg;
   animation: 47s linear 21s infinite comet-pass;
 }

@@ -54,9 +54,9 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
         aria-hidden
         style={{
           ["--x" as string]: "112vw",
-          ["--y" as string]: "-10vw",
+          ["--y" as string]: "8vw",
           ["--x2" as string]: "-34vw",
-          ["--y2" as string]: "18vw",
+          ["--y2" as string]: "36vw",
           ["--rot" as string]: "-11deg",
           ["--dur" as string]: "1.6s",
           ["--len" as string]: "9rem",
