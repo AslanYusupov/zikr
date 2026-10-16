@@ -55,9 +55,9 @@ export function inviteText(link: string, lang: LangId = "ru"): string {
     `✨ *${t(lang, "inviteShare")}*`,
     "",
     "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-    `_${t(lang, "invitePhrase")}_`,
+    t(lang, "invitePhrase"),
     "",
-    `📖 «${t(lang, "inviteQuote")}» _(${t(lang, "inviteSource")})_.`,
+    `📖 «${t(lang, "inviteQuote")}» (${t(lang, "inviteSource")}).`,
     "",
     `🔗 ${t(lang, "inviteJoin")}: ${link}`,
   ].join("\n");
