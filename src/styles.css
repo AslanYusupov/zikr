@@ -2496,6 +2496,7 @@ details.fold>:not(summary) {
 }
 .meteor {
   position: absolute;
+  z-index: 2;
   inset: 0;
   width: 100%;
   height: 100%;
@@ -2506,17 +2507,24 @@ details.fold>:not(summary) {
   position: absolute;
   top: 0;
   left: 0;
-  width: 12rem;
+  width: 14rem;
   height: 8px;
-  transform: rotate(-13deg);
+  transform: rotate(-16deg);
   transform-origin: 0 50%;
 }
-.meteor-app { animation: meteor-pass 36s linear 2.8s infinite; }
+.meteor-app { animation: meteor-pass 28s linear 6s infinite; }
+.meteor-splash { animation: meteor-splash 1.15s linear .35s 1 both; }
 @keyframes meteor-pass {
-  0% { opacity: 0; transform: translate3d(110%, 6%, 0); }
-  1.6% { opacity: .92; transform: translate3d(90.7%, 8%, 0); }
-  8.6% { opacity: .92; transform: translate3d(3.9%, 17%, 0); }
-  11%, 100% { opacity: 0; transform: translate3d(-25%, 20%, 0); }
+  0% { opacity: 0; transform: translate3d(108%, 8%, 0); }
+  1.5% { opacity: .95; transform: translate3d(92.3%, 10.1%, 0); }
+  10% { opacity: .95; transform: translate3d(3%, 21.8%, 0); }
+  12%, 100% { opacity: 0; transform: translate3d(-18%, 24.5%, 0); }
+}
+@keyframes meteor-splash {
+  0% { opacity: 0; transform: translate3d(108%, 10%, 0); }
+  12% { opacity: .95; transform: translate3d(92.9%, 12%, 0); }
+  84% { opacity: .95; transform: translate3d(2.2%, 24.3%, 0); }
+  100% { opacity: 0; transform: translate3d(-18%, 27%, 0); }
 }
 .comet-tail {
   z-index: 1;

@@ -49,6 +49,12 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
     <div className="bismillah-splash" onClick={close} suppressHydrationWarning>
       <span className="bismillah-glow" aria-hidden />
       <span className="bismillah-sky" aria-hidden />
+      <span className="meteor meteor-splash" aria-hidden>
+        <span className="meteor-streak">
+          <span className="comet-tail" />
+          <span className="comet-head" />
+        </span>
+      </span>
       <p className="bismillah-words" dir="rtl" lang="ar">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
       </p>

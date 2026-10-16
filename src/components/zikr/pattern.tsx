@@ -132,16 +132,12 @@ export function Backdrop() {
           ))}
         </div>
       )}
-      {stars && (
-        <>
-          <span className="meteor meteor-app" aria-hidden>
-            <span className="meteor-streak">
-              <span className="comet-tail" />
-              <span className="comet-head" />
-            </span>
-          </span>
-        </>
-      )}
+      <span className="meteor meteor-app" aria-hidden>
+        <span className="meteor-streak">
+          <span className="comet-tail" />
+          <span className="comet-head" />
+        </span>
+      </span>
     </div>
   );
 }
