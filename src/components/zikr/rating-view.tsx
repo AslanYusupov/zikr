@@ -192,7 +192,7 @@ export function RatingView() {
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
       <Board rows={daily} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} />
-      {dailyRank ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(dailyRank)}.</p> : null}
+      {dailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(dailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">

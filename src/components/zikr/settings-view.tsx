@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { UserButton } from "@/lib/auth/gates";
 import { authClient, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES } from "@/lib/zikr/content";
@@ -324,7 +323,7 @@ export function SettingsView({
         )}
         {!waiting && user && (
           <div className="mt-2 rounded-2xl border border-line bg-surface px-3 py-3">
-            <UserButton />
+            <p className="text-sm text-fg">{tx(s.lang, "signedIn")}</p>
             {meta && <p className="mt-3 text-sm text-fg">{tx(s.lang, "inviteCode")}: {meta.inviteCode}</p>}
             <label className="mt-3 block text-sm text-muted">
               {tx(s.lang, "currentPassword")}
