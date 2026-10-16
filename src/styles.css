@@ -2494,61 +2494,64 @@ details.fold>:not(summary) {
   top: -4%;
   box-shadow: 0 0 6px #dce6ffd9;
 }
-.meteor {
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+.comet {
   opacity: 0;
-}
-.meteor-streak {
+  pointer-events: none;
+  width: 11rem;
+  height: 6px;
   position: absolute;
   top: 0;
   left: 0;
-  width: 16rem;
-  height: 14px;
-  transform: rotate(-16deg);
-  transform-origin: 0 50%;
 }
 .comet-tail {
   z-index: 1;
-  background: linear-gradient(90deg, #fff 0%, #f7f9ff 4%, #d5e4ffb8 14%, #9db6ff55 36%, #7f9ee01c 64%, #0000 100%);
+  filter: blur(.35px);
+  background: linear-gradient(90deg,#ffffffeb 0%,#d6e2ff73 10%,#baceff1f 42%,#0000 100%);
   border-radius: 999px;
-  width: 100%;
-  height: 1.6px;
+  width: calc(100% - 5px);
+  height: 1.5px;
   position: absolute;
   top: 50%;
   left: 5px;
   transform: translateY(-50%);
 }
-.comet-tail:before {
-  content: "";
-  position: absolute;
-  inset: -3.5px 8% -3.5px 0;
-  background: linear-gradient(90deg, #ffffff88 0%, #b9ccff33 28%, #0000 72%);
-  filter: blur(2.2px);
-  border-radius: 999px;
-}
 .comet-head {
   z-index: 2;
   background: #fff;
   border-radius: 999px;
-  width: 3.5px;
-  height: 3.5px;
+  width: 4px;
+  height: 4px;
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translate(-40%, -50%);
-  box-shadow: 0 0 2px 1px #fff, 0 0 7px 2px #f4f7ff, 0 0 16px 3px #9eb6ff73;
+  transform: translate(-20%,-50%);
+  box-shadow: 0 0 3px 1px #fffffff2,0 0 8px 2px #bed2ff66;
 }
-.meteor-app { animation: meteor-pass 28s linear 3.2s infinite; }
-@keyframes meteor-pass {
-  0% { opacity: 0; transform: translate3d(108%, 8%, 0); }
-  1.5% { opacity: .95; transform: translate3d(92.3%, 10.1%, 0); }
-  10% { opacity: .95; transform: translate3d(3%, 21.8%, 0); }
-  12%, 100% { opacity: 0; transform: translate3d(-18%, 24.5%, 0); }
+.comet-a {
+  animation: 46s linear 8s infinite comet-pass;
+}
+.comet-b {
+  animation: 62s linear 27s infinite comet-pass;
+}
+.comet-c {
+  animation: 74s linear 44s infinite comet-pass;
+}
+@keyframes comet-pass {
+  0% {
+    opacity: 0;
+    transform: translate3d(110vw, -4vh, 0) rotate(var(--tilt,-18deg));
+  }
+  4% {
+    opacity: .55;
+  }
+  14% {
+    opacity: 0;
+    transform: translate3d(-30vw, 8vh, 0) rotate(var(--tilt,-18deg));
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-30vw, 8vh, 0) rotate(var(--tilt,-18deg));
+  }
 }
 @keyframes star-flow {
   0% {
@@ -3162,7 +3165,45 @@ html, body {
   animation-iteration-count: infinite;
 }
 @keyframes rain-fall { to { transform: translateY(120vh); } }
+.sky-shot { position: absolute; top: 0; left: 0; width: var(--len, 8rem); height: 6px; opacity: 0; pointer-events: none; }
+.sky-shot-a { --len: 7rem; animation: sky-a 37s linear 4s infinite; }
+.sky-shot-b { --len: 11rem; animation: sky-b 54s linear 16s infinite; }
+.sky-shot-c { --len: 6.2rem; animation: sky-c 43s linear 9s infinite; }
+.sky-shot-d { --len: 5rem; animation: sky-d 61s linear 28s infinite; }
+.sky-flip .comet-tail { left: auto; right: 5px; transform: translateY(-50%) scaleX(-1); }
+.sky-flip .comet-head { left: auto; right: 0; transform: translate(20%, -50%); }
+@keyframes sky-a {
+  0%, 7% { opacity: 0; transform: translate3d(114vw, 3vh, 0) rotate(-13deg); }
+  11% { opacity: .72; }
+  19%, 100% { opacity: 0; transform: translate3d(-32vw, 24vh, 0) rotate(-13deg); }
+}
+@keyframes sky-b {
+  0%, 46% { opacity: 0; transform: translate3d(88vw, -8vh, 0) rotate(-41deg); }
+  50% { opacity: .88; }
+  58%, 100% { opacity: 0; transform: translate3d(14vw, 76vh, 0) rotate(-41deg); }
+}
+@keyframes sky-c {
+  0%, 63% { opacity: 0; transform: translate3d(-34vw, 8vh, 0) rotate(26deg); }
+  67% { opacity: .66; }
+  75%, 100% { opacity: 0; transform: translate3d(120vw, 44vh, 0) rotate(26deg); }
+}
+@keyframes sky-d {
+  0%, 24% { opacity: 0; transform: translate3d(64vw, -12vh, 0) rotate(-62deg); }
+  27% { opacity: .58; }
+  33%, 100% { opacity: 0; transform: translate3d(22vw, 58vh, 0) rotate(-62deg); }
+}
 .bismillah-sky { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 42%, #1a2430, #000 72%); }
+.comet-live {
+  width: var(--len, 9rem);
+  height: 6px;
+  opacity: 0;
+  animation: comet-live var(--dur, 1.2s) linear infinite;
+}
+@keyframes comet-live {
+  0% { opacity: 0; transform: translate3d(var(--x, 100vw), var(--y, -8vh), 0) rotate(var(--rot, -18deg)); }
+  18% { opacity: var(--bright, .8); }
+  100% { opacity: 0; transform: translate3d(var(--x2, -30vw), var(--y2, 30vh), 0) rotate(var(--rot, -18deg)); }
+}
 .app-nav { padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { min-height: 3.15rem; }
 .home-switch { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; flex: none; padding: .1rem .75rem .35rem; }

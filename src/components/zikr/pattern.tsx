@@ -132,12 +132,26 @@ export function Backdrop() {
           ))}
         </div>
       )}
-      <span className="meteor meteor-app" aria-hidden>
-        <span className="meteor-streak">
-          <span className="comet-tail" />
-          <span className="comet-head" />
-        </span>
-      </span>
+      {stars && (
+        <>
+          <span className="sky-shot sky-shot-a" aria-hidden>
+            <span className="comet-tail" />
+            <span className="comet-head" />
+          </span>
+          <span className="sky-shot sky-shot-b" aria-hidden>
+            <span className="comet-tail" />
+            <span className="comet-head" />
+          </span>
+          <span className="sky-shot sky-shot-c sky-flip" aria-hidden>
+            <span className="comet-tail" />
+            <span className="comet-head" />
+          </span>
+          <span className="sky-shot sky-shot-d" aria-hidden>
+            <span className="comet-tail" />
+            <span className="comet-head" />
+          </span>
+        </>
+      )}
     </div>
   );
 }
