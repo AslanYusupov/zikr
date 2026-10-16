@@ -152,6 +152,11 @@ export function ModeStrip({
   );
 }
 
+function quoteHold(text: string): number {
+  const ms = 8000 + (text.length / 10) * 1000;
+  return Math.round(Math.min(50000, Math.max(12000, ms)));
+}
+
 export function Counter({
   onNotice,
   onOpenLibrary,
@@ -183,7 +188,7 @@ export function Counter({
   const orbRef = useRef<HTMLButtonElement>(null);
   const riseRef = useRef<HTMLDivElement>(null);
   const pressRef = useRef<() => void>(() => {});
-const [quoteAt, setQuoteAt] = useState(() => Math.floor(Date.now() / 90000));
+  const [quoteAt, setQuoteAt] = useState(() => Math.floor(Math.random() * QUOTES.length));
   const [virtue, setVirtue] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [wordTop, setWordTop] = useState("42%");
@@ -192,11 +197,11 @@ const [quoteAt, setQuoteAt] = useState(() => Math.floor(Date.now() / 90000));
 
   useEffect(() => {
     if (!s.showWisdom) return;
-    const timer = window.setInterval(() => {
-      setQuoteAt((value) => value + 1);
-    }, 90000);
-    return () => window.clearInterval(timer);
-  }, [s.showWisdom]);
+    const current = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length];
+    const wait = quoteHold(current?.text ?? "");
+    const timer = window.setTimeout(() => setQuoteAt((value) => value + 1), wait);
+    return () => window.clearTimeout(timer);
+  }, [s.showWisdom, quoteAt, s.wisdomStep]);
 
   function press(event?: { type?: string }) {
     if (document.querySelector(".sheet, .names-sheet, .celebrate")) return;
