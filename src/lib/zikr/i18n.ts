@@ -121,6 +121,8 @@ const DICT = {
     numbersSafe: "Список сейчас не открылся. Ваши числа на месте.",
     quietHere: "Пока здесь тихо.",
     placeAbout: "Ваше место примерно",
+    ratingAt: "Обновлено в {time}",
+    ratingHeld: "Показан рейтинг на {time}",
   },
   en: {
     zikr: "Dhikr",
@@ -242,6 +244,8 @@ const DICT = {
     numbersSafe: "The list did not open. Your numbers are safe.",
     quietHere: "It is quiet here for now.",
     placeAbout: "Your place is about",
+    ratingAt: "Updated at {time}",
+    ratingHeld: "Showing the rating from {time}",
   },
   ar: {
     zikr: "ذكر",
@@ -363,6 +367,8 @@ const DICT = {
     numbersSafe: "لم تُفتح القائمة. أرقامك في مكانها.",
     quietHere: "المكان هادئ الآن.",
     placeAbout: "مكانك نحو",
+    ratingAt: "آخر تحديث {time}",
+    ratingHeld: "الترتيب كما كان في {time}",
   },
   id: {
     zikr: "Zikir",
@@ -484,6 +490,8 @@ const DICT = {
     numbersSafe: "Daftar belum terbuka. Angkamu tetap ada.",
     quietHere: "Di sini masih sepi.",
     placeAbout: "Tempatmu kira-kira",
+    ratingAt: "Diperbarui pukul {time}",
+    ratingHeld: "Peringkat terakhir, pukul {time}",
   },
   tr: {
     zikr: "Zikir",
@@ -605,6 +613,8 @@ const DICT = {
     numbersSafe: "Liste açılmadı. Sayıların duruyor.",
     quietHere: "Şimdilik sessiz.",
     placeAbout: "Yerin yaklaşık",
+    ratingAt: "Güncellendi: {time}",
+    ratingHeld: "Son sıralama, saat {time}",
   },
   ur: {
     zikr: "ذکر",
@@ -726,6 +736,8 @@ const DICT = {
     numbersSafe: "فہرست نہیں کھلی۔ آپ کے اعداد اپنی جگہ ہیں۔",
     quietHere: "ابھی یہاں خاموشی ہے۔",
     placeAbout: "آپ کی جگہ تقریباً",
+    ratingAt: "آخری تازہ کاری {time}",
+    ratingHeld: "آخری درجہ، وقت {time}",
   },
 } as const;
 

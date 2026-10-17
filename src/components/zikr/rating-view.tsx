@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
@@ -34,6 +34,77 @@ const FLAGS: Record<string, string> = {
   FR: "🇫🇷",
 };
 
+const RATING_CACHE = "zikr-rating-v1";
+
+type RatingCache = {
+  at: number;
+  ownTotal: number;
+  world: WorldRow[];
+  worldRank: number | null;
+  online: number | null;
+  allTaps: number | null;
+  live: PresenceRow[];
+  daily: PresenceRow[];
+  dailyRank: number | null;
+  guests: Invitee[];
+};
+
+function readRatingCache(): RatingCache | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(RATING_CACHE);
+    if (!raw) return null;
+    const data = JSON.parse(raw) as Partial<RatingCache>;
+    if (!data || typeof data.at !== "number" || !Array.isArray(data.world)) return null;
+    return {
+      at: data.at,
+      ownTotal: typeof data.ownTotal === "number" ? data.ownTotal : 0,
+      world: data.world,
+      worldRank: typeof data.worldRank === "number" ? data.worldRank : null,
+      online: typeof data.online === "number" ? data.online : null,
+      allTaps: typeof data.allTaps === "number" ? data.allTaps : null,
+      live: Array.isArray(data.live) ? data.live : [],
+      daily: Array.isArray(data.daily) ? data.daily : [],
+      dailyRank: typeof data.dailyRank === "number" ? data.dailyRank : null,
+      guests: Array.isArray(data.guests) ? data.guests : [],
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeRatingCache(cache: RatingCache) {
+  try {
+    localStorage.setItem(RATING_CACHE, JSON.stringify(cache));
+  } catch {
+    /* private mode */
+  }
+}
+
+function clockOf(at: number, lang: LangId) {
+  const locale = lang === "ru" ? "ru-RU" : lang === "ar" ? "ar" : lang === "id" ? "id-ID" : lang === "tr" ? "tr-TR" : lang === "ur" ? "ur-PK" : "en-GB";
+  try {
+    return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(at);
+  } catch {
+    return "";
+  }
+}
+
+function liftRows<T extends { id: string; rank: number }>(
+  rows: T[] | null,
+  id: string,
+  read: (row: T) => number,
+  write: (row: T, value: number) => T,
+  local: number,
+  listed: boolean,
+): T[] | null {
+  if (!rows || !listed || local <= 0 || !/^\d{8}$/.test(id)) return rows;
+  if (!rows.some((row) => row.id === id)) return rows;
+  const next = rows.map((row) => (row.id === id ? write(row, Math.max(read(row), local)) : row));
+  next.sort((a, b) => read(b) - read(a) || a.rank - b.rank);
+  return next.map((row, index) => ({ ...row, rank: index + 1 }));
+}
+
 function shown<T extends { id: string; total?: number; value?: number }>(rows: T[] | null | undefined): T[] {
   return (rows ?? []).filter((row) => {
     if (HIDDEN_RATING_IDS.has(row.id)) return false;
@@ -48,10 +119,16 @@ export function RatingView() {
   const bestDay = useZikr((s) => s.bestDay);
   const goal = useZikr((s) => s.goal);
   const publicId = useZikr((s) => s.publicId);
+  const listed = useZikr((s) => s.publicBoard);
+  const total = useZikr((s) => s.total);
   const lang = useZikr((s) => s.lang);
+  const bag = useRef<RatingCache | null>(null);
   const [world, setWorld] = useState<WorldRow[] | null>(null);
   const [worldRank, setWorldRank] = useState<number | null>(null);
   const [worldError, setWorldError] = useState(false);
+  const [held, setHeld] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
+  const [baseTotal, setBaseTotal] = useState(0);
   const [online, setOnline] = useState<number | null>(null);
   const [allTaps, setAllTaps] = useState<number | null>(null);
   const [live, setLive] = useState<PresenceRow[] | null>(null);
@@ -66,16 +143,61 @@ export function RatingView() {
   const chart = recentDays(days, 14, day);
   const mark = Math.max(record, today);
 
+  useLayoutEffect(() => {
+    const cache = readRatingCache();
+    if (!cache) return;
+    bag.current = cache;
+    setWorld(shown(cache.world));
+    setWorldRank(cache.worldRank);
+    setOnline(cache.online);
+    setAllTaps(cache.allTaps);
+    setLive(shown(cache.live));
+    setDaily(shown(cache.daily));
+    setDailyRank(cache.dailyRank);
+    setGuests(shown(cache.guests));
+    setBaseTotal(cache.ownTotal);
+    setUpdatedAt(cache.at);
+    setHeld(true);
+  }, []);
+
+  function remember(patch: Partial<RatingCache>, fresh = false) {
+    const prev = bag.current;
+    const ownTotal = fresh ? useZikr.getState().total : (prev?.ownTotal ?? useZikr.getState().total);
+    const next: RatingCache = {
+      at: fresh ? Date.now() : (prev?.at ?? Date.now()),
+      ownTotal,
+      world: patch.world ?? prev?.world ?? [],
+      worldRank: patch.worldRank === undefined ? (prev?.worldRank ?? null) : patch.worldRank,
+      online: patch.online === undefined ? (prev?.online ?? null) : patch.online,
+      allTaps: patch.allTaps === undefined ? (prev?.allTaps ?? null) : patch.allTaps,
+      live: patch.live ?? prev?.live ?? [],
+      daily: patch.daily ?? prev?.daily ?? [],
+      dailyRank: patch.dailyRank === undefined ? (prev?.dailyRank ?? null) : patch.dailyRank,
+      guests: patch.guests ?? prev?.guests ?? [],
+    };
+    bag.current = next;
+    writeRatingCache(next);
+    if (!fresh) return;
+    setBaseTotal(next.ownTotal);
+    setUpdatedAt(next.at);
+    setHeld(false);
+    setWorldError(false);
+  }
+
   useEffect(() => {
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
     const load = () => {
       invitees({ data: { publicId } })
         .then((res) => {
-          if (!stop) setGuests(shown(res.rows));
+          if (!stop) {
+            const rows = shown(res.rows);
+            setGuests(rows);
+            remember({ guests: rows }, false);
+          }
         })
         .catch(() => {
-          if (!stop) setGuests((prev) => prev ?? []);
+          if (!stop) setGuests((prev) => prev ?? bag.current?.guests ?? []);
         });
     };
     load();
@@ -94,23 +216,32 @@ export function RatingView() {
       worldBoard({ data: { publicId } })
         .then((res) => {
           if (stop) return;
-          setWorld(shown(res.rows));
-          setWorldRank(HIDDEN_RATING_IDS.has(publicId) ? null : (res.mine?.rank ?? null));
-          setWorldError(false);
+          const rows = shown(res.rows);
+          const rank = HIDDEN_RATING_IDS.has(publicId) ? null : (res.mine?.rank ?? null);
+          setWorld(rows);
+          setWorldRank(rank);
+          remember({ world: rows, worldRank: rank }, true);
         })
         .catch(() => {
-          if (!stop) setWorldError(true);
+          if (stop) return;
+          if (bag.current) setHeld(true);
+          else setWorldError(true);
         });
       presenceBoard({ data: { publicId, dayKey: day } })
         .then((res) => {
           if (stop) return;
+          const liveRows = shown(res.live);
+          const dailyRows = shown(res.daily);
           setOnline(res.remembering);
           setAllTaps(res.allTaps);
-          setLive(shown(res.live));
-          setDaily(shown(res.daily));
+          setLive(liveRows);
+          setDaily(dailyRows);
           setDailyRank(res.dailyRank);
+          remember({ online: res.remembering, allTaps: res.allTaps, live: liveRows, daily: dailyRows, dailyRank: res.dailyRank }, true);
         })
-        .catch(() => {});
+        .catch(() => {
+          if (!stop && bag.current) setHeld(true);
+        });
     };
     load();
     const onLive = () => load();
@@ -153,6 +284,14 @@ export function RatingView() {
           ? `${t(lang, "selfToday")} ${formatNum(today)}. ${t(lang, "selfAhead")}`
           : `${t(lang, "selfRecord")} — ${formatNum(record)}. ${t(lang, "selfToday")} ${formatNum(today)}. ${t(lang, "selfNote")}`;
 
+  const tapsShown = allTaps == null ? null : allTaps + Math.max(0, total - baseTotal);
+  const worldShown = liftRows(world, publicId, (row) => row.total, (row, value) => ({ ...row, total: value }), total, listed);
+  const dailyShown = liftRows(daily, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, listed);
+  const liveShown = liftRows(live, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, listed);
+  const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
+  const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
+  const clock = updatedAt ? clockOf(updatedAt, lang) : "";
+
   return (
     <div className="pane px-4 pt-2 pb-8">
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
@@ -185,25 +324,26 @@ export function RatingView() {
       <InviteButtons />
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
-      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums break-all text-fg">{allTaps === null ? "…" : formatNum(allTaps)}</p>
+      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums break-all text-fg">{tapsShown === null ? "…" : formatNum(tapsShown)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
       <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? "…" : formatNum(online)}</p>
-      {live && live.length > 0 ? <Board rows={live} publicId={publicId} empty="" namesOnly lang={lang} /> : null}
+      {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} /> : null}
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
-      <Board rows={daily} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} />
-      {dailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(dailyRank)}.</p> : null}
+      <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} />
+      {myDailyRank && today > 0 && listed && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(myDailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">
         {t(lang, "ratingWorld")}{" "}
         <span className="tabular-nums text-fg">{publicId && !HIDDEN_RATING_IDS.has(publicId) ? publicId : "…"}</span>
       </p>
-      {worldError && <p className="mt-3 text-sm text-muted">{t(lang, "worldClosed")}</p>}
-      {world && world.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "worldQuiet")}</p>}
-      {world && world.length > 0 && (
+      {clock ? <p className="mt-1 text-xs text-muted">{(held ? t(lang, "ratingHeld") : t(lang, "ratingAt")).replace("{time}", clock)}</p> : null}
+      {worldError && !worldShown?.length ? <p className="mt-3 text-sm text-muted">{t(lang, "worldClosed")}</p> : null}
+      {worldShown && worldShown.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "worldQuiet")}</p>}
+      {worldShown && worldShown.length > 0 && (
         <ol className="mt-3 grid gap-1.5">
-          {world.map((row) => (
+          {worldShown.map((row) => (
             <li
               key={row.id}
               className={cn(
@@ -221,12 +361,12 @@ export function RatingView() {
           ))}
         </ol>
       )}
-      {worldRank && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "yourPlace")}: {formatNum(worldRank)}.</p> : null}
+      {myWorldRank && listed && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "yourPlace")}: {formatNum(myWorldRank)}.</p> : null}
 
       <article className="mt-5 rounded-3xl border border-line bg-surface px-4 py-4">
         <h2 className="text-lg text-fg">{tx(lang, "pointGood")}</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">{tx(lang, "pointLead")}</p>
-        {guests && guests.length > 0 ? (
+        {guests == null ? null : guests.length > 0 ? (
           <ol className="mt-3 grid gap-1.5">
             {guests.map((row) => (
               <li key={row.id} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-bg px-3 py-2">
@@ -263,6 +403,7 @@ function Board({
   lang: LangId;
 }) {
   const list = shown(rows);
+  if (rows == null) return null;
   if (list.length === 0) return <p className="mt-2 text-sm text-muted">{empty}</p>;
   return (
     <ol className="mt-2 grid gap-1.5">
