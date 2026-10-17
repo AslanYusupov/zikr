@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { authClient, authEnabled } from "@/lib/auth/client";
+import { authClient, authEnabled, setStayToken } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Backdrop, Emblem } from "@/components/zikr/pattern";
 import { isRtl, tx } from "@/lib/zikr/i18n";
@@ -76,6 +76,8 @@ function Login() {
           setError(explainAuthError(lang, res.error, tx(lang, "loginUpFail")));
           return;
         }
+        const created = res.data as { token?: string | null } | null;
+        if (created?.token) setStayToken(created.token);
       } else {
         const res = await authClient.signIn.email({
           email: email.trim(),
@@ -87,6 +89,8 @@ function Login() {
           setError(explainAuthError(lang, res.error, tx(lang, "loginInFail")));
           return;
         }
+        const signed = res.data as { token?: string | null } | null;
+        if (signed?.token) setStayToken(signed.token);
       }
       window.location.assign("/");
     } catch (err) {

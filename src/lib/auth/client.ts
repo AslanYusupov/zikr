@@ -21,7 +21,7 @@ export const authClient = createAuthClient({
   plugins: [genericOAuthClient()],
   fetchOptions: {
     onRequest(ctx) {
-      const token = getBearerToken();
+      const token = getBearerToken() || getStayToken();
       if (token) ctx.headers.set("Authorization", `Bearer ${token}`);
       return ctx;
     },
@@ -46,6 +46,7 @@ export { GROK_PROVIDERS };
 // to server functions, via `@/lib/auth/middleware`). Empty everywhere except the
 // preview after a popup sign-in, so the cookie path is untouched elsewhere.
 const BEARER_KEY = "grok-auth.bearer-token";
+const STAY_KEY = "zikr-auth-token";
 
 /** The stored preview bearer token, or null. */
 export function getBearerToken(): string | null {
@@ -54,6 +55,27 @@ export function getBearerToken(): string | null {
     return window.sessionStorage.getItem(BEARER_KEY);
   } catch {
     return null;
+  }
+}
+
+/** Session token kept on this phone so a lost cookie does not sign the user out. */
+export function getStayToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const value = window.localStorage.getItem(STAY_KEY);
+    return value && value.length > 10 ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setStayToken(token: string | null) {
+  if (typeof window === "undefined") return;
+  try {
+    if (token) window.localStorage.setItem(STAY_KEY, token);
+    else window.localStorage.removeItem(STAY_KEY);
+  } catch {
+    /* private mode */
   }
 }
 
@@ -224,6 +246,7 @@ function waitForPopupToken(popup: Window): Promise<string | null> {
 export async function signOut(redirectTo = "/"): Promise<void> {
   const { clearHeldUser } = await import("./use-current-user");
   clearHeldUser();
+  setStayToken(null);
   await runSignOut({
     livePreview: inLivePreview(),
     hasBearer: Boolean(getBearerToken()),

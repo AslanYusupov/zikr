@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { authClient, authEnabled } from "./client";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { authClient, authEnabled, setStayToken } from "./client";
 
 /** Normalized user shape used across the app, auth on or off. */
 export type AppUser = {
@@ -90,17 +90,17 @@ export function clearHeldUser() {
 export function useCurrentUserState(): CurrentUserState {
   if (!authEnabled) return { user: DEV_USER, isPending: false };
   // eslint-disable-next-line react-hooks/rules-of-hooks -- authEnabled is constant for the app's lifetime
-  const { data, isPending, error } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   const [gaveUp, setGaveUp] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   const [kept, setKept] = useState<AppUser | null>(null);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
-  const sawPending = useRef(false);
-  if (isPending) sawPending.current = true;
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
-  useEffect(() => {
-    setKept(readStoredUser());
+  useLayoutEffect(() => {
+    const stored = readStoredUser();
+    if (!stored) return;
+    heldUser = stored;
+    setKept(stored);
   }, []);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   useEffect(() => {
@@ -132,11 +132,10 @@ export function useCurrentUserState(): CurrentUserState {
   if (next) {
     heldUser = next;
     writeStoredUser(next);
-  } else if (sawPending.current && !isPending && !error) {
-    heldUser = null;
-    writeStoredUser(null);
+    const token = data?.session && "token" in data.session ? data.session.token : null;
+    if (typeof token === "string" && token.length > 10) setStayToken(token);
   }
-  const shown = next ?? heldUser ?? (error || isPending ? kept : null);
+  const shown = next ?? heldUser ?? kept;
   return {
     user: shown,
     isPending: !shown && isPending && !gaveUp,
