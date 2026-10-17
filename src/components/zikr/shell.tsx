@@ -296,8 +296,8 @@ export function Shell() {
                 onClick={() => selectTab("zikr")}
                 className="flex h-11 items-center gap-1 rounded-full border border-line bg-chip px-3 text-sm text-gold"
               >
-                <ChevronLeft className="size-5" strokeWidth={1.6} />
-                {t(lang, "zikr")}
+                <ChevronLeft className="size-5 shrink-0" strokeWidth={1.6} />
+                <span className="back-label">{t(lang, "zikr")}</span>
               </button>
             )}
             <button

@@ -311,7 +311,7 @@ export function RatingView() {
       <div className="mt-2 h-28 w-full min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chart} barCategoryGap="28%">
-            <XAxis dataKey="label" tick={{ fill: "var(--muted)", fontSize: 10 }} axisLine={false} tickLine={false} interval={1} />
+            <XAxis dataKey="label" tick={{ fill: "var(--muted)", fontSize: 10 }} axisLine={false} tickLine={false} minTickGap={18} />
             <YAxis hide />
             <Tooltip cursor={{ fill: "transparent" }} content={<Tip lang={lang} />} />
             <Bar dataKey="total" fill="var(--gold)" radius={[6, 6, 0, 0]} maxBarSize={18} />
@@ -324,7 +324,7 @@ export function RatingView() {
       <InviteButtons />
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
-      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums break-all text-fg">{tapsShown === null ? "…" : formatNum(tapsShown)}</p>
+      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? "…" : formatNum(tapsShown)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
       <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? "…" : formatNum(online)}</p>
       {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} /> : null}
