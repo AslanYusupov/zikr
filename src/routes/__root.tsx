@@ -27,8 +27,6 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
@@ -48,7 +46,7 @@ export const Route = createRootRoute({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@500;600;700;800&display=swap';document.head.appendChild(l);var android=/Android/i.test(navigator.userAgent||'');var ios=/iPhone|iPad|iPod/i.test(navigator.userAgent||'');if(android)document.documentElement.setAttribute('data-os','android');if(ios)document.documentElement.setAttribute('data-os','ios');var lockedW=window.innerWidth||0;function measure(){var h=window.innerHeight||document.documentElement.clientHeight||0;if(h<120)return 0;return Math.round(h)}function apply(){var h=measure();if(!h)return;document.documentElement.style.setProperty('--app-h',h+'px')}apply();window.addEventListener('orientationchange',function(){setTimeout(function(){apply();lockedW=window.innerWidth||0},120)});window.addEventListener('resize',function(){var w=window.innerWidth||0;if(Math.abs(w-lockedW)>60){apply();lockedW=w}});setTimeout(function(){document.documentElement.classList.add('app-go')},1500)})();",
+              "(function(){var android=/Android/i.test(navigator.userAgent||'');var ios=/iPhone|iPad|iPod/i.test(navigator.userAgent||'');if(android)document.documentElement.setAttribute('data-os','android');if(ios)document.documentElement.setAttribute('data-os','ios');var lockedW=window.innerWidth||0;function measure(){var h=window.innerHeight||document.documentElement.clientHeight||0;if(h<120)return 0;return Math.round(h)}function apply(){var h=measure();if(!h)return;document.documentElement.style.setProperty('--app-h',h+'px')}apply();window.addEventListener('orientationchange',function(){setTimeout(function(){apply();lockedW=window.innerWidth||0},120)});window.addEventListener('resize',function(){var w=window.innerWidth||0;if(Math.abs(w-lockedW)>60){apply();lockedW=w}});setTimeout(function(){document.documentElement.classList.add('app-go')},1500)})();",
           }}
         />
         <script
