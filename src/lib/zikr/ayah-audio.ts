@@ -1,0 +1,49 @@
+const SURAH_AYAHS = [
+  7, 286, 200, 176, 120, 165, 206, 75, 129, 109,
+  123, 111, 43, 52, 99, 128, 111, 110, 98, 135,
+  112, 78, 118, 64, 77, 227, 93, 88, 69, 60,
+  34, 30, 73, 54, 45, 83, 182, 88, 75, 85,
+  54, 53, 89, 59, 37, 35, 38, 29, 18, 45,
+  60, 49, 62, 55, 78, 96, 29, 22, 24, 13,
+  14, 11, 11, 18, 12, 12, 30, 52, 52, 44,
+  28, 28, 20, 56, 40, 31, 50, 40, 46, 42,
+  29, 19, 36, 25, 22, 17, 19, 26, 30, 20,
+  15, 21, 11, 8, 8, 19, 5, 8, 8, 11,
+  11, 8, 3, 9, 5, 4, 7, 3, 6, 3,
+  5, 4, 5, 6,
+];
+
+export function ayahFile(surah: number, ayah: number) {
+  return `${String(surah).padStart(3, "0")}${String(ayah).padStart(3, "0")}`;
+}
+
+export function parseAyahFile(file: string): { surah: number; ayah: number } | null {
+  const match = /^(\d{3})(\d{3})$/.exec(file);
+  if (!match) return null;
+  const surah = Number(match[1]);
+  const ayah = Number(match[2]);
+  const count = SURAH_AYAHS[surah - 1] ?? 0;
+  if (surah < 1 || surah > 114 || ayah < 1 || ayah > count) return null;
+  return { surah, ayah };
+}
+
+export function globalAyah(surah: number, ayah: number) {
+  if (!parseAyahFile(ayahFile(surah, ayah))) return 0;
+  let n = ayah;
+  for (let i = 0; i < surah - 1; i++) n += SURAH_AYAHS[i] ?? 0;
+  return n;
+}
+
+export function remoteAyahUrls(surah: number, ayah: number) {
+  const file = ayahFile(surah, ayah);
+  const id = globalAyah(surah, ayah);
+  return [
+    `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${id}.mp3`,
+    `https://audio.qurancdn.com/Alafasy/mp3/${file}.mp3`,
+    `https://everyayah.com/data/Alafasy_128kbps/${file}.mp3`,
+  ];
+}
+
+export function ayahSources(surah: number, ayah: number) {
+  return [`/api/ayah/${ayahFile(surah, ayah)}`, ...remoteAyahUrls(surah, ayah)];
+}

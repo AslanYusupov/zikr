@@ -9,14 +9,10 @@ import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
+import { ayahSources } from "@/lib/zikr/ayah-audio";
 import { TajweedView } from "./tajweed-view";
 
 const DONE_KEY = "zikr-quran-done";
-const ALAFASY = "https://everyayah.com/data/Alafasy_128kbps";
-
-function ayahAudio(surah: number, ayah: number) {
-  return `${ALAFASY}/${String(surah).padStart(3, "0")}${String(ayah).padStart(3, "0")}.mp3`;
-}
 
 function hearWord(lang: string, stop: boolean) {
   const play = {
@@ -173,8 +169,12 @@ export function QuranView() {
   }, [lang]);
 
   useEffect(() => {
-    const el = new Audio();
+    const el = document.createElement("audio");
     el.preload = "none";
+    el.setAttribute("playsinline", "true");
+    el.setAttribute("webkit-playsinline", "true");
+    el.style.display = "none";
+    document.body.appendChild(el);
     audio.current = el;
     const ended = () => {
       if (loopingRef.current) {
@@ -194,6 +194,7 @@ export function QuranView() {
       el.pause();
       el.removeEventListener("ended", ended);
       el.src = "";
+      el.remove();
       loopingRef.current = null;
       audio.current = null;
     };
@@ -221,21 +222,53 @@ export function QuranView() {
 
   function startAyah(el: HTMLAudioElement, key: string, surahNo: number, ayahNo: number, repeat: boolean) {
     const mine = ++playToken.current;
+    const sources = ayahSources(surahNo, ayahNo);
+    let index = 0;
+    let moving = false;
     el.loop = false;
+    el.volume = 1;
     loopingRef.current = repeat ? key : null;
-    const url = ayahAudio(surahNo, ayahNo);
-    if (el.src !== url) el.src = url;
-    else el.currentTime = 0;
     setPlaying(key);
     setLooping(repeat ? key : null);
-    void el.play().catch(() => {
+    setNote("");
+    const fail = () => {
       if (mine !== playToken.current) return;
       loopingRef.current = null;
       el.loop = false;
       setPlaying(null);
       setLooping(null);
       setNote(hearFail(lang));
-    });
+    };
+    const nextSource = () => {
+      if (moving || mine !== playToken.current) return;
+      moving = true;
+      index += 1;
+      if (index >= sources.length) fail();
+      else {
+        moving = false;
+        kick();
+      }
+    };
+    const kick = () => {
+      if (mine !== playToken.current) return;
+      const url = sources[index];
+      if (!url) {
+        fail();
+        return;
+      }
+      el.src = url;
+      void el.play().catch((err: unknown) => {
+        if (mine !== playToken.current) return;
+        const name = err && typeof err === "object" && "name" in err ? String((err as { name: string }).name) : "";
+        if (name === "AbortError") return;
+        if (name === "NotAllowedError") {
+          fail();
+          return;
+        }
+        nextSource();
+      });
+    };
+    kick();
   }
 
   function toggleAyah(key: string, surahNo: number, ayahNo: number) {
