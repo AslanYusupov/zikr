@@ -5,7 +5,7 @@ import { todayKey } from "./format";
 import { levelFromXp } from "./levels";
 import { ALLAH_NAMES } from "./names";
 import { sunnahQuestById } from "./quests";
-import type { DayLog, LangId, OrbId, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
+import type { DayArchive, DayLog, LangId, OrbId, RewardArchive, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
 
 const THEMES: ThemeId[] = ["black", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle"];
 const LANGS: LangId[] = ["ru", "en", "ar", "id", "tr", "ur"];
@@ -78,6 +78,10 @@ export function initialData(): ZikrState {
     wisdomStep: 0,
     bestDay: 0,
     lastDhikrId: "subhanallah",
+    countGen: 0,
+    dayCut: false,
+    dayArchive: null,
+    rewardArchive: null,
   };
 }
 
@@ -93,6 +97,80 @@ function trimDays(days: Record<string, DayLog>): Record<string, DayLog> {
   const next = { ...days };
   for (const k of keys.slice(0, keys.length - 400)) delete next[k];
   return next;
+}
+
+function readDayLog(value: unknown): DayLog | null {
+  if (!value || typeof value !== "object") return null;
+  const src = value as Partial<DayLog>;
+  const by: Record<string, number> = {};
+  if (src.by && typeof src.by === "object") {
+    for (const [id, n] of Object.entries(src.by)) {
+      if (id.length > 0 && id.length < 40) by[id] = clampInt(n, CAP);
+    }
+  }
+  return { total: clampInt(src.total, CAP), by };
+}
+
+function readDays(value: unknown): Record<string, DayLog> {
+  const days: Record<string, DayLog> = {};
+  if (!value || typeof value !== "object") return days;
+  for (const [key, item] of Object.entries(value)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) continue;
+    const log = readDayLog(item);
+    if (log) days[key] = log;
+  }
+  return trimDays(days);
+}
+
+function addLog(a: DayLog | undefined, b: DayLog | undefined): DayLog {
+  const by = { ...(a?.by ?? {}) };
+  for (const [id, n] of Object.entries(b?.by ?? {})) by[id] = (by[id] ?? 0) + n;
+  return { total: (a?.total ?? 0) + (b?.total ?? 0), by };
+}
+
+function addMaps(a: Record<string, number>, b: Record<string, number>): Record<string, number> {
+  const next = { ...a };
+  for (const [id, n] of Object.entries(b)) next[id] = (next[id] ?? 0) + n;
+  return next;
+}
+
+function readDayArchive(value: unknown): DayArchive | null {
+  if (!value || typeof value !== "object") return null;
+  const src = value as Partial<DayArchive>;
+  const log = readDayLog(src.log);
+  if (!log || log.total <= 0 || typeof src.key !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(src.key)) return null;
+  return { at: clampInt(src.at, 10_000_000_000_000), key: src.key, log };
+}
+
+function readRewardArchive(value: unknown): RewardArchive | null {
+  if (!value || typeof value !== "object") return null;
+  const src = value as Partial<RewardArchive>;
+  const days = readDays(src.days);
+  const byDhikr: Record<string, number> = {};
+  if (src.byDhikr && typeof src.byDhikr === "object") {
+    for (const [id, n] of Object.entries(src.byDhikr)) {
+      if (id.length > 0 && id.length < 40) byDhikr[id] = clampInt(n, CAP);
+    }
+  }
+  const total = clampInt(src.total, CAP);
+  const xp = clampInt(src.xp, CAP);
+  const quranLetters = clampInt(src.quranLetters, CAP);
+  const bestDay = clampInt(src.bestDay, CAP);
+  const celebrated = Array.isArray(src.celebrated) ? src.celebrated.filter((n) => typeof n === "number").slice(0, 80) : [];
+  if (total <= 0 && xp <= 0 && quranLetters <= 0 && Object.keys(days).length === 0) return null;
+  return { at: clampInt(src.at, 10_000_000_000_000), total, xp, quranLetters, byDhikr, days, bestDay, celebrated };
+}
+
+function clearedCounts(): Record<string, number> {
+  const next = emptyCounts();
+  for (const name of ALLAH_NAMES) next[name.id] = 0;
+  return next;
+}
+
+function laterStamp<T extends { at: number } | null>(a: T, b: T): T {
+  if (!a) return b;
+  if (!b) return a;
+  return a.at >= b.at ? a : b;
 }
 
 function canonicalPublicId(id: string): string {
@@ -200,11 +278,35 @@ export function normalize(raw: unknown): ZikrState {
     wisdomStep: clampInt(r.wisdomStep, 1_000_000),
     bestDay: clampInt(r.bestDay, CAP),
     lastDhikrId: typeof r.lastDhikrId === "string" && known.has(r.lastDhikrId) ? r.lastDhikrId : base.lastDhikrId,
+    countGen: clampInt(r.countGen, 1_000_000),
+    dayCut: r.dayCut === true,
+    dayArchive: readDayArchive(r.dayArchive),
+    rewardArchive: readRewardArchive(r.rewardArchive),
   };
 }
 
 export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
   const remote = normalize(remoteRaw);
+  const localGen = local.countGen ?? 0;
+  const remoteGen = remote.countGen ?? 0;
+  if (localGen !== remoteGen) {
+    const winner = localGen > remoteGen ? local : remote;
+    return normalize({
+      ...local,
+      total: winner.total,
+      xp: winner.xp,
+      quranLetters: winner.quranLetters,
+      byDhikr: winner.byDhikr,
+      days: winner.days,
+      bestDay: winner.bestDay,
+      achievements: winner.achievements,
+      celebrated: winner.celebrated,
+      countGen: winner.countGen,
+      dayCut: winner.dayCut,
+      dayArchive: winner.dayArchive,
+      rewardArchive: winner.rewardArchive,
+    });
+  }
   const base = local.total >= remote.total ? local : remote;
   const days = { ...remote.days };
   for (const [k, v] of Object.entries(local.total >= remote.total ? local.days : remote.days)) {
@@ -264,6 +366,10 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     publicBoard: local.publicBoard,
     wisdomStep: Math.max(local.wisdomStep, remote.wisdomStep),
     lastDhikrId: local.lastDhikrId,
+    countGen: localGen,
+    dayCut: local.dayCut || remote.dayCut,
+    dayArchive: laterStamp(local.dayArchive, remote.dayArchive),
+    rewardArchive: laterStamp(local.rewardArchive, remote.rewardArchive),
   });
 }
 
@@ -477,6 +583,11 @@ type Actions = {
   setPublicBoard: (v: boolean) => void;
   ensurePublicId: () => string;
   resetToday: () => void;
+  resetDay: () => boolean;
+  restoreDay: () => boolean;
+  resetRewards: () => boolean;
+  restoreRewards: () => boolean;
+  clearDayCut: () => void;
   markCelebrated: (at: number) => void;
   restartChain: () => void;
   startQuest: (id: string) => void;
@@ -537,7 +648,88 @@ export const useZikr = create<ZikrState & Actions>()(
       },
       resetToday: () => {
         const day = todayKey();
-        set((s) => ({ days: { ...s.days, [day]: { total: 0, by: {} } } }));
+        set((s) => ({ days: { ...s.days, [day]: { total: 0, by: {} } }, dayCut: true, countGen: s.countGen + 1 }));
+      },
+      resetDay: () => {
+        const day = todayKey();
+        const s = get();
+        const log = s.days[day];
+        if (!log || log.total <= 0) return false;
+        const prev = s.dayArchive?.key === day ? s.dayArchive.log : undefined;
+        set({
+          dayArchive: { at: Date.now(), key: day, log: addLog(prev, log) },
+          days: { ...s.days, [day]: { total: 0, by: {} } },
+          dayCut: true,
+          countGen: s.countGen + 1,
+        });
+        return true;
+      },
+      restoreDay: () => {
+        const s = get();
+        const saved = s.dayArchive;
+        if (!saved) return false;
+        const current = s.days[saved.key];
+        set({
+          days: { ...s.days, [saved.key]: addLog(current, saved.log) },
+          dayArchive: null,
+          countGen: s.countGen + 1,
+        });
+        return true;
+      },
+      resetRewards: () => {
+        const s = get();
+        const hasDhikr = Object.values(s.byDhikr).some((n) => n > 0);
+        const hasDays = Object.values(s.days).some((day) => day.total > 0);
+        if (s.total <= 0 && s.xp <= 0 && s.quranLetters <= 0 && !hasDhikr && !hasDays) return false;
+        const prev = s.rewardArchive;
+        const days = { ...(prev?.days ?? {}) };
+        for (const [key, log] of Object.entries(s.days)) days[key] = addLog(days[key], log);
+        set({
+          rewardArchive: {
+            at: Date.now(),
+            total: (prev?.total ?? 0) + s.total,
+            xp: (prev?.xp ?? 0) + s.xp,
+            quranLetters: (prev?.quranLetters ?? 0) + s.quranLetters,
+            byDhikr: addMaps(prev?.byDhikr ?? {}, s.byDhikr),
+            days,
+            bestDay: Math.max(prev?.bestDay ?? 0, s.bestDay),
+            celebrated: Array.from(new Set([...(prev?.celebrated ?? []), ...s.celebrated])),
+          },
+          total: 0,
+          xp: 0,
+          quranLetters: 0,
+          byDhikr: clearedCounts(),
+          days: {},
+          bestDay: 0,
+          achievements: [],
+          celebrated: [],
+          countGen: s.countGen + 1,
+        });
+        return true;
+      },
+      restoreRewards: () => {
+        const s = get();
+        const saved = s.rewardArchive;
+        if (!saved) return false;
+        const days = { ...saved.days };
+        for (const [key, log] of Object.entries(s.days)) days[key] = addLog(days[key], log);
+        let best = Math.max(s.bestDay, saved.bestDay);
+        for (const log of Object.values(days)) if (log.total > best) best = log.total;
+        set({
+          total: s.total + saved.total,
+          xp: s.xp + saved.xp,
+          quranLetters: s.quranLetters + saved.quranLetters,
+          byDhikr: addMaps(s.byDhikr, saved.byDhikr),
+          days,
+          bestDay: best,
+          celebrated: Array.from(new Set([...s.celebrated, ...saved.celebrated])),
+          rewardArchive: null,
+          countGen: s.countGen + 1,
+        });
+        return true;
+      },
+      clearDayCut: () => {
+        if (get().dayCut) set({ dayCut: false });
       },
       markCelebrated: (at) =>
         set((s) => ({ celebrated: s.celebrated.includes(at) ? s.celebrated : [...s.celebrated, at] })),

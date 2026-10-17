@@ -300,6 +300,7 @@ export function useWorldSync(hydrated: boolean) {
       }
       const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
       const listed = state.publicBoard;
+      const replaceDay = state.dayCut;
       if (!listed) {
         void publishWorld({ data: { publicId, total: state.total, listed: false } }).catch(() => {});
         void beatPresence({
@@ -308,13 +309,14 @@ export function useWorldSync(hydrated: boolean) {
           .then(() => window.dispatchEvent(new Event("zikr-live")))
           .catch(() => {});
       } else {
-        if (state.total > 0) {
-          void publishWorld({ data: { publicId, total: state.total, ...(invitedBy ? { invitedBy } : {}) } }).catch(() => {});
-        }
+        void publishWorld({ data: { publicId, total: state.total, ...(invitedBy && state.total > 0 ? { invitedBy } : {}) } }).catch(() => {});
         void beatPresence({
-          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: currentTapSince() },
+          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: currentTapSince(), ...(replaceDay ? { replaceDay: true } : {}) },
         })
-          .then(() => window.dispatchEvent(new Event("zikr-live")))
+          .then(() => {
+            if (replaceDay) useZikr.getState().clearDayCut();
+            window.dispatchEvent(new Event("zikr-live"));
+          })
           .catch(() => {});
       }
       if (key) {

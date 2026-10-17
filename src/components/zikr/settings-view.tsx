@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { authClient, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES } from "@/lib/zikr/content";
-import { formatNum, inviteLink, inviteText, telegramHref, whatsappHref } from "@/lib/zikr/format";
+import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr/content";
+import { formatNum, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { countryName, COUNTRY_IDS, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
@@ -48,6 +48,8 @@ export function SettingsView({
   const [currentPassword, setCurrentPassword] = useState("");
   const [nextPassword, setNextPassword] = useState("");
   const [accountNote, setAccountNote] = useState("");
+  const [resetAsk, setResetAsk] = useState<"" | "day" | "rewards">("");
+  const [resetNote, setResetNote] = useState("");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSessionReady(true), 2500);
@@ -249,6 +251,35 @@ export function SettingsView({
             </button>
           ))}
         </div>
+        </details>
+
+<details className="fold">
+<summary className="fold-sum">{tx(s.lang, "resetTitle")}</summary>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{tx(s.lang, "resetLead")}</p>
+        <p className="mt-2 text-sm tabular-nums text-fg">
+          {t(s.lang, "today")} {formatNum(s.days[todayKey()]?.total ?? 0)} · {t(s.lang, "rewards")} {formatNum(rewardPoints(s.total + s.quranLetters))}
+        </p>
+        {resetAsk === "day" ? (
+          <div className="mt-3">
+            <p className="text-sm leading-relaxed text-fg">{tx(s.lang, "resetDayAsk")}</p>
+            <button type="button" className="mt-2 h-11 w-full rounded-full bg-gold text-sm text-ink" onClick={() => { setResetNote(s.resetDay() ? tx(s.lang, "resetKept") : tx(s.lang, "resetNone")); setResetAsk(""); }}>{tx(s.lang, "resetYes")}</button>
+            <button type="button" className="mt-2 h-11 w-full rounded-full border border-line text-sm text-fg" onClick={() => setResetAsk("")}>{tx(s.lang, "resetNo")}</button>
+          </div>
+        ) : (
+          <button type="button" className="mt-3 h-11 w-full rounded-full border border-line text-sm text-fg" onClick={() => { setResetNote(""); setResetAsk("day"); }}>{tx(s.lang, "resetDay")}</button>
+        )}
+        {resetAsk === "rewards" ? (
+          <div className="mt-3">
+            <p className="text-sm leading-relaxed text-fg">{tx(s.lang, "resetRewardsAsk")}</p>
+            <button type="button" className="mt-2 h-11 w-full rounded-full bg-gold text-sm text-ink" onClick={() => { setResetNote(s.resetRewards() ? tx(s.lang, "resetKept") : tx(s.lang, "resetNone")); setResetAsk(""); }}>{tx(s.lang, "resetYes")}</button>
+            <button type="button" className="mt-2 h-11 w-full rounded-full border border-line text-sm text-fg" onClick={() => setResetAsk("")}>{tx(s.lang, "resetNo")}</button>
+          </div>
+        ) : (
+          <button type="button" className="mt-2 h-11 w-full rounded-full border border-line text-sm text-fg" onClick={() => { setResetNote(""); setResetAsk("rewards"); }}>{tx(s.lang, "resetRewards")}</button>
+        )}
+        {s.dayArchive ? <button type="button" className="mt-2 h-11 w-full rounded-full border border-line text-sm text-gold" onClick={() => { s.restoreDay(); setResetNote(tx(s.lang, "restoreDone")); }}>{tx(s.lang, "restoreDay")}</button> : null}
+        {s.rewardArchive ? <button type="button" className="mt-2 h-11 w-full rounded-full border border-line text-sm text-gold" onClick={() => { s.restoreRewards(); setResetNote(tx(s.lang, "restoreDone")); }}>{tx(s.lang, "restoreRewards")}</button> : null}
+        {resetNote ? <p className="mt-2 text-sm text-muted">{resetNote}</p> : null}
         </details>
 
 <details className="fold">

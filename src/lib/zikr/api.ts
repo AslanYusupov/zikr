@@ -380,7 +380,7 @@ export const publishWorld = createServerFn({ method: "POST" })
       const stored = data.total;
       if (stored <= 0) {
         await sql`delete from zikr_world where public_id = ${publicId}`;
-        await sql`delete from zikr_invites where guest_id = ${publicId}`;
+        await sql`update zikr_invites set total = 0, updated_at = now() where guest_id = ${publicId}`;
         return { ok: true as const };
       }
       await sql`
@@ -473,6 +473,7 @@ const BeatInput = z.object({
   total: z.number().int().min(0).max(2_000_000_000),
   tapSince: z.number().int().min(0).max(10_000_000_000_000),
   listed: z.boolean().optional(),
+  replaceDay: z.boolean().optional(),
 });
 
 export type PresenceRow = { id: string; country: string; value: number; rank: number };
@@ -491,6 +492,7 @@ export const beatPresence = createServerFn({ method: "POST" })
       }
       const tapping = data.tapSince > 0 ? 1 : 0;
       const tapSec = tapping ? Math.floor(data.tapSince / 1000) : 0;
+      const replaceDay = data.replaceDay ? 1 : 0;
       await sql`
       insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at, tap_since, last_tap_at)
       values (
@@ -507,7 +509,7 @@ export const beatPresence = createServerFn({ method: "POST" })
       on conflict (public_id) do update set
         country = excluded.country,
         day_key = excluded.day_key,
-        day_total = greatest(case when zikr_presence.day_key = excluded.day_key then zikr_presence.day_total else 0 end, excluded.day_total),
+        day_total = case when ${replaceDay} = 1 then excluded.day_total else greatest(case when zikr_presence.day_key = excluded.day_key then zikr_presence.day_total else 0 end, excluded.day_total) end,
         xp = greatest(zikr_presence.xp, excluded.xp),
         total = greatest(zikr_presence.total, excluded.total),
         seen_at = now(),

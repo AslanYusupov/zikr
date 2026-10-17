@@ -27,6 +27,19 @@ export type OrbId = "plain" | "glow" | "pearl" | "line" | "double" | "soft" | "d
 
 export type DayLog = { total: number; by: Record<string, number> };
 
+export type DayArchive = { at: number; key: string; log: DayLog };
+
+export type RewardArchive = {
+  at: number;
+  total: number;
+  xp: number;
+  quranLetters: number;
+  byDhikr: Record<string, number>;
+  days: Record<string, DayLog>;
+  bestDay: number;
+  celebrated: number[];
+};
+
 export type ZikrState = {
   total: number;
   quranLetters: number;
@@ -66,6 +79,10 @@ export type ZikrState = {
   wisdomStep: number;
   bestDay: number;
   lastDhikrId: string;
+  countGen: number;
+  dayCut: boolean;
+  dayArchive: DayArchive | null;
+  rewardArchive: RewardArchive | null;
 };
 
 export type TapResult = {
