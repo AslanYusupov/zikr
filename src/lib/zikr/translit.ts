@@ -301,6 +301,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       continue;
     }
     let token = cons(cur.ch, ru);
+    if (ru && cur.ch === "\u0644" && !cur.v && !cur.sh) token = "ль";
     if (!token && cur.v) {
       out = hamzaSyl(out, vowelSound(cur.v, ru));
       continue;
