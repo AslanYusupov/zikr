@@ -2445,6 +2445,7 @@ details.fold>:not(summary) {
 }
 .celebrate-card {
   animation: .78s cubic-bezier(.16,.84,.32,1) both rise-in;
+  box-shadow: 0 24px 60px rgb(0 0 0 / .45);
 }
 .celebrate-bg {
   animation: .56s ease-out both fade-in;
