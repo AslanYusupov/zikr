@@ -37,7 +37,7 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Rabbini içinden, yalvararak, korkarak ve sözü yükseltmeden, sabah akşam an. Gafillerden olma.",
     ur: "اپنے رب کو اپنے دل میں عاجزی اور خوف کے ساتھ، آہستہ آواز سے، صبح اور شام یاد کر، اور غافلوں میں سے نہ ہو۔",
   },
-  "Которые поминают Аллаха стоя, сидя и на боку и размышляют о сотворении небес и земли: «Господь наш! Ты не сотворил это понапрасну. Пречист Ты! Защити же нас от мучений в Огне.": {
+  "Которые поминают Аллаха стоя, сидя и на боку и размышляют о сотворении небес и земли: «Господь наш! Ты не сотворил это понапрасну. Пречист Ты! Защити же нас от мучений в Огне».": {
     en: "They remember Allah standing, sitting, and lying on their sides, and reflect on the creation of the heavens and the earth: “Our Lord, You did not create this in vain. Glory be to You. Protect us from the punishment of the Fire.”",
     ar: "الَّذِينَ يَذْكُرُونَ اللَّهَ قِيَامًا وَقُعُودًا وَعَلَىٰ جُنُوبِهِمْ وَيَتَفَكَّرُونَ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ رَبَّنَا مَا خَلَقْتَ هَٰذَا بَاطِلًا سُبْحَانَكَ فَقِنَا عَذَابَ النَّارِ",
     id: "Mereka mengingat Allah sambil berdiri, duduk, dan berbaring, serta memikirkan penciptaan langit dan bumi: “Ya Tuhan kami, Engkau tidak menciptakan ini dengan sia-sia. Mahasuci Engkau. Lindungilah kami dari azab neraka.”",
@@ -72,7 +72,7 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Allah, kendisinden başka ilah olmayandır. En güzel isimler O’nundur.",
     ur: "اللہ، اس کے سوا کوئی معبود نہیں۔ اسی کے لیے بہترین نام ہیں۔",
   },
-  "Я говорил: «Просите у вашего Господа прощения, ведь Он - Всепрощающий. Он ниспошлет вам с неба обильные дожди, поддержит вас имуществом и детьми, взрастит для вас сады и создаст для вас реки.": {
+  "Я говорил: «Просите у вашего Господа прощения, ведь Он - Всепрощающий. Он ниспошлет вам с неба обильные дожди, поддержит вас имуществом и детьми, взрастит для вас сады и создаст для вас реки».": {
     en: "Nuh, peace be upon him, told Allah what he had said to his people: “Seek forgiveness of your Lord. Indeed He is ever Forgiving. He will send down upon you rain in abundance, support you with wealth and children, and make for you gardens and rivers.”",
     ar: "فَقُلْتُ اسْتَغْفِرُوا رَبَّكُمْ إِنَّهُ كَانَ غَفَّارًا يُرْسِلِ السَّمَاءَ عَلَيْكُم مِّدْرَارًا وَيُمْدِدْكُم بِأَمْوَالٍ وَبَنِينَ وَيَجْعَل لَّكُمْ جَنَّاتٍ وَيَجْعَل لَّكُمْ أَنْهَارًا",
     id: "Nuh, alaihissalam, menyampaikan kepada Allah apa yang ia katakan kepada kaumnya: “Mohonlah ampunan kepada Tuhanmu. Sungguh Dia Maha Pengampun. Dia akan menurunkan hujan lebat, menambah harta dan anak, serta menumbuhkan kebun dan mengalirkan sungai untukmu.”",
@@ -170,7 +170,7 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Rabbin sana verecek ve sen hoşnut olacaksın.",
     ur: "اور تیرا رب تجھے ضرور دے گا، پھر تو راضی ہو جائے گا۔",
   },
-  "Скажи: «Он - Аллах Единый, Аллах Самодостаточный.": {
+  "Скажи: «Он - Аллах Единый, Аллах Самодостаточный».": {
     en: "Say: He is Allah, One. Allah, the Eternal Refuge.",
     ar: "قُلْ هُوَ اللَّهُ أَحَدٌ اللَّهُ الصَّمَدُ",
     id: "Katakanlah: Dialah Allah Yang Maha Esa. Allah tempat bergantung.",
