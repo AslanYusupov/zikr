@@ -105,12 +105,8 @@ export function Shell() {
   const pull = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.getRegistrations().then((regs) => {
-      regs.forEach((reg) => {
-        reg.unregister().catch(() => {});
-      });
-    }).catch(() => {});
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
   }, []);
 
   useEffect(() => {

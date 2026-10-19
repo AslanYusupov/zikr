@@ -70,10 +70,6 @@ export function useCloud(hydrated: boolean) {
     setReady(false);
 
     const send = async () => {
-      if (!navigator.onLine) {
-        setStatus("local");
-        return null;
-      }
       const s = snapshot(useZikr.getState());
       const next = await pushSave({
         data: {
@@ -95,11 +91,6 @@ export function useCloud(hydrated: boolean) {
     };
 
     const pull = async () => {
-      if (!navigator.onLine) {
-        setStatus("local");
-        if (!stop) setReady(true);
-        return;
-      }
       setStatus("saving");
       try {
         const remote = await loadSave();
@@ -239,7 +230,6 @@ export function useWorldSync(hydrated: boolean) {
     const tgId = telegramUserId();
 
     const pull = async () => {
-      if (!navigator.onLine) return;
       const remote = await pullDevice({ data: { key, ...(tgId ? { tgId } : {}) } });
       if (stop || !remote) return;
       const local = useZikr.getState();
@@ -249,7 +239,6 @@ export function useWorldSync(hydrated: boolean) {
     };
 
     const push = async () => {
-      if (!navigator.onLine) return;
       const id = useZikr.getState().ensurePublicId();
       const state = snapshot(useZikr.getState());
       const saved = await pushDevice({
@@ -328,7 +317,7 @@ export function useWorldSync(hydrated: boolean) {
     const key = storedSyncKey();
     const tgId = telegramUserId();
     const send = () => {
-      if (document.hidden || !navigator.onLine) return;
+      if (document.hidden) return;
       const state = useZikr.getState();
       const day = todayKey();
       const dayTotal = state.days[day]?.total ?? 0;
