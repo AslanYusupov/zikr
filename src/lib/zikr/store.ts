@@ -363,7 +363,14 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     mode: local.mode,
     pool: local.pool,
     displayName: local.displayName || remote.displayName,
-    publicId: canonicalPublicId(/^\d{8}$/.test(remote.publicId) ? remote.publicId : local.publicId),
+    publicId: (() => {
+      const localId = canonicalPublicId(local.publicId);
+      const remoteId = canonicalPublicId(remote.publicId);
+      const localOk = /^\d{8}$/.test(localId);
+      const remoteOk = /^\d{8}$/.test(remoteId);
+      if (localOk && remoteOk && localId !== remoteId) return local.total >= remote.total ? localId : remoteId;
+      return remoteOk ? remoteId : localId;
+    })(),
     publicBoard: local.publicBoard,
     wisdomStep: Math.max(local.wisdomStep, remote.wisdomStep),
     lastDhikrId: local.lastDhikrId,

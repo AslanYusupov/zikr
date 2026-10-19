@@ -44,11 +44,9 @@ export function useHydrated() {
     };
     if (useZikr.persist.hasHydrated()) done();
     const unsub = useZikr.persist.onFinishHydration(done);
-    const backup = window.setTimeout(done, 300);
     return () => {
       stop = true;
       unsub();
-      window.clearTimeout(backup);
     };
   }, []);
   return hydrated;
@@ -258,6 +256,9 @@ export function useWorldSync(hydrated: boolean) {
         data: { key, publicId: id, total: state.total, payload: JSON.stringify(state), ...(tgId ? { tgId } : {}) },
       });
       if (stop || !saved) return;
+      if (/^\d{8}$/.test(saved.publicId) && saved.publicId !== useZikr.getState().publicId) {
+        useZikr.setState({ publicId: saved.publicId });
+      }
       const local = useZikr.getState();
       if (saved.syncKey !== key && local.total === 0) adoptDevice(saved);
     };

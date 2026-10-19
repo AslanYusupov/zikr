@@ -90,6 +90,67 @@ function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;
 }
 
+async function aliasTable(sql: Awaited<ReturnType<typeof getSql>>) {
+  await sql.query(`create table if not exists zikr_alias (
+    alias text primary key,
+    public_id text not null
+  )`);
+}
+
+async function aliasOf(sql: Awaited<ReturnType<typeof getSql>>, id: string): Promise<string> {
+  const first = realPublicId(id);
+  if (!/^\d{8}$/.test(first)) return first;
+  try {
+    await aliasTable(sql);
+    const rows = await sql.query<{ public_id: string }>(`select public_id from zikr_alias where alias = $1`, [first]);
+    const next = rows[0]?.public_id;
+    if (typeof next === "string" && /^\d{8}$/.test(next) && next !== first) return realPublicId(next);
+  } catch (err) {
+    console.error("[zikr] alias", err);
+  }
+  return first;
+}
+
+/** The same phone or account keeps its first number. The extra number is not a second person. */
+async function absorbAlias(sql: Awaited<ReturnType<typeof getSql>>, keepRaw: string, dropRaw: string) {
+  const keep = await aliasOf(sql, keepRaw);
+  const drop = realPublicId(dropRaw);
+  if (!/^\d{8}$/.test(keep) || !/^\d{8}$/.test(drop) || keep === drop || DROPPED_RATING_IDS.includes(keep)) return keep;
+  const from = `"publicId":"${drop}"`;
+  const to = `"publicId":"${keep}"`;
+  try {
+    await aliasTable(sql);
+    await sql.query(
+      `insert into zikr_alias (alias, public_id) values ($1, $2)
+       on conflict (alias) do update set public_id = excluded.public_id`,
+      [drop, keep],
+    );
+    await sql.query(`update zikr_alias set public_id = $1 where public_id = $2 and alias <> $1`, [keep, drop]);
+    await sql.query(
+      `insert into zikr_world (public_id, total)
+       select $1, total from zikr_world where public_id = $2
+       on conflict (public_id) do update
+       set total = greatest(zikr_world.total, excluded.total), updated_at = now()`,
+      [keep, drop],
+    );
+    await sql.query(`delete from zikr_world where public_id = $1`, [drop]);
+    await sql.query(`delete from zikr_presence where public_id = $1`, [drop]);
+    await sql.query(`delete from zikr_invites where guest_id = $1`, [drop]);
+    await sql.query(`update zikr_invites set host_id = $1 where host_id = $2`, [keep, drop]);
+    await sql.query(
+      `update zikr_device
+       set public_id = case when public_id = $1 then $2 else public_id end,
+           payload = replace(payload, $3, $4)
+       where public_id = $1 or payload like $5`,
+      [drop, keep, from, to, `%${from}%`],
+    );
+    await sql.query(`update zikr_saves set payload = replace(payload, $1, $2) where payload like $3`, [from, to, `%${from}%`]);
+  } catch (err) {
+    console.error("[zikr] absorb", err);
+  }
+  return keep;
+}
+
 async function foldCloneNumbers(sql: Awaited<ReturnType<typeof getSql>>) {
   for (const [clone, real] of Object.entries(FOLDED_IDS)) {
     const from = `"publicId":"${clone}"`;
@@ -352,11 +413,18 @@ export const pushSave = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const sql = await getSql();
     const userId = context.userId;
-    const number = boardNumber(data.payload);
     const level = levelFromXp(data.total).level;
-    const existing = await sql<{ invite_code: string; display_name: string }>`
-      select invite_code, display_name from zikr_saves where user_id = ${userId}`;
+    const existing = await sql<{ invite_code: string; display_name: string; payload: string }>`
+      select invite_code, display_name, payload from zikr_saves where user_id = ${userId}`;
+    let payload = data.payload;
+    let number = boardNumber(payload);
     if (existing[0]) {
+      const previous = boardNumber(existing[0].payload);
+      if (/^\d{8}$/.test(previous) && /^\d{8}$/.test(number) && previous !== number) {
+        const keep = await absorbAlias(sql, previous, number);
+        payload = payload.replaceAll(`"publicId":"${number}"`, `"publicId":"${keep}"`);
+        number = keep;
+      }
       const shown = number || existing[0].display_name.replace(/\D/g, "").slice(0, 8);
       await sql`
         update zikr_saves set
@@ -365,7 +433,7 @@ export const pushSave = createServerFn({ method: "POST" })
           level = ${level},
           best_day = ${data.bestDay},
           public_board = ${data.publicBoard},
-          payload = ${data.payload},
+          payload = ${payload},
           updated_at = now()
         where user_id = ${userId}`;
     } else {
@@ -436,7 +504,7 @@ export const publishWorld = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await keepOldRating(sql);
-      const publicId = realPublicId(data.publicId);
+      const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       if (data.listed === false) {
         await sql`delete from zikr_world where public_id = ${publicId}`;
@@ -452,7 +520,7 @@ export const publishWorld = createServerFn({ method: "POST" })
         insert into zikr_world (public_id, total)
         values (${publicId}, ${stored})
         on conflict (public_id) do update
-        set total = case when ${publicId} = '52812946' then greatest(zikr_world.total, excluded.total) else excluded.total end,
+        set total = greatest(zikr_world.total, excluded.total),
             updated_at = now()`;
       const host = data.invitedBy ? realPublicId(data.invitedBy) : undefined;
       if (host && host !== publicId && data.total > 0) {
@@ -509,7 +577,7 @@ export const worldBoard = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       await tapsOnlyBoard(sql);
       await liftGrokBonus(sql);
-      const publicId = realPublicId(data.publicId);
+      const publicId = await aliasOf(sql, data.publicId);
       const rows = await sql<{ public_id: string; total: number }>`
         select public_id, total from zikr_world
         where total > 0
@@ -551,7 +619,7 @@ export const beatPresence = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await keepOldRating(sql);
-      const publicId = realPublicId(data.publicId);
+      const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       if (data.listed === false) {
         await sql`delete from zikr_presence where public_id = ${publicId}`;
@@ -596,6 +664,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
       const sql = await getSql();
       await keepOldRating(sql);
       await liftGrokBonus(sql);
+      const publicId = await aliasOf(sql, data.publicId);
       const online = await sql<{ n: number }>`
       select count(*)::int as n from zikr_presence where last_tap_at > now() - interval '30 seconds'`;
     const remembering = await sql<{ n: number }>`
@@ -616,7 +685,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
       order by xp desc, public_id asc
       limit 10`;
     const self = await sql<{ day_total: number; xp: number; day_key: string }>`
-      select day_total, xp, day_key from zikr_presence where public_id = ${data.publicId}`;
+      select day_total, xp, day_key from zikr_presence where public_id = ${publicId}`;
     const together = await sql<{ n: string | number }>`
       select coalesce(sum(total), 0) as n from zikr_world`;
     let dailyRank: number | null = null;
@@ -713,55 +782,34 @@ export const pushDevice = createServerFn({ method: "POST" })
       await deviceTable(sql);
       await foldCloneNumbers(sql);
       const total = data.total ?? 0;
-      const payload = (data.payload ?? "").replaceAll('"publicId":"88880455"', '"publicId":"96995742"');
-      const publicId = realPublicId(data.publicId ?? "");
+      const incoming = await aliasOf(sql, data.publicId ?? "");
       const sameDevice = await sql<{ publicId: string }>`
         select public_id as "publicId" from zikr_device where sync_key = ${data.key} limit 1`;
-      const previousId = sameDevice[0]?.publicId ?? "";
+      const previousId = await aliasOf(sql, sameDevice[0]?.publicId ?? "");
+      let publicId = incoming;
+      if (/^\d{8}$/.test(previousId) && previousId !== incoming) {
+        publicId = previousId;
+        await absorbAlias(sql, previousId, incoming);
+      }
+      let payload = (data.payload ?? "").replaceAll(`"publicId":"${data.publicId ?? ""}"`, `"publicId":"${publicId}"`);
+      payload = payload.replaceAll('"publicId":"88880455"', '"publicId":"96995742"').replaceAll('"publicId":"62012303"', '"publicId":"87278839"').replaceAll('"publicId":"25574036"', '"publicId":"52812946"');
       if (data.tgId) {
         const prior = await sql<DeviceSave>`
           select sync_key as "syncKey", public_id as "publicId", payload, total
           from zikr_device where tg_id = ${data.tgId} limit 1`;
         const saved = prior[0];
         if (saved && saved.syncKey !== data.key) {
-          if (total >= saved.total && /^\d{8}$/.test(publicId) && publicId !== saved.publicId) {
+          const kept = await aliasOf(sql, saved.publicId);
+          if (/^\d{8}$/.test(publicId) && publicId !== kept) await absorbAlias(sql, kept, publicId);
+          const nextPayload = payload.replaceAll(`"publicId":"${publicId}"`, `"publicId":"${kept}"`);
+          const nextTotal = Math.max(total, saved.total);
+          if (nextTotal > saved.total || saved.publicId !== kept) {
             await sql`
               update zikr_device
-              set public_id = ${publicId}, payload = ${payload}, total = ${total}, updated_at = now()
+              set public_id = ${kept}, payload = ${nextPayload}, total = ${nextTotal}, updated_at = now()
               where sync_key = ${saved.syncKey}`;
-            await dropRemovedRating(sql);
-            try {
-              await sql.query(
-                `insert into zikr_reach (public_id, at)
-                 select $1, at from zikr_reach where public_id = $2
-                 on conflict do nothing`,
-                [publicId, saved.publicId],
-              );
-              await sql.query(`delete from zikr_reach where public_id = $1`, [saved.publicId]);
-            } catch (err) {
-              console.error("[zikr] move reach", err);
-            }
-            for (const text of [
-              "delete from zikr_world where public_id = $1",
-              "delete from zikr_presence where public_id = $1",
-              "delete from zikr_invites where guest_id = $1 or host_id = $1",
-            ]) {
-              try {
-                await sql.query(text, [saved.publicId]);
-              } catch (err) {
-                console.error("[zikr] retire rating", err);
-              }
-            }
-            return savedDevice({ ...saved, publicId, payload, total });
           }
-          if (total > saved.total) {
-            await sql`
-              update zikr_device
-              set payload = ${payload}, total = ${total}, updated_at = now()
-              where sync_key = ${saved.syncKey}`;
-            return savedDevice({ ...saved, payload, total });
-          }
-          return savedDevice(saved);
+          return savedDevice({ ...saved, publicId: kept, payload: nextPayload, total: nextTotal });
         }
       }
       await sql`
@@ -769,42 +817,16 @@ export const pushDevice = createServerFn({ method: "POST" })
         values (${data.key}, ${publicId}, ${data.tgId ?? null}, ${payload}, ${total})
         on conflict (sync_key) do update set
           public_id = case
-            when excluded.total >= zikr_device.total and excluded.public_id ~ '^[0-9]{8}$' then excluded.public_id
             when zikr_device.public_id ~ '^[0-9]{8}$' then zikr_device.public_id
             else excluded.public_id
           end,
           tg_id = coalesce(zikr_device.tg_id, excluded.tg_id),
-          payload = case when excluded.total >= zikr_device.total then excluded.payload else zikr_device.payload end,
+          payload = case when zikr_device.total > excluded.total then zikr_device.payload else excluded.payload end,
           total = greatest(zikr_device.total, excluded.total),
           updated_at = now()`;
       const row = await sql<DeviceSave>`
         select sync_key as "syncKey", public_id as "publicId", payload, total
         from zikr_device where sync_key = ${data.key} limit 1`;
-      const nextId = row[0]?.publicId ?? "";
-      if (previousId && nextId && previousId !== nextId) {
-        try {
-          await sql.query(
-            `insert into zikr_reach (public_id, at)
-             select $1, at from zikr_reach where public_id = $2
-             on conflict do nothing`,
-            [nextId, previousId],
-          );
-          await sql.query(`delete from zikr_reach where public_id = $1`, [previousId]);
-        } catch (err) {
-          console.error("[zikr] move reach", err);
-        }
-        for (const text of [
-          "delete from zikr_world where public_id = $1",
-          "delete from zikr_presence where public_id = $1",
-          "delete from zikr_invites where guest_id = $1 or host_id = $1",
-        ]) {
-          try {
-            await sql.query(text, [previousId]);
-          } catch (err) {
-            console.error("[zikr] retire rating", err);
-          }
-        }
-      }
       return row[0] ? savedDevice(row[0]) : null;
     } catch (err) {
       console.error("[zikr] push device", err);
@@ -860,7 +882,7 @@ export const milestoneBoard = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       const map = await peopleTotals(sql);
-      const id = data.publicId ? realPublicId(data.publicId) : "";
+      const id = data.publicId ? await aliasOf(sql, data.publicId) : "";
       if (/^\d{8}$/.test(id) && !DROPPED_RATING_IDS.includes(id)) {
         const reported = Math.max(0, Math.floor(data.total ?? 0));
         if (map.has(id) || reported > 0) rememberTotal(map, id, Math.max(map.get(id) ?? 0, reported));
