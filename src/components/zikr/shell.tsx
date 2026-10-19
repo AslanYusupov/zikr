@@ -252,7 +252,8 @@ export function Shell() {
     let stop = false;
     const load = () => {
       if (document.hidden) return;
-      void onlineNow()
+      const id = useZikr.getState().publicId;
+      void onlineNow({ data: { publicId: /^\d{8}$/.test(id) ? id : undefined } })
         .then((res) => {
           if (!stop) setOnline(res.online);
         })

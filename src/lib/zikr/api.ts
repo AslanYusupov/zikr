@@ -480,18 +480,38 @@ async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
-export const onlineNow = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const sql = await getSql();
-    await keepOldRating(sql);
-    const online = await sql<{ n: number }>`
-      select count(*)::int as n from zikr_presence where seen_at > now() - interval '90 seconds'`;
-    return { online: online[0]?.n ?? 0 };
-  } catch (err) {
-    console.error("[zikr] online", err);
-    return { online: 0 };
+async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: string) {
+  await aliasTable(sql);
+  const id = (publicId ?? "").trim();
+  if (/^\d{8}$/.test(id)) {
+    const real = await aliasOf(sql, id);
+    if (!DROPPED_RATING_IDS.includes(real)) {
+      await sql`
+        insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at)
+        values (${real}, '', '', 0, 0, 0, now())
+        on conflict (public_id) do update set seen_at = now()`;
+    }
   }
-});
+  const online = await sql<{ n: number }>`
+    select count(distinct coalesce(a.public_id, p.public_id))::int as n
+    from zikr_presence p
+    left join zikr_alias a on a.alias = p.public_id
+    where p.seen_at > now() - interval '2 minutes'`;
+  return online[0]?.n ?? 0;
+}
+
+export const onlineNow = createServerFn({ method: "POST" })
+  .validator((raw: unknown) => z.object({ publicId: z.string().max(16).optional() }).parse(raw ?? {}))
+  .handler(async ({ data }) => {
+    try {
+      const sql = await getSql();
+      await keepOldRating(sql);
+      return { online: await openNow(sql, data.publicId) };
+    } catch (err) {
+      console.error("[zikr] online", err);
+      return { online: 0 };
+    }
+  });
 
 export const loadSave = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -765,10 +785,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       await liftGrokBonus(sql);
       const publicId = await aliasOf(sql, data.publicId);
-      const online = await sql<{ n: number }>`
-      select count(*)::int as n from zikr_presence where last_tap_at > now() - interval '30 seconds'`;
-    const remembering = await sql<{ n: number }>`
-      select count(*)::int as n from zikr_presence where last_tap_at > now() - interval '30 seconds'`;
+      const n = await openNow(sql, publicId);
     const live = await sql<{ public_id: string; country: string; day_total: number }>`
       select public_id, country, day_total from zikr_presence
       where last_tap_at > now() - interval '30 seconds' and day_total > 0
@@ -800,8 +817,8 @@ export const presenceBoard = createServerFn({ method: "POST" })
       worldRank = (ahead[0]?.n ?? 0) + 1;
     }
     return {
-      online: online[0]?.n ?? 0,
-      remembering: remembering[0]?.n ?? 0,
+      online: n,
+      remembering: n,
       allTaps: Math.max(0, Math.floor(Number(together[0]?.n ?? 0))),
       live: live.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
       daily: daily.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),

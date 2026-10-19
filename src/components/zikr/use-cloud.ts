@@ -358,7 +358,7 @@ export function useWorldSync(hydrated: boolean) {
       }
     };
     const unbind = bindTapPulse(send);
-    const first = window.setTimeout(send, 1500);
+    const first = window.setTimeout(send, 200);
     const timer = window.setInterval(send, 20000);
     const onOnline = () => send();
     const onWake = () => {
