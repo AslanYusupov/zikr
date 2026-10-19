@@ -3230,7 +3230,7 @@ html, body {
   width: var(--len, 9rem);
   height: 6px;
   opacity: 0;
-  animation: comet-live var(--dur, 1.2s) linear infinite;
+  animation: comet-live var(--dur, 1.2s) linear 1;
 }
 @keyframes comet-live {
   0% { opacity: 0; transform: translate3d(var(--x, 100vw), var(--y, -8vh), 0) rotate(var(--rot, -18deg)); }
