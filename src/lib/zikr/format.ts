@@ -51,14 +51,7 @@ export function inviteLink(code?: string | null): string {
 }
 
 export function inviteText(link: string, lang: LangId = "ru"): string {
-  return [
-    `${t(lang, "inviteShare")} 🌙`,
-    "",
-    `${t(lang, "inviteJoin")}: ${link}`,
-    "",
-    t(lang, "inviteHow"),
-    t(lang, "inviteSteps"),
-  ].join("\n");
+  return [`${t(lang, "inviteShare")} 🌙`, "", t(lang, "inviteHow"), `${t(lang, "inviteSteps")} ${link}`].join("\n");
 }
 
 export function whatsappHref(text: string): string {
