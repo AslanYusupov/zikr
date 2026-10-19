@@ -52,14 +52,12 @@ export function inviteLink(code?: string | null): string {
 
 export function inviteText(link: string, lang: LangId = "ru"): string {
   return [
-    `✨ *${t(lang, "inviteShare")}*`,
+    `${t(lang, "inviteShare")} 🌙`,
     "",
-    "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-    t(lang, "invitePhrase"),
+    `${t(lang, "inviteJoin")}: ${link}`,
     "",
-    `📖 «${t(lang, "inviteQuote")}» (${t(lang, "inviteSource")}).`,
-    "",
-    `🔗 ${t(lang, "inviteJoin")}: ${link}`,
+    t(lang, "inviteHow"),
+    t(lang, "inviteSteps"),
   ].join("\n");
 }
 
