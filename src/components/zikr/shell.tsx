@@ -119,7 +119,7 @@ export function Shell() {
     const run = () => {
       if (stop) return;
       const s = useZikr.getState();
-      void syncReach(s.publicId, s.achievements);
+      void syncReach(s.publicId, s.total);
     };
     const soon = window.setTimeout(run, 2500);
     const later = window.setTimeout(run, 25000);

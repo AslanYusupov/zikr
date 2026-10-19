@@ -23,7 +23,7 @@ export function RewardsView() {
     const apply = () => setReach(cachedReach());
     const pull = () => {
       const s = useZikr.getState();
-      void syncReach(s.publicId, s.achievements, true).then(apply);
+      void syncReach(s.publicId, s.total).then(apply);
     };
     pull();
     window.addEventListener("zikr-reach", apply);

@@ -754,14 +754,36 @@ export const pushDevice = createServerFn({ method: "POST" })
     }
   });
 
-const REACH_AT = new Set<number>(MILESTONES.map((m) => m.at));
+const REACH_AT = MILESTONES.map((m) => m.at);
 
-async function reachTable(sql: Awaited<ReturnType<typeof getSql>>) {
-  await sql.query(`create table if not exists zikr_reach (
-    public_id text not null,
-    at bigint not null,
-    primary key (public_id, at)
-  )`);
+function rememberTotal(map: Map<string, number>, id: unknown, total: unknown) {
+  const real = realPublicId(String(id ?? ""));
+  if (!/^\d{8}$/.test(real) || DROPPED_RATING_IDS.includes(real)) return;
+  const n = Math.floor(Number(total));
+  if (!Number.isFinite(n) || n <= 0) return;
+  map.set(real, Math.max(map.get(real) ?? 0, n));
+}
+
+/** Everyone who already has taps saved, not only phones that opened the new screen. */
+async function peopleTotals(sql: Awaited<ReturnType<typeof getSql>>): Promise<Map<string, number>> {
+  const map = new Map<string, number>();
+  const queries = [
+    `select public_id, total from zikr_world where total > 0`,
+    `select public_id, total from zikr_presence where total > 0`,
+    `select guest_id as public_id, total from zikr_invites where total > 0`,
+    `select public_id, total from zikr_device where total > 0`,
+    `select public_id, substring(payload from '"total":([0-9]+)')::bigint as total from zikr_device where payload like '%"total":%'`,
+    `select substring(payload from '"publicId":"([0-9]{8})"') as public_id, total from zikr_saves where total > 0`,
+  ];
+  for (const text of queries) {
+    try {
+      const rows = await sql.query<{ public_id: string; total: number }>(text);
+      for (const row of rows) rememberTotal(map, row.public_id, row.total);
+    } catch (err) {
+      console.error("[zikr] reach source", err);
+    }
+  }
+  return map;
 }
 
 export type ReachBoard = { ok: boolean; rows: { at: string; n: number }[]; accepted: number[] };
@@ -771,6 +793,7 @@ export const milestoneBoard = createServerFn({ method: "POST" })
     z
       .object({
         publicId: z.string().regex(/^\d{8}$/).optional(),
+        total: z.number().int().min(0).max(999_000_000_000).optional(),
         ats: z.array(z.number().int().min(0).max(999_000_000_000)).max(80).optional(),
       })
       .parse(raw),
@@ -778,45 +801,21 @@ export const milestoneBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<ReachBoard> => {
     try {
       const sql = await getSql();
-      await reachTable(sql);
+      const map = await peopleTotals(sql);
       const id = data.publicId ? realPublicId(data.publicId) : "";
-      const ats = [...new Set((data.ats ?? []).filter((at) => REACH_AT.has(at)))];
-      const accepted: number[] = [];
-      if (/^\d{8}$/.test(id) && !DROPPED_RATING_IDS.includes(id) && ats.length) {
-        let known = false;
-        try {
-          const rows = await sql<{ ok: number }>`
-            select 1 as ok from zikr_device where public_id = ${id}
-            union all
-            select 1 from zikr_world where public_id = ${id}
-            union all
-            select 1 from zikr_presence where public_id = ${id}
-            limit 1`;
-          known = rows.length > 0;
-        } catch (err) {
-          console.error("[zikr] reach known", err);
-        }
-        if (known) {
-          for (const at of ats) {
-            await sql.query(
-              `insert into zikr_reach (public_id, at) values ($1, $2) on conflict do nothing`,
-              [id, at],
-            );
-            accepted.push(at);
-          }
-        }
+      if (/^\d{8}$/.test(id) && !DROPPED_RATING_IDS.includes(id)) {
+        const reported = Math.max(0, Math.floor(data.total ?? 0));
+        if (map.has(id) || reported > 0) rememberTotal(map, id, Math.max(map.get(id) ?? 0, reported));
       }
-      const rows = await sql<{ at: string; n: number }>`
-        select at::text as at, count(*)::int as n
-        from zikr_reach
-        group by at`;
-      return {
-        ok: true,
-        rows: rows.map((row) => ({ at: String(row.at), n: Math.max(0, Math.floor(Number(row.n) || 0)) })),
-        accepted,
-      };
+      const rows = REACH_AT.map((at) => {
+        let n = 0;
+        for (const total of map.values()) if (total >= at) n += 1;
+        return { at: String(at), n };
+      });
+      return { ok: true, rows, accepted: [] };
     } catch (err) {
       console.error("[zikr] reach", err);
       return { ok: false, rows: [], accepted: [] };
     }
   });
+
