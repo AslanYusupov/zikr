@@ -51,6 +51,17 @@ function boardNumber(payload: string): string {
   return "";
 }
 
+function keptScore(payload: string, column = 0): number {
+  let total = Math.max(0, Math.floor(Number(column) || 0));
+  try {
+    const parsed = JSON.parse(payload) as { total?: unknown; rewardArchive?: { total?: unknown } };
+    total = Math.max(total, Math.floor(Number(parsed.total) || 0), Math.floor(Number(parsed.rewardArchive?.total) || 0));
+  } catch {
+    /* a broken copy does not count */
+  }
+  return total;
+}
+
 async function metaFor(userId: string): Promise<CloudMeta | null> {
   const sql = await getSql();
   const rows = await sql<{
@@ -257,6 +268,90 @@ async function keepFatherScore(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+export type SavedScore = { total: number; quranLetters: number; today: number; days: Record<string, { total: number; by: Record<string, number> }> };
+
+export const savedScore = createServerFn({ method: "POST" })
+  .validator((raw: unknown) => z.object({ publicId: z.string().regex(/^\d{8}$/), dayKey: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }).parse(raw))
+  .handler(async ({ data }): Promise<SavedScore> => {
+    const empty: SavedScore = { total: 0, quranLetters: 0, today: 0, days: {} };
+    try {
+      const sql = await getSql();
+      const id = await aliasOf(sql, data.publicId);
+      if (id !== "52812946") return empty;
+      await keepFatherScore(sql);
+      let total = 0;
+      let quranLetters = 0;
+      let today = 0;
+      let days: SavedScore["days"] = {};
+      const take = (value: unknown) => {
+        const n = Math.floor(Number(value));
+        if (Number.isFinite(n) && n > total) total = n;
+      };
+      for (const text of [
+        `select total from zikr_world where public_id = $1`,
+        `select total from zikr_presence where public_id = $1`,
+        `select total from zikr_device where public_id = $1`,
+        `select total from zikr_saves where payload like $2`,
+      ]) {
+        try {
+          const rows = await sql.query<{ total: number }>(text, [id, `%"publicId":"${id}"%`]);
+          for (const row of rows) take(row.total);
+        } catch (err) {
+          console.error("[zikr] saved total", err);
+        }
+      }
+      try {
+        const day = await sql.query<{ day_total: number; day_key: string }>(
+          `select day_total, day_key from zikr_presence where public_id = $1`,
+          [id],
+        );
+        if (day[0]?.day_key === data.dayKey) today = Math.max(0, Math.floor(Number(day[0].day_total) || 0));
+      } catch (err) {
+        console.error("[zikr] saved day", err);
+      }
+      for (const text of [
+        `select payload from zikr_device where public_id = $1 or payload like $2`,
+        `select payload from zikr_saves where payload like $2`,
+      ]) {
+        try {
+          const copies = await sql.query<{ payload: string }>(text, [id, `%"publicId":"${id}"%`]);
+          for (const row of copies) {
+            try {
+              const parsed = JSON.parse(row.payload) as {
+                total?: unknown;
+                quranLetters?: unknown;
+                days?: Record<string, { total?: unknown; by?: Record<string, number> }>;
+                rewardArchive?: { total?: unknown; quranLetters?: unknown; days?: Record<string, { total?: unknown; by?: Record<string, number> }> };
+              };
+              take(parsed.total);
+              take(parsed.rewardArchive?.total);
+              const letters = Math.floor(Number(parsed.quranLetters) || 0) + Math.floor(Number(parsed.rewardArchive?.quranLetters) || 0);
+              if (letters > quranLetters) quranLetters = letters;
+              for (const source of [parsed.days, parsed.rewardArchive?.days]) {
+                if (!source) continue;
+                for (const [key, log] of Object.entries(source)) {
+                  if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) continue;
+                  const n = Math.floor(Number(log?.total) || 0);
+                  if (n <= 0) continue;
+                  if (n > (days[key]?.total ?? 0)) days[key] = { total: n, by: log?.by && typeof log.by === "object" ? log.by : {} };
+                  if (key === data.dayKey && n > today) today = n;
+                }
+              }
+            } catch {
+              /* a broken copy is skipped */
+            }
+          }
+        } catch (err) {
+          console.error("[zikr] saved copy", err);
+        }
+      }
+      return { total, quranLetters, today, days };
+    } catch (err) {
+      console.error("[zikr] saved score", err);
+      return empty;
+    }
+  });
+
 async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
   await foldCloneNumbers(sql);
   await keepFatherScore(sql);
@@ -414,10 +509,11 @@ export const pushSave = createServerFn({ method: "POST" })
     const sql = await getSql();
     const userId = context.userId;
     const level = levelFromXp(data.total).level;
-    const existing = await sql<{ invite_code: string; display_name: string; payload: string }>`
-      select invite_code, display_name, payload from zikr_saves where user_id = ${userId}`;
+    const existing = await sql<{ invite_code: string; display_name: string; payload: string; total: number }>`
+      select invite_code, display_name, payload, total from zikr_saves where user_id = ${userId}`;
     let payload = data.payload;
     let number = boardNumber(payload);
+    let savedTotal = data.total;
     if (existing[0]) {
       const previous = boardNumber(existing[0].payload);
       if (/^\d{8}$/.test(previous) && /^\d{8}$/.test(number) && previous !== number) {
@@ -425,12 +521,16 @@ export const pushSave = createServerFn({ method: "POST" })
         payload = payload.replaceAll(`"publicId":"${number}"`, `"publicId":"${keep}"`);
         number = keep;
       }
+      const kept = keptScore(existing[0].payload, existing[0].total);
+      const incoming = keptScore(payload, data.total);
+      if (incoming < kept) payload = existing[0].payload;
+      savedTotal = Math.max(incoming, kept);
       const shown = number || existing[0].display_name.replace(/\D/g, "").slice(0, 8);
       await sql`
         update zikr_saves set
           display_name = ${shown},
-          total = ${data.total},
-          level = ${level},
+          total = ${savedTotal},
+          level = ${levelFromXp(savedTotal).level},
           best_day = ${data.bestDay},
           public_board = ${data.publicBoard},
           payload = ${payload},

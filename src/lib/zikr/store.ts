@@ -292,21 +292,26 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
   const remoteGen = remote.countGen ?? 0;
   if (localGen !== remoteGen) {
     const winner = localGen > remoteGen ? local : remote;
-    return normalize({
-      ...local,
-      total: winner.total,
-      xp: winner.xp,
-      quranLetters: winner.quranLetters,
-      byDhikr: winner.byDhikr,
-      days: winner.days,
-      bestDay: winner.bestDay,
-      achievements: winner.achievements,
-      celebrated: winner.celebrated,
-      countGen: winner.countGen,
-      dayCut: winner.dayCut,
-      dayArchive: winner.dayArchive,
-      rewardArchive: winner.rewardArchive,
-    });
+    const other = winner === local ? remote : local;
+    const archived = winner.rewardArchive?.total ?? 0;
+    const intentional = archived > 0 && winner.total + archived >= other.total;
+    if (winner.total >= other.total || intentional) {
+      return normalize({
+        ...local,
+        total: winner.total,
+        xp: winner.xp,
+        quranLetters: winner.quranLetters,
+        byDhikr: winner.byDhikr,
+        days: winner.days,
+        bestDay: winner.bestDay,
+        achievements: winner.achievements,
+        celebrated: winner.celebrated,
+        countGen: Math.max(localGen, remoteGen),
+        dayCut: winner.dayCut,
+        dayArchive: winner.dayArchive,
+        rewardArchive: winner.rewardArchive,
+      });
+    }
   }
   const base = local.total >= remote.total ? local : remote;
   const days = { ...remote.days };
@@ -374,7 +379,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     publicBoard: local.publicBoard,
     wisdomStep: Math.max(local.wisdomStep, remote.wisdomStep),
     lastDhikrId: local.lastDhikrId,
-    countGen: localGen,
+    countGen: Math.max(localGen, remoteGen),
     dayCut: local.dayCut || remote.dayCut,
     dayArchive: laterStamp(local.dayArchive, remote.dayArchive),
     rewardArchive: laterStamp(local.rewardArchive, remote.rewardArchive),

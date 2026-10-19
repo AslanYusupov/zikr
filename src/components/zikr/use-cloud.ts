@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { beatPresence, loadSave, publishWorld, pullDevice, pushDevice, pushSave, type CloudMeta, type DeviceSave } from "@/lib/zikr/api";
+import { beatPresence, loadSave, publishWorld, pullDevice, pushDevice, pushSave, savedScore, type CloudMeta, type DeviceSave } from "@/lib/zikr/api";
 import { todayKey } from "@/lib/zikr/format";
 import { bindTapPulse, currentTapSince } from "@/lib/zikr/live";
 import { mergeState, snapshot, useZikr } from "@/lib/zikr/store";
@@ -281,6 +281,47 @@ export function useWorldSync(hydrated: boolean) {
       stop = true;
     };
   }, [hydrated, ensurePublicId]);
+
+  useEffect(() => {
+    if (!hydrated || !linked || (publicId !== "52812946" && publicId !== "25574036")) return;
+    let stop = false;
+    const day = todayKey();
+    void savedScore({ data: { publicId, dayKey: day } })
+      .then((saved) => {
+        if (stop || !saved) return;
+        const s = snapshot(useZikr.getState());
+        const days = { ...s.days };
+        const put = (key: string, total: number, by: Record<string, number>) => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(key) || total <= (days[key]?.total ?? 0)) return;
+          days[key] = { total, by };
+        };
+        for (const [key, log] of Object.entries(s.rewardArchive?.days ?? {})) put(key, log.total, log.by);
+        for (const [key, log] of Object.entries(saved.days ?? {})) put(key, log.total, log.by ?? {});
+        if (saved.today > (days[day]?.total ?? 0)) put(day, saved.today, days[day]?.by ?? {});
+        const total = Math.max(s.total, s.rewardArchive?.total ?? 0, saved.total);
+        const quranLetters = Math.max(s.quranLetters, s.rewardArchive?.quranLetters ?? 0, saved.quranLetters);
+        if (total === s.total && quranLetters === s.quranLetters && (days[day]?.total ?? 0) === (s.days[day]?.total ?? 0)) return;
+        const byDhikr = { ...s.byDhikr };
+        for (const [key, n] of Object.entries(s.rewardArchive?.byDhikr ?? {})) byDhikr[key] = Math.max(byDhikr[key] ?? 0, n);
+        let bestDay = Math.max(s.bestDay, s.rewardArchive?.bestDay ?? 0);
+        for (const log of Object.values(days)) if (log.total > bestDay) bestDay = log.total;
+        useZikr.getState().apply({
+          ...s,
+          publicId: "52812946",
+          total,
+          xp: Math.max(s.xp, s.rewardArchive?.xp ?? 0, total * 10),
+          quranLetters,
+          days,
+          byDhikr,
+          bestDay,
+          rewardArchive: null,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      stop = true;
+    };
+  }, [hydrated, linked, publicId]);
 
   useEffect(() => {
     if (!hydrated || !linked || !/^\d{8}$/.test(publicId)) return;
