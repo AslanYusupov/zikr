@@ -40,20 +40,6 @@ export function rewardWord(n: number): string {
   return plural(n, "награда", "награды", "наград");
 }
 
-/** How many people have opened this tap mark. */
-export function reachedLine(n: number, lang: LangId): string {
-  const count = Math.max(0, Math.floor(n));
-  const num = formatNum(count);
-  if (lang === "en") return count === 0 ? "No one has reached this yet" : count === 1 ? "Reached by 1 person" : `Reached by ${num} people`;
-  if (lang === "ar") return count === 0 ? "لم يصل إليها أحد بعد" : count === 1 ? "وصل إليها شخص واحد" : `وصل إليها ${num}`;
-  if (lang === "id") return count === 0 ? "Belum ada yang sampai" : `Sampai: ${num} orang`;
-  if (lang === "tr") return count === 0 ? "Henüz kimse ulaşmadı" : `Ulaşan: ${num} kişi`;
-  if (lang === "ur") return count === 0 ? "ابھی کوئی نہیں پہنچا" : `پہنچے: ${num}`;
-  if (count === 0) return "Пока никто не дошёл";
-  if (count === 1) return "Дошёл: 1 человек";
-  return `Дошли: ${num} ${plural(count, "человек", "человека", "человек")}`;
-}
-
 const SITE = "https://zikr-five.vercel.app";
 
 export function inviteLink(code?: string | null): string {

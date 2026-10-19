@@ -1,5 +1,5 @@
 import { MILESTONES, REMEMBRANCE } from "@/lib/zikr/content";
-import { formatNum, reachedLine, zikrWord } from "@/lib/zikr/format";
+import { formatNum, zikrWord } from "@/lib/zikr/format";
 import { levelFromXp } from "@/lib/zikr/levels";
 import { cachedReach, syncReach } from "@/lib/zikr/reach";
 import { useZikr } from "@/lib/zikr/store";
@@ -68,7 +68,7 @@ export function RewardsView() {
                 {open ? (lang === "ru" ? m.text : tx(lang, "milestoneOpen").replace("{n}", formatNum(m.at))) : `${t(lang, "moreLeft")} ${formatNum(left)} ${zikrWord(left, lang)}.`}
               </p>
               {reach.ready && (
-                <p className="mt-2 text-xs tabular-nums text-gold">{reachedLine(reach.rows[String(m.at)] ?? 0, lang)}</p>
+                <p className="mt-2 text-sm font-semibold tabular-nums text-gold">{formatNum(reach.rows[String(m.at)] ?? 0)}</p>
               )}
             </article>
           );
