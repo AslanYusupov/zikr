@@ -9,7 +9,7 @@ import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
-import { ayahSources } from "@/lib/zikr/ayah-audio";
+import { ayahCount, keepAyah, loadAyahUrl } from "@/lib/zikr/ayah-audio";
 import { TajweedView } from "./tajweed-view";
 
 const DONE_KEY = "zikr-quran-done";
@@ -134,6 +134,7 @@ export function QuranView() {
   const audio = useRef<HTMLAudioElement | null>(null);
   const loopingRef = useRef<string | null>(null);
   const playToken = useRef(0);
+  const blobUrl = useRef<string | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
   const [looping, setLooping] = useState<string | null>(null);
 
@@ -153,6 +154,24 @@ export function QuranView() {
       stop = true;
     };
   }, [attempt]);
+
+  useEffect(() => {
+    if (!book) return;
+    let stop = false;
+    const surahs = open ? [1, open] : [1];
+    void (async () => {
+      for (const surahNo of [...new Set(surahs)]) {
+        const count = ayahCount(surahNo);
+        for (let ayah = 1; ayah <= count; ayah += 1) {
+          if (stop) return;
+          await keepAyah(surahNo, ayah);
+        }
+      }
+    })();
+    return () => {
+      stop = true;
+    };
+  }, [book, open]);
 
   useEffect(() => {
     if (lang === "ar") {
@@ -194,6 +213,7 @@ export function QuranView() {
       el.pause();
       el.removeEventListener("ended", ended);
       el.src = "";
+      if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
       el.remove();
       loopingRef.current = null;
       audio.current = null;
@@ -222,9 +242,6 @@ export function QuranView() {
 
   function startAyah(el: HTMLAudioElement, key: string, surahNo: number, ayahNo: number, repeat: boolean) {
     const mine = ++playToken.current;
-    const sources = ayahSources(surahNo, ayahNo);
-    let index = 0;
-    let moving = false;
     el.loop = false;
     el.volume = 1;
     loopingRef.current = repeat ? key : null;
@@ -239,36 +256,25 @@ export function QuranView() {
       setLooping(null);
       setNote(hearFail(lang));
     };
-    const nextSource = () => {
-      if (moving || mine !== playToken.current) return;
-      moving = true;
-      index += 1;
-      if (index >= sources.length) fail();
-      else {
-        moving = false;
-        kick();
+    void loadAyahUrl(surahNo, ayahNo).then((url) => {
+      if (mine !== playToken.current) {
+        if (url) URL.revokeObjectURL(url);
+        return;
       }
-    };
-    const kick = () => {
-      if (mine !== playToken.current) return;
-      const url = sources[index];
       if (!url) {
         fail();
         return;
       }
+      if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
+      blobUrl.current = url;
       el.src = url;
       void el.play().catch((err: unknown) => {
         if (mine !== playToken.current) return;
         const name = err && typeof err === "object" && "name" in err ? String((err as { name: string }).name) : "";
         if (name === "AbortError") return;
-        if (name === "NotAllowedError") {
-          fail();
-          return;
-        }
-        nextSource();
+        fail();
       });
-    };
-    kick();
+    });
   }
 
   function toggleAyah(key: string, surahNo: number, ayahNo: number) {

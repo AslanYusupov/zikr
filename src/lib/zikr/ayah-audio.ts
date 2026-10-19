@@ -47,3 +47,76 @@ export function remoteAyahUrls(surah: number, ayah: number) {
 export function ayahSources(surah: number, ayah: number) {
   return [`/api/ayah/${ayahFile(surah, ayah)}`, ...remoteAyahUrls(surah, ayah)];
 }
+
+export function ayahCount(surah: number) {
+  return SURAH_AYAHS[surah - 1] ?? 0;
+}
+
+const STORE = "mp3";
+
+function openAyahDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("zikr-ayah", 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function readAyah(file: string): Promise<Blob | null> {
+  try {
+    const db = await openAyahDb();
+    return await new Promise((resolve) => {
+      const req = db.transaction(STORE, "readonly").objectStore(STORE).get(file);
+      req.onsuccess = () => {
+        const saved = req.result;
+        resolve(saved instanceof Blob && saved.size > 800 ? saved : null);
+      };
+      req.onerror = () => resolve(null);
+    });
+  } catch {
+    return null;
+  }
+}
+
+async function writeAyah(file: string, blob: Blob) {
+  try {
+    const db = await openAyahDb();
+    await new Promise<void>((resolve) => {
+      const tx = db.transaction(STORE, "readwrite");
+      tx.objectStore(STORE).put(blob, file);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+    void navigator.storage?.persist?.();
+  } catch {
+    /* the ayah still plays this time */
+  }
+}
+
+export async function keepAyah(surah: number, ayah: number): Promise<Blob | null> {
+  const file = ayahFile(surah, ayah);
+  const saved = await readAyah(file);
+  if (saved) return saved;
+  for (const src of ayahSources(surah, ayah)) {
+    try {
+      const res = await fetch(src, { signal: AbortSignal.timeout(20000) });
+      if (!res.ok) continue;
+      const buf = await res.arrayBuffer();
+      if (buf.byteLength < 800) continue;
+      const blob = new Blob([buf], { type: "audio/mpeg" });
+      await writeAyah(file, blob);
+      return blob;
+    } catch {
+      /* the next copy */
+    }
+  }
+  return null;
+}
+
+export async function loadAyahUrl(surah: number, ayah: number): Promise<string | null> {
+  const blob = await keepAyah(surah, ayah);
+  return blob ? URL.createObjectURL(blob) : null;
+}
