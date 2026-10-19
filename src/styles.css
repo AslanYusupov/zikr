@@ -3119,12 +3119,30 @@ html, body {
 [data-theme=black] {
   --bg: #000;
   --bg-deep: #000;
-  --surface: #0c0c0c;
-  --chip: #080808;
-  --orb: #111;
+  --surface: #000;
+  --surface-2: #000;
+  --fg: #fff;
+  --muted: #b5b5b5;
+  --gold: #fff;
+  --gold-soft: #fff;
+  --ink: #000;
+  --chip: #000;
+  --orb: #000;
+  --orb-fg: #fff;
+  --orb-gold: #fff;
+  --glow: #ffffff14;
 }
-[data-theme=black] .phrase-read {
-  background: none;
+[data-theme=black] .phrase-read,
+[data-theme=black] .reminder,
+[data-theme=black] .ayah-btn,
+[data-theme=black] .stats-dock,
+[data-theme=black] .app-frame,
+[data-theme=black] .sheet,
+[data-theme=black] .bismillah-splash {
+  background: #000;
+}
+[data-theme=black] .stage-scroll::-webkit-scrollbar-thumb {
+  background: #ffffff40;
 }
 .scene-shore,.scene-desert,.scene-cosmos,.scene-peaks,.scene-lake,.scene-jungle {
   opacity: 0;
