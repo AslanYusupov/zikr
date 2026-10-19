@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { authClient, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr/content";
-import { formatNum, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
+import { formatNum, inviteBody, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { countryName, COUNTRY_IDS, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
@@ -60,19 +60,12 @@ export function SettingsView({
 
   async function copyInvite() {
     const code = /^\d{8}$/.test(s.publicId) ? s.publicId : s.ensurePublicId();
-    const link = inviteLink(code);
-    const text = inviteText(link, s.lang);
+    const text = inviteText(inviteLink(code), s.lang);
     try {
-      if (navigator.share) await navigator.share({ title: t(s.lang, "zikr"), text });
-      else await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text);
       setCopied(true);
     } catch {
-      try {
-        await navigator.clipboard.writeText(text);
-        setCopied(true);
-      } catch {
-        /* ignore */
-      }
+      /* ignore */
     }
   }
 
@@ -669,11 +662,9 @@ export function InviteButtons() {
   const code = /^\d{8}$/.test(publicId) ? publicId : "";
   const link = inviteLink(code);
   const text = inviteText(link, lang);
+  const body = inviteBody(lang);
   return (
     <>
-      {code ? (
-        <p className="mt-2 break-all text-center text-sm text-fg">{link}</p>
-      ) : null}
       <div className="mt-2 grid grid-cols-2 gap-2">
         <a
           className="flex h-11 items-center justify-center rounded-full bg-gold text-sm font-bold text-ink"
@@ -686,7 +677,7 @@ export function InviteButtons() {
         </a>
         <a
           className="flex h-11 items-center justify-center rounded-full border border-line text-sm font-bold text-fg"
-          href={code ? telegramHref(text) : undefined}
+          href={code ? telegramHref(body, link) : undefined}
           target="_blank"
           rel="noopener noreferrer"
           aria-disabled={!code}

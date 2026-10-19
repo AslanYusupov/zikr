@@ -50,16 +50,20 @@ export function inviteLink(code?: string | null): string {
   return SITE;
 }
 
+export function inviteBody(lang: LangId = "ru"): string {
+  return [`${t(lang, "inviteShare")} 🌙`, "", t(lang, "inviteHow"), t(lang, "inviteSteps")].join("\n");
+}
+
 export function inviteText(link: string, lang: LangId = "ru"): string {
-  return [`${t(lang, "inviteShare")} 🌙`, "", t(lang, "inviteHow"), t(lang, "inviteSteps"), "", link].join("\n");
+  return `${inviteBody(lang)}\n\n${link}`;
 }
 
 export function whatsappHref(text: string): string {
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }
 
-export function telegramHref(text: string): string {
-  return `https://t.me/share/url?text=${encodeURIComponent(text)}`;
+export function telegramHref(body: string, link: string): string {
+  return `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(body)}`;
 }
 
 export function todayKey(d = new Date()): string {

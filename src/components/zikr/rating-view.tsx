@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
-import { formatNum, bestWeek, goalStreak, inviteLink, inviteText, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
+import { formatNum, bestWeek, goalStreak, inviteBody, inviteLink, inviteText, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { InviteButtons } from "./settings-view";
 import { t, tx } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
@@ -259,7 +259,7 @@ export function RatingView() {
     const link = inviteLink(code);
     const text = inviteText(link, lang);
     try {
-      if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text });
+      if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text: inviteBody(lang), url: link });
       else {
         await navigator.clipboard.writeText(text);
         setCopied(true);
