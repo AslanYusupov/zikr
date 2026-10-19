@@ -13,18 +13,11 @@ type Line = { title: string; note: string };
 
 const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
   "raditu-morning": {
-    en: { title: "Raditu billahi", note: "Three times in the morning: “I am pleased with Allah as Lord, with Islam as religion, and with Muhammad as prophet.”" },
-    ar: { title: "رضيت بالله", note: "ثلاثًا في الصباح: «رضيت بالله ربًا، وبالإسلام دينًا، وبمحمد نبيًا»." },
-    id: { title: "Raditu billahi", note: "Tiga kali di pagi hari: “Aku rida Allah sebagai Tuhan, Islam sebagai agama, dan Muhammad sebagai nabi.”" },
-    tr: { title: "Radîtu billâhi", note: "Sabah üç kez: “Allah’ı Rab, İslam’ı din, Muhammed’i peygamber olarak seçtim.”" },
-    ur: { title: "رضیت باللہ", note: "صبح تین بار: «میں نے اللہ کو رب، اسلام کو دین اور محمد ﷺ کو نبی مان کر رضا مندی ظاہر کی»." },
-  },
-  "raditu-both": {
-    en: { title: "Raditu morning and evening", note: "Three times. Morning and evening are separate: three now, and three again in the evening." },
-    ar: { title: "رضيت صباحًا ومساءً", note: "ثلاث مرات. الصباح والمساء كلٌّ على حدة: الآن ثلاث، وفي المساء ثلاث أخرى." },
-    id: { title: "Raditu pagi dan petang", note: "Tiga kali. Pagi dan petang terpisah: sekarang tiga, petang nanti tiga lagi." },
-    tr: { title: "Radîtu sabah ve akşam", note: "Üç kez. Sabah ve akşam ayrıdır: şimdi üç, akşam yine üç." },
-    ur: { title: "رضیت صبح و شام", note: "تین بار۔ صبح اور شام الگ ہیں: اب تین، شام کو پھر تین۔" },
+    en: { title: "Raditu billahi", note: "Three times: “I am pleased with Allah as Lord, with Islam as religion, and with Muhammad as prophet.” Morning and evening are separate: three now, and three again in the evening." },
+    ar: { title: "رضيت بالله", note: "ثلاث مرات: «رضيت بالله ربًا، وبالإسلام دينًا، وبمحمد نبيًا». الصباح والمساء كلٌّ على حدة: الآن ثلاث، وفي المساء ثلاث أخرى." },
+    id: { title: "Raditu billahi", note: "Tiga kali: “Aku rida Allah sebagai Tuhan, Islam sebagai agama, dan Muhammad sebagai nabi.” Pagi dan petang terpisah: sekarang tiga, petang nanti tiga lagi." },
+    tr: { title: "Radîtu billâhi", note: "Üç kez: “Allah’ı Rab, İslam’ı din, Muhammed’i peygamber olarak seçtim.” Sabah ve akşam ayrıdır: şimdi üç, akşam yine üç." },
+    ur: { title: "رضیت باللہ", note: "تین بار: «میں نے اللہ کو رب، اسلام کو دین اور محمد ﷺ کو نبی مان کر رضا مندی ظاہر کی». صبح اور شام الگ ہیں: اب تین، شام کو پھر تین۔" },
   },
   juwayriya: {
     en: { title: "The dhikr of Juwayriyyah, may Allah be pleased with her", note: "Three times: as many as the creation, as much as pleases Him, as the weight of the Throne, and as the ink of Allah’s words." },

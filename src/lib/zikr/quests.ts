@@ -329,18 +329,8 @@ export const SUNNAH_QUESTS: SunnahQuest[] = [
     title: "Радиту биллах1и",
     points: 100,
     source: "Абу Давуд, ат-Тирмизи",
-    note: "Трижды утром: «Радиту биллах1и Раббан, ва биль-ислями динан, ва би Мухаммадин набиййа».",
+    note: "Три раза: «Радиту биллах1и Раббан, ва биль-ислями динан, ва би Мухаммадин набиййа». Утром и вечером читают отдельно: сейчас три, вечером снова три.",
     steps: [{ dhikrId: "raditu", count: 3, label: "Утром" }],
-  },
-  {
-    id: "raditu-both",
-    tier: "easy",
-    tierLabel: "Лёгкое",
-    title: "Радиту утром и вечером",
-    points: 150,
-    source: "Абу Давуд, ат-Тирмизи",
-    note: "Три раза. Утром и вечером читают отдельно: сейчас три, вечером снова три.",
-    steps: [{ dhikrId: "raditu", count: 3 }],
   },
   {
     id: "juwayriya",
@@ -492,5 +482,6 @@ export const SUNNAH_QUESTS: SunnahQuest[] = [
 
 export function sunnahQuestById(id: string | null): SunnahQuest | null {
   if (!id) return null;
-  return SUNNAH_QUESTS.find((q) => q.id === id) ?? null;
+  const key = id === "raditu-both" ? "raditu-morning" : id;
+  return SUNNAH_QUESTS.find((q) => q.id === key) ?? null;
 }
