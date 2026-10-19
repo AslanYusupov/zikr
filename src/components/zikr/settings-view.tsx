@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { authClient, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr/content";
@@ -7,6 +7,8 @@ import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { countryName, COUNTRY_IDS, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
 import { phraseOf } from "@/lib/zikr/tr";
+import { AYAHS_TOTAL, ayahCount, ayahFile, downloadAyahs, savedAyahFiles } from "@/lib/zikr/ayah-audio";
+import { loadQuran } from "@/lib/zikr/quran";
 import { useZikr } from "@/lib/zikr/store";
 import type { CloudMeta } from "@/lib/zikr/api";
 import { cn } from "@/lib/cn";
@@ -93,6 +95,8 @@ export function SettingsView({
         </section>
 
         <InstallApp lang={s.lang} />
+
+        <QuranAudio lang={s.lang} />
 
         <details className="fold">
 <summary className="fold-sum">{t(s.lang, "theme")}</summary>
@@ -467,6 +471,183 @@ function InstallApp({ lang }: { lang: LangId }) {
           ) : null}
         </>
       )}
+    </section>
+  );
+}
+
+const QURAN_DL: Record<LangId, { title: string; lead: string; one: string; all: string; stop: string; saved: string; of: string; need: string; done: string; fail: string }> = {
+  ru: {
+    title: "Коран на телефоне",
+    lead: "Скачайте чтение аятов. Звук сохранится на этом телефоне, и его можно слушать без интернета.",
+    one: "Скачать эту суру",
+    all: "Скачать все аяты",
+    stop: "Остановить",
+    saved: "На телефоне",
+    of: "из",
+    need: "Чтобы скачать, нужен интернет. После этого звук останется на телефоне.",
+    done: "Сохранено. Эти аяты можно слушать без сети.",
+    fail: "Часть аятов не скачалась. Проверьте связь и нажмите снова: сохранённые не качаются заново.",
+  },
+  en: {
+    title: "Quran on this phone",
+    lead: "Download the recitation. The sound stays on this phone and can be heard without internet.",
+    one: "Download this surah",
+    all: "Download every ayah",
+    stop: "Stop",
+    saved: "On this phone",
+    of: "of",
+    need: "Internet is needed to download. After that the sound stays on the phone.",
+    done: "Saved. These ayahs can be heard offline.",
+    fail: "Some ayahs were not downloaded. Check the connection and press again. Saved ones are not downloaded twice.",
+  },
+  ar: {
+    title: "القرآن على الهاتف",
+    lead: "نزّل تلاوة الآيات. يبقى الصوت في هذا الهاتف ويمكن سماعه بلا إنترنت.",
+    one: "تنزيل هذه السورة",
+    all: "تنزيل كل الآيات",
+    stop: "إيقاف",
+    saved: "على الهاتف",
+    of: "من",
+    need: "التنزيل يحتاج إلى إنترنت. بعد ذلك يبقى الصوت في الهاتف.",
+    done: "تم الحفظ. يمكن سماع هذه الآيات بلا شبكة.",
+    fail: "لم تكتمل بعض الآيات. تحقق من الاتصال ثم أعد المحاولة. المحفوظ لا يُنزَّل مرة أخرى.",
+  },
+  id: {
+    title: "Quran di telepon ini",
+    lead: "Unduh bacaan ayat. Suaranya tersimpan di telepon ini dan bisa didengar tanpa internet.",
+    one: "Unduh surah ini",
+    all: "Unduh semua ayat",
+    stop: "Berhenti",
+    saved: "Di telepon",
+    of: "dari",
+    need: "Internet diperlukan untuk mengunduh. Setelah itu suara tetap di telepon.",
+    done: "Tersimpan. Ayat ini bisa didengar tanpa jaringan.",
+    fail: "Sebagian ayat belum terunduh. Periksa koneksi lalu tekan lagi. Yang sudah tersimpan tidak diunduh ulang.",
+  },
+  tr: {
+    title: "Kur’an bu telefonda",
+    lead: "Ayetlerin tilavetini indirin. Ses bu telefonda kalır ve internet olmadan dinlenir.",
+    one: "Bu sureyi indir",
+    all: "Bütün ayetleri indir",
+    stop: "Durdur",
+    saved: "Telefonda",
+    of: "/",
+    need: "İndirmek için internet gerekir. Sonra ses telefonda kalır.",
+    done: "Kaydedildi. Bu ayetler ağ olmadan dinlenir.",
+    fail: "Bazı ayetler inmedi. Bağlantıyı kontrol edip yeniden basın. Kayıtlı olanlar tekrar inmez.",
+  },
+  ur: {
+    title: "قرآن اس فون پر",
+    lead: "آیات کی تلاوت ڈاؤن لوڈ کریں۔ آواز اسی فون پر رہے گی اور بغیر انٹرنیٹ سنی جا سکے گی۔",
+    one: "یہ سورت ڈاؤن لوڈ کریں",
+    all: "تمام آیات ڈاؤن لوڈ کریں",
+    stop: "روکیں",
+    saved: "فون پر",
+    of: "میں سے",
+    need: "ڈاؤن لوڈ کے لیے انٹرنیٹ چاہیے۔ اس کے بعد آواز فون پر رہتی ہے۔",
+    done: "محفوظ ہو گیا۔ یہ آیات بغیر نیٹ کے سن سکتے ہیں۔",
+    fail: "کچھ آیات نہیں اتریں۔ کنکشن دیکھ کر دوبارہ دبائیں۔ جو محفوظ ہیں وہ دوبارہ نہیں اترتیں۔",
+  },
+};
+
+function QuranAudio({ lang }: { lang: LangId }) {
+  const copy = QURAN_DL[lang];
+  const [names, setNames] = useState<string[]>([]);
+  const [pick, setPick] = useState(1);
+  const [have, setHave] = useState(0);
+  const [run, setRun] = useState<{ done: number; total: number } | null>(null);
+  const [note, setNote] = useState("");
+  const stopRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    let stop = false;
+    void loadQuran()
+      .then((book) => {
+        if (stop) return;
+        setNames(book.surahs.map((item) => (lang === "ar" ? item.name : lang === "ru" ? item.ru : item.en)));
+      })
+      .catch(() => {});
+    void savedAyahFiles().then((files) => {
+      if (!stop) setHave(files.size);
+    });
+    return () => {
+      stop = true;
+    };
+  }, [lang]);
+
+  useEffect(() => () => stopRef.current?.abort(), []);
+
+  async function start(scope: "one" | "all") {
+    if (run) return;
+    const numbers = scope === "all" ? Array.from({ length: 114 }, (_, i) => i + 1) : [pick];
+    const jobs: { surah: number; ayah: number }[] = [];
+    for (const surah of numbers) {
+      const count = ayahCount(surah);
+      for (let ayah = 1; ayah <= count; ayah += 1) jobs.push({ surah, ayah });
+    }
+    const files = await savedAyahFiles();
+    const missing = jobs.some((job) => !files.has(ayahFile(job.surah, job.ayah)));
+    if (missing && typeof navigator !== "undefined" && navigator.onLine === false) {
+      setNote(copy.need);
+      return;
+    }
+    const control = new AbortController();
+    stopRef.current = control;
+    setNote("");
+    setRun({ done: 0, total: jobs.length });
+    await downloadAyahs(jobs, (done) => setRun({ done, total: jobs.length }), control.signal);
+    const next = await savedAyahFiles();
+    setHave(next.size);
+    setRun(null);
+    if (control.signal.aborted) return;
+    const got = jobs.filter((job) => next.has(ayahFile(job.surah, job.ayah))).length;
+    setNote(got >= jobs.length ? copy.done : copy.fail);
+  }
+
+  const shown = run ? Math.round((run.done / Math.max(1, run.total)) * 100) : Math.round((have / AYAHS_TOTAL) * 100);
+
+  return (
+    <section className="mt-3 rounded-2xl border border-line bg-surface px-3 py-3">
+      <h2 className="text-base font-extrabold text-fg">{copy.title}</h2>
+      <p className="mt-1 text-sm leading-relaxed text-muted">{copy.lead}</p>
+      <p className="mt-2 text-sm tabular-nums text-fg">
+        {copy.saved}: {formatNum(have)} {copy.of} {formatNum(AYAHS_TOTAL)}
+      </p>
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-bg">
+        <div className="h-full rounded-full bg-gold" style={{ width: `${Math.min(100, shown)}%` }} />
+      </div>
+      <select
+        value={pick}
+        disabled={run !== null}
+        onChange={(event) => setPick(Number(event.target.value))}
+        className="mt-3 h-11 w-full rounded-2xl border border-line bg-bg px-3 text-sm text-fg"
+      >
+        {Array.from({ length: 114 }, (_, i) => i + 1).map((n) => (
+          <option key={n} value={n}>
+            {n}. {names[n - 1] ?? ""}
+          </option>
+        ))}
+      </select>
+      {run ? (
+        <>
+          <p className="mt-2 text-sm tabular-nums text-gold">
+            {formatNum(run.done)} {copy.of} {formatNum(run.total)}
+          </p>
+          <button type="button" onClick={() => stopRef.current?.abort()} className="mt-3 h-11 w-full rounded-full border border-line text-sm text-fg">
+            {copy.stop}
+          </button>
+        </>
+      ) : (
+        <div className="mt-3 grid gap-2">
+          <button type="button" onClick={() => void start("one")} className="h-11 w-full rounded-full bg-gold text-sm font-bold text-ink">
+            {copy.one}
+          </button>
+          <button type="button" onClick={() => void start("all")} className="h-11 w-full rounded-full border border-line text-sm text-fg">
+            {copy.all}
+          </button>
+        </div>
+      )}
+      {note ? <p className="mt-2 text-sm leading-relaxed text-muted">{note}</p> : null}
     </section>
   );
 }

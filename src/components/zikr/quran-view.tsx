@@ -9,7 +9,7 @@ import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
-import { ayahCount, keepAyah, loadAyahUrl } from "@/lib/zikr/ayah-audio";
+import { loadAyahUrl } from "@/lib/zikr/ayah-audio";
 import { TajweedView } from "./tajweed-view";
 
 const DONE_KEY = "zikr-quran-done";
@@ -154,24 +154,6 @@ export function QuranView() {
       stop = true;
     };
   }, [attempt]);
-
-  useEffect(() => {
-    if (!book) return;
-    let stop = false;
-    const surahs = open ? [1, open] : [1];
-    void (async () => {
-      for (const surahNo of [...new Set(surahs)]) {
-        const count = ayahCount(surahNo);
-        for (let ayah = 1; ayah <= count; ayah += 1) {
-          if (stop) return;
-          await keepAyah(surahNo, ayah);
-        }
-      }
-    })();
-    return () => {
-      stop = true;
-    };
-  }, [book, open]);
 
   useEffect(() => {
     if (lang === "ar") {

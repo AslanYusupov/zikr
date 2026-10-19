@@ -116,6 +116,41 @@ export async function keepAyah(surah: number, ayah: number): Promise<Blob | null
   return null;
 }
 
+export const AYAHS_TOTAL = SURAH_AYAHS.reduce((sum, n) => sum + n, 0);
+
+export async function savedAyahFiles(): Promise<Set<string>> {
+  try {
+    const db = await openAyahDb();
+    return await new Promise((resolve) => {
+      const req = db.transaction(STORE, "readonly").objectStore(STORE).getAllKeys();
+      req.onsuccess = () => {
+        const keys = Array.isArray(req.result) ? req.result.filter((key): key is string => typeof key === "string") : [];
+        resolve(new Set(keys));
+      };
+      req.onerror = () => resolve(new Set());
+    });
+  } catch {
+    return new Set();
+  }
+}
+
+export async function downloadAyahs(
+  jobs: { surah: number; ayah: number }[],
+  onStep: (done: number) => void,
+  signal: AbortSignal,
+) {
+  let done = 0;
+  for (const job of jobs) {
+    if (signal.aborted) return;
+    const file = ayahFile(job.surah, job.ayah);
+    const already = await readAyah(file);
+    if (!already && typeof navigator !== "undefined" && navigator.onLine === false) return;
+    if (!already) await keepAyah(job.surah, job.ayah);
+    done += 1;
+    onStep(done);
+  }
+}
+
 export async function loadAyahUrl(surah: number, ayah: number): Promise<string | null> {
   const blob = await keepAyah(surah, ayah);
   return blob ? URL.createObjectURL(blob) : null;
