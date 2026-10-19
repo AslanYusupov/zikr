@@ -417,7 +417,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "كَتَبَ", read: "катаба", lat: "kataba" },
       { ar: "قُلْ", read: "къуль", lat: "qul" },
       { ar: "قَالَ", read: "къаля", lat: "qala" },
-      { ar: "قُلْ هُوَ", read: "къуль хува", lat: "qul huwa" },
+      { ar: "قُلْ هُوَ", read: "къуль х1ува", lat: "qul huwa" },
     ],
   },
   {
@@ -434,7 +434,7 @@ export const TAJWEED: TajLesson[] = [
     rows: [
       {
         ar: "قُلْ هُوَ اللَّهُ أَحَدٌ",
-        read: "Къуль хуваллах1у ахьад",
+        read: "Къуль х1уваллах1у ахьад",
         lat: "Qul huwallahu ahad",
         gloss: L("Скажи: Он — Аллах1 Единый.", "Say: He is Allah, One.", "قل هو الله أحد.", "Katakanlah: Dialah Allah Yang Maha Esa.", "De ki: O, Allah birdir.", "کہہ دو: وہ اللہ ایک ہے۔"),
       },
