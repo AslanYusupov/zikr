@@ -477,76 +477,76 @@ function InstallApp({ lang }: { lang: LangId }) {
 
 const QURAN_DL: Record<LangId, { title: string; lead: string; one: string; all: string; stop: string; saved: string; of: string; need: string; done: string; fail: string }> = {
   ru: {
-    title: "Коран на телефоне",
-    lead: "Скачайте чтение аятов. Звук сохранится на этом телефоне, и его можно слушать без интернета.",
+    title: "Коран на устройстве",
+    lead: "Чтение аятов сохранится на устройстве и останется доступным без интернета.",
     one: "Скачать эту суру",
     all: "Скачать все аяты",
     stop: "Остановить",
-    saved: "На телефоне",
+    saved: "Сохранено",
     of: "из",
-    need: "Чтобы скачать, нужен интернет. После этого звук останется на телефоне.",
+    need: "Для загрузки нужен интернет. Затем чтение останется на устройстве.",
     done: "Сохранено. Эти аяты можно слушать без сети.",
-    fail: "Часть аятов не скачалась. Проверьте связь и нажмите снова: сохранённые не качаются заново.",
+    fail: "Часть аятов не загрузилась. Проверьте связь и повторите. Уже сохранённые не загружаются снова.",
   },
   en: {
-    title: "Quran on this phone",
-    lead: "Download the recitation. The sound stays on this phone and can be heard without internet.",
+    title: "Quran on this device",
+    lead: "The recitation is kept on this device and stays available without internet.",
     one: "Download this surah",
     all: "Download every ayah",
     stop: "Stop",
-    saved: "On this phone",
+    saved: "Saved",
     of: "of",
-    need: "Internet is needed to download. After that the sound stays on the phone.",
+    need: "Internet is needed to download. After that the recitation stays on the device.",
     done: "Saved. These ayahs can be heard offline.",
-    fail: "Some ayahs were not downloaded. Check the connection and press again. Saved ones are not downloaded twice.",
+    fail: "Some ayahs were not saved. Check the connection and try again. Saved ones are not downloaded twice.",
   },
   ar: {
-    title: "القرآن على الهاتف",
-    lead: "نزّل تلاوة الآيات. يبقى الصوت في هذا الهاتف ويمكن سماعه بلا إنترنت.",
+    title: "القرآن على الجهاز",
+    lead: "تُحفظ التلاوة على هذا الجهاز وتبقى متاحة بلا إنترنت.",
     one: "تنزيل هذه السورة",
     all: "تنزيل كل الآيات",
     stop: "إيقاف",
-    saved: "على الهاتف",
+    saved: "محفوظ",
     of: "من",
-    need: "التنزيل يحتاج إلى إنترنت. بعد ذلك يبقى الصوت في الهاتف.",
+    need: "التنزيل يحتاج إلى إنترنت. بعد ذلك تبقى التلاوة على الجهاز.",
     done: "تم الحفظ. يمكن سماع هذه الآيات بلا شبكة.",
-    fail: "لم تكتمل بعض الآيات. تحقق من الاتصال ثم أعد المحاولة. المحفوظ لا يُنزَّل مرة أخرى.",
+    fail: "لم تُحفظ بعض الآيات. تحقق من الاتصال ثم أعد المحاولة. المحفوظ لا يُنزَّل مرة أخرى.",
   },
   id: {
-    title: "Quran di telepon ini",
-    lead: "Unduh bacaan ayat. Suaranya tersimpan di telepon ini dan bisa didengar tanpa internet.",
+    title: "Quran di perangkat ini",
+    lead: "Bacaan tersimpan di perangkat ini dan tetap bisa didengar tanpa internet.",
     one: "Unduh surah ini",
     all: "Unduh semua ayat",
     stop: "Berhenti",
-    saved: "Di telepon",
+    saved: "Tersimpan",
     of: "dari",
-    need: "Internet diperlukan untuk mengunduh. Setelah itu suara tetap di telepon.",
+    need: "Internet diperlukan untuk mengunduh. Setelah itu bacaan tetap di perangkat.",
     done: "Tersimpan. Ayat ini bisa didengar tanpa jaringan.",
-    fail: "Sebagian ayat belum terunduh. Periksa koneksi lalu tekan lagi. Yang sudah tersimpan tidak diunduh ulang.",
+    fail: "Sebagian ayat belum tersimpan. Periksa koneksi lalu coba lagi. Yang sudah tersimpan tidak diunduh ulang.",
   },
   tr: {
-    title: "Kur’an bu telefonda",
-    lead: "Ayetlerin tilavetini indirin. Ses bu telefonda kalır ve internet olmadan dinlenir.",
+    title: "Kur’an bu cihazda",
+    lead: "Tilavet bu cihazda saklanır ve internet olmadan dinlenmeye devam eder.",
     one: "Bu sureyi indir",
     all: "Bütün ayetleri indir",
     stop: "Durdur",
-    saved: "Telefonda",
+    saved: "Kayıtlı",
     of: "/",
-    need: "İndirmek için internet gerekir. Sonra ses telefonda kalır.",
+    need: "İndirmek için internet gerekir. Sonra tilavet cihazda kalır.",
     done: "Kaydedildi. Bu ayetler ağ olmadan dinlenir.",
-    fail: "Bazı ayetler inmedi. Bağlantıyı kontrol edip yeniden basın. Kayıtlı olanlar tekrar inmez.",
+    fail: "Bazı ayetler kaydedilmedi. Bağlantıyı kontrol edip yeniden deneyin. Kayıtlı olanlar tekrar inmez.",
   },
   ur: {
-    title: "قرآن اس فون پر",
-    lead: "آیات کی تلاوت ڈاؤن لوڈ کریں۔ آواز اسی فون پر رہے گی اور بغیر انٹرنیٹ سنی جا سکے گی۔",
+    title: "قرآن اس ڈیوائس پر",
+    lead: "تلاوت اس ڈیوائس پر محفوظ رہتی ہے اور بغیر انٹرنیٹ سنی جا سکتی ہے۔",
     one: "یہ سورت ڈاؤن لوڈ کریں",
     all: "تمام آیات ڈاؤن لوڈ کریں",
     stop: "روکیں",
-    saved: "فون پر",
+    saved: "محفوظ",
     of: "میں سے",
-    need: "ڈاؤن لوڈ کے لیے انٹرنیٹ چاہیے۔ اس کے بعد آواز فون پر رہتی ہے۔",
+    need: "ڈاؤن لوڈ کے لیے انٹرنیٹ چاہیے۔ اس کے بعد تلاوت ڈیوائس پر رہتی ہے۔",
     done: "محفوظ ہو گیا۔ یہ آیات بغیر نیٹ کے سن سکتے ہیں۔",
-    fail: "کچھ آیات نہیں اتریں۔ کنکشن دیکھ کر دوبارہ دبائیں۔ جو محفوظ ہیں وہ دوبارہ نہیں اترتیں۔",
+    fail: "کچھ آیات محفوظ نہیں ہوئیں۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔ جو محفوظ ہیں وہ دوبارہ نہیں اترتیں۔",
   },
 };
 
@@ -607,20 +607,20 @@ function QuranAudio({ lang }: { lang: LangId }) {
   const shown = run ? Math.round((run.done / Math.max(1, run.total)) * 100) : Math.round((have / AYAHS_TOTAL) * 100);
 
   return (
-    <section className="mt-3 rounded-2xl border border-line bg-surface px-3 py-3">
-      <h2 className="text-base font-extrabold text-fg">{copy.title}</h2>
-      <p className="mt-1 text-sm leading-relaxed text-muted">{copy.lead}</p>
-      <p className="mt-2 text-sm tabular-nums text-fg">
-        {copy.saved}: {formatNum(have)} {copy.of} {formatNum(AYAHS_TOTAL)}
+    <details className="fold">
+      <summary className="fold-sum">{copy.title}</summary>
+      <p className="text-sm leading-relaxed text-muted">{copy.lead}</p>
+      <p className="text-sm tabular-nums text-fg">
+        {copy.saved} {formatNum(have)} {copy.of} {formatNum(AYAHS_TOTAL)}
       </p>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-bg">
+      <div className="h-1 overflow-hidden rounded-full bg-bg">
         <div className="h-full rounded-full bg-gold" style={{ width: `${Math.min(100, shown)}%` }} />
       </div>
       <select
         value={pick}
         disabled={run !== null}
         onChange={(event) => setPick(Number(event.target.value))}
-        className="mt-3 h-11 w-full rounded-2xl border border-line bg-bg px-3 text-sm text-fg"
+        className="h-11 w-full rounded-2xl border border-line bg-bg px-3 text-sm text-fg"
       >
         {Array.from({ length: 114 }, (_, i) => i + 1).map((n) => (
           <option key={n} value={n}>
@@ -630,15 +630,15 @@ function QuranAudio({ lang }: { lang: LangId }) {
       </select>
       {run ? (
         <>
-          <p className="mt-2 text-sm tabular-nums text-gold">
+          <p className="text-sm tabular-nums text-gold">
             {formatNum(run.done)} {copy.of} {formatNum(run.total)}
           </p>
-          <button type="button" onClick={() => stopRef.current?.abort()} className="mt-3 h-11 w-full rounded-full border border-line text-sm text-fg">
+          <button type="button" onClick={() => stopRef.current?.abort()} className="h-11 w-full rounded-full border border-line text-sm text-fg">
             {copy.stop}
           </button>
         </>
       ) : (
-        <div className="mt-3 grid gap-2">
+        <div className="grid gap-2">
           <button type="button" onClick={() => void start("one")} className="h-11 w-full rounded-full bg-gold text-sm font-bold text-ink">
             {copy.one}
           </button>
@@ -647,8 +647,8 @@ function QuranAudio({ lang }: { lang: LangId }) {
           </button>
         </div>
       )}
-      {note ? <p className="mt-2 text-sm leading-relaxed text-muted">{note}</p> : null}
-    </section>
+      {note ? <p className="text-sm leading-relaxed text-muted">{note}</p> : null}
+    </details>
   );
 }
 
