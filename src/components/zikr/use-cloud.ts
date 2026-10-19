@@ -361,12 +361,20 @@ export function useWorldSync(hydrated: boolean) {
     const first = window.setTimeout(send, 1500);
     const timer = window.setInterval(send, 20000);
     const onOnline = () => send();
+    const onWake = () => {
+      if (document.visibilityState === "visible") send();
+    };
     window.addEventListener("online", onOnline);
+    document.addEventListener("visibilitychange", onWake);
+    const link = (navigator as Navigator & { connection?: EventTarget }).connection;
+    link?.addEventListener?.("change", onOnline);
     return () => {
       unbind();
       window.clearTimeout(first);
       window.clearInterval(timer);
       window.removeEventListener("online", onOnline);
+      document.removeEventListener("visibilitychange", onWake);
+      link?.removeEventListener?.("change", onOnline);
     };
   }, [hydrated, linked, publicId, publicBoard]);
 }

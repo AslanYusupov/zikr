@@ -114,7 +114,11 @@ export function Shell() {
         /* the phone may refuse */
       }
       try {
-        await navigator.serviceWorker.register("/sw.js");
+        try {
+          await navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" });
+        } catch {
+          await navigator.serviceWorker.register("/sw.js");
+        }
         if (stop) return;
         const cache = await caches.open("zikr-shell-v1");
         const urls = new Set(["/favicon.svg", "/orbit-sun.webp", "/orbit-moon.webp"]);
@@ -132,7 +136,12 @@ export function Shell() {
           [...urls].map(async (url) => {
             try {
               const res = await fetch(`${url}${url.includes("?") ? "&" : "?"}warm=1`, { cache: "no-store" });
-              if (res.ok) await cache.put(url, res);
+              if (res.ok) {
+                const headers = new Headers();
+                const type = res.headers.get("content-type");
+                if (type) headers.set("content-type", type);
+                await cache.put(url, new Response(await res.blob(), { status: 200, headers }));
+              }
             } catch {
               /* keep the copy already saved */
             }
@@ -161,8 +170,23 @@ export function Shell() {
       }
     };
     void keep();
+    let warmed = Date.now();
+    const again = () => {
+      if (document.visibilityState !== "visible") return;
+      const now = Date.now();
+      if (now - warmed < 60_000) return;
+      warmed = now;
+      void keep();
+    };
+    window.addEventListener("online", again);
+    document.addEventListener("visibilitychange", again);
+    const link = (navigator as Navigator & { connection?: EventTarget }).connection;
+    link?.addEventListener?.("change", again);
     return () => {
       stop = true;
+      window.removeEventListener("online", again);
+      document.removeEventListener("visibilitychange", again);
+      link?.removeEventListener?.("change", again);
     };
   }, []);
 
@@ -237,12 +261,22 @@ export function Shell() {
     const start = window.setTimeout(load, 800);
     const id = window.setInterval(load, 4000);
     const onLive = () => load();
+    const onWake = () => {
+      if (document.visibilityState === "visible") load();
+    };
     window.addEventListener("zikr-live", onLive);
+    window.addEventListener("online", onWake);
+    document.addEventListener("visibilitychange", onWake);
+    const link = (navigator as Navigator & { connection?: EventTarget }).connection;
+    link?.addEventListener?.("change", onWake);
     return () => {
       stop = true;
       window.clearTimeout(start);
       window.clearInterval(id);
       window.removeEventListener("zikr-live", onLive);
+      window.removeEventListener("online", onWake);
+      document.removeEventListener("visibilitychange", onWake);
+      link?.removeEventListener?.("change", onWake);
     };
   }, [hydrated]);
 

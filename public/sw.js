@@ -1,5 +1,12 @@
 const SHELL = "zikr-shell-v1";
 
+function stored(res) {
+  const headers = new Headers();
+  const type = res.headers.get("content-type");
+  if (type) headers.set("content-type", type);
+  return res.blob().then((body) => new Response(body, { status: 200, headers }));
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting());
 });
@@ -42,7 +49,7 @@ self.addEventListener("fetch", (event) => {
       const hit = navigation ? await cache.match("/") : await cache.match(req);
       const update = fetch(req, { cache: "no-store" })
         .then((res) => {
-          if (res.ok) cache.put(navigation ? "/" : req, res.clone()).catch(() => {});
+          if (res.ok) stored(res.clone()).then((copy) => cache.put(navigation ? "/" : req, copy)).catch(() => {});
           return res;
         })
         .catch(() => null);

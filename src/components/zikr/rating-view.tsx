@@ -235,12 +235,22 @@ export function RatingView() {
     };
     load();
     const onLive = () => load();
+    const onWake = () => {
+      if (document.visibilityState === "visible") load();
+    };
     const id = window.setInterval(load, 4000);
     window.addEventListener("zikr-live", onLive);
+    window.addEventListener("online", onWake);
+    document.addEventListener("visibilitychange", onWake);
+    const link = (navigator as Navigator & { connection?: EventTarget }).connection;
+    link?.addEventListener?.("change", onWake);
     return () => {
       stop = true;
       window.clearInterval(id);
       window.removeEventListener("zikr-live", onLive);
+      window.removeEventListener("online", onWake);
+      document.removeEventListener("visibilitychange", onWake);
+      link?.removeEventListener?.("change", onWake);
     };
   }, [publicId, day]);
 
