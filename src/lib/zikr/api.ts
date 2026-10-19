@@ -3,6 +3,7 @@ import { z } from "zod";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { getSql } from "@/lib/db";
 import { levelFromXp } from "@/lib/zikr/levels";
+import { MILESTONES } from "@/lib/zikr/content";
 
 const SaveInput = z.object({
   displayName: z.string().max(24),
@@ -104,6 +105,13 @@ async function foldCloneNumbers(sql: Awaited<ReturnType<typeof getSql>>) {
       ],
       [`update zikr_invites set host_id = $1 where host_id = $2`, [real, clone]],
       [
+        `insert into zikr_reach (public_id, at)
+       select $1, at from zikr_reach where public_id = $2
+       on conflict do nothing`,
+        [real, clone],
+      ],
+      [`delete from zikr_reach where public_id = $1`, [clone]],
+      [
         `update zikr_invites set guest_id = $1 where guest_id = $2
        and not exists (select 1 from zikr_invites kept where kept.guest_id = $1)`,
         [real, clone],
@@ -139,6 +147,7 @@ async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
     "delete from zikr_world where public_id = $1",
     "delete from zikr_presence where public_id = $1",
     "delete from zikr_invites where guest_id = $1 or host_id = $1",
+    "delete from zikr_reach where public_id = $1",
   ];
   for (const id of DROPPED_RATING_IDS) {
     for (const text of steps) {
@@ -663,6 +672,17 @@ export const pushDevice = createServerFn({ method: "POST" })
               set public_id = ${publicId}, payload = ${payload}, total = ${total}, updated_at = now()
               where sync_key = ${saved.syncKey}`;
             await dropRemovedRating(sql);
+            try {
+              await sql.query(
+                `insert into zikr_reach (public_id, at)
+                 select $1, at from zikr_reach where public_id = $2
+                 on conflict do nothing`,
+                [publicId, saved.publicId],
+              );
+              await sql.query(`delete from zikr_reach where public_id = $1`, [saved.publicId]);
+            } catch (err) {
+              console.error("[zikr] move reach", err);
+            }
             for (const text of [
               "delete from zikr_world where public_id = $1",
               "delete from zikr_presence where public_id = $1",
@@ -704,6 +724,17 @@ export const pushDevice = createServerFn({ method: "POST" })
         from zikr_device where sync_key = ${data.key} limit 1`;
       const nextId = row[0]?.publicId ?? "";
       if (previousId && nextId && previousId !== nextId) {
+        try {
+          await sql.query(
+            `insert into zikr_reach (public_id, at)
+             select $1, at from zikr_reach where public_id = $2
+             on conflict do nothing`,
+            [nextId, previousId],
+          );
+          await sql.query(`delete from zikr_reach where public_id = $1`, [previousId]);
+        } catch (err) {
+          console.error("[zikr] move reach", err);
+        }
         for (const text of [
           "delete from zikr_world where public_id = $1",
           "delete from zikr_presence where public_id = $1",
@@ -720,5 +751,72 @@ export const pushDevice = createServerFn({ method: "POST" })
     } catch (err) {
       console.error("[zikr] push device", err);
       return null;
+    }
+  });
+
+const REACH_AT = new Set<number>(MILESTONES.map((m) => m.at));
+
+async function reachTable(sql: Awaited<ReturnType<typeof getSql>>) {
+  await sql.query(`create table if not exists zikr_reach (
+    public_id text not null,
+    at bigint not null,
+    primary key (public_id, at)
+  )`);
+}
+
+export type ReachBoard = { ok: boolean; rows: { at: string; n: number }[]; accepted: number[] };
+
+export const milestoneBoard = createServerFn({ method: "POST" })
+  .validator((raw: unknown) =>
+    z
+      .object({
+        publicId: z.string().regex(/^\d{8}$/).optional(),
+        ats: z.array(z.number().int().min(0).max(999_000_000_000)).max(80).optional(),
+      })
+      .parse(raw),
+  )
+  .handler(async ({ data }): Promise<ReachBoard> => {
+    try {
+      const sql = await getSql();
+      await reachTable(sql);
+      const id = data.publicId ? realPublicId(data.publicId) : "";
+      const ats = [...new Set((data.ats ?? []).filter((at) => REACH_AT.has(at)))];
+      const accepted: number[] = [];
+      if (/^\d{8}$/.test(id) && !DROPPED_RATING_IDS.includes(id) && ats.length) {
+        let known = false;
+        try {
+          const rows = await sql<{ ok: number }>`
+            select 1 as ok from zikr_device where public_id = ${id}
+            union all
+            select 1 from zikr_world where public_id = ${id}
+            union all
+            select 1 from zikr_presence where public_id = ${id}
+            limit 1`;
+          known = rows.length > 0;
+        } catch (err) {
+          console.error("[zikr] reach known", err);
+        }
+        if (known) {
+          for (const at of ats) {
+            await sql.query(
+              `insert into zikr_reach (public_id, at) values ($1, $2) on conflict do nothing`,
+              [id, at],
+            );
+            accepted.push(at);
+          }
+        }
+      }
+      const rows = await sql<{ at: string; n: number }>`
+        select at::text as at, count(*)::int as n
+        from zikr_reach
+        group by at`;
+      return {
+        ok: true,
+        rows: rows.map((row) => ({ at: String(row.at), n: Math.max(0, Math.floor(Number(row.n) || 0)) })),
+        accepted,
+      };
+    } catch (err) {
+      console.error("[zikr] reach", err);
+      return { ok: false, rows: [], accepted: [] };
     }
   });

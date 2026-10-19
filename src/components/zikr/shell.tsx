@@ -15,6 +15,7 @@ import { DuaView } from "./dua-view";
 import { QuestsView } from "./quests-view";
 import { RewardsView } from "./rewards-view";
 import { RatingView } from "./rating-view";
+import { syncReach } from "@/lib/zikr/reach";
 import { SettingsView } from "./settings-view";
 import { Library } from "./library";
 
@@ -85,6 +86,8 @@ export function Shell() {
   const sound = useZikr((s) => s.sound);
   const setSound = useZikr((s) => s.setSound);
   const achievements = useZikr((s) => s.achievements);
+  const reached = achievements.length;
+  const publicId = useZikr((s) => s.publicId);
   const celebrated = useZikr((s) => s.celebrated);
   const [tab, setTab] = useState<Tab>("zikr");
   const [home, setHome] = useState<"dhikr" | "quran">("dhikr");
@@ -109,6 +112,23 @@ export function Shell() {
       });
     }).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!hydrated || !/^\d{8}$/.test(publicId) || reached < 1) return;
+    let stop = false;
+    const run = () => {
+      if (stop) return;
+      const s = useZikr.getState();
+      void syncReach(s.publicId, s.achievements);
+    };
+    const soon = window.setTimeout(run, 2500);
+    const later = window.setTimeout(run, 25000);
+    return () => {
+      stop = true;
+      window.clearTimeout(soon);
+      window.clearTimeout(later);
+    };
+  }, [hydrated, publicId, reached]);
 
   useEffect(() => {
     const syncDay = () => {
