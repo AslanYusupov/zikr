@@ -450,9 +450,16 @@ function InstallApp({ lang }: { lang: LangId }) {
 
   return (
     <section className="mt-3 rounded-2xl border border-line bg-surface px-3 py-3">
-      <h2 className="text-base font-extrabold text-fg">{t(lang, "installTitle")}</h2>
+      {standalone ? null : <h2 className="text-base font-extrabold text-fg">{t(lang, "installTitle")}</h2>}
       {standalone ? (
-        <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "installDone")}</p>
+        <p className="flex items-center gap-2 text-sm font-bold text-fg">
+          <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#1f8a4c] text-white" aria-hidden>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2.2 6.2 4.7 8.7 9.8 3.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          {t(lang, "installDone")}
+        </p>
       ) : (
         <>
           <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "installLead")}</p>
