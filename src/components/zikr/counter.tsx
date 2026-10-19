@@ -107,14 +107,12 @@ export function ModeStrip({
   useEffect(() => {
     const root = scroller.current;
     const active = root?.querySelector("[data-active='true']");
-    if (!root || !active) return;
-    const start = (active as HTMLElement).offsetLeft;
-    const end = start + (active as HTMLElement).offsetWidth;
-    const viewStart = root.scrollLeft;
-    const viewEnd = viewStart + root.clientWidth;
-    if (start >= viewStart + 8 && end <= viewEnd - 8) return;
-    const left = start < viewStart ? start - 12 : end - root.clientWidth + 12;
-    root.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+    if (!root || !(active instanceof HTMLElement)) return;
+    const rootBox = root.getBoundingClientRect();
+    const box = active.getBoundingClientRect();
+    if (box.left >= rootBox.left + 8 && box.right <= rootBox.right - 8) return;
+    const delta = box.left < rootBox.left + 8 ? box.left - rootBox.left - 12 : box.right - rootBox.right + 12;
+    root.scrollTo({ left: Math.max(0, root.scrollLeft + delta), behavior: "smooth" });
   }, [s.mode, quranOn, listOn, namesOn]);
 
   return (
@@ -188,7 +186,8 @@ export function Counter({
   const orbRef = useRef<HTMLButtonElement>(null);
   const riseRef = useRef<HTMLDivElement>(null);
   const pressRef = useRef<() => void>(() => {});
-  const [quoteAt, setQuoteAt] = useState(() => Math.floor(Math.random() * QUOTES.length));
+  const [quoteAt, setQuoteAt] = useState(0);
+  const quoteLive = useRef(false);
   const [virtue, setVirtue] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [wordTop, setWordTop] = useState("42%");
@@ -196,7 +195,12 @@ export function Counter({
   const dragY = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!s.showWisdom) return;
+    quoteLive.current = true;
+    setQuoteAt(Math.floor(Math.random() * QUOTES.length));
+  }, []);
+
+  useEffect(() => {
+    if (!s.showWisdom || !quoteLive.current) return;
     const current = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length];
     const wait = quoteHold(current?.text ?? "");
     const timer = window.setTimeout(() => setQuoteAt((value) => value + 1), wait);

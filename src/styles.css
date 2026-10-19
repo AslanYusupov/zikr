@@ -1550,9 +1550,12 @@ details.fold>:not(summary) {
   padding: 5% 1.6rem .2rem;
   display: flex;
   position: relative;
-  overflow: hidden;
+  z-index: 1;
+  overflow: visible;
 }
 .phrase-read {
+  position: relative;
+  z-index: 6;
   flex-shrink: 0;
   max-height: 22svh;
   margin-top: .35rem;
@@ -1575,11 +1578,6 @@ details.fold>:not(summary) {
   border: 1px solid var(--line);
   background: var(--surface);
   border-radius: 1rem;
-}
-@supports (color:color-mix(in lab, red, red)) {
-  .reminder {
-    background: color-mix(in srgb, var(--surface) 82%, transparent);
-  }
 }
 .reminder {
   padding: .4rem .7rem .45rem;
