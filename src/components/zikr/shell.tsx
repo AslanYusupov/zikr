@@ -88,7 +88,6 @@ export function Shell() {
   const setSound = useZikr((s) => s.setSound);
   const achievements = useZikr((s) => s.achievements);
   const reached = achievements.length;
-  const publicId = useZikr((s) => s.publicId);
   const celebrated = useZikr((s) => s.celebrated);
   const [tab, setTab] = useState<Tab>("zikr");
   const [home, setHome] = useState<"dhikr" | "quran">("dhikr");
