@@ -452,12 +452,13 @@ export const worldBoard = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       await tapsOnlyBoard(sql);
       await liftGrokBonus(sql);
+      const publicId = realPublicId(data.publicId);
       const rows = await sql<{ public_id: string; total: number }>`
         select public_id, total from zikr_world
         where total > 0
         order by total desc, public_id asc
-        limit 40`;
-      const self = await sql<{ total: number }>`select total from zikr_world where public_id = ${data.publicId}`;
+        limit 100`;
+      const self = await sql<{ total: number }>`select total from zikr_world where public_id = ${publicId}`;
       let mine: { total: number; rank: number } | null = null;
       if (self[0]) {
         const ahead = await sql<{ n: number }>`select count(*)::int as n from zikr_world where total > ${self[0].total}`;

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
@@ -114,6 +114,12 @@ function shown<T extends { id: string; total?: number; value?: number }>(rows: T
   });
 }
 
+function useSavedRating(): RatingCache | null {
+  const ref = useRef<RatingCache | null | undefined>(undefined);
+  if (ref.current === undefined) ref.current = readRatingCache();
+  return ref.current;
+}
+
 export function RatingView() {
   const days = useZikr((s) => s.days);
   const bestDay = useZikr((s) => s.bestDay);
@@ -122,19 +128,20 @@ export function RatingView() {
   const listed = useZikr((s) => s.publicBoard);
   const total = useZikr((s) => s.total);
   const lang = useZikr((s) => s.lang);
-  const bag = useRef<RatingCache | null>(null);
-  const [world, setWorld] = useState<WorldRow[] | null>(null);
-  const [worldRank, setWorldRank] = useState<number | null>(null);
+  const saved = useSavedRating();
+  const bag = useRef<RatingCache | null>(saved);
+  const [world, setWorld] = useState<WorldRow[] | null>(saved ? shown(saved.world) : null);
+  const [worldRank, setWorldRank] = useState<number | null>(saved?.worldRank ?? null);
   const [worldError, setWorldError] = useState(false);
-  const [held, setHeld] = useState(false);
-  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
-  const [baseTotal, setBaseTotal] = useState(0);
-  const [online, setOnline] = useState<number | null>(null);
-  const [allTaps, setAllTaps] = useState<number | null>(null);
-  const [live, setLive] = useState<PresenceRow[] | null>(null);
-  const [daily, setDaily] = useState<PresenceRow[] | null>(null);
-  const [dailyRank, setDailyRank] = useState<number | null>(null);
-  const [guests, setGuests] = useState<Invitee[] | null>(null);
+  const [held, setHeld] = useState(Boolean(saved));
+  const [updatedAt, setUpdatedAt] = useState<number | null>(saved?.at ?? null);
+  const [baseTotal, setBaseTotal] = useState(saved?.ownTotal ?? 0);
+  const [online, setOnline] = useState<number | null>(saved?.online ?? null);
+  const [allTaps, setAllTaps] = useState<number | null>(saved?.allTaps ?? null);
+  const [live, setLive] = useState<PresenceRow[] | null>(saved ? shown(saved.live) : null);
+  const [daily, setDaily] = useState<PresenceRow[] | null>(saved ? shown(saved.daily) : null);
+  const [dailyRank, setDailyRank] = useState<number | null>(saved?.dailyRank ?? null);
+  const [guests, setGuests] = useState<Invitee[] | null>(saved ? shown(saved.guests) : null);
   const [copied, setCopied] = useState(false);
   const day = todayKey();
   const today = days[day]?.total ?? 0;
@@ -142,23 +149,6 @@ export function RatingView() {
   const week = thisWeek(days, day);
   const chart = recentDays(days, 14, day);
   const mark = Math.max(record, today);
-
-  useLayoutEffect(() => {
-    const cache = readRatingCache();
-    if (!cache) return;
-    bag.current = cache;
-    setWorld(shown(cache.world));
-    setWorldRank(cache.worldRank);
-    setOnline(cache.online);
-    setAllTaps(cache.allTaps);
-    setLive(shown(cache.live));
-    setDaily(shown(cache.daily));
-    setDailyRank(cache.dailyRank);
-    setGuests(shown(cache.guests));
-    setBaseTotal(cache.ownTotal);
-    setUpdatedAt(cache.at);
-    setHeld(true);
-  }, []);
 
   function remember(patch: Partial<RatingCache>, fresh = false) {
     const prev = bag.current;
@@ -361,7 +351,23 @@ export function RatingView() {
           ))}
         </ol>
       )}
-      {myWorldRank && listed && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "yourPlace")}: {formatNum(myWorldRank)}.</p> : null}
+      {worldShown && listed && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
+        <div className="mt-1.5 flex items-center justify-between gap-3 rounded-2xl border border-gold bg-surface px-3 py-2">
+          <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+            <span className="mr-2 text-muted">{formatNum(myWorldRank)}.</span>
+            {publicId}
+            {` · ${tx(lang, "you")}`}
+          </span>
+          <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(total)}</span>
+        </div>
+      ) : null}
+      {myWorldRank && listed && !HIDDEN_RATING_IDS.has(publicId) ? (
+        <p className="mt-2 text-sm text-fg">
+          {t(lang, "yourPlace")}: {formatNum(myWorldRank)}.
+          {publicId ? ` · ${publicId}` : ""}
+          {` · ${tx(lang, "you")}`}
+        </p>
+      ) : null}
 
       <article className="mt-5 rounded-3xl border border-line bg-surface px-4 py-4">
         <h2 className="text-lg text-fg">{tx(lang, "pointGood")}</h2>
