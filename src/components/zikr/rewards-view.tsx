@@ -1,4 +1,4 @@
-import { MILESTONES, REMEMBRANCE, rewardPoints } from "@/lib/zikr/content";
+import { MILESTONES, REMEMBRANCE } from "@/lib/zikr/content";
 import { formatNum, zikrWord } from "@/lib/zikr/format";
 import { levelFromXp } from "@/lib/zikr/levels";
 import { cachedReach, syncReach } from "@/lib/zikr/reach";
@@ -11,8 +11,6 @@ import { useEffect, useState } from "react";
 
 export function RewardsView() {
   const total = useZikr((s) => s.total);
-  const letters = useZikr((s) => s.quranLetters);
-  const hasanat = rewardPoints(total + letters);
   const byDhikr = useZikr((s) => s.byDhikr);
   const lang = useZikr((s) => s.lang);
   const xp = useZikr((s) => s.xp);
@@ -42,9 +40,8 @@ export function RewardsView() {
             <h2 className="text-xl text-pretty text-fg">{degreeName(lang, level.level)}</h2>
           </div>
         </div>
-        <p className="mt-3 text-2xl font-extrabold tabular-nums text-gold">{formatNum(hasanat)}</p>
-        <p className="text-sm text-muted">{t(lang, "sawab")}</p>
-        <p className="text-sm text-muted">{formatNum(total)} {zikrWord(total, lang)}</p>
+        <p className="mt-3 text-2xl font-extrabold tabular-nums text-gold">{formatNum(total)}</p>
+        <p className="text-sm text-muted">{zikrWord(total, lang)}</p>
         <p className="mt-3 text-sm leading-relaxed text-muted">{t(lang, "rewardLead")}</p>
         {level.need > 0 && (
           <p className="mt-2 text-sm tabular-nums text-gold">
