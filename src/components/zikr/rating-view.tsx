@@ -9,7 +9,7 @@ import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 
-const HIDDEN_RATING_IDS = new Set(["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997"]);
+const HIDDEN_RATING_IDS = new Set(["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036"]);
 
 const FLAGS: Record<string, string> = {
   RU: "🇷🇺",

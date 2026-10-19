@@ -176,6 +176,7 @@ function laterStamp<T extends { at: number } | null>(a: T, b: T): T {
 function canonicalPublicId(id: string): string {
   if (id === "88880455") return "96995742";
   if (id === "62012303") return "87278839";
+  if (id === "25574036") return "52812946";
   return id;
 }
 
@@ -362,7 +363,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     mode: local.mode,
     pool: local.pool,
     displayName: local.displayName || remote.displayName,
-    publicId: /^\d{8}$/.test(remote.publicId) ? remote.publicId : local.publicId,
+    publicId: canonicalPublicId(/^\d{8}$/.test(remote.publicId) ? remote.publicId : local.publicId),
     publicBoard: local.publicBoard,
     wisdomStep: Math.max(local.wisdomStep, remote.wisdomStep),
     lastDhikrId: local.lastDhikrId,
@@ -640,8 +641,11 @@ export const useZikr = create<ZikrState & Actions>()(
       setDisplayName: (n) => set({ displayName: n.replace(/\s+/g, " ").trim().slice(0, 24) }),
       setPublicBoard: (v) => set({ publicBoard: v }),
       ensurePublicId: () => {
-        const current = get().publicId;
-        if (/^\d{8}$/.test(current)) return current;
+        const current = canonicalPublicId(get().publicId);
+        if (/^\d{8}$/.test(current)) {
+          if (current !== get().publicId) set({ publicId: current });
+          return current;
+        }
         const next = makePublicId();
         set({ publicId: next });
         return next;

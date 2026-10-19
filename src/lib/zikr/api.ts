@@ -44,7 +44,7 @@ function makeCode(): string {
 function boardNumber(payload: string): string {
   try {
     const id = (JSON.parse(payload) as { publicId?: unknown }).publicId;
-    if (typeof id === "string" && /^\d{8}$/.test(id)) return id;
+    if (typeof id === "string" && /^\d{8}$/.test(id)) return realPublicId(id);
   } catch {
     /* the saved copy can be old */
   }
@@ -82,9 +82,9 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 }
 
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
-const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997"];
+const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036"];
 /** A second number made on the same account. Counts stay on the first number. */
-const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839" };
+const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946" };
 
 function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;
@@ -141,8 +141,64 @@ async function foldCloneNumbers(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+/** Father's number keeps the higher saved count. The extra number is not a second person. */
+async function keepFatherScore(sql: Awaited<ReturnType<typeof getSql>>) {
+  const real = "52812946";
+  const clone = "25574036";
+  try {
+    let best = 0;
+    const take = (value: unknown) => {
+      const n = Math.floor(Number(value));
+      if (Number.isFinite(n) && n > best) best = n;
+    };
+    try {
+      const totals = await sql.query<{ total: number }>(
+        `select total from zikr_world where public_id = $1 or public_id = $2
+         union all select total from zikr_presence where public_id = $1 or public_id = $2
+         union all select total from zikr_invites where guest_id = $1 or guest_id = $2`,
+        [real, clone],
+      );
+      for (const row of totals) take(row.total);
+    } catch (err) {
+      console.error("[zikr] father lists", err);
+    }
+    try {
+      const copies = await sql.query<{ payload: string; total: number }>(
+        `select payload, total from zikr_device where public_id = $1 or public_id = $2 or payload like $3 or payload like $4
+         union all
+         select payload, total from zikr_saves where payload like $3 or payload like $4 or display_name = $2`,
+        [real, clone, `%"publicId":"${real}"%`, `%"publicId":"${clone}"%`],
+      );
+      for (const row of copies) {
+        take(row.total);
+        try {
+          take((JSON.parse(row.payload) as { total?: unknown }).total);
+        } catch {
+          /* a broken copy must not lower the score */
+        }
+      }
+    } catch (err) {
+      console.error("[zikr] father copies", err);
+    }
+    if (best <= 0) return;
+    await sql.query(
+      `insert into zikr_world (public_id, total) values ($1, $2)
+       on conflict (public_id) do update
+       set total = greatest(zikr_world.total, excluded.total), updated_at = now()`,
+      [real, best],
+    );
+    await sql.query(
+      `update zikr_presence set total = greatest(total, $2), xp = greatest(xp, $2) where public_id = $1`,
+      [real, best],
+    );
+  } catch (err) {
+    console.error("[zikr] father score", err);
+  }
+}
+
 async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
   await foldCloneNumbers(sql);
+  await keepFatherScore(sql);
   const steps = [
     "delete from zikr_world where public_id = $1",
     "delete from zikr_presence where public_id = $1",
@@ -396,7 +452,7 @@ export const publishWorld = createServerFn({ method: "POST" })
         insert into zikr_world (public_id, total)
         values (${publicId}, ${stored})
         on conflict (public_id) do update
-        set total = excluded.total,
+        set total = case when ${publicId} = '52812946' then greatest(zikr_world.total, excluded.total) else excluded.total end,
             updated_at = now()`;
       const host = data.invitedBy ? realPublicId(data.invitedBy) : undefined;
       if (host && host !== publicId && data.total > 0) {
@@ -413,6 +469,7 @@ export const publishWorld = createServerFn({ method: "POST" })
         set total = ${data.total}, updated_at = now()
         where guest_id = ${publicId}`;
       await tapsOnlyBoard(sql);
+      await keepFatherScore(sql);
       return { ok: true as const };
     } catch (err) {
       console.error("[zikr] world", err);
