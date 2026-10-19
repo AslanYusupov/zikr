@@ -83,6 +83,7 @@ export function Shell() {
   useWorldSync(hydrated && cloud.ready);
   const theme = useZikr((s) => s.theme);
   const lang = useZikr((s) => s.lang);
+  const publicId = useZikr((s) => s.publicId);
   const sound = useZikr((s) => s.sound);
   const setSound = useZikr((s) => s.setSound);
   const achievements = useZikr((s) => s.achievements);
@@ -259,8 +260,8 @@ export function Shell() {
         })
         .catch(() => {});
     };
-    const start = window.setTimeout(load, 800);
-    const id = window.setInterval(load, 4000);
+    load();
+    const id = window.setInterval(load, 3000);
     const onLive = () => load();
     const onWake = () => {
       if (document.visibilityState === "visible") load();
@@ -272,14 +273,13 @@ export function Shell() {
     link?.addEventListener?.("change", onWake);
     return () => {
       stop = true;
-      window.clearTimeout(start);
       window.clearInterval(id);
       window.removeEventListener("zikr-live", onLive);
       window.removeEventListener("online", onWake);
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onWake);
     };
-  }, [hydrated]);
+  }, [hydrated, publicId]);
 
   useEffect(() => {
     let stop = false;

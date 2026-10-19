@@ -483,20 +483,27 @@ async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
 async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: string) {
   await aliasTable(sql);
   const id = (publicId ?? "").trim();
-  if (/^\d{8}$/.test(id)) {
-    const real = await aliasOf(sql, id);
-    if (!DROPPED_RATING_IDS.includes(real)) {
-      await sql`
-        insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at)
-        values (${real}, '', '', 0, 0, 0, now())
-        on conflict (public_id) do update set seen_at = now()`;
-    }
+  const real = /^\d{8}$/.test(id) ? await aliasOf(sql, id) : "";
+  if (/^\d{8}$/.test(real) && !DROPPED_RATING_IDS.includes(real)) {
+    await sql`
+      insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at)
+      values (${real}, '', '', 0, 0, 0, now())
+      on conflict (public_id) do update set seen_at = now()`;
   }
-  const online = await sql<{ n: number }>`
-    select count(distinct coalesce(a.public_id, p.public_id))::int as n
-    from zikr_presence p
-    left join zikr_alias a on a.alias = p.public_id
-    where p.seen_at > now() - interval '2 minutes'`;
+  const online = /^\d{8}$/.test(real)
+    ? await sql<{ n: number }>`
+        select count(distinct id)::int as n from (
+          select coalesce(a.public_id, p.public_id) as id
+          from zikr_presence p
+          left join zikr_alias a on a.alias = p.public_id
+          where p.seen_at > now() - interval '2 minutes'
+          union select ${real}
+        ) people`
+    : await sql<{ n: number }>`
+        select count(distinct coalesce(a.public_id, p.public_id))::int as n
+        from zikr_presence p
+        left join zikr_alias a on a.alias = p.public_id
+        where p.seen_at > now() - interval '2 minutes'`;
   return online[0]?.n ?? 0;
 }
 
