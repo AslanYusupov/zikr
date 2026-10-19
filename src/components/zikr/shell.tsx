@@ -105,8 +105,65 @@ export function Shell() {
   const pull = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !("caches" in window)) return;
+    let stop = false;
+    const keep = async () => {
+      try {
+        await navigator.storage?.persist?.();
+      } catch {
+        /* the phone may refuse */
+      }
+      try {
+        await navigator.serviceWorker.register("/sw.js");
+        if (stop) return;
+        const cache = await caches.open("zikr-shell-v1");
+        const urls = new Set(["/favicon.svg", "/orbit-sun.webp", "/orbit-moon.webp"]);
+        document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
+          const src = node.getAttribute("src") || node.getAttribute("href") || "";
+          const path = src.startsWith("/") ? src.split("?")[0] : "";
+          if (path.startsWith("/assets/") || path.endsWith(".css")) urls.add(path);
+        });
+        for (const face of ["inter-cyr", "inter-latin", "inter-latinext"]) {
+          for (const weight of [500, 600, 700, 800]) urls.add(`/fonts/${face}-${weight}.woff2`);
+        }
+        for (const weight of [400, 700]) urls.add(`/fonts/amiri-${weight}.woff2`);
+        urls.add("/fonts/amiri-400i.woff2");
+        await Promise.all(
+          [...urls].map(async (url) => {
+            try {
+              const res = await fetch(`${url}${url.includes("?") ? "&" : "?"}warm=1`, { cache: "no-store" });
+              if (res.ok) await cache.put(url, res);
+            } catch {
+              /* keep the copy already saved */
+            }
+          }),
+        );
+        let savedPage = false;
+        try {
+          const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
+          if (page.ok) {
+            const html = await page.text();
+            const scripts = [...urls].filter((url) => url.startsWith("/assets/") && url.endsWith(".js"));
+            if (html.includes("<html") && scripts.every((src) => html.includes(src))) {
+              await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+              savedPage = true;
+            }
+          }
+        } catch {
+          /* the phone keeps the page it already stored */
+        }
+        if (!savedPage && !(await cache.match("/"))) {
+          const html = `<!DOCTYPE html>${document.documentElement.outerHTML}`;
+          await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+        }
+      } catch {
+        /* opening must not wait on this */
+      }
+    };
+    void keep();
+    return () => {
+      stop = true;
+    };
   }, []);
 
   useEffect(() => {

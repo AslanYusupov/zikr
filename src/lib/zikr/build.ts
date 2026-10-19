@@ -47,36 +47,27 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
   return "fresh";
 }
 
-export async function hardRefresh() {
-  try {
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((key) => caches.delete(key)));
-    }
-  } catch {
-    /* private mode */
-  }
-  try {
-    if ("serviceWorker" in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map((reg) => reg.unregister()));
-    }
-  } catch {
-    /* ignore */
-  }
-  const url = new URL(window.location.href);
-  url.searchParams.set("v", String(Date.now()));
-  window.location.replace(url.toString());
-}
-
 export async function takeUpdate(): Promise<void> {
+  const cacheName = "zikr-shell-v1";
   try {
-    const res = await fetch(`${window.location.pathname}?probe=${Date.now()}`, { cache: "no-store" });
+    const res = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return;
     const html = await res.text();
-    const marker = assetScriptsIn(html).sort().join(",");
-    if (marker) sessionStorage.setItem(TRIED_KEY, marker);
+    const cache = await caches.open(cacheName);
+    const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+    if (assets.length === 0) return;
+    const saved = await Promise.all(
+      assets.map(async (src) => {
+        const file = await fetch(`${src}?warm=${Date.now()}`, { cache: "no-store" });
+        if (!file.ok) return false;
+        await cache.put(src, file);
+        return true;
+      }),
+    );
+    if (saved.some((ok) => !ok)) return;
+    await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   } catch {
-    /* still reload */
+    return;
   }
-  await hardRefresh();
+  window.location.reload();
 }
