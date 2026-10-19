@@ -63,7 +63,7 @@ export function SettingsView({
     const link = inviteLink(code);
     const text = inviteText(link, s.lang);
     try {
-      if (navigator.share) await navigator.share({ title: t(s.lang, "zikr"), text, url: link });
+      if (navigator.share) await navigator.share({ title: t(s.lang, "zikr"), text });
       else await navigator.clipboard.writeText(text);
       setCopied(true);
     } catch {
@@ -686,7 +686,7 @@ export function InviteButtons() {
         </a>
         <a
           className="flex h-11 items-center justify-center rounded-full border border-line text-sm font-bold text-fg"
-          href={code ? telegramHref(link, text) : undefined}
+          href={code ? telegramHref(text) : undefined}
           target="_blank"
           rel="noopener noreferrer"
           aria-disabled={!code}

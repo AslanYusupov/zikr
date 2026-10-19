@@ -259,7 +259,7 @@ export function RatingView() {
     const link = inviteLink(code);
     const text = inviteText(link, lang);
     try {
-      if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text, url: link });
+      if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text });
       else {
         await navigator.clipboard.writeText(text);
         setCopied(true);

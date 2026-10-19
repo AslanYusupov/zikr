@@ -51,15 +51,15 @@ export function inviteLink(code?: string | null): string {
 }
 
 export function inviteText(link: string, lang: LangId = "ru"): string {
-  return [`${t(lang, "inviteShare")} 🌙`, "", t(lang, "inviteHow"), `${t(lang, "inviteSteps")} ${link}`].join("\n");
+  return [`${t(lang, "inviteShare")} 🌙`, "", t(lang, "inviteHow"), t(lang, "inviteSteps"), "", link].join("\n");
 }
 
 export function whatsappHref(text: string): string {
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }
 
-export function telegramHref(link: string, text: string): string {
-  return `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+export function telegramHref(text: string): string {
+  return `https://t.me/share/url?text=${encodeURIComponent(text)}`;
 }
 
 export function todayKey(d = new Date()): string {
