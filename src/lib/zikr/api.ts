@@ -726,45 +726,33 @@ export const worldBoard = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const day = data.dayKey ?? "";
-      const rows = await sql<{ public_id: string; total: number }>`
-        select w.public_id, w.total
+      const rows = await sql<{ public_id: string; total: number; concealed: boolean; day_key: string; day_total: number }>`
+        select w.public_id, w.total,
+          coalesce(p.concealed, false) as concealed,
+          coalesce(p.day_key, '') as day_key,
+          coalesce(p.day_total, 0) as day_total
         from zikr_world w
         left join zikr_presence p on p.public_id = w.public_id
         where w.total > 0
-          and (coalesce(p.concealed, false) = false or (p.day_key = ${day} and p.day_total >= 10000))
         order by w.total desc, w.public_id asc
         limit 100`;
-      const quiet = await sql<{ public_id: string }>`
-        select w.public_id
-        from zikr_world w
-        join zikr_presence p on p.public_id = w.public_id
-        where p.concealed = true and p.day_key = ${day} and p.day_total > 0 and p.day_total < 10000
-        order by w.public_id asc
-        limit 40`;
       const self = await sql<{ total: number; concealed: boolean; day_key: string; day_total: number }>`
         select w.total, coalesce(p.concealed, false) as concealed, coalesce(p.day_key, '') as day_key, coalesce(p.day_total, 0) as day_total
         from zikr_world w
         left join zikr_presence p on p.public_id = w.public_id
         where w.public_id = ${publicId}`;
-      let mine: { total: number; rank: number } | null = null;
       const me = self[0];
-      const open = me ? !me.concealed || (me.day_key === day && me.day_total >= 10000) : false;
-      if (me && open) {
-        const ahead = await sql<{ n: number }>`
-          select count(*)::int as n
-          from zikr_world w
-          left join zikr_presence p on p.public_id = w.public_id
-          where w.total > ${me.total}
-            and (coalesce(p.concealed, false) = false or (p.day_key = ${day} and p.day_total >= 10000))`;
-        mine = { total: me.total, rank: (ahead[0]?.n ?? 0) + 1 };
+      const mineOpen = me ? !me.concealed || (me.day_key === day && me.day_total >= 10000) : false;
+      let mine: { total: number; rank: number; hidden?: boolean } | null = null;
+      if (me) {
+        const ahead = await sql<{ n: number }>`select count(*)::int as n from zikr_world where total > ${me.total}`;
+        mine = { total: mineOpen ? me.total : 0, rank: (ahead[0]?.n ?? 0) + 1, ...(mineOpen ? {} : { hidden: true }) };
       }
-      return {
-        rows: [
-          ...rows.map((row, index) => ({ id: row.public_id, total: row.total, rank: index + 1 })),
-          ...quiet.map((row) => ({ id: row.public_id, total: 0, rank: 0, hidden: true as const })),
-        ],
-        mine,
-      };
+      const list = rows.map((row, index) => {
+        const open = !row.concealed || (row.day_key === day && row.day_total >= 10000);
+        return { id: row.public_id, total: open ? row.total : 0, rank: index + 1, ...(open ? {} : { hidden: true as const }) };
+      });
+      return { rows: list, mine };
     } catch (err) {
       console.error("[zikr] world board", err);
       throw err;
@@ -847,28 +835,16 @@ export const presenceBoard = createServerFn({ method: "POST" })
     const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`
       select public_id, country, day_total, concealed from zikr_presence
       where last_tap_at > now() - interval '30 seconds' and day_total > 0
-        and (concealed = false or day_total >= 10000)
       order by day_total desc, public_id asc
       limit 20`;
-    const liveQuiet = await sql<{ public_id: string; country: string }>`
-      select public_id, country from zikr_presence
-      where last_tap_at > now() - interval '30 seconds' and concealed = true and day_total > 0 and day_total < 10000
-      order by public_id asc
-      limit 20`;
-    const daily = await sql<{ public_id: string; country: string; day_total: number }>`
-      select public_id, country, day_total from zikr_presence
+    const daily = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`
+      select public_id, country, day_total, concealed from zikr_presence
       where day_key = ${data.dayKey} and day_total > 0
-        and (concealed = false or day_total >= 10000)
       order by day_total desc, public_id asc
       limit 10`;
-    const dailyQuiet = await sql<{ public_id: string; country: string }>`
-      select public_id, country from zikr_presence
-      where day_key = ${data.dayKey} and concealed = true and day_total > 0 and day_total < 10000
-      order by public_id asc
-      limit 40`;
-    const world = await sql<{ public_id: string; country: string; xp: number }>`
-      select public_id, country, xp from zikr_presence
-      where xp > 0 and (concealed = false or (day_key = ${data.dayKey} and day_total >= 10000))
+    const world = await sql<{ public_id: string; country: string; xp: number; concealed: boolean; day_key: string; day_total: number }>`
+      select public_id, country, xp, concealed, day_key, day_total from zikr_presence
+      where xp > 0
       order by xp desc, public_id asc
       limit 10`;
     const self = await sql<{ day_total: number; xp: number; day_key: string; concealed: boolean }>`
@@ -877,33 +853,33 @@ export const presenceBoard = createServerFn({ method: "POST" })
       select coalesce(sum(total), 0) as n from zikr_world`;
     let dailyRank: number | null = null;
     let worldRank: number | null = null;
-    if (self[0] && self[0].day_key === data.dayKey && (!self[0].concealed || self[0].day_total >= 10000)) {
+    if (self[0] && self[0].day_key === data.dayKey && self[0].day_total > 0) {
       const ahead = await sql<{ n: number }>`
         select count(*)::int as n from zikr_presence
-        where day_key = ${data.dayKey} and day_total > ${self[0].day_total}
-          and (concealed = false or day_total >= 10000)`;
+        where day_key = ${data.dayKey} and day_total > ${self[0].day_total}`;
       dailyRank = (ahead[0]?.n ?? 0) + 1;
     }
-    if (self[0] && (!self[0].concealed || (self[0].day_key === data.dayKey && self[0].day_total >= 10000))) {
-      const ahead = await sql<{ n: number }>`
-        select count(*)::int as n from zikr_presence
-        where xp > ${self[0].xp}
-          and (concealed = false or (day_key = ${data.dayKey} and day_total >= 10000))`;
+    if (self[0] && self[0].xp > 0) {
+      const ahead = await sql<{ n: number }>`select count(*)::int as n from zikr_presence where xp > ${self[0].xp}`;
       worldRank = (ahead[0]?.n ?? 0) + 1;
     }
+    const mask = (concealed: boolean, dayKey: string, dayTotal: number) => concealed && !(dayKey === data.dayKey && dayTotal >= 10000);
     return {
       online: n,
       remembering: n,
       allTaps: Math.max(0, Math.floor(Number(together[0]?.n ?? 0))),
-      live: [
-        ...live.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
-        ...liveQuiet.map((row) => ({ id: row.public_id, country: row.country, value: 0, rank: 0, hidden: true as const })),
-      ],
-      daily: [
-        ...daily.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
-        ...dailyQuiet.map((row) => ({ id: row.public_id, country: row.country, value: 0, rank: 0, hidden: true as const })),
-      ],
-      world: world.map((row, index) => ({ id: row.public_id, country: row.country, value: row.xp, rank: index + 1 })),
+      live: live.map((row, index) => {
+        const hidden = mask(row.concealed, data.dayKey, row.day_total);
+        return { id: row.public_id, country: row.country, value: hidden ? 0 : row.day_total, rank: index + 1, ...(hidden ? { hidden: true as const } : {}) };
+      }),
+      daily: daily.map((row, index) => {
+        const hidden = mask(row.concealed, data.dayKey, row.day_total);
+        return { id: row.public_id, country: row.country, value: hidden ? 0 : row.day_total, rank: index + 1, ...(hidden ? { hidden: true as const } : {}) };
+      }),
+      world: world.map((row, index) => {
+        const hidden = mask(row.concealed, row.day_key, row.day_total);
+        return { id: row.public_id, country: row.country, value: hidden ? 0 : row.xp, rank: index + 1, ...(hidden ? { hidden: true as const } : {}) };
+      }),
       dailyRank,
       worldRank,
     };

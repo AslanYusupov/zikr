@@ -101,10 +101,9 @@ function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
   if (!rows || !listed || local <= 0 || !/^\d{8}$/.test(id)) return rows;
   if (!rows.some((row) => row.id === id && !row.hidden)) return rows;
   const next = rows.map((row) => (row.id === id && !row.hidden ? write(row, Math.max(read(row), local)) : row));
-  const open = next.filter((row) => !row.hidden);
-  const quiet = next.filter((row) => row.hidden);
-  open.sort((a, b) => read(b) - read(a) || a.rank - b.rank);
-  return [...open.map((row, index) => ({ ...row, rank: index + 1 })), ...quiet];
+  const open = next.filter((row) => !row.hidden).sort((a, b) => read(b) - read(a) || a.rank - b.rank);
+  let openAt = 0;
+  return next.map((row) => (row.hidden ? row : open[openAt++]));
 }
 
 function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean }>(rows: T[] | null | undefined): T[] {
@@ -335,7 +334,7 @@ export function RatingView() {
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
       <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} />
-      {myDailyRank && today > 0 && reveal && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(myDailyRank)}.</p> : null}
+      {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(myDailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -356,7 +355,7 @@ export function RatingView() {
               )}
             >
               <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                {row.hidden ? null : <span className="mr-2 text-muted">{row.rank}.</span>}
+                <span className="mr-2 text-muted">{row.rank}.</span>
                 {row.id}
                 {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
               </span>
@@ -365,17 +364,17 @@ export function RatingView() {
           ))}
         </ol>
       )}
-      {worldShown && reveal && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
+      {worldShown && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
         <div className="mt-1.5 flex items-center justify-between gap-3 rounded-2xl border border-gold bg-surface px-3 py-2">
           <span className="min-w-0 truncate text-sm tabular-nums text-fg">
             <span className="mr-2 text-muted">{formatNum(myWorldRank)}.</span>
             {publicId}
             {` · ${tx(lang, "you")}`}
           </span>
-          <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(total)}</span>
+          <span className="shrink-0 text-sm tabular-nums text-gold">{reveal ? formatNum(total) : "—"}</span>
         </div>
       ) : null}
-      {myWorldRank && reveal && !HIDDEN_RATING_IDS.has(publicId) ? (
+      {myWorldRank && !HIDDEN_RATING_IDS.has(publicId) ? (
         <p className="mt-2 text-sm text-fg">
           {t(lang, "yourPlace")}: {formatNum(myWorldRank)}.
           {publicId ? ` · ${publicId}` : ""}
