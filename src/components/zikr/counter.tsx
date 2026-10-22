@@ -208,6 +208,7 @@ export function Counter({
   }, [s.showWisdom, quoteAt, s.wisdomStep]);
 
   function press(event?: { type?: string }) {
+    triggerHaptic(event?.type === "click" ? "click" : "down");
     if (document.querySelector(".sheet, .names-sheet, .celebrate")) return;
     const now = Date.now();
     const since = now - lastTap.current;
@@ -349,8 +350,10 @@ export function Counter({
                 ref={orbRef}
                 type="button"
                 className={cn("orb", today >= s.goal && s.goal > 0 && "orb-met")}
+                onTouchStart={() => triggerHaptic("down")}
+                onPointerDown={() => triggerHaptic("down")}
                 onClick={(event) => {
-                  triggerHaptic();
+                  triggerHaptic("click");
                   press(event);
                 }}
                 aria-label={`${tx(s.lang, "rememberAria")}: ${phrase.name}. ${t(s.lang, "today")} ${today}. ${t(s.lang, "total")} ${s.total}`}
