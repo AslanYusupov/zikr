@@ -7,6 +7,7 @@ type Glyph = {
   long: boolean;
   suk: boolean;
   silah: "" | "u" | "i";
+  hz: boolean;
 };
 
 const VOWELS: Record<string, Vowel> = {
@@ -34,7 +35,7 @@ const RU: Record<string, string> = {
   س: "с",
   ش: "ш",
   ص: "с",
-  ض: "д",
+  ض: "з1",
   ط: "т",
   ظ: "з",
   ع: "1",
@@ -118,8 +119,8 @@ const MUQ_LAT: Record<string, string> = {
   ن: "Nuun",
 };
 
-function glyph(ch: string, v: Vowel = "", long = false): Glyph {
-  return { ch, v, sh: false, long, suk: false, silah: "" };
+function glyph(ch: string, v: Vowel = "", long = false, hz = false): Glyph {
+  return { ch, v, sh: false, long, suk: false, silah: "", hz };
 }
 
 function isLetter(ch: string): boolean {
@@ -154,15 +155,17 @@ function parseWord(raw: string): Glyph[] {
       continue;
     }
     if (ch === "\u0654" || ch === "\u0655") {
-      out.push(glyph("\u0621"));
+      if (out.length) out[out.length - 1].hz = true;
+      else out.push(glyph("\u0621", "", false, true));
       continue;
     }
     if (!isLetter(ch)) continue;
     if (ch === "\u0622") out.push(glyph("\u0627", "a", true));
-    else if (ch === "\u0623" || ch === "\u0625") out.push(glyph("\u0627"));
+    else if (ch === "\u0623" || ch === "\u0625") out.push(glyph("\u0627", "", false, true));
     else if (ch === "\u0671") out.push(glyph("\u0671"));
-    else if (ch === "\u0624") out.push(glyph("\u0648"));
-    else if (ch === "\u0626") out.push(glyph("\u064A"));
+    else if (ch === "\u0624") out.push(glyph("\u0648", "", false, true));
+    else if (ch === "\u0626") out.push(glyph("\u064A", "", false, true));
+    else if (ch === "\u0621") out.push(glyph("\u0621", "", false, true));
     else out.push(glyph(ch));
   }
   return out;
@@ -215,10 +218,10 @@ function stretch(token: string, g: Glyph, ru: boolean): string {
   return out;
 }
 
-function hamzaSyl(out: string, syl: string): string {
-  if (!syl) return out;
-  if (out && !out.endsWith("-")) return `${out}-${syl}`;
-  return out + syl;
+function hamzaSyl(out: string, syl: string, ru: boolean): string {
+  if (!syl && !out) return out;
+  if (!out) return syl;
+  return out + (ru ? "ъ" : "'") + syl;
 }
 
 function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = false): string {
@@ -259,20 +262,21 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       continue;
     }
     if (cur.ch === "\u0649") cur.ch = "\u064A";
-    if (cur.ch === "\u0627" && !cur.v) {
+    if (cur.ch === "\u0627" && !cur.v && !cur.hz) {
       if (cur.suk) continue;
       if (prev && prev.v === "an") continue;
       if (prev && !prev.long && (prev.v === "a" || prev.v === "an")) out += ru ? "а" : "a";
       else if (!prev && !out) out += ru ? "а" : "a";
       continue;
     }
-    if (cur.ch === "\u0627" && cur.v) {
+    if (cur.ch === "\u0627" && cur.v && !cur.hz) {
       const syl = vowelSound(cur.v, ru) + (cur.long && cur.v === "a" ? (ru ? "а" : "a") : "");
-      out = hamzaSyl(out, syl);
+      out = hamzaSyl(out, syl, ru);
       continue;
     }
-    if (cur.ch === "\u0621") {
-      out = hamzaSyl(out, vowelSound(cur.v, ru));
+    if (cur.hz || cur.ch === "\u0621") {
+      const syl = vowelSound(cur.v, ru) + (cur.long && (cur.v === "a" || cur.v === "an" || cur.v === "") ? (ru ? "а" : "a") : "");
+      out = hamzaSyl(out, syl, ru);
       continue;
     }
     if (cur.ch === "\u0648" && !cur.v && !cur.sh && prev && (prev.v === "u" || prev.v === "un" || prev.v === "a" || prev.v === "an")) {
@@ -290,7 +294,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       i += 2;
       continue;
     }
-    const article = !!prev && (prev.ch === "\u0627" || prev.ch === "\u0671") && !cur.v;
+    const article = !!prev && (prev.ch === "\u0627" || prev.ch === "\u0671") && !prev.v && !prev.hz && !cur.v;
     if (cur.ch === "\u0644" && article && g[i + 1] && SUN.has(g[i + 1].ch)) {
       out += `${cons(g[i + 1].ch, ru)}-`;
       g[i + 1].sh = false;
@@ -303,7 +307,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     let token = cons(cur.ch, ru);
     if (ru && cur.ch === "\u0644" && !cur.v && !cur.sh) token = "ль";
     if (!token && cur.v) {
-      out = hamzaSyl(out, vowelSound(cur.v, ru));
+      out = hamzaSyl(out, vowelSound(cur.v, ru), ru);
       continue;
     }
     if (!token) continue;
@@ -364,7 +368,7 @@ function firstSound(glyphs: Glyph[]): string {
 }
 
 function bridge(next: string, ru: boolean): string {
-  const digraphs = ru ? ["дж", "гъ", "къ", "хь", "х1"] : ["th", "dh", "sh", "kh", "gh"];
+  const digraphs = ru ? ["дж", "гъ", "къ", "хь", "х1", "з1"] : ["th", "dh", "sh", "kh", "gh"];
   let head = next.slice(0, 1);
   for (const item of digraphs) {
     if (next.startsWith(item)) head = item;

@@ -191,7 +191,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "قُلْ", read: "къуль — къ из глубины", lat: "qul — q from deep back", where: "112:1" },
-          { ar: "الضَّالِّينَ", read: "ад-даллин — дад", lat: "ad-dallin — dad", where: "1:7" },
+          { ar: "الضَّالِّينَ", read: "аз1-з1ааллин — дад, з1", lat: "ad-dallin — dad", where: "1:7" },
           { ar: "ٱلثَّمَرَٰتِ", read: "ас-самарати — первая «са» это ث, язык между зубами", lat: "ath-thamarat — the first sound is tha, the tongue between the teeth", where: "2:22" },
         ],
         mistakes: L(
@@ -827,12 +827,12 @@ export const TAJWEED_COURSE: CourseModule[] = [
           "چھ الضَّالِّينَ میں، اور سورت کے شروع کے ان حروف میں جو کھینچے جاتے ہیں: الم کی لام اور میم۔ اگر شروع کا حرف اگلے میں ملے تو بھاری قسم، ورنہ ہلکی۔ لمبائی وہی، چھ۔ رکیں اور آخری حرف ساکن ہو: دو، چار یا چھ، برابر۔ ا کے بعد و اور ی، جیسے خَوْف، صرف وقف پر کھینچیں: پھر بھی دو، چار یا چھ۔",
         ),
         examples: [
-          { ar: "الضَّالِّينَ", read: "ад-даллин — шесть", lat: "ad-dallin — six", where: "1:7" },
+          { ar: "الضَّالِّينَ", read: "аз1-з1ааллин — шесть", lat: "ad-dallin — six", where: "1:7" },
           { ar: "الم", read: "лам и мим — по шесть, алиф без протяжки", lat: "lam and mim — six each; alif is not lengthened", where: "2:1" },
           { ar: "ٱلْعَٰلَمِينَ", read: "на остановке две, четыре или шесть", lat: "when stopping: two, four or six", where: "1:2" },
         ],
         mistakes: L(
-          "«Ад-даллин» не сокращай до двух. И не тяни мягкий вав в «хауф», пока не остановился.",
+          "«Аз1-з1ааллин» не сокращай до двух. И не тяни мягкий вав в «хауф», пока не остановился.",
           "Do not shorten ad-dallin to two. And do not hold the soft waw in khawf until you have stopped.",
           "لا تقصر «الضالين» إلى حركتين. ولا تمد واو اللين في «خوف» قبل الوقف.",
           "Jangan pendekkan ad-dallin menjadi dua. Dan jangan panjangkan waw lunak pada khawf sebelum berhenti.",
@@ -841,7 +841,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         quiz: [
           {
-            q: L("Сколько в «ад-даллин»?", "How many in ad-dallin?", "كم في «الضالين»؟", "Berapa pada ad-dallin?", "Ad-dallin'de kaç?", "الضَّالِّينَ میں کتنی؟"),
+            q: L("Сколько в «аз1-з1ааллин»?", "How many in ad-dallin?", "كم في «الضالين»؟", "Berapa pada ad-dallin?", "Ad-dallin'de kaç?", "الضَّالِّينَ میں کتنی؟"),
             choices: [
               L("Четыре или пять", "Four or five", "أربع أو خمس", "Empat atau lima", "Dört veya beş", "چار یا پانچ"),
               L("Шесть", "Six", "ست", "Enam", "Altı", "چھ"),
