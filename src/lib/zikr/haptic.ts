@@ -50,17 +50,18 @@ export function triggerHaptic(from: boolean | "down" | "click" = "click") {
   const now = Date.now();
   const ios = isIos();
   try {
-    if (!ios) {
+    if (ios) {
+      if (!forced && kind !== "click") return;
       if (!forced && now - lastFire < 280) return;
       lastFire = now;
       lastKind = kind;
-      if (typeof navigator.vibrate === "function") navigator.vibrate(12);
+      iosTick();
       return;
     }
-    if (!forced && kind === lastKind && now - lastFire < 50) return;
+    if (!forced && now - lastFire < 280) return;
     lastFire = now;
     lastKind = kind;
-    iosTick();
+    if (typeof navigator.vibrate === "function") navigator.vibrate(12);
   } catch {
     /* отклик не должен останавливать счёт */
   }
