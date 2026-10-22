@@ -511,12 +511,12 @@ export function QuranView() {
         <button
           type="button"
           className="surah-side"
-          disabled={!prevSurah}
-          onClick={() => goSurah(-1)}
-          aria-label={prevSurah ? surahLabel(prevSurah) : ""}
+          disabled={!nextSurah}
+          onClick={() => goSurah(1)}
+          aria-label={nextSurah ? surahLabel(nextSurah) : ""}
         >
           <span className="surah-arrow" aria-hidden>‹</span>
-          <span className="surah-side-name">{prevSurah ? surahLabel(prevSurah) : ""}</span>
+          <span className="surah-side-name">{nextSurah ? surahLabel(nextSurah) : ""}</span>
         </button>
         <div className="surah-now">
           <h2 className="font-arabic text-2xl leading-loose text-fg" dir="rtl" lang="ar">
@@ -527,11 +527,11 @@ export function QuranView() {
         <button
           type="button"
           className="surah-side surah-side-next"
-          disabled={!nextSurah}
-          onClick={() => goSurah(1)}
-          aria-label={nextSurah ? surahLabel(nextSurah) : ""}
+          disabled={!prevSurah}
+          onClick={() => goSurah(-1)}
+          aria-label={prevSurah ? surahLabel(prevSurah) : ""}
         >
-          <span className="surah-side-name">{nextSurah ? surahLabel(nextSurah) : ""}</span>
+          <span className="surah-side-name">{prevSurah ? surahLabel(prevSurah) : ""}</span>
           <span className="surah-arrow" aria-hidden>›</span>
         </button>
       </div>
