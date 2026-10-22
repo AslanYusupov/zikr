@@ -107,16 +107,12 @@ export function ModeStrip({
   useEffect(() => {
     const root = scroller.current;
     const active = root?.querySelector("[data-active='true']");
-    if (!root || !(active instanceof HTMLElement)) return;
-    const rootBox = root.getBoundingClientRect();
-    const box = active.getBoundingClientRect();
-    if (box.left >= rootBox.left + 8 && box.right <= rootBox.right - 8) return;
-    const delta = box.left < rootBox.left + 8 ? box.left - rootBox.left - 12 : box.right - rootBox.right + 12;
-    root.scrollTo({ left: Math.max(0, root.scrollLeft + delta), behavior: "smooth" });
+    if (!(active instanceof HTMLElement)) return;
+    active.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
   }, [s.mode, quranOn, listOn, namesOn]);
 
   return (
-    <div ref={scroller} className="mode-strip scroll-x shrink-0 px-3 pt-1">
+    <div ref={scroller} dir="rtl" className="mode-strip scroll-x shrink-0 px-3 pt-1">
       <div className="flex w-max gap-1.5 pb-1">
         <Chip active={s.mode === "random" && !busy} onClick={() => { onLeave(); s.setMode("random"); }}>
           {t(s.lang, "random")}
