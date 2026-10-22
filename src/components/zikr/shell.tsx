@@ -6,6 +6,7 @@ import { Celebrate } from "./celebrate";
 import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
+import { quranCopy } from "@/lib/zikr/quran";
 import { isRtl, t, tx } from "@/lib/zikr/i18n";
 import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
 import { onlineNow } from "@/lib/zikr/api";
@@ -365,7 +366,17 @@ export function Shell() {
   }
 
   const unseen = achievements.some((at) => !celebrated.includes(at));
-  const title = t(lang, tab);
+  const head =
+    tab !== "zikr"
+      ? { ar: "", title: t(lang, tab) }
+      : home === "quran"
+        ? { ar: "الْقُرْآنُ الْكَرِيمُ", title: quranCopy(lang).quran }
+        : namesOpen
+          ? { ar: "أَسْمَاءُ اللَّهِ الْحُسْنَى", title: t(lang, "names") }
+          : dhikrList
+            ? { ar: "ذِكْرُ اللَّهِ", title: t(lang, "dhikrTitle") }
+            : { ar: "ذِكْر", title: t(lang, "zikr") };
+  const showHeadAr = head.ar !== "";
   const enter = useCallback(() => {
     setEntered(true);
     document.documentElement.classList.add("app-go");
@@ -416,10 +427,10 @@ export function Shell() {
               {full ? <Minimize2 className="size-5" strokeWidth={1.5} /> : <Maximize2 className="size-5" strokeWidth={1.5} />}
             </button>
           </div>
-          <div className="min-w-0 text-center">
-            {tab === "zikr" && <p className="font-arabic text-2xl leading-none text-gold">ذِكْر</p>}
+          <div className="min-w-0 flex-1 text-center">
+            {showHeadAr ? <p className="truncate font-arabic text-xl leading-none text-gold" dir="rtl" lang="ar">{head.ar}</p> : null}
             <p className="flex items-center justify-center gap-1.5 text-sm text-fg">
-              <span className="truncate">{title}</span>
+              <span className="truncate">{head.title}</span>
               {tab === "zikr" ? (
                 <span
                   className="inline-flex shrink-0 items-center gap-1 text-muted"

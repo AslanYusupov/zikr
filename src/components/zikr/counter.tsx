@@ -122,13 +122,16 @@ export function ModeStrip({
           {t(s.lang, "random")}
         </Chip>
         <Chip active={quranOn} onClick={onQuran}>
-          <span className="max-w-40 truncate">{copy.quran}</span>
+          <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">الْقُرْآنُ الْكَرِيمُ</span>
+          <span className="block max-w-32 truncate text-[0.65rem] leading-tight">{copy.quran}</span>
         </Chip>
         <Chip active={listOn} onClick={onList}>
-          <span className="max-w-40 truncate">{t(s.lang, "dhikrTitle")}</span>
+          <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">ذِكْرُ اللَّهِ</span>
+          <span className="block max-w-32 truncate text-[0.65rem] leading-tight">{t(s.lang, "dhikrTitle")}</span>
         </Chip>
         <Chip active={namesOn} onClick={onNames}>
-          <span className="max-w-40 truncate">{t(s.lang, "names")}</span>
+          <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ</span>
+          <span className="block max-w-32 truncate text-[0.65rem] leading-tight">{t(s.lang, "names")}</span>
         </Chip>
         {REMEMBRANCE.map((d) => (
           <Chip
@@ -522,7 +525,10 @@ export function Counter({
       {listOpen ? (
         <div className="names-sheet">
           <div className="flex items-center justify-between gap-2 pb-2">
+          <div className="min-w-0">
+            <p className="font-arabic text-lg leading-none text-gold" dir="rtl" lang="ar">ذِكْرُ اللَّهِ</p>
             <h2 className="text-base font-bold text-fg">{t(s.lang, "dhikrTitle")}</h2>
+          </div>
             <button type="button" className="tap-btn" onClick={onListClose}>
               {t(s.lang, "close")}
             </button>
@@ -561,7 +567,10 @@ export function Counter({
       {namesOpen ? (
         <div className="names-sheet">
           <div className="flex items-center justify-between gap-2 pb-2">
+          <div className="min-w-0">
+            <p className="font-arabic text-lg leading-none text-gold" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ الْحُسْنَى</p>
             <h2 className="text-base font-bold text-fg">{t(s.lang, "names")}</h2>
+          </div>
             <button type="button" className="tap-btn" onClick={onNamesClose}>
               {t(s.lang, "close")}
             </button>

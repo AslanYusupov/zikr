@@ -440,6 +440,10 @@ export function QuranView() {
       <div className="flex min-h-0 flex-1 flex-col">
         {switcher}
         <div className="quran-scroll">
+        <div className="mb-3 text-center">
+          <p className="font-arabic text-2xl leading-none text-gold" dir="rtl" lang="ar">الْقُرْآنُ الْكَرِيمُ</p>
+          {lang !== "ar" ? <p className="mt-1 text-sm font-bold text-fg">{copy.quran}</p> : null}
+        </div>
         <article className="quran-hadith">
           <p className="quran-hadith-ar" dir="rtl" lang="ar">{copy.hadithAr}</p>
           {lang !== "ar" ? <p className="quran-hadith-text">{copy.hadith}</p> : null}
