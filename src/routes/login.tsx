@@ -28,6 +28,8 @@ function Login() {
   const [mode, setMode] = useState<"in" | "up" | "reset">("in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [again, setAgain] = useState("");
+  const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [gaveUp, setGaveUp] = useState(false);
@@ -54,6 +56,10 @@ function Login() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     setError("");
+    if (mode === "up" && password !== again) {
+      setError(tx(lang, "loginPassMismatch"));
+      return;
+    }
     setBusy(true);
     try {
       if (mode === "reset") {
@@ -124,16 +130,39 @@ function Login() {
                   className="h-11 rounded-2xl border border-line bg-surface px-3 text-fg"
                 />
                 {mode !== "reset" && (
-                  <input
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    required
-                    minLength={8}
-                    autoComplete={mode === "up" ? "new-password" : "current-password"}
-                    placeholder={tx(lang, "loginPass")}
-                    className="h-11 rounded-2xl border border-line bg-surface px-3 text-fg"
-                  />
+                  <div className="relative">
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type={showPass ? "text" : "password"}
+                      required
+                      minLength={8}
+                      autoComplete={mode === "up" ? "new-password" : "current-password"}
+                      placeholder={tx(lang, "loginPass")}
+                      className="h-11 w-full rounded-2xl border border-line bg-surface px-3 pe-24 text-fg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPass((on) => !on)}
+                      className="absolute inset-y-0 end-2 text-xs text-gold"
+                    >
+                      {showPass ? tx(lang, "loginPassHide") : tx(lang, "loginPassShow")}
+                    </button>
+                  </div>
+                )}
+                {mode === "up" && (
+                  <div className="relative">
+                    <input
+                      value={again}
+                      onChange={(e) => setAgain(e.target.value)}
+                      type={showPass ? "text" : "password"}
+                      required
+                      minLength={8}
+                      autoComplete="new-password"
+                      placeholder={tx(lang, "loginPassAgain")}
+                      className="h-11 w-full rounded-2xl border border-line bg-surface px-3 pe-24 text-fg"
+                    />
+                  </div>
                 )}
                 {error && <p className="text-sm text-gold">{error}</p>}
                 <button type="submit" disabled={busy} className="h-11 rounded-full bg-gold text-sm text-ink disabled:opacity-60">
@@ -144,6 +173,7 @@ function Login() {
                 type="button"
                 onClick={() => {
                   setMode(mode === "up" ? "in" : "up");
+                  setAgain("");
                   setError("");
                 }}
                 className="mt-3 text-sm text-gold"
@@ -154,6 +184,7 @@ function Login() {
                 type="button"
                 onClick={() => {
                   setMode(mode === "reset" ? "in" : "reset");
+                  setAgain("");
                   setError("");
                 }}
                 className="mt-2 text-sm text-muted"
