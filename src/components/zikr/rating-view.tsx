@@ -90,7 +90,7 @@ function clockOf(at: number, lang: LangId) {
   }
 }
 
-function liftRows<T extends { id: string; rank: number }>(
+function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
   rows: T[] | null,
   id: string,
   read: (row: T) => number,
@@ -99,15 +99,18 @@ function liftRows<T extends { id: string; rank: number }>(
   listed: boolean,
 ): T[] | null {
   if (!rows || !listed || local <= 0 || !/^\d{8}$/.test(id)) return rows;
-  if (!rows.some((row) => row.id === id)) return rows;
-  const next = rows.map((row) => (row.id === id ? write(row, Math.max(read(row), local)) : row));
-  next.sort((a, b) => read(b) - read(a) || a.rank - b.rank);
-  return next.map((row, index) => ({ ...row, rank: index + 1 }));
+  if (!rows.some((row) => row.id === id && !row.hidden)) return rows;
+  const next = rows.map((row) => (row.id === id && !row.hidden ? write(row, Math.max(read(row), local)) : row));
+  const open = next.filter((row) => !row.hidden);
+  const quiet = next.filter((row) => row.hidden);
+  open.sort((a, b) => read(b) - read(a) || a.rank - b.rank);
+  return [...open.map((row, index) => ({ ...row, rank: index + 1 })), ...quiet];
 }
 
-function shown<T extends { id: string; total?: number; value?: number }>(rows: T[] | null | undefined): T[] {
+function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean }>(rows: T[] | null | undefined): T[] {
   return (rows ?? []).filter((row) => {
     if (HIDDEN_RATING_IDS.has(row.id)) return false;
+    if (row.hidden) return true;
     if (typeof row.total === "number" && row.total <= 0) return false;
     if (typeof row.value === "number" && row.value <= 0) return false;
     return true;
@@ -203,7 +206,7 @@ export function RatingView() {
     let stop = false;
     const load = () => {
       if (document.hidden) return;
-      worldBoard({ data: { publicId } })
+      worldBoard({ data: { publicId, dayKey: day } })
         .then((res) => {
           if (stop) return;
           const rows = shown(res.rows);
@@ -285,9 +288,10 @@ export function RatingView() {
           : `${t(lang, "selfRecord")} — ${formatNum(record)}. ${t(lang, "selfToday")} ${formatNum(today)}. ${t(lang, "selfNote")}`;
 
   const tapsShown = allTaps == null ? null : allTaps + Math.max(0, total - baseTotal);
-  const worldShown = liftRows(world, publicId, (row) => row.total, (row, value) => ({ ...row, total: value }), total, listed);
-  const dailyShown = liftRows(daily, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, listed);
-  const liveShown = liftRows(live, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, listed);
+  const reveal = listed || today >= 10_000;
+  const worldShown = liftRows(world, publicId, (row) => row.total, (row, value) => ({ ...row, total: value }), total, reveal);
+  const dailyShown = liftRows(daily, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
+  const liveShown = liftRows(live, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
   const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
   const clock = updatedAt ? clockOf(updatedAt, lang) : "";
@@ -331,7 +335,7 @@ export function RatingView() {
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
       <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} />
-      {myDailyRank && today > 0 && listed && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(myDailyRank)}.</p> : null}
+      {myDailyRank && today > 0 && reveal && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(myDailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -352,16 +356,16 @@ export function RatingView() {
               )}
             >
               <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                <span className="mr-2 text-muted">{row.rank}.</span>
+                {row.hidden ? null : <span className="mr-2 text-muted">{row.rank}.</span>}
                 {row.id}
                 {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
               </span>
-              <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.total)}</span>
+              <span className="shrink-0 text-sm tabular-nums text-gold">{row.hidden ? "—" : formatNum(row.total)}</span>
             </li>
           ))}
         </ol>
       )}
-      {worldShown && listed && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
+      {worldShown && reveal && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
         <div className="mt-1.5 flex items-center justify-between gap-3 rounded-2xl border border-gold bg-surface px-3 py-2">
           <span className="min-w-0 truncate text-sm tabular-nums text-fg">
             <span className="mr-2 text-muted">{formatNum(myWorldRank)}.</span>
@@ -371,7 +375,7 @@ export function RatingView() {
           <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(total)}</span>
         </div>
       ) : null}
-      {myWorldRank && listed && !HIDDEN_RATING_IDS.has(publicId) ? (
+      {myWorldRank && reveal && !HIDDEN_RATING_IDS.has(publicId) ? (
         <p className="mt-2 text-sm text-fg">
           {t(lang, "yourPlace")}: {formatNum(myWorldRank)}.
           {publicId ? ` · ${publicId}` : ""}
@@ -429,12 +433,12 @@ function Board({
           className={cn("flex items-center justify-between gap-3 rounded-2xl border px-3 py-2", row.id === publicId ? "border-gold bg-surface" : "border-line bg-surface")}
         >
           <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-            <span className="mr-2 text-muted">{row.rank}.</span>
+            <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
             {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
             {row.id}
             {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
           </span>
-          {namesOnly ? null : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value)}</span>}
+          {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value)}</span>}
         </li>
       ))}
     </ol>

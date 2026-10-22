@@ -406,6 +406,7 @@ async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
     )`,
     `alter table zikr_presence add column if not exists tap_since timestamptz`,
     `alter table zikr_presence add column if not exists last_tap_at timestamptz`,
+    `alter table zikr_presence add column if not exists concealed boolean not null default false`,
     `create table if not exists zikr_invites (
       guest_id text primary key,
       host_id text not null,
@@ -652,7 +653,7 @@ const WorldInput = z.object({
   listed: z.boolean().optional(),
 });
 
-export type WorldRow = { id: string; total: number; rank: number };
+export type WorldRow = { id: string; total: number; rank: number; hidden?: boolean };
 
 export const publishWorld = createServerFn({ method: "POST" })
   .validator((raw: unknown) => WorldInput.parse(raw))
@@ -662,10 +663,6 @@ export const publishWorld = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
-      if (data.listed === false) {
-        await sql`delete from zikr_world where public_id = ${publicId}`;
-        return { ok: true as const };
-      }
       const stored = data.total;
       if (stored <= 0) {
         await sql`delete from zikr_world where public_id = ${publicId}`;
@@ -722,25 +719,50 @@ export const invitees = createServerFn({ method: "POST" })
   });
 
 export const worldBoard = createServerFn({ method: "POST" })
-  .validator((raw: unknown) => z.object({ publicId: z.string().regex(/^\d{8}$/) }).parse(raw))
+  .validator((raw: unknown) => z.object({ publicId: z.string().regex(/^\d{8}$/), dayKey: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional() }).parse(raw))
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
       await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
+      const day = data.dayKey ?? "";
       const rows = await sql<{ public_id: string; total: number }>`
-        select public_id, total from zikr_world
-        where total > 0
-        order by total desc, public_id asc
+        select w.public_id, w.total
+        from zikr_world w
+        left join zikr_presence p on p.public_id = w.public_id
+        where w.total > 0
+          and (coalesce(p.concealed, false) = false or (p.day_key = ${day} and p.day_total >= 10000))
+        order by w.total desc, w.public_id asc
         limit 100`;
-      const self = await sql<{ total: number }>`select total from zikr_world where public_id = ${publicId}`;
+      const quiet = await sql<{ public_id: string }>`
+        select w.public_id
+        from zikr_world w
+        join zikr_presence p on p.public_id = w.public_id
+        where p.concealed = true and p.day_key = ${day} and p.day_total > 0 and p.day_total < 10000
+        order by w.public_id asc
+        limit 40`;
+      const self = await sql<{ total: number; concealed: boolean; day_key: string; day_total: number }>`
+        select w.total, coalesce(p.concealed, false) as concealed, coalesce(p.day_key, '') as day_key, coalesce(p.day_total, 0) as day_total
+        from zikr_world w
+        left join zikr_presence p on p.public_id = w.public_id
+        where w.public_id = ${publicId}`;
       let mine: { total: number; rank: number } | null = null;
-      if (self[0]) {
-        const ahead = await sql<{ n: number }>`select count(*)::int as n from zikr_world where total > ${self[0].total}`;
-        mine = { total: self[0].total, rank: (ahead[0]?.n ?? 0) + 1 };
+      const me = self[0];
+      const open = me ? !me.concealed || (me.day_key === day && me.day_total >= 10000) : false;
+      if (me && open) {
+        const ahead = await sql<{ n: number }>`
+          select count(*)::int as n
+          from zikr_world w
+          left join zikr_presence p on p.public_id = w.public_id
+          where w.total > ${me.total}
+            and (coalesce(p.concealed, false) = false or (p.day_key = ${day} and p.day_total >= 10000))`;
+        mine = { total: me.total, rank: (ahead[0]?.n ?? 0) + 1 };
       }
       return {
-        rows: rows.map((row, index) => ({ id: row.public_id, total: row.total, rank: index + 1 })),
+        rows: [
+          ...rows.map((row, index) => ({ id: row.public_id, total: row.total, rank: index + 1 })),
+          ...quiet.map((row) => ({ id: row.public_id, total: 0, rank: 0, hidden: true as const })),
+        ],
         mine,
       };
     } catch (err) {
@@ -761,7 +783,7 @@ const BeatInput = z.object({
   replaceDay: z.boolean().optional(),
 });
 
-export type PresenceRow = { id: string; country: string; value: number; rank: number };
+export type PresenceRow = { id: string; country: string; value: number; rank: number; hidden?: boolean };
 
 export const beatPresence = createServerFn({ method: "POST" })
   .validator((raw: unknown) => BeatInput.parse(raw))
@@ -771,15 +793,12 @@ export const beatPresence = createServerFn({ method: "POST" })
       await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
-      if (data.listed === false) {
-        await sql`delete from zikr_presence where public_id = ${publicId}`;
-        return { ok: true as const };
-      }
       const tapping = data.tapSince > 0 ? 1 : 0;
       const tapSec = tapping ? Math.floor(data.tapSince / 1000) : 0;
       const replaceDay = data.replaceDay ? 1 : 0;
+      const concealed = data.listed === false;
       await sql`
-      insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at, tap_since, last_tap_at)
+      insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at, tap_since, last_tap_at, concealed)
       values (
         ${publicId},
         ${data.country},
@@ -789,7 +808,8 @@ export const beatPresence = createServerFn({ method: "POST" })
         ${data.total},
         now(),
         case when ${tapping} = 1 then to_timestamp(${tapSec}) else null end,
-        case when ${tapping} = 1 then now() else null end
+        case when ${tapping} = 1 then now() else null end,
+        ${concealed}
       )
       on conflict (public_id) do update set
         country = excluded.country,
@@ -799,12 +819,14 @@ export const beatPresence = createServerFn({ method: "POST" })
         total = greatest(zikr_presence.total, excluded.total),
         seen_at = now(),
         tap_since = case when ${tapping} = 1 then to_timestamp(${tapSec}) else zikr_presence.tap_since end,
-        last_tap_at = case when ${tapping} = 1 then now() else zikr_presence.last_tap_at end
+        last_tap_at = case when ${tapping} = 1 then now() else zikr_presence.last_tap_at end,
+        concealed = excluded.concealed
       where zikr_presence.total < excluded.total
          or zikr_presence.xp < excluded.xp
          or zikr_presence.day_key is distinct from excluded.day_key
          or zikr_presence.day_total < excluded.day_total
          or zikr_presence.seen_at < now() - interval '45 seconds'
+         or zikr_presence.concealed is distinct from excluded.concealed
          or ${replaceDay} = 1`;
       return { ok: true as const };
     } catch (err) {
@@ -822,42 +844,65 @@ export const presenceBoard = createServerFn({ method: "POST" })
       await liftGrokBonus(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const n = await openNow(sql, publicId);
-    const live = await sql<{ public_id: string; country: string; day_total: number }>`
-      select public_id, country, day_total from zikr_presence
+    const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`
+      select public_id, country, day_total, concealed from zikr_presence
       where last_tap_at > now() - interval '30 seconds' and day_total > 0
+        and (concealed = false or day_total >= 10000)
       order by day_total desc, public_id asc
+      limit 20`;
+    const liveQuiet = await sql<{ public_id: string; country: string }>`
+      select public_id, country from zikr_presence
+      where last_tap_at > now() - interval '30 seconds' and concealed = true and day_total > 0 and day_total < 10000
+      order by public_id asc
       limit 20`;
     const daily = await sql<{ public_id: string; country: string; day_total: number }>`
       select public_id, country, day_total from zikr_presence
       where day_key = ${data.dayKey} and day_total > 0
+        and (concealed = false or day_total >= 10000)
       order by day_total desc, public_id asc
       limit 10`;
+    const dailyQuiet = await sql<{ public_id: string; country: string }>`
+      select public_id, country from zikr_presence
+      where day_key = ${data.dayKey} and concealed = true and day_total > 0 and day_total < 10000
+      order by public_id asc
+      limit 40`;
     const world = await sql<{ public_id: string; country: string; xp: number }>`
       select public_id, country, xp from zikr_presence
-      where xp > 0
+      where xp > 0 and (concealed = false or (day_key = ${data.dayKey} and day_total >= 10000))
       order by xp desc, public_id asc
       limit 10`;
-    const self = await sql<{ day_total: number; xp: number; day_key: string }>`
-      select day_total, xp, day_key from zikr_presence where public_id = ${publicId}`;
+    const self = await sql<{ day_total: number; xp: number; day_key: string; concealed: boolean }>`
+      select day_total, xp, day_key, concealed from zikr_presence where public_id = ${publicId}`;
     const together = await sql<{ n: string | number }>`
       select coalesce(sum(total), 0) as n from zikr_world`;
     let dailyRank: number | null = null;
     let worldRank: number | null = null;
-    if (self[0] && self[0].day_key === data.dayKey) {
+    if (self[0] && self[0].day_key === data.dayKey && (!self[0].concealed || self[0].day_total >= 10000)) {
       const ahead = await sql<{ n: number }>`
-        select count(*)::int as n from zikr_presence where day_key = ${data.dayKey} and day_total > ${self[0].day_total}`;
+        select count(*)::int as n from zikr_presence
+        where day_key = ${data.dayKey} and day_total > ${self[0].day_total}
+          and (concealed = false or day_total >= 10000)`;
       dailyRank = (ahead[0]?.n ?? 0) + 1;
     }
-    if (self[0]) {
-      const ahead = await sql<{ n: number }>`select count(*)::int as n from zikr_presence where xp > ${self[0].xp}`;
+    if (self[0] && (!self[0].concealed || (self[0].day_key === data.dayKey && self[0].day_total >= 10000))) {
+      const ahead = await sql<{ n: number }>`
+        select count(*)::int as n from zikr_presence
+        where xp > ${self[0].xp}
+          and (concealed = false or (day_key = ${data.dayKey} and day_total >= 10000))`;
       worldRank = (ahead[0]?.n ?? 0) + 1;
     }
     return {
       online: n,
       remembering: n,
       allTaps: Math.max(0, Math.floor(Number(together[0]?.n ?? 0))),
-      live: live.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
-      daily: daily.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
+      live: [
+        ...live.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
+        ...liveQuiet.map((row) => ({ id: row.public_id, country: row.country, value: 0, rank: 0, hidden: true as const })),
+      ],
+      daily: [
+        ...daily.map((row, index) => ({ id: row.public_id, country: row.country, value: row.day_total, rank: index + 1 })),
+        ...dailyQuiet.map((row) => ({ id: row.public_id, country: row.country, value: 0, rank: 0, hidden: true as const })),
+      ],
       world: world.map((row, index) => ({ id: row.public_id, country: row.country, value: row.xp, rank: index + 1 })),
       dailyRank,
       worldRank,
