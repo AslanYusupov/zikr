@@ -51,7 +51,7 @@ export function initialData(): ZikrState {
     sound: "on",
     voice: "soft",
     volume: 0.7,
-    vibrate: false,
+    vibrate: true,
     showWisdom: true,
     theme: "black",
     lang: "ru",
@@ -238,7 +238,7 @@ export function normalize(raw: unknown): ZikrState {
     sound: asSound(r.sound),
     voice: asVoice(r.voice),
     volume: typeof r.volume === "number" ? Math.min(1, Math.max(0, r.volume)) : base.volume,
-    vibrate: false,
+    vibrate: r.vibrate !== false,
     showWisdom: r.showWisdom !== false,
     theme: THEMES.includes(r.theme as ThemeId) ? (r.theme as ThemeId) : base.theme,
     lang: LANGS.includes(r.lang as LangId) ? (r.lang as LangId) : "ru",
@@ -875,15 +875,17 @@ export const useZikr = create<ZikrState & Actions>()(
     {
       name: SAVE_KEY,
       storage: createJSONStorage(() => durableStorage),
-      version: 4,
+      version: 5,
       migrate: (persisted, fromVersion) => {
-        const next = normalize(persisted);
+        let next = normalize(persisted);
         if (fromVersion < 3) {
           const pool = fromVersion < 2 ? Array.from(new Set([...next.pool, "adad", "wahdahu"])) : next.pool;
           const earned = MILESTONES.map((m) => m.at).filter((at) => next.total >= at);
-          return { ...next, orbit: true, pool, achievements: earned, celebrated: Array.from(new Set([...next.celebrated, ...earned])) };
+          next = { ...next, orbit: true, pool, achievements: earned, celebrated: Array.from(new Set([...next.celebrated, ...earned])) };
+        } else if (fromVersion < 4) {
+          next = { ...next, orbit: true };
         }
-        if (fromVersion < 4) return { ...next, orbit: true };
+        if (fromVersion < 5) next = { ...next, vibrate: true };
         return next;
       },
       merge: (persisted, current) => ({ ...(current as ZikrState & Actions), ...normalize(persisted) }),
@@ -895,7 +897,7 @@ if (typeof window !== "undefined") {
   let armed = false;
   const flush = () => {
     if (!armed) return;
-    const raw = JSON.stringify({ state: snapshot(useZikr.getState()), version: 4 });
+    const raw = JSON.stringify({ state: snapshot(useZikr.getState()), version: 5 });
     void durableStorage.setItem(SAVE_KEY, raw);
   };
   const releaseStuck = () => {

@@ -7,6 +7,7 @@ import { t, tx, degreeName } from "@/lib/zikr/i18n";
 import { levelFromXp } from "@/lib/zikr/levels";
 import { noteTap } from "@/lib/zikr/live";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
+import { triggerHaptic } from "@/lib/zikr/haptic";
 import { useZikr } from "@/lib/zikr/store";
 import { quranCopy } from "@/lib/zikr/quran";
 import { cite, localQuote, nameText, phraseOf } from "@/lib/zikr/tr";
@@ -225,6 +226,7 @@ export function Counter({
     noteTap();
     const state = useZikr.getState();
     playTap(state.sound === "on" ? state.voice : "off", state.volume);
+    triggerHaptic();
     const id = ++seq.current;
     setPulse(id);
     const spokenNow = dhikrById(result.dhikrId);

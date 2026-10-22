@@ -4,6 +4,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr/content";
 import { formatNum, inviteBody, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
+import { triggerHaptic } from "@/lib/zikr/haptic";
 import { countryName, COUNTRY_IDS, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
 import { phraseOf } from "@/lib/zikr/tr";
@@ -193,6 +194,15 @@ export function SettingsView({
 
 <details className="fold">
 <summary className="fold-sum">{t(s.lang, "screen")}</summary>
+        <Toggle
+          label={tx(s.lang, "vibrate")}
+          hint={tx(s.lang, "vibrateHint")}
+          on={s.vibrate}
+          onChange={(on) => {
+            s.setVibrate(on);
+            if (on) triggerHaptic(true);
+          }}
+        />
         <Toggle
           label={tx(s.lang, "starFlow")}
           hint={tx(s.lang, "starFlowHint")}
