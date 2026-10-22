@@ -1,21 +1,22 @@
 import { useZikr } from "./store";
 
-let iosLabel: HTMLLabelElement | null = null;
+let iosInput: HTMLInputElement | null = null;
+
+function iosSwitch(): HTMLInputElement {
+  if (iosInput) return iosInput;
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.tabIndex = -1;
+  input.setAttribute("switch", "");
+  input.setAttribute("aria-hidden", "true");
+  input.style.cssText = "position:fixed;left:0;top:0;width:16px;height:16px;opacity:0;pointer-events:none;margin:0;border:0";
+  document.body.append(input);
+  iosInput = input;
+  return input;
+}
 
 function iosTick() {
-  if (!iosLabel) {
-    const label = document.createElement("label");
-    label.ariaHidden = "true";
-    label.style.cssText = "position:fixed;left:0;top:0;width:0;height:0;opacity:0;overflow:hidden;pointer-events:none";
-    const input = document.createElement("input");
-    input.type = "checkbox";
-    input.tabIndex = -1;
-    input.setAttribute("switch", "");
-    label.append(input);
-    document.documentElement.append(label);
-    iosLabel = label;
-  }
-  iosLabel.click();
+  iosSwitch().click();
 }
 
 export function triggerHaptic(force = false) {

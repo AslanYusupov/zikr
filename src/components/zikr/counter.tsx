@@ -226,7 +226,6 @@ export function Counter({
     noteTap();
     const state = useZikr.getState();
     playTap(state.sound === "on" ? state.voice : "off", state.volume);
-    triggerHaptic();
     const id = ++seq.current;
     setPulse(id);
     const spokenNow = dhikrById(result.dhikrId);
@@ -288,6 +287,7 @@ export function Counter({
           const node = event.target;
           if (!(node instanceof Element)) return;
           if (node.closest("button, a, input, textarea, .scroll-x, .history-screen")) return;
+          triggerHaptic();
           press(event);
         }}
       >
@@ -349,7 +349,10 @@ export function Counter({
                 ref={orbRef}
                 type="button"
                 className={cn("orb", today >= s.goal && s.goal > 0 && "orb-met")}
-                onClick={press}
+                onClick={(event) => {
+                  triggerHaptic();
+                  press(event);
+                }}
                 aria-label={`${tx(s.lang, "rememberAria")}: ${phrase.name}. ${t(s.lang, "today")} ${today}. ${t(s.lang, "total")} ${s.total}`}
               >
                 <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" aria-hidden>
