@@ -16,7 +16,6 @@ export function RewardsView() {
   const xp = useZikr((s) => s.xp);
   const level = levelFromXp(xp);
   const rows = [...REMEMBRANCE].sort((a, b) => (byDhikr[b.id] ?? 0) - (byDhikr[a.id] ?? 0));
-  const max = Math.max(1, ...rows.map((d) => byDhikr[d.id] ?? 0));
   const [reach, setReach] = useState(cachedReach);
 
   useEffect(() => {
@@ -93,7 +92,7 @@ export function RewardsView() {
                 </p>
               </div>
               <div className="mt-2 h-1 overflow-hidden rounded-full bg-bg-deep">
-                <div className="h-full bg-gold" style={{ width: `${(n / max) * 100}%` }} />
+                <div className="h-full bg-gold" style={{ width: `${Math.min(100, (n / 1_000_000) * 100)}%` }} />
               </div>
             </div>
           );
