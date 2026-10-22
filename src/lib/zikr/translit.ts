@@ -155,7 +155,8 @@ function parseWord(raw: string): Glyph[] {
       continue;
     }
     if (ch === "\u0654" || ch === "\u0655") {
-      if (out.length) out[out.length - 1].hz = true;
+      const prev = out[out.length - 1];
+      if (prev && !prev.v && !prev.suk) prev.hz = true;
       else out.push(glyph("\u0621", "", false, true));
       continue;
     }
@@ -210,9 +211,17 @@ function cons(ch: string, ru: boolean): string {
   return LAT_CONS[ch] ?? "";
 }
 
+function doubled(token: string): string {
+  if (token.length <= 1) return token + token;
+  const mark = token.slice(1);
+  if (/^[ьъ1]/.test(mark)) return token[0] + token;
+  return token + token[token.length - 1];
+}
+
 function stretch(token: string, g: Glyph, ru: boolean): string {
   let out = token;
-  if (g.long && (g.v === "a" || g.v === "an" || g.v === "")) out += ru ? "а" : "a";
+  if (g.long && g.v === "") out += ru ? "аа" : "aa";
+  else if (g.long && (g.v === "a" || g.v === "an")) out += ru ? "а" : "a";
   if (g.silah === "u") out += ru ? "у" : "u";
   if (g.silah === "i") out += ru ? "и" : "i";
   return out;
@@ -270,8 +279,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       continue;
     }
     if (cur.ch === "\u0627" && cur.v && !cur.hz) {
-      const syl = vowelSound(cur.v, ru) + (cur.long && cur.v === "a" ? (ru ? "а" : "a") : "");
-      out = hamzaSyl(out, syl, ru);
+      out += vowelSound(cur.v, ru) + (cur.long && cur.v === "a" ? (ru ? "а" : "a") : "");
       continue;
     }
     if (cur.hz || cur.ch === "\u0621") {
@@ -311,7 +319,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       continue;
     }
     if (!token) continue;
-    if (cur.sh && out) token += token;
+    if (cur.sh && out) token = doubled(token);
     else if (cur.sh && elideWasl) out += `${token}-`;
     out += token;
     out += stretch(vowelSound(cur.v, ru), cur, ru);
