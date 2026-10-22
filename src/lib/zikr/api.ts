@@ -383,8 +383,13 @@ async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+let tablesReady = false;
+let tidyAt = 0;
+
 async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
-  const steps = [
+  const now = Date.now();
+  if (tablesReady && now - tidyAt < 10 * 60 * 1000) return;
+  const schema = [
     `create table if not exists zikr_world (
       public_id text primary key,
       total integer not null default 0,
@@ -407,20 +412,35 @@ async function keepOldRating(sql: Awaited<ReturnType<typeof getSql>>) {
       total integer not null default 0,
       updated_at timestamptz not null default now()
     )`,
-    `insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at)
-     select public_id, '', '', 0, total, total, updated_at from zikr_world
-     on conflict (public_id) do update set
-       total = greatest(zikr_presence.total, excluded.total),
-       xp = greatest(zikr_presence.xp, excluded.xp)`,
   ];
-  for (const text of steps) {
-    try {
-      await sql.query(text);
-    } catch (err) {
-      console.error("[zikr] keep rating", err);
+  if (!tablesReady) {
+    for (const text of schema) {
+      try {
+        await sql.query(text);
+      } catch (err) {
+        console.error("[zikr] keep rating", err);
+      }
     }
+    tablesReady = true;
+  }
+  if (now - tidyAt < 10 * 60 * 1000) return;
+  tidyAt = now;
+  try {
+    await sql.query(
+      `insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at)
+       select public_id, '', '', 0, total, total, updated_at from zikr_world
+       on conflict (public_id) do update set
+         total = greatest(zikr_presence.total, excluded.total),
+         xp = greatest(zikr_presence.xp, excluded.xp)
+       where zikr_presence.total < excluded.total or zikr_presence.xp < excluded.xp`,
+    );
+  } catch (err) {
+    console.error("[zikr] keep rating", err);
   }
   await dropRemovedRating(sql);
+  await tapsOnlyBoard(sql);
+  await liftGrokBonus(sql);
+  await keepKnownInvites(sql);
 }
 
 /** Drop imported Grok totals. Keep only taps saved on this site. */
@@ -492,15 +512,8 @@ async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
 }
 
 async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: string) {
-  await aliasTable(sql);
   const id = (publicId ?? "").trim();
-  const real = /^\d{8}$/.test(id) ? await aliasOf(sql, id) : "";
-  if (/^\d{8}$/.test(real) && !DROPPED_RATING_IDS.includes(real)) {
-    await sql`
-      insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at)
-      values (${real}, '', '', 0, 0, 0, now())
-      on conflict (public_id) do update set seen_at = now()`;
-  }
+  const real = /^\d{8}$/.test(id) ? realPublicId(id) : "";
   const online = /^\d{8}$/.test(real)
     ? await sql<{ n: number }>`
         select count(distinct id)::int as n from (
@@ -563,6 +576,11 @@ export const pushSave = createServerFn({ method: "POST" })
       const incoming = keptScore(payload, data.total);
       if (incoming < kept) payload = existing[0].payload;
       savedTotal = Math.max(incoming, kept);
+      if (payload === existing[0].payload && savedTotal === existing[0].total) {
+        const meta = await metaFor(userId);
+        if (!meta) throw new Error("Не удалось сохранить");
+        return meta;
+      }
       const shown = number || existing[0].display_name.replace(/\D/g, "").slice(0, 8);
       await sql`
         update zikr_saves set
@@ -658,8 +676,9 @@ export const publishWorld = createServerFn({ method: "POST" })
         insert into zikr_world (public_id, total)
         values (${publicId}, ${stored})
         on conflict (public_id) do update
-        set total = greatest(zikr_world.total, excluded.total),
-            updated_at = now()`;
+        set total = excluded.total,
+            updated_at = now()
+        where zikr_world.total < excluded.total`;
       const host = data.invitedBy ? realPublicId(data.invitedBy) : undefined;
       if (host && host !== publicId && data.total > 0) {
         await sql`
@@ -668,14 +687,13 @@ export const publishWorld = createServerFn({ method: "POST" })
           on conflict (guest_id) do update
           set total = excluded.total,
               updated_at = now()
-          where zikr_invites.host_id = excluded.host_id`;
+          where zikr_invites.host_id = excluded.host_id
+            and zikr_invites.total is distinct from excluded.total`;
       }
       await sql`
         update zikr_invites
         set total = ${data.total}, updated_at = now()
-        where guest_id = ${publicId}`;
-      await tapsOnlyBoard(sql);
-      await keepFatherScore(sql);
+        where guest_id = ${publicId} and total is distinct from ${data.total}`;
       return { ok: true as const };
     } catch (err) {
       console.error("[zikr] world", err);
@@ -690,10 +708,6 @@ export const invitees = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
-      await tapsOnlyBoard(sql);
-      await liftGrokBonus(sql);
-      await keepKnownInvites(sql);
       const host = realPublicId(data.publicId);
       const rows = await sql<{ guest_id: string; total: number }>`
         select guest_id, total from zikr_invites
@@ -713,8 +727,6 @@ export const worldBoard = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await keepOldRating(sql);
-      await tapsOnlyBoard(sql);
-      await liftGrokBonus(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const rows = await sql<{ public_id: string; total: number }>`
         select public_id, total from zikr_world
@@ -787,7 +799,13 @@ export const beatPresence = createServerFn({ method: "POST" })
         total = greatest(zikr_presence.total, excluded.total),
         seen_at = now(),
         tap_since = case when ${tapping} = 1 then to_timestamp(${tapSec}) else zikr_presence.tap_since end,
-        last_tap_at = case when ${tapping} = 1 then now() else zikr_presence.last_tap_at end`;
+        last_tap_at = case when ${tapping} = 1 then now() else zikr_presence.last_tap_at end
+      where zikr_presence.total < excluded.total
+         or zikr_presence.xp < excluded.xp
+         or zikr_presence.day_key is distinct from excluded.day_key
+         or zikr_presence.day_total < excluded.day_total
+         or zikr_presence.seen_at < now() - interval '45 seconds'
+         or ${replaceDay} = 1`;
       return { ok: true as const };
     } catch (err) {
       console.error("[zikr] presence", err);
@@ -915,7 +933,6 @@ export const pushDevice = createServerFn({ method: "POST" })
     try {
       const sql = await getSql();
       await deviceTable(sql);
-      await foldCloneNumbers(sql);
       const total = data.total ?? 0;
       const incoming = await aliasOf(sql, data.publicId ?? "");
       const sameDevice = await sql<{ publicId: string }>`
@@ -958,7 +975,9 @@ export const pushDevice = createServerFn({ method: "POST" })
           tg_id = coalesce(zikr_device.tg_id, excluded.tg_id),
           payload = case when zikr_device.total > excluded.total then zikr_device.payload else excluded.payload end,
           total = greatest(zikr_device.total, excluded.total),
-          updated_at = now()`;
+          updated_at = now()
+        where zikr_device.total <= excluded.total
+           or zikr_device.public_id !~ '^[0-9]{8}$'`;
       const row = await sql<DeviceSave>`
         select sync_key as "syncKey", public_id as "publicId", payload, total
         from zikr_device where sync_key = ${data.key} limit 1`;

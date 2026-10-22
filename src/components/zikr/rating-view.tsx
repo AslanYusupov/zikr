@@ -191,7 +191,7 @@ export function RatingView() {
         });
     };
     load();
-    const id = window.setInterval(load, 20000);
+    const id = window.setInterval(load, 60_000);
     return () => {
       stop = true;
       window.clearInterval(id);
@@ -238,7 +238,7 @@ export function RatingView() {
     const onWake = () => {
       if (document.visibilityState === "visible") load();
     };
-    const id = window.setInterval(load, 4000);
+    const id = window.setInterval(load, 20_000);
     window.addEventListener("zikr-live", onLive);
     window.addEventListener("online", onWake);
     document.addEventListener("visibilitychange", onWake);

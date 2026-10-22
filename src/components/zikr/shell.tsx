@@ -261,7 +261,7 @@ export function Shell() {
         .catch(() => {});
     };
     load();
-    const id = window.setInterval(load, 3000);
+    const id = window.setInterval(load, 30_000);
     const onLive = () => load();
     const onWake = () => {
       if (document.visibilityState === "visible") load();

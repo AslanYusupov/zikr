@@ -140,7 +140,7 @@ export function useCloud(hydrated: boolean) {
         void send().catch(() => {
           if (!stop) setStatus(navigator.onLine ? "error" : "local");
         });
-      }, 900);
+      }, 20_000);
     });
 
     return () => {
@@ -332,11 +332,16 @@ export function useWorldSync(hydrated: boolean) {
     if (!hydrated || !linked || !/^\d{8}$/.test(publicId)) return;
     const key = storedSyncKey();
     const tgId = telegramUserId();
+    let sentSig = "";
+    let lastBeat = 0;
+    let lastNumbers = 0;
+    let lastSnap = 0;
+    let wait: number | null = null;
     const send = () => {
-      if (document.hidden) return;
       const state = useZikr.getState();
       const day = todayKey();
       const dayTotal = state.days[day]?.total ?? 0;
+      if (state.total <= 0 && dayTotal <= 0) return;
       const host = storedInvite();
       if (host && host === publicId) {
         try {
@@ -348,13 +353,30 @@ export function useWorldSync(hydrated: boolean) {
       const invitedBy = host && /^\d{8}$/.test(host) && host !== publicId ? host : undefined;
       const listed = state.publicBoard;
       const replaceDay = state.dayCut;
+      const sig = `${publicId}|${state.total}|${dayTotal}|${state.xp}|${state.quranLetters}|${listed ? 1 : 0}|${replaceDay ? 1 : 0}`;
+      const now = Date.now();
+      const changed = sig !== sentSig;
+      const hiding = document.hidden;
+      if (!changed && !hiding && now - lastBeat < 60_000) return;
+      if (changed && !hiding && now - lastNumbers < 15_000) {
+        if (wait == null) {
+          wait = window.setTimeout(() => {
+            wait = null;
+            send();
+          }, 15_000);
+        }
+        return;
+      }
+      const beatOnly = !changed;
       if (!listed) {
-        void publishWorld({ data: { publicId, total: state.total, listed: false } }).catch(() => {});
+        if (!beatOnly) void publishWorld({ data: { publicId, total: state.total, listed: false } }).catch(() => {});
         void beatPresence({
           data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0, listed: false },
-        })
-          .then(() => window.dispatchEvent(new Event("zikr-live")))
-          .catch(() => {});
+        }).catch(() => {});
+      } else if (beatOnly) {
+        void beatPresence({
+          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0 },
+        }).catch(() => {});
       } else {
         void publishWorld({ data: { publicId, total: state.total, ...(invitedBy && state.total > 0 ? { invitedBy } : {}) } }).catch(() => {});
         void beatPresence({
@@ -366,19 +388,29 @@ export function useWorldSync(hydrated: boolean) {
           })
           .catch(() => {});
       }
-      if (key) {
-        const snap = snapshot(state);
-        void pushDevice({
-          data: { key, publicId, total: snap.total, payload: JSON.stringify(snap), ...(tgId ? { tgId } : {}) },
-        }).catch(() => {});
+      lastBeat = now;
+      if (changed) {
+        sentSig = sig;
+        lastNumbers = now;
+        if (key && (hiding || now - lastSnap >= 120_000)) {
+          const snap = snapshot(state);
+          lastSnap = now;
+          void pushDevice({
+            data: { key, publicId, total: snap.total, payload: JSON.stringify(snap), ...(tgId ? { tgId } : {}) },
+          }).catch(() => {});
+        }
       }
     };
-    const unbind = bindTapPulse(send);
-    const first = window.setTimeout(send, 200);
-    const timer = window.setInterval(send, 20000);
+    const unbind = bindTapPulse(() => {
+      if (!document.hidden) send();
+    });
+    const first = window.setTimeout(send, 800);
+    const timer = window.setInterval(() => {
+      if (!document.hidden) send();
+    }, 60_000);
     const onOnline = () => send();
     const onWake = () => {
-      if (document.visibilityState === "visible") send();
+      send();
     };
     window.addEventListener("online", onOnline);
     document.addEventListener("visibilitychange", onWake);
@@ -386,6 +418,7 @@ export function useWorldSync(hydrated: boolean) {
     link?.addEventListener?.("change", onOnline);
     return () => {
       unbind();
+      if (wait != null) window.clearTimeout(wait);
       window.clearTimeout(first);
       window.clearInterval(timer);
       window.removeEventListener("online", onOnline);
