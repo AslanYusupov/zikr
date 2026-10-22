@@ -97,8 +97,24 @@ export function useCloud(hydrated: boolean) {
         if (stop) return;
         if (remote.payload) {
           try {
-            const merged = mergeState(snapshot(useZikr.getState()), JSON.parse(remote.payload) as unknown);
-            useZikr.getState().apply(merged);
+            const local = snapshot(useZikr.getState());
+            const parsed = JSON.parse(remote.payload) as { publicId?: string };
+            const localId = /^\d{8}$/.test(local.publicId) ? local.publicId : "";
+            const savedId = /^\d{8}$/.test(parsed.publicId ?? "") ? parsed.publicId ?? "" : "";
+            if (localId && savedId && localId !== savedId) {
+              await pushSave({
+                data: {
+                  displayName: local.displayName,
+                  publicBoard: local.publicBoard,
+                  total: local.total,
+                  bestDay: local.bestDay,
+                  inviteCodeToApply: storedInvite(),
+                  payload: JSON.stringify(local),
+                },
+              });
+            }
+            const merged = mergeState(local, parsed as unknown);
+            useZikr.getState().apply(savedId ? { ...merged, publicId: savedId } : merged);
           } catch {
             /* a broken cloud copy must not erase the phone */
           }
@@ -272,7 +288,7 @@ export function useWorldSync(hydrated: boolean) {
   }, [hydrated, ensurePublicId]);
 
   useEffect(() => {
-    if (!hydrated || !linked || (publicId !== "52812946" && publicId !== "25574036")) return;
+    if (!hydrated || !linked || (publicId !== "52812946" && publicId !== "25574036" && publicId !== "50170262")) return;
     let stop = false;
     const day = todayKey();
     void savedScore({ data: { publicId, dayKey: day } })

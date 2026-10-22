@@ -47,6 +47,19 @@ export { GROK_PROVIDERS };
 // preview after a popup sign-in, so the cookie path is untouched elsewhere.
 const BEARER_KEY = "grok-auth.bearer-token";
 const STAY_KEY = "zikr-auth-token";
+const STAY_COOKIE = "zikr_stay";
+
+function readStayCookie(): string | null {
+  if (typeof document === "undefined") return null;
+  const raw = document.cookie.split("; ").find((row) => row.startsWith(`${STAY_COOKIE}=`))?.slice(STAY_COOKIE.length + 1) ?? "";
+  if (!raw) return null;
+  try {
+    const value = decodeURIComponent(raw);
+    return value.length > 10 ? value : null;
+  } catch {
+    return null;
+  }
+}
 
 /** The stored preview bearer token, or null. */
 export function getBearerToken(): string | null {
@@ -63,10 +76,11 @@ export function getStayToken(): string | null {
   if (typeof window === "undefined") return null;
   try {
     const value = window.localStorage.getItem(STAY_KEY);
-    return value && value.length > 10 ? value : null;
+    if (value && value.length > 10) return value;
   } catch {
-    return null;
+    /* private mode */
   }
+  return readStayCookie();
 }
 
 export function setStayToken(token: string | null) {
@@ -77,6 +91,9 @@ export function setStayToken(token: string | null) {
   } catch {
     /* private mode */
   }
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  if (token) document.cookie = `${STAY_COOKIE}=${encodeURIComponent(token)}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
+  else document.cookie = `${STAY_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax${secure}`;
 }
 
 function setBearerToken(token: string | null): void {
