@@ -78,6 +78,7 @@ export function RewardsView() {
       <div className="mt-2 grid gap-2">
         {rows.map((d) => {
           const n = byDhikr[d.id] ?? 0;
+          const left = Math.max(0, 1_000_000 - n);
           const line = phraseOf(d, lang);
           return (
             <div key={d.id} className="rounded-2xl border border-line bg-surface px-3 py-2.5">
@@ -94,6 +95,11 @@ export function RewardsView() {
               <div className="mt-2 h-1 overflow-hidden rounded-full bg-bg-deep">
                 <div className="h-full bg-gold" style={{ width: `${Math.min(100, (n / 1_000_000) * 100)}%` }} />
               </div>
+              <p className="mt-1.5 text-xs tabular-nums text-muted">
+                {left > 0
+                  ? tx(lang, "leftMillion").replace("{n}", `${formatNum(left)} ${zikrWord(left, lang)}`)
+                  : "1 000 000"}
+              </p>
             </div>
           );
         })}
