@@ -461,7 +461,7 @@ export function Shell() {
           <button
             type="button"
             onClick={refreshApp}
-            className="relative z-20 mx-3 mb-1 rounded-2xl border border-line bg-surface px-3 py-2 text-left"
+            className="relative z-20 mx-3 mb-1 rounded-2xl border border-line bg-surface px-3 py-2 text-start"
           >
             <span className="block text-sm font-bold text-fg">{tx(lang, "updateHere")}</span>
           </button>

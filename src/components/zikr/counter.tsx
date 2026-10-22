@@ -434,7 +434,7 @@ export function Counter({
             {quest && step && !s.questUnder ? (
               <button
                 type="button"
-                className="mx-3 mb-1.5 rounded-2xl border border-line bg-surface/80 px-3 py-1.5 text-left"
+                className="mx-3 mb-1.5 rounded-2xl border border-line bg-surface/80 px-3 py-1.5 text-start"
                 onClick={() => s.setMode(step.dhikrId)}
                 onPointerDown={(e) => {
                   dragY.current = e.clientY;

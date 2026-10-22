@@ -109,7 +109,7 @@ function QuestCard({
   const text = questText(quest, lang);
   return (
     <article className="rounded-2xl border border-line bg-surface px-3 py-3">
-      <button type="button" onClick={onOpen} className="w-full text-left">
+      <button type="button" onClick={onOpen} className="w-full text-start">
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-base text-fg">
             {done ? <span className="mr-1 text-gold">✓</span> : null}

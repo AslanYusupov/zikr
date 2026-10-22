@@ -460,7 +460,7 @@ export function QuranView() {
             return (
               <button key={item.n} type="button" className="surah-row" onClick={() => { clearGloss(); setOpen(item.n); }}>
                 <span className="surah-no">{item.n}</span>
-                <span className="min-w-0 flex-1 text-left">
+                <span className="min-w-0 flex-1 text-start">
                   <span className="block font-arabic text-lg leading-loose text-fg" dir="rtl" lang="ar">
                     {item.name}
                   </span>

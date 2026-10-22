@@ -192,7 +192,7 @@ export function TajweedView() {
             <article key={lesson.id} className="taj-lesson" ref={on ? card : undefined}>
               <button type="button" className="surah-row" onClick={() => setOpen(on ? null : lesson.id)}>
                 <span className={cn("surah-no", TONE[lesson.tone])}>{passed.includes(lesson.id) ? "✓" : TAJWEED_FLAT.findIndex((item) => item.id === lesson.id) + 1}</span>
-                <span className="min-w-0 flex-1 text-left text-sm leading-snug font-bold text-fg">{lesson.title[lang]}</span>
+                <span className="min-w-0 flex-1 text-start text-sm leading-snug font-bold text-fg">{lesson.title[lang]}</span>
               </button>
               {on ? (
                 <div className="taj-body">

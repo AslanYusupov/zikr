@@ -16,6 +16,7 @@ import { cn } from "@/lib/cn";
 import { Sheet } from "./pattern";
 
 const THEME_PHOTO: Record<string, string> = {
+  roses: "/roses.jpg",
   sea: "/shore.jpg",
   desert: "/desert.jpg",
   cosmos: "/cosmos.jpg",
@@ -103,7 +104,7 @@ export function SettingsView({
               data-theme={theme.id}
               onClick={() => s.setTheme(theme.id)}
               className={cn(
-                "rounded-2xl border px-3 py-3 text-left",
+                "rounded-2xl border px-3 py-3 text-start",
                 s.theme === theme.id ? "border-fg" : "border-line",
               )}
               style={
@@ -161,7 +162,7 @@ export function SettingsView({
                 playTap(voice.id, Math.max(s.volume, 0.4));
               }}
               className={cn(
-                "flex h-12 items-center justify-between rounded-2xl border px-3 text-left",
+                "flex h-12 items-center justify-between rounded-2xl border px-3 text-start",
                 s.voice === voice.id && s.sound === "on" ? "border-gold bg-surface" : "border-line bg-chip",
               )}
             >
@@ -173,7 +174,7 @@ export function SettingsView({
         <button
           type="button"
           onClick={() => playAchievement(Math.max(s.volume, 0.4))}
-          className="mt-2 flex h-12 w-full items-center justify-between rounded-2xl border border-line bg-chip px-3 text-left"
+          className="mt-2 flex h-12 w-full items-center justify-between rounded-2xl border border-line bg-chip px-3 text-start"
         >
           <span className="text-sm font-bold text-fg">{tx(s.lang, "achieveSound")}</span>
           <span className="text-xs text-muted">{tx(s.lang, "achieveSoundHint")}</span>
@@ -299,9 +300,9 @@ export function SettingsView({
                 key={d.id}
                 type="button"
                 onClick={() => s.togglePool(d.id)}
-                className="flex items-center justify-between rounded-2xl border border-line bg-surface px-3 py-2 text-left"
+                className="flex items-center justify-between rounded-2xl border border-line bg-surface px-3 py-2 text-start"
               >
-                <span className="min-w-0 pr-3 text-sm leading-snug text-pretty text-fg">{phraseOf(d, s.lang).name}</span>
+                <span className="min-w-0 pe-3 text-sm leading-snug text-pretty text-fg">{phraseOf(d, s.lang).name}</span>
                 <span className={cn("text-xs", on ? "text-gold" : "text-muted")}>{on ? tx(s.lang, "inSet") : tx(s.lang, "notInSet")}</span>
               </button>
             );
@@ -711,7 +712,7 @@ function Toggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <button type="button" onClick={() => onChange(!on)} className="mt-3 flex w-full items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-3 py-3 text-left">
+    <button type="button" onClick={() => onChange(!on)} className="mt-3 flex w-full items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-3 py-3 text-start">
       <span>
         <span className="block text-sm text-fg">{label}</span>
         <span className="mt-0.5 block text-xs text-muted">{hint}</span>

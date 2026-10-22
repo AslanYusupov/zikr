@@ -19,7 +19,7 @@ export function DuaView() {
             <button
               key={dua.id}
               type="button"
-              className="w-full rounded-3xl border border-line bg-surface px-4 py-4 text-left"
+              className="w-full rounded-3xl border border-line bg-surface px-4 py-4 text-start"
               onClick={() => setOpenId((cur) => (cur === dua.id ? null : dua.id))}
             >
               <h3 className="text-lg leading-snug font-extrabold text-fg">{line.name}</h3>
