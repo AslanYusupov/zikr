@@ -187,7 +187,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "الْقَمَرُ", read: "аль-къамар — лям слышна", lat: "al-qamar — the lam is heard" },
       { ar: "الشَّمْسُ", read: "аш-шамс — лям не слышна", lat: "ash-shams — the lam is silent" },
       { ar: "وَالْكِتَابِ", read: "валь-китаби — хамзу пропустили", lat: "wal-kitabi — the hamza is dropped" },
-      { ar: "ٱهْدِنَا", read: "ихдина — начали с и", lat: "ihdina — start with i" },
+      { ar: "ٱهْدِنَا", read: "их1дина — начали с и", lat: "ihdina — start with i" },
       { ar: "رَحْمَةٌ", read: "рахьматун, а в остановке рахьмах", lat: "rahmatun, and when stopping: rahmah" },
     ],
   },

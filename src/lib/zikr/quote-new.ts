@@ -29,42 +29,42 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "De ki: ağaran sabahın Rabbine sığınırım. Yarattığı şeylerin şerrinden, çöken karanlığın şerrinden, düğümlere üfleyenlerin şerrinden ve haset ettiği zaman hasetçinin şerrinden.",
     ur: "کہہ: میں صبح کے رب کی پناہ مانگتا ہوں، اس کی پیدا کی ہوئی چیزوں کے شر سے، اندھیری رات کے شر سے جب وہ چھا جائے، گرہوں پر پھونکنے والیوں کے شر سے، اور حسد کرنے والے کے شر سے جب وہ حسد کرے۔",
   },
-  "Скажи: «Прибегаю к защите Господа людей, Царя людей, Бога людей, от зла искусителя отступающего (или сжимающегося) при поминании Аллаха, который наущает в груди людей и бывает из джиннов и людей».": {
+  "Скажи: «Прибегаю к защите Господа людей, Царя людей, Бога людей, от зла искусителя отступающего (или сжимающегося) при поминании Аллах1а, который наущает в груди людей и бывает из джиннов и людей».": {
     en: "Say: I seek refuge in the Lord of mankind, the King of mankind, the God of mankind, from the evil of the whisperer who withdraws, who whispers into the hearts of mankind, whether from among the jinn or mankind.",
     ar: "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ مَلِكِ ٱلنَّاسِ إِلَٰهِ ٱلنَّاسِ مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
     id: "Katakanlah: aku berlindung kepada Tuhan manusia, Raja manusia, Tuhan manusia, dari kejahatan pembisik yang bersembunyi, yang membisikkan ke dalam dada manusia, dari kalangan jin dan manusia.",
     tr: "De ki: insanların Rabbine, insanların Melikine, insanların İlahına sığınırım. İnsanların göğüslerine vesvese veren, sonra sinsi geri çekilen, cinlerden ve insanlardan olan vesvesecinin şerrinden.",
     ur: "کہہ: میں لوگوں کے رب، لوگوں کے بادشاہ، لوگوں کے معبود کی پناہ مانگتا ہوں، اس وسوسہ ڈالنے والے کے شر سے جو پیچھے ہٹ جاتا ہے، جو لوگوں کے سینوں میں وسوسہ ڈالتا ہے، جنوں میں سے ہو یا انسانوں میں سے۔",
   },
-  "Аллах - нет божества, кроме Него, Живого, Вседержителя. Им не овладевают ни дремота, ни сон. Ему принадлежит то, что на небесах, и то, что на земле. Кто станет заступаться перед Ним без Его дозволения? Он знает их будущее и прошлое. Они постигают из Его знания только то, что Он пожелает. Его Престол (Подножие Трона) объемлет небеса и землю, и не тяготит Его оберегание их. Он - Возвышенный, Великий.": {
+  "Аллах1 - нет божества, кроме Него, Живого, Вседержителя. Им не овладевают ни дремота, ни сон. Ему принадлежит то, что на небесах, и то, что на земле. Кто станет заступаться перед Ним без Его дозволения? Он знает их будущее и прошлое. Они постигают из Его знания только то, что Он пожелает. Его Престол (Подножие Трона) объемлет небеса и землю, и не тяготит Его оберегание их. Он - Возвышенный, Великий.": {
     en: "Allah, there is no god but He, the Ever-Living, the Sustainer. Neither drowsiness nor sleep overtakes Him. To Him belongs what is in the heavens and the earth. Who can intercede with Him except by His permission? He knows what is before them and what is behind them. They grasp nothing of His knowledge except what He wills. His Footstool extends over the heavens and the earth, and guarding them does not tire Him. He is the Most High, the Magnificent.",
     ar: "ٱللَّهُ لَآ إِلَٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ ۚ لَا تَأْخُذُهُۥ سِنَةٌۭ وَلَا نَوْمٌۭ ۚ لَّهُۥ مَا فِى ٱلسَّمَٰوَٰتِ وَمَا فِى ٱلْأَرْضِ ۗ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَىْءٍۢ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرْسِيُّهُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضَ ۖ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا ۚ وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
     id: "Allah, tidak ada tuhan selain Dia, Yang Mahahidup, Yang terus-menerus mengurus. Tidak mengantuk dan tidak tidur. Milik-Nya apa yang di langit dan di bumi. Siapakah yang dapat memberi syafaat di sisi-Nya tanpa izin-Nya? Dia mengetahui apa yang di hadapan mereka dan di belakang mereka. Mereka tidak mengetahui sesuatu dari ilmu-Nya kecuali yang Dia kehendaki. Kursi-Nya meliputi langit dan bumi, dan menjaga keduanya tidak memberatkan-Nya. Dialah Yang Mahatinggi, Mahabesar.",
     tr: "Allah, O’ndan başka ilah yoktur. Diridir, Kayyumdur. Onu ne uyuklama tutar ne uyku. Göklerde ve yerde ne varsa O’nundur. O’nun izni olmadan kim şefaat edebilir? O, onların önlerindekini de arkalarındakini de bilir. Onlar O’nun ilminden ancak dilediği kadarını kavrarlar. Kürsüsü gökleri ve yeri kaplamıştır. Onları korumak O’na ağır gelmez. O yücedir, büyüktür.",
     ur: "اللہ، اس کے سوا کوئی معبود نہیں، زندہ ہے، قائم رکھنے والا۔ اسے نہ اونگھ آتی ہے نہ نیند۔ آسمانوں اور زمین میں جو کچھ ہے اسی کا ہے۔ کون اس کے پاس اس کی اجازت کے بغیر سفارش کرے؟ وہ جانتا ہے جو ان کے آگے ہے اور جو ان کے پیچھے ہے۔ وہ اس کے علم میں سے کچھ نہیں پاتے مگر جو وہ چاہے۔ اس کی کرسی آسمانوں اور زمین کو گھیرے ہوئے ہے، اور ان کی نگہبانی اسے نہیں تھکاتی۔ وہ بلند، عظمت والا ہے۔",
   },
-  "По милости Аллаха ты был мягок по отношению к ним. А ведь если бы ты был грубым и жестокосердным, то они непременно покинули бы тебя. Прости же их, попроси для них прощения и советуйся с ними о делах. Когда же ты примешь решение, то уповай на Аллаха, ведь Аллах любит уповающих.": {
+  "По милости Аллах1а ты был мягок по отношению к ним. А ведь если бы ты был грубым и жестокосердным, то они непременно покинули бы тебя. Прости же их, попроси для них прощения и советуйся с ними о делах. Когда же ты примешь решение, то уповай на Аллах1а, ведь Аллах1 любит уповающих.": {
     en: "By the mercy of Allah you were gentle with them. Had you been harsh and hard-hearted, they would have left you. So pardon them, ask forgiveness for them, and consult them in matters. Then when you decide, rely upon Allah. Indeed Allah loves those who rely upon Him.",
     ar: "فَبِمَا رَحْمَةٍۢ مِّنَ ٱللَّهِ لِنتَ لَهُمْ ۖ وَلَوْ كُنتَ فَظًّا غَلِيظَ ٱلْقَلْبِ لَٱنفَضُّوا۟ مِنْ حَوْلِكَ ۖ فَٱعْفُ عَنْهُمْ وَٱسْتَغْفِرْ لَهُمْ وَشَاوِرْهُمْ فِى ٱلْأَمْرِ ۖ فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى ٱللَّهِ ۚ إِنَّ ٱللَّهَ يُحِبُّ ٱلْمُتَوَكِّلِينَ",
     id: "Dengan rahmat Allah kamu bersikap lemah lembut kepada mereka. Seandainya kamu keras dan berhati kasar, tentu mereka menjauh. Maka maafkanlah mereka, mohonkan ampunan untuk mereka, dan bermusyawarahlah dalam urusan. Apabila kamu telah membulatkan tekad, bertawakallah kepada Allah. Sungguh Allah mencintai orang-orang yang bertawakal.",
     tr: "Allah’ın rahmetiyle sen onlara yumuşak davrandın. Kaba ve katı kalpli olsaydın etrafından dağılırlardı. Onları affet, onlar için bağışlanma dile ve işlerde onlarla istişare et. Karar verince de Allah’a tevekkül et. Şüphesiz Allah tevekkül edenleri sever.",
     ur: "اللہ کی رحمت سے تو ان پر نرم رہا۔ اگر تو سخت مزاج اور سخت دل ہوتا تو وہ الگ ہو جاتے۔ پس انہیں معاف کر، ان کے لیے بخشش مانگ، اور کاموں میں ان سے مشورہ کر۔ پھر جب عزم کر لے تو اللہ پر بھروسہ کر۔ بے شک اللہ بھروسہ کرنے والوں کو پسند کرتا ہے۔",
   },
-  "Скажи: «Нас постигнет только то, что предписано нам Аллахом. Он - наш Покровитель. И пусть верующие уповают на одного Аллаха».": {
+  "Скажи: «Нас постигнет только то, что предписано нам Аллах1ом. Он - наш Покровитель. И пусть верующие уповают на одного Аллах1а».": {
     en: "Say: nothing will befall us except what Allah has decreed for us. He is our Protector. And upon Allah let the believers rely.",
     ar: "قُل لَّن يُصِيبَنَآ إِلَّا مَا كَتَبَ ٱللَّهُ لَنَا هُوَ مَوْلَىٰنَا ۚ وَعَلَى ٱللَّهِ فَلْيَتَوَكَّلِ ٱلْمُؤْمِنُونَ",
     id: "Katakanlah: kami tidak akan ditimpa kecuali apa yang telah Allah tetapkan bagi kami. Dialah Pelindung kami, dan hanya kepada Allah hendaknya orang-orang beriman bertawakal.",
     tr: "De ki: bize ancak Allah’ın yazdığı isabet eder. O bizim Mevlâmızdır. Müminler yalnız Allah’a tevekkül etsin.",
     ur: "کہہ: ہمیں وہی پہنچے گا جو اللہ نے ہمارے لیے لکھ دیا ہے۔ وہ ہمارا کارساز ہے۔ اور ایمان والے صرف اللہ ہی پر بھروسہ کریں۔",
   },
-  "Воистину, угодники Аллаха не познают страха и не будут опечалены. Они уверовали и были богобоязненны.": {
+  "Воистину, угодники Аллах1а не познают страха и не будут опечалены. Они уверовали и были богобоязненны.": {
     en: "Indeed the close friends of Allah will have no fear, nor will they grieve: those who believed and were mindful of Allah.",
     ar: "أَلَآ إِنَّ أَوْلِيَآءَ ٱللَّهِ لَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ ٱلَّذِينَ ءَامَنُوا۟ وَكَانُوا۟ يَتَّقُونَ",
     id: "Sesungguhnya para wali Allah tidak ada rasa takut pada mereka dan mereka tidak bersedih. Mereka beriman dan bertakwa.",
     tr: "Şüphesiz Allah’ın dostlarına korku yoktur ve onlar üzülmezler. Onlar iman etmiş ve sakınmış olanlardır.",
     ur: "بے شک اللہ کے ولیوں پر نہ خوف ہے نہ وہ غمگین ہوں گے۔ وہ ایمان لائے اور پرہیزگار رہے۔",
   },
-  "Скажи Моим рабам, которые уверовали: «Бойтесь вашего Господа! Тем, которые совершили добро в этом мире, уготовано добро. Земля Аллаха обширна. Воистину, терпеливым их награда воздастся полностью без счета».": {
+  "Скажи Моим рабам, которые уверовали: «Бойтесь вашего Господа! Тем, которые совершили добро в этом мире, уготовано добро. Земля Аллах1а обширна. Воистину, терпеливым их награда воздастся полностью без счета».": {
     en: "Say to My servants who believe: fear your Lord. For those who do good in this world there is good. Allah’s earth is spacious. Indeed the patient will be given their reward in full, without measure.",
     ar: "قُلْ يَٰعِبَادِ ٱلَّذِينَ ءَامَنُوا۟ ٱتَّقُوا۟ رَبَّكُمْ ۚ لِلَّذِينَ أَحْسَنُوا۟ فِى هَٰذِهِ ٱلدُّنْيَا حَسَنَةٌۭ ۗ وَأَرْضُ ٱللَّهِ وَٰسِعَةٌ ۗ إِنَّمَا يُوَفَّى ٱلصَّٰبِرُونَ أَجْرَهُم بِغَيْرِ حِسَابٍۢ",
     id: "Katakanlah kepada hamba-hamba-Ku yang beriman: bertakwalah kepada Tuhanmu. Orang-orang yang berbuat baik di dunia mendapat kebaikan. Bumi Allah luas. Sungguh orang-orang yang sabar disempurnakan pahalanya tanpa hisab.",
@@ -99,14 +99,14 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "Musa dedi: Rabbim, göğsümü aç, işimi kolaylaştır, dilimdeki düğümü çöz ki sözümü anlasınlar.",
     ur: "موسیٰ نے کہا: اے میرے رب، میرا سینہ کھول دے، میرا کام آسان کر دے، اور میری زبان کی گرہ کھول دے تاکہ وہ میری بات سمجھیں۔",
   },
-  "Скажи: «О Аллах, Владыка царства! Ты даруешь власть, кому пожелаешь, и отнимаешь власть, у кого пожелаешь. Ты возвеличиваешь, кого пожелаешь, и унижаешь, кого пожелаешь. Все благо - в Твоей Руке. Воистину, Ты способен на всякую вещь».": {
+  "Скажи: «О Аллах1, Владыка царства! Ты даруешь власть, кому пожелаешь, и отнимаешь власть, у кого пожелаешь. Ты возвеличиваешь, кого пожелаешь, и унижаешь, кого пожелаешь. Все благо - в Твоей Руке. Воистину, Ты способен на всякую вещь».": {
     en: "Say: O Allah, Owner of dominion, You give dominion to whom You will and take it from whom You will. You honor whom You will and humble whom You will. In Your hand is all good. Indeed You are over all things competent.",
     ar: "قُلِ ٱللَّهُمَّ مَٰلِكَ ٱلْمُلْكِ تُؤْتِى ٱلْمُلْكَ مَن تَشَآءُ وَتَنزِعُ ٱلْمُلْكَ مِمَّن تَشَآءُ وَتُعِزُّ مَن تَشَآءُ وَتُذِلُّ مَن تَشَآءُ ۖ بِيَدِكَ ٱلْخَيْرُ ۖ إِنَّكَ عَلَىٰ كُلِّ شَىْءٍۢ قَدِيرٌۭ",
     id: "Katakanlah: Wahai Allah, Pemilik kerajaan. Engkau berikan kerajaan kepada siapa yang Engkau kehendaki dan Engkau cabut dari siapa yang Engkau kehendaki. Engkau muliakan siapa yang Engkau kehendaki dan Engkau hinakan siapa yang Engkau kehendaki. Di tangan-Mu segala kebaikan. Sungguh Engkau Mahakuasa atas segala sesuatu.",
     tr: "De ki: Ey mülkün sahibi Allahım. Dilediğine mülk verir, dilediğinden alırsın. Dilediğini yükseltir, dilediğini alçaltırsın. Hayır senin elindedir. Şüphesiz sen her şeye kadirsin.",
     ur: "کہہ: اے اللہ، بادشاہی کے مالک، تو جسے چاہے حکومت دے اور جس سے چاہے چھین لے۔ جسے چاہے عزت دے اور جسے چاہے ذلیل کرے۔ بھلائی تیرے ہی ہاتھ میں ہے۔ بے شک تو ہر چیز پر قادر ہے۔",
   },
-  "Любое несчастье постигает только по воле Аллаха. Сердце того, кто уверовал в Аллаха, Он наставляет на прямой путь. Аллах знает о всякой вещи.": {
+  "Любое несчастье постигает только по воле Аллах1а. Сердце того, кто уверовал в Аллах1а, Он наставляет на прямой путь. Аллах1 знает о всякой вещи.": {
     en: "No disaster strikes except by the permission of Allah. Whoever believes in Allah, He guides his heart. Allah is Knowing of all things.",
     ar: "مَآ أَصَابَ مِن مُّصِيبَةٍ إِلَّا بِإِذْنِ ٱللَّهِ ۗ وَمَن يُؤْمِنۢ بِٱللَّهِ يَهْدِ قَلْبَهُۥ ۚ وَٱللَّهُ بِكُلِّ شَىْءٍ عَلِيمٌۭ",
     id: "Tidak ada musibah yang menimpa kecuali dengan izin Allah. Siapa beriman kepada Allah, Dia memberi petunjuk kepada hatinya. Allah Maha Mengetahui segala sesuatu.",
@@ -127,7 +127,7 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "De ki: Rabbim, bağışla ve merhamet et. Sen merhamet edenlerin en hayırlısısın.",
     ur: "کہہ: اے میرے رب، بخش دے اور رحم فرما، تو سب سے بہتر رحم کرنے والا ہے۔",
   },
-  "Во имя Аллаха, Милостивого, Милосердного! Хвала Аллаху, Господу миров, Милостивому, Милосердному, Властелину Дня воздаяния! Тебе одному мы поклоняемся и Тебя одного молим о помощи. Веди нас прямым путем, путем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.": {
+  "Во имя Аллах1а, Милостивого, Милосердного! Хвала Аллах1у, Господу миров, Милостивому, Милосердному, Властелину Дня воздаяния! Тебе одному мы поклоняемся и Тебя одного молим о помощи. Веди нас прямым путем, путем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.": {
     en: "In the name of Allah, the Most Merciful, the Especially Merciful. Praise be to Allah, Lord of the worlds, the Most Merciful, the Especially Merciful, Master of the Day of Judgment. You alone we worship and You alone we ask for help. Guide us to the straight path, the path of those You have blessed, not of those who earned anger, nor of those who went astray.",
     ar: "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ مَٰلِكِ يَوْمِ ٱلدِّينِ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
     id: "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang. Segala puji bagi Allah, Tuhan semesta alam, Yang Maha Pengasih, Maha Penyayang, Pemilik hari pembalasan. Hanya kepada-Mu kami beribadah dan hanya kepada-Mu kami mohon pertolongan. Tunjukilah kami jalan yang lurus, jalan orang-orang yang Engkau beri nikmat, bukan jalan orang yang dimurkai dan bukan pula orang yang sesat.",
@@ -141,7 +141,7 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "O, hanginizin daha güzel iş yapacağını sınamak için ölümü ve hayatı yaratandır. O üstündür, bağışlayandır.",
     ur: "جس نے موت اور زندگی پیدا کی تاکہ تمہیں آزمائے کہ تم میں کون بہتر عمل کرتا ہے۔ وہ زبردست، بخشنے والا ہے۔",
   },
-  "Стремитесь же к прощению от вашего Господа и Раю, ширина которого подобна ширине неба и земли. Он уготован для тех, которые уверовали в Аллаха и Его посланников. Такова милость Аллаха, которую Он дарует тем, кому пожелает. Аллах обладает великой милостью.": {
+  "Стремитесь же к прощению от вашего Господа и Раю, ширина которого подобна ширине неба и земли. Он уготован для тех, которые уверовали в Аллах1а и Его посланников. Такова милость Аллах1а, которую Он дарует тем, кому пожелает. Аллах1 обладает великой милостью.": {
     en: "Race toward forgiveness from your Lord and a Garden as wide as the heavens and the earth, prepared for those who believe in Allah and His messengers. That is the bounty of Allah which He gives to whom He wills. Allah is the possessor of great bounty.",
     ar: "سَابِقُوٓا۟ إِلَىٰ مَغْفِرَةٍۢ مِّن رَّبِّكُمْ وَجَنَّةٍ عَرْضُهَا كَعَرْضِ ٱلسَّمَآءِ وَٱلْأَرْضِ أُعِدَّتْ لِلَّذِينَ ءَامَنُوا۟ بِٱللَّهِ وَرُسُلِهِۦ ۚ ذَٰلِكَ فَضْلُ ٱللَّهِ يُؤْتِيهِ مَن يَشَآءُ ۚ وَٱللَّهُ ذُو ٱلْفَضْلِ ٱلْعَظِيمِ",
     id: "Berlomba-lombalah menuju ampunan Tuhanmu dan surga yang luasnya seluas langit dan bumi, disediakan bagi orang-orang yang beriman kepada Allah dan rasul-rasul-Nya. Itulah karunia Allah yang Dia berikan kepada siapa yang Dia kehendaki. Allah mempunyai karunia yang besar.",

@@ -973,7 +973,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         examples: [
           { ar: "رَحْمَةٌ", read: "в остановке рахьмах", lat: "when stopping: rahmah", where: "2:157" },
           { ar: "عَلِيمًا", read: "в остановке 1алима", lat: "when stopping: alima", where: "4:11" },
-          { ar: "ٱهْدِنَا", read: "ихдина — начали с и", lat: "ihdina — start with i", where: "1:6" },
+          { ar: "ٱهْدِنَا", read: "их1дина — начали с и", lat: "ihdina — start with i", where: "1:6" },
           { ar: "وَٱلْكِتَٰبِ", read: "валь-китаби — хамзу пропустили", lat: "wal-kitabi — the hamza is dropped", where: "43:2" },
         ],
         mistakes: L(
@@ -986,7 +986,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         quiz: [
           {
-            q: L("С чего начинают «ихдина»?", "How do you start ihdina?", "بم تُبدأ «اهدنا»؟", "Dengan apa ihdina dimula?", "İhdina neyle başlar?", "اہْدِنَا کس سے شروع ہوتا ہے؟"),
+            q: L("С чего начинают «их1дина»?", "How do you start ihdina?", "بم تُبدأ «اهدنا»؟", "Dengan apa ihdina dimula?", "İhdina neyle başlar?", "اہْدِنَا کس سے شروع ہوتا ہے؟"),
             choices: [
               L("Хамзу не читают и здесь", "The hamza is dropped here too", "لا تُنطق هنا أيضًا", "Di sini pun tidak dibaca", "Burada da okunmaz", "یہاں بھی نہیں پڑھی جاتی"),
               L("С и", "With i", "بالكسر", "Dengan i", "İ ile", "اِ سے"),
