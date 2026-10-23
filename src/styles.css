@@ -3392,8 +3392,20 @@ html[data-os="android"] {
 }
 html[data-os="android"],
 html[data-os="android"] body {
-  height: 100dvh;
-  max-height: 100dvh;
+  top: 0;
+  bottom: 0;
+  height: 100lvh !important;
+  max-height: 100lvh !important;
+}
+@supports not (height: 100lvh) {
+  html[data-os="android"],
+  html[data-os="android"] body {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+  }
+}
+html[data-os="android"] .app-nav {
+  padding-bottom: 0 !important;
 }
 html[data-os="android"] header.safe-top {
   padding-top: max(.35rem, env(safe-area-inset-top));
@@ -3404,9 +3416,6 @@ html[data-os="android"] header.safe-top button.flex {
 }
 html[data-os="android"] header.safe-top button.grid {
   width: 40px;
-}
-html[data-os="android"] .app-nav {
-  padding-bottom: max(.2rem, env(safe-area-inset-bottom));
 }
 html[data-os="android"] .app-nav button {
   min-height: 2.85rem;
