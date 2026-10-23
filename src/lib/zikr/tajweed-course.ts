@@ -481,7 +481,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "مَن يَقُولُ", read: "май-йакъулю — с гунной", lat: "may-yaqulu — with ghunnah", where: "2:8" },
-          { ar: "مِن رَّبِّهِمْ", read: "мир-раббихим — без гунны", lat: "mir-rabbihim — without ghunnah", where: "2:5" },
+          { ar: "مِن رَّبِّهِمْ", read: "мир-раббих1им — без гунны", lat: "mir-rabbihim — without ghunnah", where: "2:5" },
           { ar: "الدُّنْيَا", read: "ад-дунья — н остаётся", lat: "ad-dunya — the n stays", where: "2:86" },
         ],
         mistakes: L(
@@ -772,7 +772,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "ا و ي",
         mechanism: L(
-          "Обычная — две: «къаля».\nХамза в том же слове — четыре или пять: «джаа».\nХамза в следующем слове — две, четыре или пять. В одном чтении держи одну меру.\nХамза, а потом протяжка — только две: «амана».\nОстановился на танвине с а — две: «1алима».\nه между гласными — две: «бихи». Дальше отдельная хамза — как через слово. Дальше хамза «аль» — эту ه не тяни.",
+          "Обычная — две: «къаля».\nХамза в том же слове — четыре или пять: «джаа».\nХамза в следующем слове — две, четыре или пять. В одном чтении держи одну меру.\nХамза, а потом протяжка — только две: «амана».\nОстановился на танвине с а — две: «1алима».\nه между гласными — две: «бих1и». Дальше отдельная хамза — как через слово. Дальше хамза «аль» — эту ه не тяни.",
           "Ordinary length is two: qala.\nA hamza in the same word is four or five: jaa.\nA hamza in the next word is two, four or five. Keep one length in a single reading.\nA hamza and then a letter of lengthening is only two: amana.\nStopping on tanwin with a is two: alima.\nHa between vowels is two: bihi. A separate hamza after it is like a lengthening across the word. The hamza of al- after it: do not hold that ha.",
           "المد الطبيعي حركتان: قال. والهمزة في الكلمة نفسها أربع أو خمس: جاء. والهمزة في الكلمة التالية اثنتان أو أربع أو خمس: إنا أعطيناك. والهمزة ثم حرف المد حركتان فقط: آمن. والوقف على تنوين الفتح حركتان: عليما. والهاء بين حركتين تُمد حركتين، فإن جاءت بعدها همزة مستقلة فكالمد المنفصل. وإن جاءت همزة «ال» فلا تمد هذه الهاء.",
           "Mad biasa dua: qala. Hamzah dalam kata yang sama empat atau lima: jaa. Hamzah dalam kata berikut dua, empat atau lima: inna a'taynaka. Hamzah lalu huruf mad hanya dua: amana. Berhenti pada tanwin ber-a memberi dua: alima. Ha di antara vokal dua; jika hamzah tersendiri menyusul ia seperti mad yang terpisah. Jika hamzah al- menyusul, ha itu jangan dipanjangkan.",
@@ -783,7 +783,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           { ar: "قَالَ", read: "къаля — две", lat: "qala — two", where: "2:30" },
           { ar: "جَاءَ", read: "джаа — четыре или пять", lat: "jaa — four or five", where: "110:1" },
           { ar: "آمَنَ", read: "амана — две", lat: "amana — two", where: "2:62" },
-          { ar: "بِهِ إِنَّ", read: "бихи инна — две, четыре или пять", lat: "bihi inna — two, four or five", where: "26:31" },
+          { ar: "بِهِ إِنَّ", read: "бих1и инна — две, четыре или пять", lat: "bihi inna — two, four or five", where: "26:31" },
         ],
         mistakes: L(
           "Не тяни обычное «къаля» на четыре. И не тяни «амана» больше двух.",

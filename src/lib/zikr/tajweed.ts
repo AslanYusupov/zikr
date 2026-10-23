@@ -224,7 +224,7 @@ export const TAJWEED: TajLesson[] = [
     rows: [
       { ar: "أَنْعَمْتَ", read: "ан1амта — н слышен ясно", lat: "anʿamta — the n is clearly heard" },
       { ar: "مَن يَقُولُ", read: "май-йакъулю — н ушёл в й, через нос", lat: "may-yaqulu — the n went into y, through the nose" },
-      { ar: "مِن رَّبِّهِمْ", read: "мир-раббихим — н ушёл в р, без носа", lat: "mir-rabbihim — the n went into r, not through the nose" },
+      { ar: "مِن رَّبِّهِمْ", read: "мир-раббих1им — н ушёл в р, без носа", lat: "mir-rabbihim — the n went into r, not through the nose" },
       { ar: "الدُّنْيَا", read: "ад-дунья — в одном слове, н остаётся", lat: "ad-dunya — one word, so the n stays" },
       { ar: "مِن بَعْدِ", read: "мим ба1ди — перед б скажи м", lat: "mim baʿdi — before b, say m" },
       { ar: "مِن شَرِّ", read: "мин шарри — н не ясный, он в носу", lat: "min sharri — the n is not clear; it stays in the nose" },
@@ -329,7 +329,7 @@ export const TAJWEED: TajLesson[] = [
     id: "madd2",
     title: L("Остальные протяжки", "The other lengthenings", "بقية المدود", "Mad yang lain", "Diğer medler", "باقی مدیں"),
     text: L(
-      "Это редкие случаи, их немного. Хамза, а потом буква протяжки — только две, как «амана». Останавливаешься на танвине с а — получается «1алима», тоже две. Буква х между двумя гласными тянется на две: «бихи». Если дальше отдельная хамза — четыре или пять. Если дальше хамза слова «аль», эту х не тяни. Буквы в начале суры не слово: длинные тяни на шесть, короткие на две.",
+      "Это редкие случаи, их немного. Хамза, а потом буква протяжки — только две, как «амана». Останавливаешься на танвине с а — получается «1алима», тоже две. Буква х1 между двумя гласными тянется на две: «бих1и». Если дальше отдельная хамза — четыре или пять. Если дальше хамза слова «аль», эту х1 не тяни. Буквы в начале суры не слово: длинные тяни на шесть, короткие на две.",
       "These are the rare cases, and there are few of them. A hamza and then a letter of lengthening is only two, as in amana. When you stop on tanwin with a, it becomes alima, also two. The letter h between two vowels is held for two: bihi. If a separate hamza follows, it is four or five. If the hamza of al- follows, do not hold that h. The letters at the start of a surah are not a word: hold the long ones for six and the short ones for two.",
       "هذه مواضع قليلة. الهمزة ثم حرف المد: حركتان فقط، كـ«آمن». والوقف على تنوين الفتح يعطي «عليما»، حركتين أيضًا. والهاء بين حركتين تُمد حركتين: «به». فإن جاءت بعدها همزة مستقلة فأربع أو خمس. وإن جاءت همزة «ال» فلا تمد هذه الهاء. وحروف أوائل السور ليست كلمة: الطويلة ست، والقصيرة اثنتان.",
       "Ini sedikit. Hamzah lalu huruf mad hanya dua, seperti amana. Berhenti pada tanwin ber-a menjadi alima, juga dua. Huruf h di antara dua vokal dua: bihi. Jika hamzah yang tersendiri menyusul, empat atau lima. Jika hamzah al- menyusul, h itu jangan dipanjangkan. Huruf di awal surah bukan kata: yang panjang enam, yang pendek dua.",
@@ -339,8 +339,8 @@ export const TAJWEED: TajLesson[] = [
     rows: [
       { ar: "آمَنَ", read: "амана — две", lat: "amana — two" },
       { ar: "عَلِيمًا", read: "в остановке 1алима — две", lat: "when stopping: alima — two" },
-      { ar: "بِهِ", read: "бихи — ха тянется", lat: "bihi — the ha is held" },
-      { ar: "بِهِ إِنَّ", read: "бихи инна — четыре или пять", lat: "bihi inna — four or five" },
+      { ar: "بِهِ", read: "бих1и — х1 тянется", lat: "bihi — the ha is held" },
+      { ar: "بِهِ إِنَّ", read: "бих1и инна — четыре или пять", lat: "bihi inna — four or five" },
       { ar: "الضَّالِّينَ", read: "аз1-з1ааллин — шесть", lat: "ad-dallin — six" },
     ],
   },
