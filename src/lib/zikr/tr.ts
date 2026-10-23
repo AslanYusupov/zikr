@@ -1,5 +1,5 @@
 import type { Dhikr, Quote } from "./content";
-import type { AllahName } from "./names";
+import { ALLAH_NAMES, type AllahName } from "./names";
 import { QUOTE_FIX } from "./quote-fix";
 import { QUOTE_MORE } from "./quote-more";
 import { QUOTE_NEW } from "./quote-new";
@@ -241,6 +241,13 @@ const PACK: Partial<Record<LangId, Record<string, Line>>> = { en: EN, ar: AR, id
 
 export function phraseOf(d: Dhikr, lang: LangId): Line {
   const full = d.full;
+  if (d.id.startsWith("n")) {
+    const found = ALLAH_NAMES.find((item) => item.id === d.id);
+    if (found) {
+      const label = nameText(found, lang);
+      return { name: label.name, short: label.name, meaning: label.meaning, reward: lang === "ru" ? found.note : found.noteEn, full };
+    }
+  }
   if (lang === "ru") return { name: d.name, short: d.short, meaning: d.meaning, reward: d.reward, full };
   const row = PACK[lang]?.[d.id];
   return row ? { ...row, full } : { name: d.name, short: d.short, meaning: d.meaning, reward: d.reward, full };

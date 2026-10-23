@@ -1,4 +1,6 @@
-export type AllahName = { id: string; arabic: string; name: string; meaning: string };
+import { NAME_NOTES } from "./name-notes";
+
+export type AllahName = { id: string; arabic: string; name: string; meaning: string; note: string; noteEn: string };
 
 /** Хадис о девяноста девяти именах — у аль-Бухари и Муслима. Сам перечень имён — известная передача ат-Тирмизи, не текст аль-Бухари и Муслима. */
 export const ALLAH_NAMES: AllahName[] = [
@@ -101,4 +103,11 @@ export const ALLAH_NAMES: AllahName[] = [
   ["n97", "الْوَارِثُ", "Аль-Варис", "Наследник"],
   ["n98", "الرَّشِيدُ", "Ар-Рашид", "Направляющий верно"],
   ["n99", "الصَّبُورُ", "Ас-Сабур", "Терпеливый"],
-].map(([id, arabic, name, meaning]) => ({ id, arabic, name, meaning }));
+].map(([id, arabic, name, meaning], index) => ({
+  id,
+  arabic,
+  name,
+  meaning,
+  note: NAME_NOTES[index]?.[0] ?? meaning,
+  noteEn: NAME_NOTES[index]?.[1] ?? meaning,
+}));

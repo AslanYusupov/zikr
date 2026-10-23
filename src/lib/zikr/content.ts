@@ -261,8 +261,8 @@ export function dhikrById(id: string): Dhikr {
       short: name.name,
       meaning: name.meaning,
       primary: false,
-      reward: "У Аллах1а девяносто девять имён. Кто сохранит их, войдёт в Рай.",
-      source: "аль-Бухари, Муслим",
+      reward: name.note,
+      source: "Коран",
     };
   }
   return DHIKR[0]!;
