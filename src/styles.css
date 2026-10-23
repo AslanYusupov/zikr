@@ -3386,6 +3386,12 @@ html, body {
   .surah-now { max-width: 34vw; }
 }
 
+html[data-os="ios"] .app-nav {
+  padding-bottom: max(.55rem, env(safe-area-inset-bottom));
+}
+html[data-os="ios"] header.safe-top {
+  padding-top: max(.45rem, env(safe-area-inset-top));
+}
 html[data-os="android"] {
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
