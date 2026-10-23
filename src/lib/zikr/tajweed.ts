@@ -63,7 +63,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "س", read: "син — с", lat: "sin — s" },
       { ar: "ش", read: "шин — ш", lat: "shin — sh" },
       { ar: "ص", read: "сад — твёрдый с", lat: "sad — a heavy s" },
-      { ar: "ض", read: "дад — з1, не даль и не зайн", lat: "dad — a heavy d" },
+      { ar: "ض", read: "дад — дз, не даль и не зайн", lat: "dad — a heavy d" },
       { ar: "ط", read: "та — твёрдый т", lat: "ta — a heavy t" },
       { ar: "ظ", read: "за — твёрдый з", lat: "za — a heavy dh" },
       { ar: "ع", read: "1айн — 1, сжатие в горле", lat: "ayn — ʿ, a squeeze in the throat" },
@@ -341,7 +341,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "عَلِيمًا", read: "в остановке 1алима — две", lat: "when stopping: alima — two" },
       { ar: "بِهِ", read: "бих1и — х1 тянется", lat: "bihi — the ha is held" },
       { ar: "بِهِ إِنَّ", read: "бих1и инна — четыре или пять", lat: "bihi inna — four or five" },
-      { ar: "الضَّالِّينَ", read: "аз1-з1ааллин — шесть", lat: "ad-dallin — six" },
+      { ar: "الضَّالِّينَ", read: "адз-дзааллин — шесть", lat: "ad-dallin — six" },
     ],
   },
   {
@@ -550,7 +550,7 @@ export const TAJWEED: TajLesson[] = [
       },
       {
         ar: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
-        read: "Сыратал-лязина ан1амта 1аляйхим, г1айриль-маг1з1ууби 1аляйхим ва лаз1-з1ааллин",
+        read: "Сыратал-лязина ан1амта 1аляйхим, г1айриль-маг1дзууби 1аляйхим ва ладз-дзааллин",
         lat: "Siratal-ladhina an'amta alayhim, ghayril-maghdubi alayhim wa lad-dallin",
         gloss: L(
           "Путём тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.",

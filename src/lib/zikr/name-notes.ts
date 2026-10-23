@@ -90,7 +90,7 @@ export const NAME_NOTES: [string, string][] = [
   ["Аль-Г1анийй — Богатый. Аллах1 не нуждается в творениях, а творения нуждаются в Нём.", "Al-Ghaniyy: the Self-Sufficient. Allah needs nothing of creation, and creation needs Him."],
   ["Аль-Муг1ни — Обогащающий. Он делает богатым, кого пожелает, из Своей милости.", "Al-Mughni: the Enricher. He makes wealthy whom He wills, from His bounty."],
   ["Аль-Мани1 — Удерживающий. Никто не даст того, что удержал Аллах1.", "Al-Mani: the Withholder. No one gives what Allah withholds."],
-  ["Аз1-З1арр — Вред постигает только по Его дозволению и мудрости.", "Ad-Darr: harm befalls only by His permission and wisdom."],
+  ["Адз-Дзарр — Вред постигает только по Его дозволению и мудрости.", "Ad-Darr: harm befalls only by His permission and wisdom."],
   ["Ан-Нафи1 — Дающий пользу. Польза только от Аллах1а.", "An-Nafi: the One who benefits. Benefit is from Allah alone."],
   ["Ан-Нур — Свет небес и земли. Он выводит из мрака к свету.", "An-Nur: the Light of the heavens and the earth. He brings out from darkness into light."],
   ["Аль-Х1ади — Ведущий. Он ведёт, кого пожелает, к прямому пути.", "Al-Hadi: the Guide. He guides whom He wills to the straight path."],
