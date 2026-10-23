@@ -67,7 +67,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "ط", read: "та — твёрдый т", lat: "ta — a heavy t" },
       { ar: "ظ", read: "за — твёрдый з", lat: "za — a heavy dh" },
       { ar: "ع", read: "1айн — 1, сжатие в горле", lat: "ayn — ʿ, a squeeze in the throat" },
-      { ar: "غ", read: "гъайн — гъ", lat: "ghayn — gh" },
+      { ar: "غ", read: "г1айн — г1", lat: "ghayn — gh" },
       { ar: "ف", read: "фа — ф", lat: "fa — f" },
       { ar: "ق", read: "къаф — къ, глубже кафа", lat: "qaf — q, deeper than k" },
       { ar: "ك", read: "кяф — к", lat: "kaf — k" },
@@ -160,7 +160,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "ط طـ ـطـ ـط", read: "та твёрдая", lat: "heavy ta" },
       { ar: "ظ ظـ ـظـ ـظ", read: "за твёрдая", lat: "heavy za" },
       { ar: "ع عـ ـعـ ـع", read: "1айн", lat: "ayn" },
-      { ar: "غ غـ ـغـ ـغ", read: "гъайн", lat: "ghayn" },
+      { ar: "غ غـ ـغـ ـغ", read: "г1айн", lat: "ghayn" },
       { ar: "ف فـ ـفـ ـف", read: "фа", lat: "fa" },
       { ar: "ق قـ ـقـ ـق", read: "къаф", lat: "qaf" },
       { ar: "ك كـ ـكـ ـك", read: "кяф", lat: "kaf" },
@@ -214,7 +214,7 @@ export const TAJWEED: TajLesson[] = [
     id: "nun",
     title: L("Нун и танвин", "Nun and tanwin", "النون والتنوين", "Nun dan tanwin", "Nun ve tenvin", "نون اور تنوین"),
     text: L(
-      "Смотри на букву сразу после нун без гласного или после танвина. Ясно, если там хамза, х, 1, хь, гъ или х: н слышен. Вливается в й, н, м, в — через нос, а в л и р — без носа. В одном слове, как «ад-дунья», не вливай. Перед б скажи м, через нос. Перед остальными н не делай ясным: оставь его в носу.",
+      "Смотри на букву сразу после нун без гласного или после танвина. Ясно, если там хамза, х, 1, хь, г1 или х: н слышен. Вливается в й, н, м, в — через нос, а в л и р — без носа. В одном слове, как «ад-дунья», не вливай. Перед б скажи м, через нос. Перед остальными н не делай ясным: оставь его в носу.",
       "Look at the letter right after a vowelless nun or after tanwin. It is clear before hamza, h, ʿ, ḥ, gh or kh: the n is heard. It merges into y, n, m and w through the nose, and into l and r without the nose. In one word, as in ad-dunya, do not merge it. Before b, say m, through the nose. Before the other letters do not make the n clear: leave it in the nose.",
       "انظر إلى الحرف الذي يلي النون الساكنة أو التنوين مباشرة. تُظهر قبل الهمزة و ه و ع و ح و غ و خ: النون مسموعة. وتُدغم في ي ن م و من الأنف، وفي ل ر بلا أنف. وفي كلمة واحدة، كـ«الدنيا»، لا تُدغم. وقبل الباء قل ميمًا من الأنف. وقبل الباقي لا تُظهر النون: دعها في الأنف.",
       "Lihat huruf terus selepas nun tanpa vokal atau selepas tanwin. Jelas sebelum hamzah, h, ʿ, ḥ, gh atau kh: n kedengaran. Melebur ke y, n, m dan w melalui hidung, ke l dan r tanpa hidung. Dalam satu kata, seperti ad-dunya, jangan dilebur. Sebelum b sebut m, melalui hidung. Sebelum huruf lain jangan jadikan n jelas: biarkan di hidung.",
@@ -251,7 +251,7 @@ export const TAJWEED: TajLesson[] = [
     id: "weight",
     title: L("Отскок и твёрдость", "Echo and weight", "القلقلة والتفخيم", "Pantulan dan berat", "Kalkale ve kalınlık", "قلقلہ اور تفخیم"),
     text: L(
-      "Отскок — короткий толчок, не гласный. Он у къ, твёрдой т, б, дж и д, если на них нет гласного или ты на них остановился. Всегда толще: х, сад, дад, та, за, гъ и къ. Лям в «Аллах1» толще после а и у и тоньше после и.",
+      "Отскок — короткий толчок, не гласный. Он у къ, твёрдой т, б, дж и д, если на них нет гласного или ты на них остановился. Всегда толще: х, сад, дад, та, за, г1 и къ. Лям в «Аллах1» толще после а и у и тоньше после и.",
       "The echo is a short push, not a vowel. It is on q, the heavy t, b, j and d, when they have no vowel or you stop on them. Always thicker: kh, sad, dad, ta, za, gh and q. The lam in Allah is thicker after a and u, and thinner after i.",
       "القلقلة دفعة قصيرة، ليست حركة. تكون في ق وط وب وج ود إذا لم تكن عليها حركة أو وقفت عليها. دائمًا أغلظ: خ ص ض ط ظ غ ق. لام «الله» أغلظ بعد أ و أُ، وأدق بعد إ.",
       "Pantulan ialah tolakan pendek, bukan vokal. Ia pada q, t berat, b, j dan d, bila tiada vokal atau anda berhenti padanya. Sentiasa lebih tebal: kh, sad, dad, ta, za, gh dan q. Lam pada Allah lebih tebal selepas a dan u, lebih nipis selepas i.",
@@ -550,7 +550,7 @@ export const TAJWEED: TajLesson[] = [
       },
       {
         ar: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
-        read: "Сыратал-лязина ан1амта 1аляйхим, гъайриль-магъз1ууби 1аляйхим ва лаз1-з1ааллин",
+        read: "Сыратал-лязина ан1амта 1аляйхим, г1айриль-маг1з1ууби 1аляйхим ва лаз1-з1ааллин",
         lat: "Siratal-ladhina an'amta alayhim, ghayril-maghdubi alayhim wa lad-dallin",
         gloss: L(
           "Путём тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.",

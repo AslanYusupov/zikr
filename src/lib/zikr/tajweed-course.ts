@@ -136,7 +136,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         letters: "ا و ي · ء ه · ع ح · غ خ",
         mechanism: L(
-          "Низ горла: хамза — обрыв голоса, ه — лёгкий выдох. Середина: ع — сжатие, ح — тихий хь, не х. Верх, ближе ко рту: غ — гъ, خ — х.",
+          "Низ горла: хамза — обрыв голоса, ه — лёгкий выдох. Середина: ع — сжатие, ح — тихий хь, не х. Верх, ближе ко рту: غ — г1, خ — х.",
           "The bottom of the throat: hamza is a stop in the voice, and ha is a light breath. The middle: ayn is a squeeze, and ha is a soft h, not kh. The top, nearer the mouth: ghayn is gh, and kha is kh.",
           "أقصى الحلق: الهمزة والهاء. وسطه: العين والحاء. أدناه: الغين والخاء. الحاء ليست خاء، والعين ليست همزة.",
           "Pangkal halkum: hamzah dan ha. Tengah: ain dan ha. Hujung, dekat mulut: ghain dan kha. Ha bukan kh. Ain bukan hamzah.",
