@@ -3386,8 +3386,67 @@ html, body {
   .surah-now { max-width: 34vw; }
 }
 
-.day-line, .stat-value { overflow-wrap: anywhere; }
+html[data-os="android"] {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+html[data-os="android"] header.safe-top {
+  padding-top: max(.35rem, env(safe-area-inset-top), var(--status-extra, 0px));
+}
+html[data-os="android"] header.safe-top button.grid,
+html[data-os="android"] header.safe-top button.flex {
+  height: 40px;
+}
+html[data-os="android"] header.safe-top button.grid {
+  width: 40px;
+}
+html[data-os="android"] .app-nav {
+  padding-bottom: max(.4rem, env(safe-area-inset-bottom), var(--nav-extra, 12px));
+}
+html[data-os="android"] .app-nav button {
+  min-height: 2.85rem;
+  gap: 1px;
+  padding-inline: 0;
+  font-size: 10px;
+  line-height: 1.1;
+}
+html[data-os="android"] .app-nav button svg,
+html[data-os="android"] .nav-dua {
+  width: 18px;
+  height: 18px;
+}
+html[data-os="android"] .orb-slot {
+  padding: 1% .8rem 0;
+}
+html[data-os="android"] .orb-slot .orb {
+  width: min(30vw, 7.2rem, 20svh);
+}
+html[data-os="android"] .phrase-read {
+  max-height: 6.6rem;
+  margin-top: .1rem;
+}
+html[data-os="android"] .reminder {
+  max-height: 4.2rem;
+  padding: .22rem .5rem .26rem;
+}
+html[data-os="android"] .stats-dock {
+  margin-top: 0;
+  padding-bottom: .05rem;
+}
+html[data-os="android"] .day-line {
+  font-size: 11px;
+  line-height: 1.2;
+  padding-top: .1rem;
+}
+html[data-os="android"] .stat-value {
+  font-size: clamp(13px, 3.5vw, 16px);
+}
+html[data-os="android"] .home-switch button {
+  min-height: 2.15rem;
+  font-size: 12px;
+}
 .app-nav button { min-width: 0; text-align: center; }
+.day-line, .stat-value { overflow-wrap: anywhere; }
 .shell-main { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 header.safe-top {
   display: grid;
