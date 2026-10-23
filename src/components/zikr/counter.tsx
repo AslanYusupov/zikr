@@ -322,15 +322,14 @@ export function Counter({
               {arabic}
             </p>
             <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
-            {virtue && showPhrase ? (
+            {showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-muted">
-                {phrase.full && s.lang === "ru" ? <p className="text-fg">{phrase.full}</p> : null}
-                <p className="mt-1">{spoken.reward}</p>
+                <p>{spoken.meaning}</p>
+                <p className="mt-1 text-fg">{spoken.reward}</p>
+                {virtue && phrase.full && s.lang === "ru" ? <p className="mt-1">{phrase.full}</p> : null}
                 <p className="mt-1 text-[0.65rem]">{cite(phrase.source, s.lang)}</p>
               </div>
-            ) : (
-              <p className="mt-0.5 text-xs leading-snug text-muted">{showPhrase ? spoken.meaning : ""}</p>
-            )}
+            ) : null}
           </button>
           <div className="orb-slot">
             <div className="relative grid place-items-center">

@@ -3442,7 +3442,7 @@ html[data-os="android"] .orb-slot .orb {
   width: min(30vw, 7.2rem, 20svh);
 }
 html[data-os="android"] .phrase-read {
-  max-height: 6.6rem;
+  max-height: 9.2rem;
   margin-top: .1rem;
 }
 html[data-os="android"] .reminder {
