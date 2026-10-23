@@ -35,8 +35,8 @@ const RU: Record<string, string> = {
   س: "с",
   ش: "ш",
   ص: "с",
-  ض: "дз",
-  ط: "т",
+  ض: "д1",
+  ط: "т1",
   ظ: "з",
   ع: "1",
   غ: "г1",
@@ -376,7 +376,7 @@ function firstSound(glyphs: Glyph[]): string {
 }
 
 function bridge(next: string, ru: boolean): string {
-  const digraphs = ru ? ["дж", "дз", "г1", "къ", "хь", "х1"] : ["th", "dh", "sh", "kh", "gh"];
+  const digraphs = ru ? ["дж", "д1", "т1", "г1", "къ", "хь", "х1"] : ["th", "dh", "sh", "kh", "gh"];
   let head = next.slice(0, 1);
   for (const item of digraphs) {
     if (next.startsWith(item)) head = item;

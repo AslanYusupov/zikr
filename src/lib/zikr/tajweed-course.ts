@@ -191,7 +191,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         examples: [
           { ar: "قُلْ", read: "къуль — къ из глубины", lat: "qul — q from deep back", where: "112:1" },
-          { ar: "الضَّالِّينَ", read: "адз-дзааллин — дад, дз", lat: "ad-dallin — dad", where: "1:7" },
+          { ar: "الضَّالِّينَ", read: "ад1-д1ааллин — дад, д1", lat: "ad-dallin — dad", where: "1:7" },
           { ar: "ٱلثَّمَرَٰتِ", read: "ас-самарати — первая «са» это ث, язык между зубами", lat: "ath-thamarat — the first sound is tha, the tongue between the teeth", where: "2:22" },
         ],
         mistakes: L(
@@ -288,7 +288,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           "ہمس، سانس جاتا ہے: ف ح ث ه ش خ ص س ك ت۔ شدت، آواز رکتی ہے: ء ج د ق ط ب ك ت۔ ان کے بیچ، آواز نہ رکتی ہے نہ پوری چلتی: ل ن ع م ر۔ ہمیشہ موٹے: خ ص ض غ ط ق ظ۔ اور بند: ص ض ط ظ۔ باقی پتلے، جب تک الگ حکم ر یا ل کو موٹا نہ کرے۔",
         ),
         examples: [
-          { ar: "ٱلصِّرَٰطَ", read: "ас-сырата — сад твёрдый", lat: "as-sirata — sad is heavy", where: "1:6" },
+          { ar: "ٱلصِّرَٰطَ", read: "ас-сират1а — сад твёрдый", lat: "as-sirata — sad is heavy", where: "1:6" },
           { ar: "كَتَبَ", read: "катаба — к тонкий", lat: "kataba — kaf is light", where: "6:12" },
         ],
         mistakes: L(
@@ -335,7 +335,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         examples: [
           { ar: "قَدْ أَفْلَحَ", read: "къад афляхьа — отскок на д", lat: "qad aflaha — echo on dal", where: "23:1" },
           { ar: "خَوْفٌ", read: "хауфун — вав мягкий, не тяни", lat: "khawfun — a soft waw, do not hold it", where: "2:38" },
-          { ar: "ٱلصِّرَٰطَ", read: "ас-сырата — свист сада", lat: "as-sirata — the whistle of sad", where: "1:6" },
+          { ar: "ٱلصِّرَٰطَ", read: "ас-сират1а — свист сада", lat: "as-sirata — the whistle of sad", where: "1:6" },
         ],
         mistakes: L(
           "Отскок не превращай в гласный «а» или «и». Ра не кати несколько раз.",
@@ -827,12 +827,12 @@ export const TAJWEED_COURSE: CourseModule[] = [
           "چھ الضَّالِّينَ میں، اور سورت کے شروع کے ان حروف میں جو کھینچے جاتے ہیں: الم کی لام اور میم۔ اگر شروع کا حرف اگلے میں ملے تو بھاری قسم، ورنہ ہلکی۔ لمبائی وہی، چھ۔ رکیں اور آخری حرف ساکن ہو: دو، چار یا چھ، برابر۔ ا کے بعد و اور ی، جیسے خَوْف، صرف وقف پر کھینچیں: پھر بھی دو، چار یا چھ۔",
         ),
         examples: [
-          { ar: "الضَّالِّينَ", read: "адз-дзааллин — шесть", lat: "ad-dallin — six", where: "1:7" },
+          { ar: "الضَّالِّينَ", read: "ад1-д1ааллин — шесть", lat: "ad-dallin — six", where: "1:7" },
           { ar: "الم", read: "лам и мим — по шесть, алиф без протяжки", lat: "lam and mim — six each; alif is not lengthened", where: "2:1" },
           { ar: "ٱلْعَٰلَمِينَ", read: "на остановке две, четыре или шесть", lat: "when stopping: two, four or six", where: "1:2" },
         ],
         mistakes: L(
-          "«Адз-дзааллин» не сокращай до двух. И не тяни мягкий вав в «хауф», пока не остановился.",
+          "«Ад1-д1ааллин» не сокращай до двух. И не тяни мягкий вав в «хауф», пока не остановился.",
           "Do not shorten ad-dallin to two. And do not hold the soft waw in khawf until you have stopped.",
           "لا تقصر «الضالين» إلى حركتين. ولا تمد واو اللين في «خوف» قبل الوقف.",
           "Jangan pendekkan ad-dallin menjadi dua. Dan jangan panjangkan waw lunak pada khawf sebelum berhenti.",
@@ -841,7 +841,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         quiz: [
           {
-            q: L("Сколько в «адз-дзааллин»?", "How many in ad-dallin?", "كم في «الضالين»؟", "Berapa pada ad-dallin?", "Ad-dallin'de kaç?", "الضَّالِّينَ میں کتنی؟"),
+            q: L("Сколько в «ад1-д1ааллин»?", "How many in ad-dallin?", "كم في «الضالين»؟", "Berapa pada ad-dallin?", "Ad-dallin'de kaç?", "الضَّالِّينَ میں کتنی؟"),
             choices: [
               L("Четыре или пять", "Four or five", "أربع أو خمس", "Empat atau lima", "Dört veya beş", "چار یا پانچ"),
               L("Шесть", "Six", "ست", "Enam", "Altı", "چھ"),
