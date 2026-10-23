@@ -269,6 +269,7 @@ export function Counter({
   }, []);
 
   const spoken = phraseOf(phrase, s.lang);
+  const nameIndex = ALLAH_NAMES.findIndex((item) => item.id === s.mode);
   const showPhrase = !(s.mode === "random" && pulse === 0);
   const arabic = showPhrase ? phrase.arabic : "ذِكْر";
   const name = showPhrase ? spoken.name : t(s.lang, "random");
@@ -278,6 +279,14 @@ export function Counter({
   const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
   const rewardRing = totalReward <= 0 ? 0 : 1 - 1 / (1 + totalReward / 800);
+  function stepName(dir: number) {
+    if (nameIndex < 0) return;
+    const next = ALLAH_NAMES[(nameIndex + dir + ALLAH_NAMES.length) % ALLAH_NAMES.length];
+    if (!next) return;
+    setVirtue(false);
+    s.setMode(next.id);
+    triggerHaptic("click");
+  }
 
   return (
     <div className="stage-wrap">
@@ -332,6 +341,19 @@ export function Counter({
               <p className="mt-0.5 text-xs leading-snug text-muted">{showPhrase ? spoken.meaning : ""}</p>
             )}
           </button>
+          {nameIndex >= 0 ? (
+            <div className="name-switch" dir="ltr">
+              <button type="button" className="name-step" aria-label="prev" onClick={() => stepName(-1)}>
+                ‹
+              </button>
+              <span className="name-step-no">
+                {nameIndex + 1} / {ALLAH_NAMES.length}
+              </span>
+              <button type="button" className="name-step" aria-label="next" onClick={() => stepName(1)}>
+                ›
+              </button>
+            </div>
+          ) : null}
           <div className="orb-slot">
             <div className="relative grid place-items-center">
               <div className="halo" />
