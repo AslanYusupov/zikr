@@ -1926,6 +1926,12 @@ details.fold>:not(summary) {
 .phrase-open {
   max-height: 32svh;
 }
+.phrase-compact {
+  max-height: 26svh;
+}
+.phrase-compact.phrase-open {
+  max-height: 40svh;
+}
 .quest-under {
   z-index: 6;
   pointer-events: auto;

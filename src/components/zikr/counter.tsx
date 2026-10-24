@@ -272,6 +272,8 @@ export function Counter({
   const nameIndex = ALLAH_NAMES.findIndex((item) => item.id === s.mode);
   const showPhrase = !(s.mode === "random" && pulse === 0);
   const arabic = showPhrase ? phrase.arabic : "ذِكْر";
+  const compact = showPhrase && arabic.length > 90;
+  const arabicShown = compact ? `${arabic.split(/\s+/).slice(0, 3).join(" ")}…` : arabic;
   const name = showPhrase ? spoken.name : t(s.lang, "random");
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
@@ -317,24 +319,26 @@ export function Counter({
           </div>
           <button
             type="button"
-            className={cn("phrase-read shrink-0 overflow-y-auto px-4 pt-2 text-center", virtue && "phrase-open")}
+            className={cn("phrase-read shrink-0 overflow-y-auto px-4 pt-2 text-center", virtue && "phrase-open", compact && "phrase-compact")}
             onClick={() => setVirtue((v) => !v)}
           >
             <p
               className={cn(
                 "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
-                arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
+                compact ? "text-lg" : arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
               )}
               dir="rtl"
               lang="ar"
             >
-              {arabic}
+              {arabicShown}
             </p>
             <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
-            {virtue && showPhrase ? (
+            {compact && !virtue ? (
+              <p className="mt-1 text-xs leading-snug text-fg">{spoken.reward}</p>
+            ) : virtue && showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-muted">
-                {phrase.full && s.lang === "ru" ? <p className="text-fg">{phrase.full}</p> : null}
-                <p className="mt-1 text-fg">{spoken.reward}</p>
+                {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
+                <p className="mt-1 text-fg">{spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
                 <p className="mt-1 text-[0.65rem]">{cite(phrase.source, s.lang)}</p>
               </div>
             ) : (

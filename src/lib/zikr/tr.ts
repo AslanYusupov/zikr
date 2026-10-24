@@ -5,7 +5,7 @@ import { QUOTE_MORE } from "./quote-more";
 import { QUOTE_NEW } from "./quote-new";
 import type { LangId } from "./types";
 
-type Line = { name: string; short: string; meaning: string; reward: string; full?: string };
+type Line = { name: string; short: string; meaning: string; reward: string; full?: string; translation?: string };
 
 const EN: Record<string, Line> = {
   subhanallah: { name: "Subhanallah", short: "Subhanallah", meaning: "Glory be to Allah", reward: "One of the four words most beloved to Allah. With al-hamdulillah it fills what is between the heavens and the earth. (Muslim)" },
@@ -248,7 +248,7 @@ export function phraseOf(d: Dhikr, lang: LangId): Line {
       return { name: label.name, short: label.name, meaning: label.meaning, reward: lang === "ru" ? found.note : found.noteEn, full };
     }
   }
-  if (lang === "ru") return { name: d.name, short: d.short, meaning: d.meaning, reward: d.reward, full };
+  if (lang === "ru") return { name: d.name, short: d.short, meaning: d.meaning, reward: d.reward, full, translation: d.translation };
   const row = PACK[lang]?.[d.id];
   return row ? { ...row, full } : { name: d.name, short: d.short, meaning: d.meaning, reward: d.reward, full };
 }
