@@ -3251,43 +3251,32 @@ html, body {
 }
 @keyframes rain-fall { to { transform: translateY(120vh); } }
 .sky-shot { position: absolute; top: 0; left: 0; width: var(--len, 8rem); height: 6px; opacity: 0; pointer-events: none; }
-.sky-shot-a { --len: 7rem; animation: sky-a 37s linear 4s infinite; }
-.sky-shot-b { --len: 11rem; animation: sky-b 54s linear 16s infinite; }
-.sky-shot-c { --len: 6.2rem; animation: sky-c 43s linear 9s infinite; }
-.sky-shot-d { --len: 5rem; animation: sky-d 61s linear 28s infinite; }
-.sky-flip .comet-tail { left: auto; right: 5px; transform: translateY(-50%) scaleX(-1); }
-.sky-flip .comet-head { left: auto; right: 0; transform: translate(20%, -50%); }
+.sky-shot-a { --len: 9rem; animation: sky-a 28s linear 6s infinite; }
+.sky-shot-b { --len: 7.2rem; animation: sky-b 28s linear 20s infinite; }
 @keyframes sky-a {
-  0%, 7% { opacity: 0; transform: translate3d(114vw, 3vh, 0) rotate(-13deg); }
-  11% { opacity: .72; }
-  19%, 100% { opacity: 0; transform: translate3d(-32vw, 24vh, 0) rotate(-13deg); }
+  0% { opacity: 0; transform: translate3d(112vw, 2vh, 0) rotate(-18deg); }
+  4% { opacity: .9; }
+  18% { opacity: .9; }
+  24%, 100% { opacity: 0; transform: translate3d(-28vw, 34vh, 0) rotate(-18deg); }
 }
 @keyframes sky-b {
-  0%, 46% { opacity: 0; transform: translate3d(88vw, -8vh, 0) rotate(-41deg); }
-  50% { opacity: .88; }
-  58%, 100% { opacity: 0; transform: translate3d(14vw, 76vh, 0) rotate(-41deg); }
+  0% { opacity: 0; transform: translate3d(96vw, -6vh, 0) rotate(-32deg); }
+  4% { opacity: .82; }
+  16% { opacity: .82; }
+  22%, 100% { opacity: 0; transform: translate3d(-18vw, 48vh, 0) rotate(-32deg); }
 }
-@keyframes sky-c {
-  0%, 63% { opacity: 0; transform: translate3d(-34vw, 8vh, 0) rotate(26deg); }
-  67% { opacity: .66; }
-  75%, 100% { opacity: 0; transform: translate3d(120vw, 44vh, 0) rotate(26deg); }
-}
-@keyframes sky-d {
-  0%, 24% { opacity: 0; transform: translate3d(64vw, -12vh, 0) rotate(-62deg); }
-  27% { opacity: .58; }
-  33%, 100% { opacity: 0; transform: translate3d(22vw, 58vh, 0) rotate(-62deg); }
+@keyframes comet-live {
+  0% { opacity: 0; transform: translate3d(var(--x, 100vw), var(--y, 8vh), 0) rotate(var(--rot, -16deg)); }
+  10% { opacity: var(--bright, .95); }
+  82% { opacity: var(--bright, .95); }
+  100% { opacity: 0; transform: translate3d(var(--x2, -36vw), var(--y2, 40vh), 0) rotate(var(--rot, -16deg)); }
 }
 .bismillah-sky { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 42%, #1a2430, #000 72%); }
 .comet-live {
-  width: var(--len, 9rem);
+  width: var(--len, 11rem);
   height: 6px;
   opacity: 0;
-  animation: comet-live var(--dur, 1.2s) linear 1;
-}
-@keyframes comet-live {
-  0% { opacity: 0; transform: translate3d(var(--x, 100vw), var(--y, -8vh), 0) rotate(var(--rot, -18deg)); }
-  18% { opacity: var(--bright, .8); }
-  100% { opacity: 0; transform: translate3d(var(--x2, -30vw), var(--y2, 30vh), 0) rotate(var(--rot, -18deg)); }
+  animation: comet-live var(--dur, 1.35s) linear 1;
 }
 .app-nav { padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { min-height: 3.15rem; }

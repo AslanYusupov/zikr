@@ -29,26 +29,18 @@ export function Crescent({ className }: { className?: string }) {
 }
 
 const FLOW = [
-  [8, 1.4, 0, 34],
-  [16, 2.2, 6, 42],
-  [24, 1.1, 11, 28],
-  [33, 1.8, 3, 38],
-  [41, 2.6, 14, 46],
-  [49, 1.2, 8, 32],
-  [57, 1.7, 1, 36],
-  [64, 2.1, 17, 44],
-  [72, 1, 5, 30],
-  [80, 1.9, 12, 40],
-  [88, 1.3, 9, 33],
-  [12, 2.4, 15, 48],
-  [28, 1.5, 4, 35],
-  [45, 1.1, 19, 29],
-  [61, 2, 7, 41],
-  [76, 1.6, 13, 37],
-  [93, 1.2, 2, 31],
-  [20, 2.3, 10, 45],
-  [53, 1.4, 16, 39],
-  [69, 1.8, 6, 34],
+  [8, 1.5, 0, 36],
+  [18, 2, 7, 44],
+  [31, 1.2, 3, 32],
+  [44, 1.8, 12, 40],
+  [57, 1.3, 5, 34],
+  [69, 2.1, 15, 46],
+  [81, 1.4, 9, 38],
+  [92, 1.1, 2, 30],
+  [25, 1.7, 18, 42],
+  [50, 1.2, 11, 35],
+  [74, 1.6, 6, 39],
+  [13, 2.2, 14, 48],
 ] as const;
 
 const RAIN = Array.from({ length: 28 }, (_, i) => ({
@@ -139,14 +131,6 @@ export function Backdrop() {
             <span className="comet-head" />
           </span>
           <span className="sky-shot sky-shot-b" aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
-          </span>
-          <span className="sky-shot sky-shot-c sky-flip" aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
-          </span>
-          <span className="sky-shot sky-shot-d" aria-hidden>
             <span className="comet-tail" />
             <span className="comet-head" />
           </span>

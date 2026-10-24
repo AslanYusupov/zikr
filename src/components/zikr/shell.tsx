@@ -42,7 +42,7 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
       onEnter();
       return;
     }
-    const timer = window.setTimeout(onEnter, 1500);
+    const timer = window.setTimeout(onEnter, 1700);
     return () => window.clearTimeout(timer);
   }, [onEnter]);
 
@@ -54,17 +54,14 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
         className="comet comet-live splash-pass"
         aria-hidden
         style={{
-          ["--x" as string]: "104vw",
-          ["--y" as string]: "-6vh",
-          ["--mx" as string]: "46vw",
-          ["--my" as string]: "16vh",
-          ["--x2" as string]: "-32vw",
-          ["--y2" as string]: "30vh",
-          ["--rot" as string]: "-18deg",
-          ["--flip" as string]: "1",
-          ["--dur" as string]: "1.2s",
-          ["--len" as string]: "9rem",
-          ["--bright" as string]: "0.82",
+          ["--x" as string]: "108vw",
+          ["--y" as string]: "8vh",
+          ["--x2" as string]: "-36vw",
+          ["--y2" as string]: "40vh",
+          ["--rot" as string]: "-16deg",
+          ["--dur" as string]: "1.35s",
+          ["--len" as string]: "11rem",
+          ["--bright" as string]: "0.95",
         }}
       >
         <span className="comet-tail" />
