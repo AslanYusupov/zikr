@@ -120,15 +120,15 @@ export function ModeStrip({
         </Chip>
         <Chip active={quranOn} onClick={onQuran}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">الْقُرْآنُ الْكَرِيمُ</span>
-          <span className="block max-w-32 truncate text-[0.65rem] leading-tight">{copy.quran}</span>
+          <span className="chip-label">{copy.quran}</span>
         </Chip>
         <Chip active={listOn} onClick={onList}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">ذِكْرُ اللَّهِ</span>
-          <span className="block max-w-32 truncate text-[0.65rem] leading-tight">{t(s.lang, "dhikrTitle")}</span>
+          <span className="chip-label">{t(s.lang, "dhikrTitle")}</span>
         </Chip>
         <Chip active={namesOn} onClick={onNames}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ</span>
-          <span className="block max-w-32 truncate text-[0.65rem] leading-tight">{t(s.lang, "names")}</span>
+          <span className="chip-label">{t(s.lang, "names")}</span>
         </Chip>
         {REMEMBRANCE.map((d) => (
           <Chip
@@ -139,10 +139,10 @@ export function ModeStrip({
               s.setMode(d.id);
             }}
           >
-            <span className="block max-w-56 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">
-              {d.arabic}
+            <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">
+              {chipArabic(d.arabic)}
             </span>
-            <span className="chip-label" dir="ltr">{phraseOf(d, s.lang).short}</span>
+            <span className="chip-label">{chipText(phraseOf(d, s.lang).short)}</span>
           </Chip>
         ))}
       </div>
@@ -513,7 +513,7 @@ export function Counter({
                     <p className="truncate font-arabic text-base leading-none text-fg" dir="rtl" lang="ar">
                       {item.arabic}
                     </p>
-                    <p className="mt-1 text-xs text-muted" dir="ltr">{line.short}</p>
+                    <p className="mt-1 truncate text-xs text-muted" dir="ltr">{line.short}</p>
                     <p className="mt-0.5 text-[0.65rem] text-gold">{tx(s.lang, "todayWord")} {formatNum(todayCount)}</p>
                   </div>
                 </div>
@@ -638,6 +638,21 @@ export function Counter({
       ) : null}
     </div>
   );
+}
+
+function chipText(text: string): string {
+  const max = 20;
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const space = Math.max(cut.lastIndexOf(" "), cut.lastIndexOf("-"));
+  const head = (space > 8 ? cut.slice(0, space) : cut).replace(/[-\s]+$/, "");
+  return `${head}…`;
+}
+
+function chipArabic(text: string): string {
+  const parts = text.trim().split(/\s+/);
+  if (parts.length <= 4) return text;
+  return `${parts.slice(0, 4).join(" ")}…`;
 }
 
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {

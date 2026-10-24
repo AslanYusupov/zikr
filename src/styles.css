@@ -1680,13 +1680,15 @@ details.fold>:not(summary) {
 }
 .chip-label {
   display: block;
-  max-width: 14rem;
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   direction: ltr;
   unicode-bidi: isolate;
   text-align: center;
   font-size: 0.65rem;
   line-height: 1.15;
-  white-space: nowrap;
 }
 .orb {
   z-index: 5;
