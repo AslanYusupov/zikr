@@ -6,8 +6,7 @@ import { Celebrate } from "./celebrate";
 import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
-import { quranCopy } from "@/lib/zikr/quran";
-import { isRtl, t, tx } from "@/lib/zikr/i18n";
+import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
 import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
 import { onlineNow } from "@/lib/zikr/api";
 import { formatNum, todayKey } from "@/lib/zikr/format";
@@ -370,11 +369,11 @@ export function Shell() {
     tab !== "zikr"
       ? { ar: "", title: t(lang, tab) }
       : home === "quran"
-        ? { ar: "الْقُرْآنُ الْكَرِيمُ", title: quranCopy(lang).quran }
+        ? { ar: "الْقُرْآنُ الْكَرِيمُ", title: headLabel(lang, "quran") }
         : namesOpen
-          ? { ar: "أَسْمَاءُ اللَّهِ الْحُسْنَى", title: t(lang, "names") }
+          ? { ar: "أَسْمَاءُ اللَّهِ الْحُسْنَى", title: headLabel(lang, "names") }
           : dhikrList
-            ? { ar: "ذِكْرُ اللَّهِ", title: t(lang, "dhikrTitle") }
+            ? { ar: "ذِكْرُ اللَّهِ", title: headLabel(lang, "dhikr") }
             : { ar: "ذِكْر", title: t(lang, "zikr") };
   const showHeadAr = head.ar !== "";
   const enter = useCallback(() => {

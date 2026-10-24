@@ -759,6 +759,16 @@ export function t(lang: LangId, key: UiKey): string {
   return DICT[lang][key] ?? DICT.ru[key];
 }
 
+const HEAD: Record<"quran" | "dhikr" | "names", Record<LangId, string>> = {
+  quran: { ru: "Коран", en: "Quran", ar: "القرآن", id: "Qur'an", tr: "Kur'an", ur: "قرآن" },
+  dhikr: { ru: "Поминание", en: "Dhikr", ar: "الذكر", id: "Zikir", tr: "Zikir", ur: "ذکر" },
+  names: { ru: "Имена", en: "Names", ar: "الأسماء", id: "Nama", tr: "İsimler", ur: "نام" },
+};
+
+export function headLabel(lang: LangId, id: "quran" | "dhikr" | "names"): string {
+  return HEAD[id][lang] ?? HEAD[id].ru;
+}
+
 const EXTRA = {
   ru: {
     yesterday: "вчера",
