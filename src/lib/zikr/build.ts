@@ -48,7 +48,7 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
 }
 
 export async function takeUpdate(): Promise<void> {
-  const cacheName = "zikr-shell-v1";
+  const cacheName = "zikr-shell-v2";
   try {
     const res = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
     if (!res.ok) return;

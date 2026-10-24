@@ -1,4 +1,4 @@
-const SHELL = "zikr-shell-v1";
+const SHELL = "zikr-shell-v2";
 
 function stored(res) {
   const headers = new Headers();
@@ -12,18 +12,23 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zikr-shell-") && key !== SHELL).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim()),
+  );
 });
 
 function keep(url) {
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/")) return false;
   return (
     url.pathname === "/" ||
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/fonts/") ||
-    url.pathname === "/favicon.svg" ||
-    url.pathname === "/orbit-sun.webp" ||
-    url.pathname === "/orbit-moon.webp" ||
-    /\.(?:js|css|woff2)$/.test(url.pathname)
+    url.pathname.startsWith("/quran-mean/") ||
+    url.pathname.startsWith("/__grok/") ||
+    /\.(?:js|css|woff2|webp|svg|png|jpg|jpeg|json|webmanifest)$/.test(url.pathname)
   );
 }
 
@@ -38,24 +43,32 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== self.location.origin) return;
   if (url.searchParams.has("probe") || url.searchParams.has("warm")) return;
-  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server")) return;
+  if (!keep(url) && req.mode !== "navigate" && req.destination !== "document") return;
 
   const navigation = req.mode === "navigate" || req.destination === "document";
-  if (!navigation && !keep(url)) return;
-
   event.respondWith(
     (async () => {
       const cache = await caches.open(SHELL);
-      const hit = navigation ? await cache.match("/") : await cache.match(req);
+      const hit = navigation
+        ? (await cache.match("/", { ignoreSearch: true })) || (await cache.match(req, { ignoreSearch: true }))
+        : await cache.match(req, { ignoreSearch: true });
       const update = fetch(req, { cache: "no-store" })
         .then((res) => {
-          if (res.ok) stored(res.clone()).then((copy) => cache.put(navigation ? "/" : req, copy)).catch(() => {});
+          if (res.ok && !navigation) {
+            stored(res.clone())
+              .then((copy) => cache.put(new Request(url.pathname), copy))
+              .catch(() => {});
+          }
           return res;
         })
         .catch(() => null);
       if (hit) return hit;
       const fresh = await update;
       if (fresh) return fresh;
+      if (navigation) {
+        const page = await cache.match("/", { ignoreSearch: true });
+        if (page) return page;
+      }
       return new Response("", { status: 503 });
     })(),
   );

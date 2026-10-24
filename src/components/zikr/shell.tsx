@@ -117,8 +117,25 @@ export function Shell() {
           await navigator.serviceWorker.register("/sw.js");
         }
         if (stop) return;
-        const cache = await caches.open("zikr-shell-v1");
-        const urls = new Set(["/favicon.svg", "/orbit-sun.webp", "/orbit-moon.webp"]);
+        const cache = await caches.open("zikr-shell-v2");
+        const urls = new Set([
+          "/favicon.svg",
+          "/orbit-sun.webp",
+          "/orbit-moon.webp",
+          "/quran.json",
+          "/__grok/manifest.webmanifest",
+          "/__grok/icon-180.png",
+          "/shore.jpg",
+          "/desert.jpg",
+          "/roses.jpg",
+          "/cosmos.jpg",
+          "/peaks.jpg",
+          "/lake.jpg",
+          "/jungle.jpg",
+          "/andromeda.jpg",
+          "/maldives.jpg",
+          "/mecca.jpg",
+        ]);
         document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
           const src = node.getAttribute("src") || node.getAttribute("href") || "";
           const path = src.startsWith("/") ? src.split("?")[0] : "";
@@ -145,12 +162,17 @@ export function Shell() {
           }),
         );
         let savedPage = false;
+        const assetsReady = async (html: string) => {
+          const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+          if (needed.length === 0 || !html.includes("<html")) return false;
+          const ready = await Promise.all(needed.map(async (src) => Boolean(await cache.match(src))));
+          return ready.every(Boolean);
+        };
         try {
           const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
           if (page.ok) {
             const html = await page.text();
-            const scripts = [...urls].filter((url) => url.startsWith("/assets/") && url.endsWith(".js"));
-            if (html.includes("<html") && scripts.every((src) => html.includes(src))) {
+            if (await assetsReady(html)) {
               await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
               savedPage = true;
             }
@@ -160,7 +182,9 @@ export function Shell() {
         }
         if (!savedPage && !(await cache.match("/"))) {
           const html = `<!DOCTYPE html>${document.documentElement.outerHTML}`;
-          await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+          if (await assetsReady(html)) {
+            await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+          }
         }
       } catch {
         /* opening must not wait on this */
