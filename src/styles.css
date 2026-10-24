@@ -1678,6 +1678,16 @@ details.fold>:not(summary) {
 .scroll-x::-webkit-scrollbar {
   display: none;
 }
+.chip-label {
+  display: block;
+  max-width: 14rem;
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: center;
+  font-size: 0.65rem;
+  line-height: 1.15;
+  white-space: nowrap;
+}
 .orb {
   z-index: 5;
   aspect-ratio: 1;
