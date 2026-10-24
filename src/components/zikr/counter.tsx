@@ -3,12 +3,13 @@ import { MILESTONES, QUOTES, REMEMBRANCE, dhikrById, rewardPoints } from "@/lib/
 import { ALLAH_NAMES } from "@/lib/zikr/names";
 import { sunnahQuestById } from "@/lib/zikr/quests";
 import { addDays, formatNum, todayKey, zikrWord } from "@/lib/zikr/format";
-import { t, tx, degreeName, headLabel } from "@/lib/zikr/i18n";
+import { t, tx, degreeName } from "@/lib/zikr/i18n";
 import { levelFromXp } from "@/lib/zikr/levels";
 import { noteTap } from "@/lib/zikr/live";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { triggerHaptic } from "@/lib/zikr/haptic";
 import { useZikr } from "@/lib/zikr/store";
+import { quranCopy } from "@/lib/zikr/quran";
 import { cite, localQuote, nameText, phraseOf } from "@/lib/zikr/tr";
 import { cn } from "@/lib/cn";
 import { Crescent } from "./pattern";
@@ -100,6 +101,7 @@ export function ModeStrip({
   onLeave: () => void;
 }) {
   const s = useZikr();
+  const copy = quranCopy(s.lang);
   const scroller = useRef<HTMLDivElement>(null);
   const busy = quranOn || listOn || namesOn;
 
@@ -118,15 +120,15 @@ export function ModeStrip({
         </Chip>
         <Chip active={quranOn} onClick={onQuran}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">الْقُرْآنُ الْكَرِيمُ</span>
-          <span className="chip-label">{headLabel(s.lang, "quran")}</span>
+          <span className="chip-label">{copy.quran}</span>
         </Chip>
         <Chip active={listOn} onClick={onList}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">ذِكْرُ اللَّهِ</span>
-          <span className="chip-label">{headLabel(s.lang, "dhikr")}</span>
+          <span className="chip-label">{t(s.lang, "dhikrTitle")}</span>
         </Chip>
         <Chip active={namesOn} onClick={onNames}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ</span>
-          <span className="chip-label">{headLabel(s.lang, "names")}</span>
+          <span className="chip-label">{t(s.lang, "names")}</span>
         </Chip>
         {REMEMBRANCE.map((d) => (
           <Chip
