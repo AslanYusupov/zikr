@@ -200,6 +200,7 @@ export function Counter({
   const dragY = useRef<number | null>(null);
   const quoteDrag = useRef<{ x: number; y: number } | null>(null);
   const quoteSwiped = useRef(false);
+  const skipStageTap = useRef(false);
 
   useEffect(() => {
     quoteLive.current = true;
@@ -305,6 +306,7 @@ export function Counter({
           if (!s.screenTap) return;
           const node = event.target;
           if (!(node instanceof Element)) return;
+          if (skipStageTap.current) return;
           if (node.closest("button, a, input, textarea, .scroll-x, .history-screen")) return;
           triggerHaptic();
           press(event);
@@ -472,7 +474,12 @@ export function Counter({
                   const dy = event.clientY - start.y;
                   if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy)) return;
                   quoteSwiped.current = true;
+                  skipStageTap.current = true;
                   setQuoteAt((value) => value + (dx < 0 ? 1 : -1));
+                  window.setTimeout(() => {
+                    quoteSwiped.current = false;
+                    skipStageTap.current = false;
+                  }, 450);
                 }}
                 className="reminder reminder-in mx-3 mb-1.5 block w-[calc(100%-1.5rem)] text-center"
               >
