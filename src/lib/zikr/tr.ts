@@ -3,6 +3,7 @@ import { ALLAH_NAMES, type AllahName } from "./names";
 import { QUOTE_FIX } from "./quote-fix";
 import { QUOTE_MORE } from "./quote-more";
 import { QUOTE_NEW } from "./quote-new";
+import { EXTRA_TR } from "./quote-extra";
 import type { LangId } from "./types";
 
 type Line = { name: string; short: string; meaning: string; reward: string; full?: string; translation?: string };
@@ -898,7 +899,7 @@ function quoteText(map: Record<string, string>, text: string): string {
 export function localQuote(q: Quote, lang: LangId): Quote {
   const arabic = q.arabic;
   if (lang === "ru") return q;
-  const fixed = QUOTE_FIX[q.text] ?? QUOTE_MORE[q.text] ?? QUOTE_NEW[q.text];
+  const fixed = QUOTE_FIX[q.text] ?? QUOTE_MORE[q.text] ?? QUOTE_NEW[q.text] ?? EXTRA_TR[q.text];
   if (fixed) {
     const text = lang === "ar" ? arabic || fixed.ar : fixed[lang];
     return { text, source: srcOf(q.source, lang), arabic };
