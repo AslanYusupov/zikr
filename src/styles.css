@@ -1611,6 +1611,7 @@ details.fold>:not(summary) {
   padding: .4rem .7rem .45rem;
   max-height: min(38svh, 18rem);
   overflow-y: auto;
+  touch-action: pan-y;
 }
 .reminder-ar {
   display: block;

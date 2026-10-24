@@ -150,6 +150,11 @@ export function ModeStrip({
   );
 }
 
+function quoteSlot(step: number, at: number): number {
+  const raw = Math.floor(step / 360) + at;
+  return ((raw % QUOTES.length) + QUOTES.length) % QUOTES.length;
+}
+
 function quoteHold(text: string): number {
   const ms = 8000 + (text.length / 10) * 1000;
   return Math.round(Math.min(50000, Math.max(12000, ms)));
@@ -193,6 +198,8 @@ export function Counter({
   const [wordTop, setWordTop] = useState("42%");
   const lastTap = useRef(0);
   const dragY = useRef<number | null>(null);
+  const quoteDrag = useRef<{ x: number; y: number } | null>(null);
+  const quoteSwiped = useRef(false);
 
   useEffect(() => {
     quoteLive.current = true;
@@ -201,7 +208,7 @@ export function Counter({
 
   useEffect(() => {
     if (!s.showWisdom || !quoteLive.current) return;
-    const current = QUOTES[(Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length];
+    const current = QUOTES[quoteSlot(s.wisdomStep, quoteAt)];
     const wait = quoteHold(current?.text ?? "");
     const timer = window.setTimeout(() => setQuoteAt((value) => value + 1), wait);
     return () => window.clearTimeout(timer);
@@ -277,7 +284,7 @@ export function Counter({
   const name = showPhrase ? spoken.name : t(s.lang, "random");
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
-  const quoteIndex = (Math.floor(s.wisdomStep / 360) + quoteAt) % QUOTES.length;
+  const quoteIndex = quoteSlot(s.wisdomStep, quoteAt);
   const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
   const rewardRing = totalReward <= 0 ? 0 : 1 - 1 / (1 + totalReward / 800);
@@ -447,7 +454,26 @@ export function Counter({
               <button
                 type="button"
                 key={`${quote.text}-${quoteAt}`}
-                onClick={() => onOpenLibrary(quoteIndex)}
+                onClick={() => {
+                  if (quoteSwiped.current) {
+                    quoteSwiped.current = false;
+                    return;
+                  }
+                  onOpenLibrary(quoteIndex);
+                }}
+                onPointerDown={(event) => {
+                  quoteDrag.current = { x: event.clientX, y: event.clientY };
+                }}
+                onPointerUp={(event) => {
+                  const start = quoteDrag.current;
+                  quoteDrag.current = null;
+                  if (!start) return;
+                  const dx = event.clientX - start.x;
+                  const dy = event.clientY - start.y;
+                  if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy)) return;
+                  quoteSwiped.current = true;
+                  setQuoteAt((value) => value + (dx < 0 ? 1 : -1));
+                }}
                 className="reminder reminder-in mx-3 mb-1.5 block w-[calc(100%-1.5rem)] text-center"
               >
                 {shownQuote.arabic && s.lang !== "ar" && s.lang !== "ur" ? (
