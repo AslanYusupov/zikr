@@ -203,6 +203,7 @@ export function Counter({
   const skipStageTap = useRef(false);
   const dhikrDrag = useRef<{ x: number; y: number; pointer: number; lx: number; ly: number } | null>(null);
   const dhikrSwiped = useRef(false);
+  const [slide, setSlide] = useState<{ n: number; dir: "left" | "right" } | null>(null);
 
   useEffect(() => {
     quoteLive.current = true;
@@ -312,13 +313,13 @@ export function Counter({
     s.setMode(next.id);
     triggerHaptic("click");
   }
-  function dhikrSwipeStart(event: React.PointerEvent<HTMLDivElement>) {
+  function dhikrSwipeStart(event: React.PointerEvent<HTMLElement>) {
     const node = event.target;
     if (!(node instanceof Element)) return;
     if (node.closest(".scroll-x, .reminder, .name-step, .stats-dock, .names-sheet, .history-screen, .quest-under, a, input, textarea")) return;
     dhikrDrag.current = { x: event.clientX, y: event.clientY, pointer: event.pointerId, lx: event.clientX, ly: event.clientY };
   }
-  function dhikrSwipeMove(event: React.PointerEvent<HTMLDivElement>) {
+  function dhikrSwipeMove(event: React.PointerEvent<HTMLElement>) {
     const start = dhikrDrag.current;
     if (!start || start.pointer !== event.pointerId) return;
     start.lx = event.clientX;
@@ -329,7 +330,7 @@ export function Counter({
     event.preventDefault();
     if (!event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.setPointerCapture(event.pointerId);
   }
-  function dhikrSwipeEnd(event: React.PointerEvent<HTMLDivElement>) {
+  function dhikrSwipeEnd(event: React.PointerEvent<HTMLElement>) {
     const start = dhikrDrag.current;
     dhikrDrag.current = null;
     if (!start || start.pointer !== event.pointerId) return;
@@ -337,10 +338,12 @@ export function Counter({
     if (event.type === "pointercancel" && !captured) return;
     const dx = start.lx - start.x;
     const dy = start.ly - start.y;
-    if (Math.abs(dx) < 46 || Math.abs(dx) < Math.abs(dy)) return;
+    if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy)) return;
     dhikrSwiped.current = true;
     skipStageTap.current = true;
-    stepDhikr(dx < 0 ? 1 : -1);
+    const forward = dx > 0;
+    setSlide({ n: Date.now(), dir: forward ? "left" : "right" });
+    stepDhikr(forward ? 1 : -1);
     window.setTimeout(() => {
       dhikrSwiped.current = false;
       skipStageTap.current = false;
@@ -361,13 +364,7 @@ export function Counter({
           press(event);
         }}
       >
-        <div
-          className="main-screen"
-          onPointerDown={dhikrSwipeStart}
-          onPointerMove={dhikrSwipeMove}
-          onPointerUp={dhikrSwipeEnd}
-          onPointerCancel={dhikrSwipeEnd}
-        >
+        <div className="main-screen">
           <div className="shrink-0 px-4 pt-1">
             <div className="flex items-baseline justify-between gap-3 text-[0.7rem] text-muted">
               <span className="truncate">
@@ -383,7 +380,12 @@ export function Counter({
           </div>
           <button
             type="button"
-            className={cn("phrase-read shrink-0 overflow-y-auto px-4 pt-2 text-center", virtue && "phrase-open", compact && "phrase-compact")}
+            className={cn("phrase-read shrink-0 overflow-y-auto px-4 pt-2 text-center", virtue && "phrase-open", compact && "phrase-compact", slide?.dir === "left" && "phrase-slide-left", slide?.dir === "right" && "phrase-slide-right")}
+            key={slide?.n}
+            onPointerDown={dhikrSwipeStart}
+            onPointerMove={dhikrSwipeMove}
+            onPointerUp={dhikrSwipeEnd}
+            onPointerCancel={dhikrSwipeEnd}
             onClick={() => {
               if (dhikrSwiped.current) return;
               setVirtue((v) => !v);

@@ -1529,7 +1529,7 @@ details.fold>:not(summary) {
   min-width: 0;
 }
 .main-screen {
-  touch-action: pan-y;
+  touch-action: manipulation;
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
@@ -1563,6 +1563,10 @@ details.fold>:not(summary) {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
 }
+.phrase-slide-left { animation: phrase-from-right .22s ease; }
+.phrase-slide-right { animation: phrase-from-left .22s ease; }
+@keyframes phrase-from-right { from { transform: translateX(18%); } to { transform: none; } }
+@keyframes phrase-from-left { from { transform: translateX(-18%); } to { transform: none; } }
 .name-switch {
   z-index: 6;
   display: flex;
