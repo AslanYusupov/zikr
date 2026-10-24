@@ -1529,7 +1529,7 @@ details.fold>:not(summary) {
   min-width: 0;
 }
 .main-screen {
-  touch-action: manipulation;
+  touch-action: pan-y;
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
@@ -1561,6 +1561,7 @@ details.fold>:not(summary) {
   margin-top: .35rem;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 .name-switch {
   z-index: 6;

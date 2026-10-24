@@ -201,6 +201,8 @@ export function Counter({
   const quoteDrag = useRef<{ x: number; y: number } | null>(null);
   const quoteSwiped = useRef(false);
   const skipStageTap = useRef(false);
+  const dhikrDrag = useRef<{ x: number; y: number; pointer: number; lx: number; ly: number } | null>(null);
+  const dhikrSwiped = useRef(false);
 
   useEffect(() => {
     quoteLive.current = true;
@@ -297,6 +299,53 @@ export function Counter({
     s.setMode(next.id);
     triggerHaptic("click");
   }
+  function stepDhikr(dir: number) {
+    if (nameIndex >= 0) {
+      stepName(dir);
+      return;
+    }
+    const current = REMEMBRANCE.findIndex((item) => item.id === (s.mode === "random" ? s.lastDhikrId : phrase.id));
+    const index = current < 0 ? 0 : current;
+    const next = REMEMBRANCE[(index + dir + REMEMBRANCE.length) % REMEMBRANCE.length];
+    if (!next) return;
+    setVirtue(false);
+    s.setMode(next.id);
+    triggerHaptic("click");
+  }
+  function dhikrSwipeStart(event: React.PointerEvent<HTMLDivElement>) {
+    const node = event.target;
+    if (!(node instanceof Element)) return;
+    if (node.closest(".scroll-x, .reminder, .name-step, .stats-dock, .names-sheet, .history-screen, .quest-under, a, input, textarea")) return;
+    dhikrDrag.current = { x: event.clientX, y: event.clientY, pointer: event.pointerId, lx: event.clientX, ly: event.clientY };
+  }
+  function dhikrSwipeMove(event: React.PointerEvent<HTMLDivElement>) {
+    const start = dhikrDrag.current;
+    if (!start || start.pointer !== event.pointerId) return;
+    start.lx = event.clientX;
+    start.ly = event.clientY;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) < 18 || Math.abs(dx) < Math.abs(dy)) return;
+    event.preventDefault();
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.setPointerCapture(event.pointerId);
+  }
+  function dhikrSwipeEnd(event: React.PointerEvent<HTMLDivElement>) {
+    const start = dhikrDrag.current;
+    dhikrDrag.current = null;
+    if (!start || start.pointer !== event.pointerId) return;
+    const captured = event.currentTarget.hasPointerCapture(start.pointer);
+    if (event.type === "pointercancel" && !captured) return;
+    const dx = start.lx - start.x;
+    const dy = start.ly - start.y;
+    if (Math.abs(dx) < 46 || Math.abs(dx) < Math.abs(dy)) return;
+    dhikrSwiped.current = true;
+    skipStageTap.current = true;
+    stepDhikr(dx < 0 ? 1 : -1);
+    window.setTimeout(() => {
+      dhikrSwiped.current = false;
+      skipStageTap.current = false;
+    }, 480);
+  }
 
   return (
     <div className="stage-wrap">
@@ -312,7 +361,13 @@ export function Counter({
           press(event);
         }}
       >
-        <div className="main-screen">
+        <div
+          className="main-screen"
+          onPointerDown={dhikrSwipeStart}
+          onPointerMove={dhikrSwipeMove}
+          onPointerUp={dhikrSwipeEnd}
+          onPointerCancel={dhikrSwipeEnd}
+        >
           <div className="shrink-0 px-4 pt-1">
             <div className="flex items-baseline justify-between gap-3 text-[0.7rem] text-muted">
               <span className="truncate">
@@ -329,7 +384,10 @@ export function Counter({
           <button
             type="button"
             className={cn("phrase-read shrink-0 overflow-y-auto px-4 pt-2 text-center", virtue && "phrase-open", compact && "phrase-compact")}
-            onClick={() => setVirtue((v) => !v)}
+            onClick={() => {
+              if (dhikrSwiped.current) return;
+              setVirtue((v) => !v);
+            }}
           >
             <p
               className={cn(
@@ -388,6 +446,7 @@ export function Counter({
                 onTouchStart={() => triggerHaptic("down")}
                 onPointerDown={() => triggerHaptic("down")}
                 onClick={(event) => {
+                  if (dhikrSwiped.current) return;
                   triggerHaptic("click");
                   press(event);
                 }}
