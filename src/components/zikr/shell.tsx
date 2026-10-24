@@ -373,7 +373,7 @@ export function Shell() {
         : namesOpen
           ? { ar: "أَسْمَاءُ اللَّهِ الْحُسْنَى", title: headLabel(lang, "names") }
           : dhikrList
-            ? { ar: "ذِكْرُ اللَّهِ", title: headLabel(lang, "dhikr") }
+            ? { ar: "ذِكْرُ اللَّهِ", title: t(lang, "zikr") }
             : { ar: "ذِكْر", title: t(lang, "zikr") };
   const showHeadAr = head.ar !== "";
   const enter = useCallback(() => {
