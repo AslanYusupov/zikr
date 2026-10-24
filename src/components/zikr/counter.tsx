@@ -343,13 +343,13 @@ export function Counter({
             {compact && !virtue ? (
               <p className="mt-1 text-xs leading-snug text-fg">{spoken.reward}</p>
             ) : virtue && showPhrase ? (
-              <div className="mt-1 text-xs leading-snug text-muted">
+              <div className="mt-1 text-xs leading-snug text-fg">
                 {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
                 <p className="mt-1 text-fg">{spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
-                <p className="mt-1 text-[0.65rem]">{cite(phrase.source, s.lang)}</p>
+                <p className="mt-1 text-[0.65rem] text-fg">{cite(phrase.source, s.lang)}</p>
               </div>
             ) : (
-              <p className="mt-0.5 text-xs leading-snug text-muted">{showPhrase ? spoken.meaning : ""}</p>
+              <p className="mt-0.5 text-xs leading-snug text-fg">{showPhrase ? spoken.meaning : ""}</p>
             )}
           </button>
           {nameIndex >= 0 ? (
