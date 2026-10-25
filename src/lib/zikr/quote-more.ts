@@ -177,12 +177,12 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "De ki: O Allah birdir. Allah Samed’dir.",
     ur: "کہہ دو: وہ اللہ ایک ہے۔ اللہ بے نیاز ہے۔",
   },
-  "Которые, когда их постигает беда, говорят: «Воистину, мы принадлежим Аллах1у, и к Нему мы вернемся».": {
-    en: "Those who, when disaster strikes them, say: “Indeed we belong to Allah, and to Him we will return.”",
-    ar: "الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ",
-    id: "Orang-orang yang apabila ditimpa musibah berkata: “Sesungguhnya kami milik Allah dan kepada-Nya kami kembali.”",
-    tr: "Onlar ki başlarına bir musibet geldiğinde “Biz Allah’a aidiz ve O’na döneceğiz” derler.",
-    ur: "وہ جنہیں کوئی مصیبت پہنچے تو کہتے ہیں: «ہم اللہ ہی کے ہیں اور اسی کی طرف لوٹنے والے ہیں».",
+  "Мы непременно испытаем вас незначительным страхом, голодом, потерей имущества, людей и плодов. Обрадуй же терпеливых, которые, когда их постигает беда, говорят: «Воистину, мы принадлежим Аллах1у, и к Нему мы вернемся». Они удостаиваются благословения своего Господа и милости. Они следуют прямым путем.": {
+    en: "We will certainly test you with a touch of fear and hunger and loss of wealth, lives, and fruits. Give good news to the patient, who say when disaster strikes them: “Indeed we belong to Allah, and to Him we will return.” They will have blessings and mercy from their Lord. It is they who are rightly guided.",
+    ar: "وَلَنَبْلُوَنَّكُم بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِّنَ الْأَمْوَالِ وَالْأَنفُسِ وَالثَّمَرَاتِ ۗ وَبَشِّرِ الصَّابِرِينَ الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ أُولَٰئِكَ عَلَيْهِمْ صَلَوَاتٌ مِّن رَّبِّهِمْ وَرَحْمَةٌ ۖ وَأُولَٰئِكَ هُمُ الْمُهْتَدُونَ",
+    id: "Kami pasti akan menguji kamu dengan sedikit ketakutan, kelaparan, kekurangan harta, jiwa, dan buah-buahan. Sampaikanlah kabar gembira kepada orang-orang yang sabar, yang apabila ditimpa musibah berkata: “Sesungguhnya kami milik Allah dan kepada-Nya kami kembali.” Mereka itu memperoleh keberkatan dan rahmat dari Tuhan mereka. Mereka itulah orang-orang yang mendapat petunjuk.",
+    tr: "Andolsun sizi biraz korku, açlık ve mallardan, canlardan, ürünlerden eksiltmekle deneriz. Sabredenleri müjdele. Onlar başlarına bir musibet geldiğinde “Biz Allah’a aidiz ve O’na döneceğiz” derler. İşte Rablerinden bağışlamalar ve rahmet onlaradır. Doğru yolda olanlar da onlardır.",
+    ur: "اور ہم ضرور تمہیں خوف، بھوک، مال، جانوں اور پھلوں کی کمی سے آزمائیں گے۔ اور صبر کرنے والوں کو خوشخبری دے دو، جو مصیبت پہنچنے پر کہتے ہیں: «ہم اللہ ہی کے ہیں اور اسی کی طرف لوٹنے والے ہیں». ان پر ان کے رب کی طرف سے درود اور رحمت ہے، اور وہی ہدایت یافتہ ہیں۔",
   },
   "Оберегайте намазы, и особенно, средний (послеполуденный) намаз. И стойте перед Аллах1ом смиренно.": {
     en: "Guard the prayers, and the middle prayer, and stand before Allah in humility.",
