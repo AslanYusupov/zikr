@@ -2706,14 +2706,14 @@ details.fold>:not(summary) {
   z-index: 0;
 }
 .orbit-sun::before {
-  width: 4.4rem;
-  height: 4.4rem;
-  background: radial-gradient(circle, #ffe9b040 0%, #ffb15a22 34%, #ff7a2412 58%, transparent 76%);
+  width: 5rem;
+  height: 5rem;
+  background: radial-gradient(circle, #ffe7a838 0%, #ffb15a1c 36%, #ff7a2410 60%, transparent 78%);
 }
 .orbit-moon::before {
-  width: 4.4rem;
-  height: 4.4rem;
-  background: radial-gradient(circle, #ffffff38 0%, #e7f0fb20 40%, #c9daf018 62%, transparent 78%);
+  width: 3.55rem;
+  height: 3.55rem;
+  background: radial-gradient(circle, #ffffff2e 0%, #e7f0fb16 42%, transparent 72%);
 }
 .sun-body,
 .moon-body {
