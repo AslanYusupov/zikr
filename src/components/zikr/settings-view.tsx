@@ -224,8 +224,8 @@ export function SettingsView({
         <Toggle
           label={tx(s.lang, "quoteArabic")}
           hint={tx(s.lang, "quoteArabicHint")}
-          on={s.quoteArabic !== false}
-          onChange={s.setQuoteArabic}
+          on={s.arabicOptIn === true}
+          onChange={s.setArabicOptIn}
         />
         <Toggle
           label={tx(s.lang, "vibrate")}

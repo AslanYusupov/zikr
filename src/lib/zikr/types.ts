@@ -56,7 +56,7 @@ export type ZikrState = {
   volume: number;
   vibrate: boolean;
   showWisdom: boolean;
-  quoteArabic: boolean;
+  arabicOptIn: boolean;
   theme: ThemeId;
   font: FontId;
   lang: LangId;

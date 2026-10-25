@@ -553,7 +553,7 @@ export function Counter({
                 }}
                 className="reminder reminder-in mx-3 mb-1.5 block w-[calc(100%-1.5rem)] text-center"
               >
-                {shownQuote.arabic && s.quoteArabic !== false && s.lang !== "ar" && s.lang !== "ur" ? (
+                {shownQuote.arabic && s.arabicOptIn === true && s.lang !== "ar" && s.lang !== "ur" ? (
                   <p className="reminder-ar font-arabic text-sm leading-relaxed text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
                 ) : null}
                 <p className="reminder-text mt-0.5 text-xs leading-snug text-fg">{shownQuote.text}</p>
