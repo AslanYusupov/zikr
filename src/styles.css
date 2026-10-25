@@ -1478,6 +1478,21 @@ details.fold>:not(summary) {
 [data-theme=wine] .text-muted {
   color: var(--muted);
 }
+[data-font=crimson] .reminder-ar {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.9;
+}
+[data-font=crimson] .reminder-text {
+  font-size: .92rem;
+  line-height: 1.45;
+}
+[data-font=crimson] .reminder-src {
+  font-size: .72rem;
+}
+[data-font=crimson] .phrase-read p {
+  line-height: 1.45;
+}
 [data-font=soft] {
   --default-font-family: "Nunito", "Inter", system-ui, sans-serif;
   --font-sans: "Nunito", "Inter", system-ui, sans-serif;

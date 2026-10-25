@@ -17,11 +17,12 @@ import { Sheet } from "./pattern";
 
 const FONT_FACE: Record<FontId, string> = {
   clear: '"Inter", system-ui, sans-serif',
+  crimson: '"Inter", system-ui, sans-serif',
   soft: '"Nunito", "Inter", system-ui, sans-serif',
   book: '"Literata", Georgia, serif',
   even: '"Manrope", "Inter", system-ui, sans-serif',
 };
-const FONT_IDS: FontId[] = ["clear", "soft", "book", "even"];
+const FONT_IDS: FontId[] = ["clear", "crimson", "soft", "book", "even"];
 const THEME_PHOTO: Record<string, string> = {
   roses: "/roses.jpg",
   sea: "/shore.jpg",
@@ -144,7 +145,7 @@ export function SettingsView({
                 type="button"
                 onClick={() => s.setFont(id)}
                 className={cn("rounded-2xl border bg-surface px-3 py-3 text-start", s.font === id ? "border-fg" : "border-line")}
-                style={{ fontFamily: FONT_FACE[id] }}
+                style={{ fontFamily: FONT_FACE[id], ...(id === "crimson" ? { fontSize: ".92rem", lineHeight: 1.45 } : {}) }}
               >
                 <span className="block text-base text-fg">{fontName(s.lang, id)}</span>
                 <span className="mt-1 block text-xs text-muted">{fontHint(s.lang, id)}</span>
