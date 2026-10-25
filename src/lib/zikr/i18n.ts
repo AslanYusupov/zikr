@@ -1578,14 +1578,14 @@ const THEME_NAME: Record<string, Record<LangId, string>> = {
 
 const THEME_HINT: Record<string, Record<LangId, string>> = {
   black: { ru: "Тихая ночь", en: "Quiet night", ar: "ليل هادئ", id: "Malam yang tenang", tr: "Sessiz gece", ur: "خاموش رات" },
-  wine: { ru: "Тёплый вечер", en: "Warm evening", ar: "مساء دافئ", id: "Sore yang hangat", tr: "Ilık akşam", ur: "گرم شام" },
-  ivory: { ru: "Светлое утро", en: "Bright morning", ar: "صباح مضيء", id: "Pagi yang terang", tr: "Aydınlık sabah", ur: "روشن صبح" },
+  wine: { ru: "Глубокий красный", en: "Deep red", ar: "أحمر داكن", id: "Merah gelap", tr: "Derin kırmızı", ur: "گہرا لال" },
+  ivory: { ru: "Светлый и спокойный", en: "Light and calm", ar: "فاتح وهادئ", id: "Terang dan tenang", tr: "Aydınlık ve sakin", ur: "روشن اور پرسکون" },
   roses: { ru: "Мягкий фон из роз", en: "Soft roses", ar: "ورود ناعمة", id: "Mawar yang lembut", tr: "Yumuşak güller", ur: "نرم گلاب" },
   sea: { ru: "Море и пальмы", en: "Sea and palms", ar: "بحر ونخيل", id: "Laut dan palem", tr: "Deniz ve hurma", ur: "سمندر اور کھجور" },
   desert: { ru: "Тихие дюны", en: "Quiet dunes", ar: "كثبان هادئة", id: "Gumuk yang tenang", tr: "Sessiz kumullar", ur: "خاموش ٹیلے" },
   cosmos: { ru: "Звёздное небо", en: "Starry sky", ar: "سماء ذات نجوم", id: "Langit berbintang", tr: "Yıldızlı gök", ur: "ستاروں والا آسمان" },
   peaks: { ru: "Снег и озеро", en: "Snow and a lake", ar: "ثلج وبحيرة", id: "Salju dan danau", tr: "Kar ve göl", ur: "برف اور جھیل" },
-  lake: { ru: "Утро над водой", en: "Morning over the water", ar: "صباح على الماء", id: "Pagi di atas air", tr: "Suyun üstünde sabah", ur: "پانی پر صبح" },
+  lake: { ru: "Тихая вода", en: "Still water", ar: "ماء ساكن", id: "Air yang tenang", tr: "Durgun su", ur: "ساکت پانی" },
   jungle: { ru: "Листья и свет", en: "Leaves and light", ar: "ورق ونور", id: "Daun dan cahaya", tr: "Yaprak ve ışık", ur: "پتے اور روشنی" },
 };
 

@@ -665,14 +665,14 @@ export const QUOTES: Quote[] = [
 
 export const THEMES: { id: ThemeId; name: string; hint: string }[] = [
   { id: "black", name: "Чёрный", hint: "Тихая ночь" },
-  { id: "wine", name: "Багряный", hint: "Тёплый вечер" },
-  { id: "ivory", name: "Белый", hint: "Светлое утро" },
+  { id: "wine", name: "Багряный", hint: "Глубокий красный" },
+  { id: "ivory", name: "Белый", hint: "Светлый и спокойный" },
   { id: "roses", name: "Розы", hint: "Мягкий фон из роз" },
   { id: "sea", name: "Берег", hint: "Море и пальмы" },
   { id: "desert", name: "Пустыня", hint: "Тихие дюны" },
   { id: "cosmos", name: "Космос", hint: "Звёздное небо" },
   { id: "peaks", name: "Горы", hint: "Снег и озеро" },
-  { id: "lake", name: "Рассвет", hint: "Утро над водой" },
+  { id: "lake", name: "Рассвет", hint: "Тихая вода" },
   { id: "jungle", name: "Джунгли", hint: "Листья и свет" },
 ];
 
