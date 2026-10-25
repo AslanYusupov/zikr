@@ -2708,12 +2708,12 @@ details.fold>:not(summary) {
 .orbit-sun::before {
   width: 4.4rem;
   height: 4.4rem;
-  background: radial-gradient(circle, #ffd27a66 0%, #ff8a2480 28%, #ff5a1400 68%);
+  background: radial-gradient(circle, #ffe9b040 0%, #ffb15a22 34%, #ff7a2412 58%, transparent 76%);
 }
 .orbit-moon::before {
   width: 4.4rem;
   height: 4.4rem;
-  background: radial-gradient(circle, #ffffff73 0%, #d7e6f840 36%, #d7e6f800 70%);
+  background: radial-gradient(circle, #ffffff38 0%, #e7f0fb20 40%, #c9daf018 62%, transparent 78%);
 }
 .sun-body,
 .moon-body {
