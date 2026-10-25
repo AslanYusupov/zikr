@@ -1598,6 +1598,69 @@ button[data-theme=firdaus] { box-shadow: inset 3px 0 0 #ff0844, 0 0 16px #ff0844
 button[data-theme=amethyst] { box-shadow: inset 3px 0 0 #9d4edd, 0 0 16px #9d4edd33; }
 button[data-theme=amber] { box-shadow: inset 3px 0 0 #f2c94c, 0 0 16px #f2994a33; }
 button[data-theme=jade] { box-shadow: inset 3px 0 0 #34d399, 0 0 16px #10b98133; }
+html[data-theme=subhah], html[data-theme=subhah] body { background: #06141c !important; color: #f4fbff; }
+html[data-theme=firdaus], html[data-theme=firdaus] body { background: #16060c !important; color: #fff6f5; }
+html[data-theme=amethyst], html[data-theme=amethyst] body { background: #120818 !important; color: #fbf6ff; }
+html[data-theme=amber], html[data-theme=amber] body { background: #161006 !important; color: #fff8ee; }
+html[data-theme=jade], html[data-theme=jade] body { background: #061410 !important; color: #f3fff9; }
+html[data-theme=subhah] .bg-gold { background-color: #4facfe; background-image: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #042833; }
+html[data-theme=firdaus] .bg-gold { background-color: #ff0844; background-image: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff7f6; }
+html[data-theme=amethyst] .bg-gold { background-color: #9d4edd; background-image: linear-gradient(135deg, #9d4edd 0%, #c77dff 100%); color: #fff8ff; }
+html[data-theme=amber] .bg-gold { background-color: #f2c94c; background-image: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: #1c1204; }
+html[data-theme=jade] .bg-gold { background-color: #10b981; background-image: linear-gradient(135deg, #10b981 0%, #34d399 100%); color: #042018; }
+html[data-theme=subhah] button.bg-gold,
+html[data-theme=subhah] a.bg-gold { box-shadow: 0 0 18px #00f2fe66; }
+html[data-theme=firdaus] button.bg-gold,
+html[data-theme=firdaus] a.bg-gold { box-shadow: 0 0 18px #ff084466; }
+html[data-theme=amethyst] button.bg-gold,
+html[data-theme=amethyst] a.bg-gold { box-shadow: 0 0 18px #9d4edd66; }
+html[data-theme=amber] button.bg-gold,
+html[data-theme=amber] a.bg-gold { box-shadow: 0 0 18px #f2994a66; }
+html[data-theme=jade] button.bg-gold,
+html[data-theme=jade] a.bg-gold { box-shadow: 0 0 18px #10b98166; }
+html[data-theme=subhah] .sheet,
+html[data-theme=firdaus] .sheet,
+html[data-theme=amethyst] .sheet,
+html[data-theme=amber] .sheet,
+html[data-theme=jade] .sheet,
+html[data-theme=subhah] .app-nav,
+html[data-theme=firdaus] .app-nav,
+html[data-theme=amethyst] .app-nav,
+html[data-theme=amber] .app-nav,
+html[data-theme=jade] .app-nav {
+  background: var(--bg);
+  color: var(--fg);
+}
+html[data-theme=subhah] .reminder,
+html[data-theme=firdaus] .reminder,
+html[data-theme=amethyst] .reminder,
+html[data-theme=amber] .reminder,
+html[data-theme=jade] .reminder,
+html[data-theme=subhah] .phrase-read,
+html[data-theme=firdaus] .phrase-read,
+html[data-theme=amethyst] .phrase-read,
+html[data-theme=amber] .phrase-read,
+html[data-theme=jade] .phrase-read {
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  color: var(--fg);
+}
+html[data-theme=subhah] .text-gold,
+html[data-theme=firdaus] .text-gold,
+html[data-theme=amethyst] .text-gold,
+html[data-theme=amber] .text-gold,
+html[data-theme=jade] .text-gold { color: var(--gold); }
+html[data-theme=subhah] .text-muted,
+html[data-theme=firdaus] .text-muted,
+html[data-theme=amethyst] .text-muted,
+html[data-theme=amber] .text-muted,
+html[data-theme=jade] .text-muted { color: var(--muted); }
+html[data-theme=subhah] .orb-face,
+html[data-theme=firdaus] .orb-face,
+html[data-theme=amethyst] .orb-face,
+html[data-theme=amber] .orb-face,
+html[data-theme=jade] .orb-face {
+  box-shadow: inset 0 0 0 1px var(--gold), 0 0 28px var(--glow);
+}
 [data-font=crimson] .reminder-ar {
   font-size: 1.15rem;
   font-weight: 700;
