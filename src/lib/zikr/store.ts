@@ -55,7 +55,8 @@ export function initialData(): ZikrState {
     vibrate: true,
     showWisdom: true,
     arabicOptIn: false,
-    theme: "black",
+    theme: "cosmos",
+    themeChosen: false,
     font: "crimson",
     fontChosen: false,
     lang: "ru",
@@ -245,7 +246,12 @@ export function normalize(raw: unknown): ZikrState {
     vibrate: r.vibrate !== false,
     showWisdom: r.showWisdom !== false,
     arabicOptIn: r.arabicOptIn === true,
-    theme: THEMES.includes(r.theme as ThemeId) ? (r.theme as ThemeId) : base.theme,
+    theme: r.themeChosen === true && THEMES.includes(r.theme as ThemeId)
+      ? (r.theme as ThemeId)
+      : THEMES.includes(r.theme as ThemeId) && r.theme !== "black"
+        ? (r.theme as ThemeId)
+        : "cosmos",
+    themeChosen: r.themeChosen === true || (THEMES.includes(r.theme as ThemeId) && r.theme !== "black"),
     font: r.fontChosen === true && FONTS.includes(r.font as FontId) ? (r.font as FontId) : "crimson",
     fontChosen: r.fontChosen === true,
     lang: LANGS.includes(r.lang as LangId) ? (r.lang as LangId) : "ru",
@@ -356,7 +362,8 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     xp: Math.max(local.xp, remote.xp),
     doneToday: { ...remote.doneToday, ...local.doneToday },
     bestDay: best,
-    theme: local.theme,
+    theme: local.themeChosen || local.theme !== "black" ? local.theme : "cosmos",
+    themeChosen: local.themeChosen || local.theme !== "black",
     font: local.fontChosen ? local.font : "crimson",
     fontChosen: local.fontChosen,
     lang: local.lang,
@@ -641,7 +648,9 @@ export const useZikr = create<ZikrState & Actions>()(
       setGoal: (n) => {
         if ((GOALS as readonly number[]).includes(n)) set({ goal: n });
       },
-      setTheme: (t) => set({ theme: t }),
+      setTheme: (t) => {
+        if (THEMES.includes(t)) set({ theme: t, themeChosen: true });
+      },
       setFont: (f) => {
         if (FONTS.includes(f)) set({ font: f, fontChosen: true });
       },
