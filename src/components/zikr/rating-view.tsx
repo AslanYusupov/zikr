@@ -145,12 +145,25 @@ export function RatingView() {
   const [dailyRank, setDailyRank] = useState<number | null>(saved?.dailyRank ?? null);
   const [guests, setGuests] = useState<Invitee[] | null>(saved ? shown(saved.guests) : null);
   const [copied, setCopied] = useState(false);
+  const [maskMine, setMaskMine] = useState(false);
   const day = todayKey();
   const today = days[day]?.total ?? 0;
   const record = recordToBeat(days, bestDay, day);
   const week = thisWeek(days, day);
   const chart = recentDays(days, 14, day);
   const mark = Math.max(record, today);
+  const mine = (n: number) => (maskMine ? "***" : formatNum(n));
+  const toggleMine = () => {
+    setMaskMine((hidden) => {
+      const next = !hidden;
+      localStorage.setItem("zikr-rating-mask", next ? "1" : "0");
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    setMaskMine(localStorage.getItem("zikr-rating-mask") === "1");
+  }, []);
 
   function remember(patch: Partial<RatingCache>, fresh = false) {
     const prev = bag.current;
@@ -279,12 +292,12 @@ export function RatingView() {
 
   const selfLine =
     record > today
-      ? `${t(lang, "selfRecord")} — ${formatNum(record)}. ${t(lang, "selfToday")} ${formatNum(today)}. ${t(lang, "selfLeft")} ${formatNum(record - today)}. ${t(lang, "selfNote")}`
+      ? `${t(lang, "selfRecord")} — ${mine(record)}. ${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfLeft")} ${mine(record - today)}. ${t(lang, "selfNote")}`
       : today > 0 && today === record
         ? t(lang, "selfEven")
         : today > record
-          ? `${t(lang, "selfToday")} ${formatNum(today)}. ${t(lang, "selfAhead")}`
-          : `${t(lang, "selfRecord")} — ${formatNum(record)}. ${t(lang, "selfToday")} ${formatNum(today)}. ${t(lang, "selfNote")}`;
+          ? `${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfAhead")}`
+          : `${t(lang, "selfRecord")} — ${mine(record)}. ${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfNote")}`;
 
   const tapsShown = allTaps == null ? null : allTaps + Math.max(0, total - baseTotal);
   const reveal = listed || today >= 10_000;
@@ -299,16 +312,16 @@ export function RatingView() {
     <div className="pane px-4 pt-2 pb-8">
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
         <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "selfTitle")}</p>
-        <h2 className="mt-1 text-2xl text-fg">
-          {formatNum(mark)} {zikrWord(mark, lang)}
-        </h2>
+        <button type="button" onClick={toggleMine} className="mt-1 w-full appearance-none bg-transparent text-start text-2xl text-fg">
+          {mine(mark)} {zikrWord(mark, lang)}
+        </button>
         <p className="mt-2 text-sm leading-relaxed text-muted">{selfLine}</p>
       </article>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <Mini label={t(lang, "bestDayLabel")} value={formatNum(bestDay)} />
-        <Mini label={t(lang, "weekLabel")} value={formatNum(week)} />
-        <Mini label={t(lang, "bestWeekLabel")} value={formatNum(bestWeek(days))} />
-        <Mini label={t(lang, "goalDaysLabel")} value={String(goalStreak(days, goal, day))} />
+        <Mini label={t(lang, "bestDayLabel")} value={mine(bestDay)} />
+        <Mini label={t(lang, "weekLabel")} value={mine(week)} />
+        <Mini label={t(lang, "bestWeekLabel")} value={mine(bestWeek(days))} />
+        <Mini label={t(lang, "goalDaysLabel")} value={maskMine ? "***" : String(goalStreak(days, goal, day))} />
       </div>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "days14")}</h2>
       <div className="mt-2 h-28 w-full min-w-0">
@@ -330,54 +343,73 @@ export function RatingView() {
       <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? "…" : formatNum(tapsShown)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
       <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? "…" : formatNum(online)}</p>
-      {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} /> : null}
+      {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} mask={maskMine} onMine={toggleMine} /> : null}
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
-      <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} />
-      {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {formatNum(myDailyRank)}.</p> : null}
+      <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} mask={maskMine} onMine={toggleMine} />
+      {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted">{t(lang, "dailyPlace")}: {maskMine ? "***" : formatNum(myDailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">
         {t(lang, "ratingWorld")}{" "}
-        <span className="tabular-nums text-fg">{publicId && !HIDDEN_RATING_IDS.has(publicId) ? publicId : "…"}</span>
+        <button type="button" onClick={toggleMine} className="tabular-nums text-fg">
+          {publicId && !HIDDEN_RATING_IDS.has(publicId) ? (maskMine ? "***" : publicId) : "…"}
+        </button>
       </p>
       {clock ? <p className="mt-1 text-xs text-muted">{(held ? t(lang, "ratingHeld") : t(lang, "ratingAt")).replace("{time}", clock)}</p> : null}
       {worldError && !worldShown?.length ? <p className="mt-3 text-sm text-muted">{t(lang, "worldClosed")}</p> : null}
       {worldShown && worldShown.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "worldQuiet")}</p>}
       {worldShown && worldShown.length > 0 && (
         <ol className="mt-3 grid gap-1.5">
-          {worldShown.map((row) => (
+          {worldShown.map((row) => {
+            const own = row.id === publicId;
+            return (
             <li
               key={row.id}
               className={cn(
                 "flex items-center justify-between gap-3 rounded-2xl border px-3 py-2",
-                row.id === publicId ? "border-gold bg-surface" : "border-line bg-surface",
+                own ? "border-gold bg-surface" : "border-line bg-surface",
               )}
             >
-              <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                <span className="mr-2 text-muted">{row.rank}.</span>
-                {row.id}
-                {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
-              </span>
-              <span className="shrink-0 text-sm tabular-nums text-gold">{row.hidden ? "—" : formatNum(row.total)}</span>
+              {own ? (
+                <button type="button" onClick={toggleMine} className="flex w-full appearance-none items-center justify-between gap-3 bg-transparent text-start">
+                  <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+                    <span className="mr-2 text-muted">{row.rank}.</span>
+                    {maskMine ? "***" : row.id}
+                    {` · ${tx(lang, "you")}`}
+                  </span>
+                  <span className="shrink-0 text-sm tabular-nums text-gold">{row.hidden || maskMine ? (maskMine ? "***" : "—") : formatNum(row.total)}</span>
+                </button>
+              ) : (
+                <>
+                  <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+                    <span className="mr-2 text-muted">{row.rank}.</span>
+                    {row.id}
+                  </span>
+                  <span className="shrink-0 text-sm tabular-nums text-gold">{row.hidden ? "—" : formatNum(row.total)}</span>
+                </>
+              )}
             </li>
-          ))}
+            );
+          })}
         </ol>
       )}
       {worldShown && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
         <div className="mt-1.5 flex items-center justify-between gap-3 rounded-2xl border border-gold bg-surface px-3 py-2">
+        <button type="button" onClick={toggleMine} className="flex w-full appearance-none items-center justify-between gap-3 bg-transparent text-start">
           <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-            <span className="mr-2 text-muted">{formatNum(myWorldRank)}.</span>
-            {publicId}
+            <span className="mr-2 text-muted">{maskMine ? "***" : formatNum(myWorldRank)}.</span>
+            {maskMine ? "***" : publicId}
             {` · ${tx(lang, "you")}`}
           </span>
-          <span className="shrink-0 text-sm tabular-nums text-gold">{reveal ? formatNum(total) : "—"}</span>
+          <span className="shrink-0 text-sm tabular-nums text-gold">{maskMine ? "***" : reveal ? formatNum(total) : "—"}</span>
+        </button>
         </div>
       ) : null}
       {myWorldRank && !HIDDEN_RATING_IDS.has(publicId) ? (
         <p className="mt-2 text-sm text-fg">
-          {t(lang, "yourPlace")}: {formatNum(myWorldRank)}.
-          {publicId ? ` · ${publicId}` : ""}
+          {t(lang, "yourPlace")}: {maskMine ? "***" : formatNum(myWorldRank)}.
+          {publicId ? ` · ${maskMine ? "***" : publicId}` : ""}
           {` · ${tx(lang, "you")}`}
         </p>
       ) : null}
@@ -413,6 +445,8 @@ function Board({
   empty,
   namesOnly,
   lang,
+  mask,
+  onMine,
 }: {
   rows: PresenceRow[] | null;
   publicId: string;
@@ -420,26 +454,46 @@ function Board({
   taps?: boolean;
   namesOnly?: boolean;
   lang: LangId;
+  mask?: boolean;
+  onMine?: () => void;
 }) {
   const list = shown(rows);
   if (rows == null) return null;
   if (list.length === 0) return <p className="mt-2 text-sm text-muted">{empty}</p>;
   return (
     <ol className="mt-2 grid gap-1.5">
-      {list.map((row) => (
+      {list.map((row) => {
+        const own = row.id === publicId;
+        const id = own && mask ? "***" : row.id;
+        const score = own && mask ? "***" : formatNum(row.value);
+        return (
         <li
           key={row.id}
-          className={cn("flex items-center justify-between gap-3 rounded-2xl border px-3 py-2", row.id === publicId ? "border-gold bg-surface" : "border-line bg-surface")}
+          className={cn("flex items-center justify-between gap-3 rounded-2xl border px-3 py-2", own ? "border-gold bg-surface" : "border-line bg-surface")}
         >
-          <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-            <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
-            {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
-            {row.id}
-            {row.id === publicId ? ` · ${tx(lang, "you")}` : ""}
-          </span>
-          {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value)}</span>}
+          {own ? (
+            <button type="button" onClick={onMine} className="flex w-full appearance-none items-center justify-between gap-3 bg-transparent text-start">
+              <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+                <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
+                {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
+                {id}
+                {` · ${tx(lang, "you")}`}
+              </span>
+              {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{mask ? "***" : row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{score}</span>}
+            </button>
+          ) : (
+            <>
+              <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+                <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
+                {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
+                {row.id}
+              </span>
+              {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value)}</span>}
+            </>
+          )}
         </li>
-      ))}
+        );
+      })}
     </ol>
   );
 }
