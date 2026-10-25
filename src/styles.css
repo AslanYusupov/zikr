@@ -1416,6 +1416,75 @@ details.fold>:not(summary) {
 [data-theme=roses] .scene-roses {
   opacity: 1;
 }
+.scene-gilt {
+  opacity: 0;
+  background:
+    radial-gradient(70% 36% at 50% -8%, #8a6230aa, transparent 62%),
+    radial-gradient(46% 28% at 88% 108%, #4a2c1688, transparent 70%),
+    #120e0a;
+  position: absolute;
+  inset: 0;
+}
+[data-theme=gilt] .scene-gilt { opacity: 1; }
+[data-theme=gilt] {
+  --bg: #120e0a;
+  --bg-deep: #0c0907;
+  --surface: #1c1510eb;
+  --surface-2: #2a1e16;
+  --fg: #f7f3ea;
+  --muted: #cbb89a;
+  --gold: #e4c98a;
+  --gold-soft: #f3e2b8;
+  --line: #e4c98a40;
+  --ink: #1a120c;
+  --chip: #16110d;
+  --orb: #1a140f;
+  --orb-fg: #f7f3ea;
+  --orb-gold: #e4c98a;
+  --glow: #e4c98a33;
+  color-scheme: dark;
+}
+[data-theme=gilt] .font-arabic { color: #e6c98a; }
+[data-theme=gilt] .reminder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #c6a36a55;
+  border-radius: .55rem;
+  background:
+    linear-gradient(#e6c98a, #e6c98a) left 10px top 10px / 16px 1.5px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) left 10px top 10px / 1.5px 16px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) right 10px top 10px / 16px 1.5px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) right 10px top 10px / 1.5px 16px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) left 10px bottom 10px / 16px 1.5px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) left 10px bottom 10px / 1.5px 16px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) right 10px bottom 10px / 16px 1.5px no-repeat,
+    linear-gradient(#e6c98a, #e6c98a) right 10px bottom 10px / 1.5px 16px no-repeat,
+    linear-gradient(180deg, #2a1d12, #120d09);
+  padding: .95rem .9rem 1.15rem;
+  box-shadow: inset 0 0 0 1px #0006;
+}
+[data-theme=gilt] .reminder-ar {
+  color: #e6c98a;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.9;
+}
+[data-theme=gilt] .reminder-text {
+  color: #f7f3ea;
+  font-size: .92rem;
+  line-height: 1.45;
+}
+[data-theme=gilt] .reminder-src {
+  align-self: flex-end;
+  margin-top: .55rem;
+  padding: .18rem .7rem;
+  border: 1px solid #c6a36a73;
+  border-radius: 999px;
+  background: #1a120ccc;
+  color: #e6c98a;
+  font-size: .68rem;
+}
 .safe-top {
   padding-top: max(.35rem, env(safe-area-inset-top));
   padding-left: max(.75rem, env(safe-area-inset-left));

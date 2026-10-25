@@ -7,7 +7,7 @@ import { ALLAH_NAMES } from "./names";
 import { sunnahQuestById } from "./quests";
 import type { DayArchive, DayLog, LangId, OrbId, RewardArchive, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
 
-const THEMES: ThemeId[] = ["black", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle"];
+const THEMES: ThemeId[] = ["black", "gilt", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle"];
 const LANGS: LangId[] = ["ru", "en", "ar", "id", "tr", "ur"];
 const ORBS: OrbId[] = ["plain", "glow", "pearl", "line", "double", "soft", "dot", "crescent", "kaaba", "shahada"];
 const COUNTRIES = new Set(["", "RU", "SA", "TR", "ID", "PK", "AE", "QA", "EG", "PS", "HL", "MA", "DZ", "MY", "GB", "US", "DE", "FR", "KZ", "UZ", "AZ", "TJ"]);

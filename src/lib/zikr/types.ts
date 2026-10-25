@@ -16,6 +16,7 @@ export type ThemeId =
   | "peaks"
   | "lake"
   | "jungle"
+  | "gilt"
   | "ember"
   | "ivory"
   | "copper"
