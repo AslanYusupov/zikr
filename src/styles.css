@@ -1426,21 +1426,14 @@ details.fold>:not(summary) {
 }
 .live-moon {
   color: #fff4d2;
-  filter: drop-shadow(0 0 3px #fff4d2f2)drop-shadow(0 0 8px #e8c478bf);
   width: .95rem;
   height: .95rem;
   animation: 2.8s ease-in-out infinite moon-glow;
   display: block;
 }
 @keyframes moon-glow {
-  0%,to {
-    opacity: .78;
-    filter: drop-shadow(0 0 2px #fff4d2b3)drop-shadow(0 0 6px #e8c47873);
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 4px #fffae6)drop-shadow(0 0 10px #f4d68ce6);
-  }
+  0%,to { opacity: .78; }
+  50% { opacity: 1; }
 }
 @media (height<=740px) {
   .orb-slot .orb {
@@ -2680,6 +2673,7 @@ details.fold>:not(summary) {
 .orbit {
   z-index: 4;
   pointer-events: none;
+  overflow: visible;
   animation: 56s linear infinite orbit-spin;
   position: absolute;
   inset: -28%;
@@ -2688,6 +2682,8 @@ details.fold>:not(summary) {
   width: 2.35rem;
   height: 2.35rem;
   margin-left: -1.175rem;
+  overflow: visible;
+  background: transparent;
   animation: 56s linear infinite reverse orbit-spin;
   position: absolute;
   left: 50%;
@@ -2698,12 +2694,36 @@ details.fold>:not(summary) {
   margin-left: -1.425rem;
   top: -.25rem;
 }
+.orbit-sun::before,
+.orbit-moon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+.orbit-sun::before {
+  width: 4.4rem;
+  height: 4.4rem;
+  background: radial-gradient(circle, #ffd27a66 0%, #ff8a2480 28%, #ff5a1400 68%);
+}
+.orbit-moon::before {
+  width: 3.15rem;
+  height: 3.15rem;
+  background: radial-gradient(circle, #ffffff73 0%, #d7e6f840 36%, #d7e6f800 70%);
+}
 .sun-body,
 .moon-body {
   display: block;
   position: absolute;
   left: 50%;
   top: 50%;
+  z-index: 1;
+  background: transparent;
+  filter: none;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -2712,7 +2732,6 @@ details.fold>:not(summary) {
   width: calc(1.598rem * 720 / 601.73);
   height: calc(1.598rem * 720 / 601.73);
   transform: translate(-49.784%, -50.129%);
-  filter: drop-shadow(0 0 4px #ffe9b0f2) drop-shadow(0 0 14px #ff9a2ecc) drop-shadow(0 0 26px #ff6a1499);
 }
 .orbit-moon {
   bottom: -.15rem;
@@ -2721,7 +2740,6 @@ details.fold>:not(summary) {
   width: calc(1.598rem * 630 / 628);
   height: calc(1.598rem * 640 / 628);
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 0 3px #fffffffa) drop-shadow(0 0 10px #d5e4f8b3) drop-shadow(0 0 16px #b7cbe866);
 }
 @keyframes orbit-spin {
   to {
