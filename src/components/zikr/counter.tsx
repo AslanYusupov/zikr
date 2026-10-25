@@ -523,6 +523,16 @@ export function Counter({
           <RiseLayer rises={rises} wordTop={wordTop} layerRef={riseRef} />
           <div className="stats-dock shrink-0">
             {s.showWisdom ? (
+              <div className="mx-3 mb-1.5">
+                {shownQuote.arabic && s.lang !== "ar" && s.lang !== "ur" ? (
+                  <button
+                    type="button"
+                    className="mb-1 block w-full text-end text-[0.65rem] text-muted"
+                    onClick={() => s.setQuoteArabic(s.quoteArabic === false)}
+                  >
+                    {s.quoteArabic === false ? tx(s.lang, "quoteArabicOn") : tx(s.lang, "quoteArabicOff")}
+                  </button>
+                ) : null}
               <button
                 type="button"
                 key={`${quote.text}-${quoteAt}`}
@@ -551,14 +561,15 @@ export function Counter({
                     skipStageTap.current = false;
                   }, 450);
                 }}
-                className="reminder reminder-in mx-3 mb-1.5 block w-[calc(100%-1.5rem)] text-center"
+                className="reminder reminder-in block w-full text-center"
               >
-                {shownQuote.arabic && s.lang !== "ar" && s.lang !== "ur" ? (
+                {shownQuote.arabic && s.quoteArabic !== false && s.lang !== "ar" && s.lang !== "ur" ? (
                   <p className="reminder-ar font-arabic text-sm leading-relaxed text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
                 ) : null}
                 <p className="reminder-text mt-0.5 text-xs leading-snug text-fg">{shownQuote.text}</p>
                 <p className="reminder-src mt-0.5 text-[0.65rem] text-muted">{shownQuote.source}</p>
               </button>
+              </div>
             ) : null}
             {quest && step && !s.questUnder ? (
               <button

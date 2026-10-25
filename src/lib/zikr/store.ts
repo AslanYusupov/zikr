@@ -53,6 +53,7 @@ export function initialData(): ZikrState {
     volume: 0.7,
     vibrate: true,
     showWisdom: true,
+    quoteArabic: true,
     theme: "black",
     lang: "ru",
     country: "",
@@ -240,6 +241,7 @@ export function normalize(raw: unknown): ZikrState {
     volume: typeof r.volume === "number" ? Math.min(1, Math.max(0, r.volume)) : base.volume,
     vibrate: r.vibrate !== false,
     showWisdom: r.showWisdom !== false,
+    quoteArabic: r.quoteArabic !== false,
     theme: THEMES.includes(r.theme as ThemeId) ? (r.theme as ThemeId) : base.theme,
     lang: LANGS.includes(r.lang as LangId) ? (r.lang as LangId) : "ru",
     country: typeof r.country === "string" && COUNTRIES.has(r.country) ? r.country : "",
@@ -364,6 +366,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     volume: local.volume,
     vibrate: local.vibrate,
     showWisdom: local.showWisdom,
+    quoteArabic: local.quoteArabic,
     goal: local.goal,
     mode: local.mode,
     pool: local.pool,
@@ -592,6 +595,7 @@ type Actions = {
   setVolume: (n: number) => void;
   setVibrate: (v: boolean) => void;
   setShowWisdom: (v: boolean) => void;
+  setQuoteArabic: (v: boolean) => void;
   setDisplayName: (n: string) => void;
   setPublicBoard: (v: boolean) => void;
   ensurePublicId: () => string;
@@ -650,6 +654,7 @@ export const useZikr = create<ZikrState & Actions>()(
       setVolume: (n) => set({ volume: Math.min(1, Math.max(0, n)) }),
       setVibrate: (v) => set({ vibrate: v }),
       setShowWisdom: (v) => set({ showWisdom: v }),
+      setQuoteArabic: (v) => set({ quoteArabic: v }),
       setDisplayName: (n) => set({ displayName: n.replace(/\s+/g, " ").trim().slice(0, 24) }),
       setPublicBoard: (v) => set({ publicBoard: v }),
       ensurePublicId: () => {
