@@ -56,7 +56,8 @@ export function initialData(): ZikrState {
     showWisdom: true,
     arabicOptIn: false,
     theme: "black",
-    font: "clear",
+    font: "crimson",
+    fontChosen: false,
     lang: "ru",
     country: "",
     orb: "plain",
@@ -245,7 +246,8 @@ export function normalize(raw: unknown): ZikrState {
     showWisdom: r.showWisdom !== false,
     arabicOptIn: r.arabicOptIn === true,
     theme: THEMES.includes(r.theme as ThemeId) ? (r.theme as ThemeId) : base.theme,
-    font: FONTS.includes(r.font as FontId) ? (r.font as FontId) : "clear",
+    font: r.fontChosen === true && FONTS.includes(r.font as FontId) ? (r.font as FontId) : "crimson",
+    fontChosen: r.fontChosen === true,
     lang: LANGS.includes(r.lang as LangId) ? (r.lang as LangId) : "ru",
     country: typeof r.country === "string" && COUNTRIES.has(r.country) ? r.country : "",
     orb: "plain",
@@ -355,7 +357,8 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     doneToday: { ...remote.doneToday, ...local.doneToday },
     bestDay: best,
     theme: local.theme,
-    font: local.font,
+    font: local.fontChosen ? local.font : "crimson",
+    fontChosen: local.fontChosen,
     lang: local.lang,
     country: local.country,
     orb: local.orb,
@@ -640,7 +643,7 @@ export const useZikr = create<ZikrState & Actions>()(
       },
       setTheme: (t) => set({ theme: t }),
       setFont: (f) => {
-        if (FONTS.includes(f)) set({ font: f });
+        if (FONTS.includes(f)) set({ font: f, fontChosen: true });
       },
       setLang: (l) => {
         if (LANGS.includes(l)) set({ lang: l });

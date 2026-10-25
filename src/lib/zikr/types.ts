@@ -59,6 +59,7 @@ export type ZikrState = {
   arabicOptIn: boolean;
   theme: ThemeId;
   font: FontId;
+  fontChosen: boolean;
   lang: LangId;
   country: string;
   orb: OrbId;

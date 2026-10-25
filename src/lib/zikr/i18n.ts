@@ -1662,14 +1662,14 @@ export function themeHint(lang: LangId, id: string): string {
 
 const FONT_NAME: Record<string, Record<LangId, string>> = {
   clear: { ru: "Ясный", en: "Clear", ar: "واضح", id: "Jelas", tr: "Berrak", ur: "صاف" },
-  crimson: { ru: "Багряный", en: "Crimson", ar: "قرمزي", id: "Merah tua", tr: "Koyu kırmızı", ur: "گہرا سرخ" },
+  crimson: { ru: "Свободный", en: "Open", ar: "مفتوح", id: "Terbuka", tr: "Açık", ur: "کھلا" },
   soft: { ru: "Мягкий", en: "Soft", ar: "ناعم", id: "Lembut", tr: "Yumuşak", ur: "نرم" },
   book: { ru: "Книжный", en: "Book", ar: "كتابي", id: "Buku", tr: "Kitap", ur: "کتابی" },
   even: { ru: "Ровный", en: "Even", ar: "مستقيم", id: "Rata", tr: "Düz", ur: "ہموار" },
 };
 const FONT_HINT: Record<string, Record<LangId, string>> = {
   clear: { ru: "Как сейчас", en: "As it is now", ar: "كما هو الآن", id: "Seperti sekarang", tr: "Şimdiki gibi", ur: "جیسا اب ہے" },
-  crimson: { ru: "Как в багряной теме", en: "Same as the crimson theme", ar: "كما في السمة القرمزية", id: "Seperti tema merah", tr: "Kırmızı temadaki gibi", ur: "سرخ تھیم جیسا" },
+  crimson: { ru: "Основной", en: "Default", ar: "الأساسي", id: "Utama", tr: "Varsayılan", ur: "بنیادی" },
   soft: { ru: "Круглые буквы", en: "Round letters", ar: "حروف مستديرة", id: "Huruf bulat", tr: "Yuvarlak harfler", ur: "گول حروف" },
   book: { ru: "Приятное чтение", en: "Pleasant reading", ar: "قراءة مريحة", id: "Nyaman dibaca", tr: "Rahat okuma", ur: "خوشگوار پڑھائی" },
   even: { ru: "Спокойные буквы", en: "Calm letters", ar: "حروف هادئة", id: "Huruf tenang", tr: "Sakin harfler", ur: "پرسکون حروف" },
