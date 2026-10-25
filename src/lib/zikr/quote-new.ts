@@ -155,7 +155,7 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "Ama siz dünya hayatını öne alıyorsunuz. Oysa ahiret daha hayırlı ve daha kalıcıdır. Şüphesiz bu, önceki sahifelerde, İbrahim ve Musa’nın sahifelerindedir.",
     ur: "مگر تم دنیا کی زندگی کو ترجیح دیتے ہو، حالانکہ آخرت بہتر اور باقی رہنے والی ہے۔ بے شک یہ پہلی کتابوں میں ہے، ابراہیم اور موسیٰ کی کتابوں میں۔",
   },
-  "Самые любимые дела для Аллах1а — те, которые постоянны, даже если их мало.": {
+  "Самые любимые дела для Аллах1а — те, которые совершаются постоянно, даже если их мало.": {
     en: "The deeds most beloved to Allah are those done regularly, even if they are small.",
     ar: "أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ",
     id: "Amal yang paling dicintai Allah ialah yang terus-menerus, walaupun sedikit.",
