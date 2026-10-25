@@ -195,6 +195,14 @@ export function Counter({
   const quoteLive = useRef(false);
   const [virtue, setVirtue] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [maskStats, setMaskStats] = useState(false);
+  const toggleMask = () => {
+    setMaskStats((hidden) => {
+      const next = !hidden;
+      localStorage.setItem("zikr-stats-mask", next ? "1" : "0");
+      return next;
+    });
+  };
   const [wordTop, setWordTop] = useState("42%");
   const lastTap = useRef(0);
   const dragY = useRef<number | null>(null);
@@ -208,6 +216,7 @@ export function Counter({
   useEffect(() => {
     quoteLive.current = true;
     setQuoteAt(Math.floor(Math.random() * QUOTES.length));
+    setMaskStats(localStorage.getItem("zikr-stats-mask") === "1");
   }, []);
 
   useEffect(() => {
@@ -576,16 +585,16 @@ export function Counter({
               </button>
             ) : null}
             <div className="grid grid-cols-3 gap-1.5 px-3">
-              <Stat label={t(s.lang, "today")} value={formatNum(today)} hint={`${formatNum(today)} / ${formatNum(s.goal)}`} />
-              <Stat label={t(s.lang, "total")} value={formatNum(s.total)} hint={zikrWord(s.total, s.lang)} />
-              <Stat label={t(s.lang, "rewards")} value={formatNum(totalReward)} hint={t(s.lang, "sawabHint")} reward />
+              <Stat label={t(s.lang, "today")} value={maskStats ? "***" : formatNum(today)} hint={maskStats ? "***" : `${formatNum(today)} / ${formatNum(s.goal)}`} onToggle={toggleMask} />
+              <Stat label={t(s.lang, "total")} value={maskStats ? "***" : formatNum(s.total)} hint={maskStats ? "***" : zikrWord(s.total, s.lang)} onToggle={toggleMask} />
+              <Stat label={t(s.lang, "rewards")} value={maskStats ? "***" : formatNum(totalReward)} hint={t(s.lang, "sawabHint")} reward onToggle={toggleMask} />
             </div>
             <button
               type="button"
               className="day-line px-3 pt-1 text-center text-[0.7rem] text-muted"
               onClick={() => setStatsOpen(true)}
             >
-              {t(s.lang, "today")} {formatNum(today)} · {tx(s.lang, "yesterday")} {formatNum(yesterday)} · {tx(s.lang, "record")} {formatNum(Math.max(s.bestDay, today))}
+              {t(s.lang, "today")} {maskStats ? "***" : formatNum(today)} · {tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)} · {tx(s.lang, "record")} {maskStats ? "***" : formatNum(Math.max(s.bestDay, today))}
             </button>
           </div>
         </div>
@@ -765,10 +774,10 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
-function Stat({ label, value, hint, reward }: { label: string; value: string; hint?: string; reward?: boolean }) {
+function Stat({ label, value, hint, reward, onToggle }: { label: string; value: string; hint?: string; reward?: boolean; onToggle: () => void }) {
   if (reward) {
     return (
-      <div className="rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
+      <button type="button" onClick={onToggle} className="w-full appearance-none rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
         <p className="truncate text-[0.68rem] font-bold text-muted">{label}</p>
         <p className="stat-value mt-0.5 text-base leading-none text-fg tabular-nums" suppressHydrationWarning>
           {value}
@@ -779,16 +788,16 @@ function Stat({ label, value, hint, reward }: { label: string; value: string; hi
             حسنات
           </span>
         </p>
-      </div>
+      </button>
     );
   }
   return (
-    <div className="rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
+    <button type="button" onClick={onToggle} className="rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
       <p className="truncate text-[0.68rem] font-bold text-muted">{label}</p>
       <p className="stat-value mt-0.5 text-base leading-none text-fg tabular-nums" suppressHydrationWarning>
         {value}
       </p>
       <p className="mt-0.5 line-clamp-2 text-[0.62rem] leading-snug text-muted">{hint}</p>
-    </div>
+    </button>
   );
 }
