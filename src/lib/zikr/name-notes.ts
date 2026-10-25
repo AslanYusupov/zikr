@@ -75,7 +75,7 @@ export const NAME_NOTES: [string, string][] = [
   ["Аль-Авваль — Первый. Пророк ﷺ сказал: нет ничего прежде Аллах1а.", "Al-Awwal: the First. The Prophet ﷺ said there is nothing before Allah."],
   ["Аль-Ахир — Последний. Пророк ﷺ сказал: нет ничего после Аллах1а.", "Al-Akhir: the Last. The Prophet ﷺ said there is nothing after Allah."],
   ["Аз-Зах1ир — Явный. Пророк ﷺ сказал: нет ничего над Аллах1ом.", "Az-Zahir: the Manifest. The Prophet ﷺ said there is nothing above Allah."],
-  ["Аль-Бат1ын — Сокровенный. Пророк ﷺ сказал: нет ничего помимо Аллах1а.", "Al-Batin: the Hidden. The Prophet ﷺ said there is nothing beyond Allah."],
+  ["Аль-Бат1ын — Сокровенный. Пророк ﷺ сказал: нет ничего ближе Аллах1а.", "Al-Batin: the Hidden. The Prophet ﷺ said there is nothing nearer than Allah."],
   ["Аль-Вали — Правящий. Он распоряжается делами творений.", "Al-Wali: the Governor. He directs the affairs of creation."],
   ["Аль-Мута1али — Превысокий. Он превыше того, что не подобает Ему.", "Al-Muta'ali: the Most Exalted. He is far above what does not befit Him."],
   ["Аль-Барр — Добрый. Он добродетелен к рабам и любит добро.", "Al-Barr: the Kind. He is good to the servants and loves goodness."],
