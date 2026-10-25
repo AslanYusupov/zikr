@@ -21,6 +21,7 @@ export type ThemeId =
   | "ivory"
   | "copper"
   | "night";
+export type FontId = "clear" | "soft" | "book" | "even";
 export type TapVoice = "soft" | "wood" | "drop" | "stone" | "glass" | "bead" | "clay" | "breath" | "sand" | "water";
 export type SoundId = "off" | "on";
 export type LangId = "ru" | "en" | "ar" | "id" | "tr" | "ur";
@@ -57,6 +58,7 @@ export type ZikrState = {
   showWisdom: boolean;
   quoteArabic: boolean;
   theme: ThemeId;
+  font: FontId;
   lang: LangId;
   country: string;
   orb: OrbId;

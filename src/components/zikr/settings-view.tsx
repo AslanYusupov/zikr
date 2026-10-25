@@ -5,8 +5,8 @@ import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr
 import { formatNum, inviteBody, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { triggerHaptic } from "@/lib/zikr/haptic";
-import { countryName, COUNTRY_IDS, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
-import type { LangId } from "@/lib/zikr/types";
+import { countryName, COUNTRY_IDS, fontHint, fontName, fontNote, fontTitle, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
+import type { FontId, LangId } from "@/lib/zikr/types";
 import { phraseOf } from "@/lib/zikr/tr";
 import { AYAHS_TOTAL, ayahCount, ayahFile, downloadAyahs, savedAyahFiles } from "@/lib/zikr/ayah-audio";
 import { loadQuran } from "@/lib/zikr/quran";
@@ -15,6 +15,13 @@ import type { CloudMeta } from "@/lib/zikr/api";
 import { cn } from "@/lib/cn";
 import { Sheet } from "./pattern";
 
+const FONT_FACE: Record<FontId, string> = {
+  clear: '"Inter", system-ui, sans-serif',
+  soft: '"Nunito", "Inter", system-ui, sans-serif',
+  book: '"Literata", Georgia, serif',
+  even: '"Manrope", "Inter", system-ui, sans-serif',
+};
+const FONT_IDS: FontId[] = ["clear", "soft", "book", "even"];
 const THEME_PHOTO: Record<string, string> = {
   roses: "/roses.jpg",
   sea: "/shore.jpg",
@@ -125,6 +132,25 @@ export function SettingsView({
             </button>
           ))}
         </div>
+        </details>
+
+        <details className="fold">
+          <summary className="fold-sum">{fontTitle(s.lang)}</summary>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{fontNote(s.lang)}</p>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            {FONT_IDS.map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => s.setFont(id)}
+                className={cn("rounded-2xl border bg-surface px-3 py-3 text-start", s.font === id ? "border-fg" : "border-line")}
+                style={{ fontFamily: FONT_FACE[id] }}
+              >
+                <span className="block text-base text-fg">{fontName(s.lang, id)}</span>
+                <span className="mt-1 block text-xs text-muted">{fontHint(s.lang, id)}</span>
+              </button>
+            ))}
+          </div>
         </details>
 
 <details className="fold">

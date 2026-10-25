@@ -5,9 +5,10 @@ import { todayKey } from "./format";
 import { levelFromXp } from "./levels";
 import { ALLAH_NAMES } from "./names";
 import { sunnahQuestById } from "./quests";
-import type { DayArchive, DayLog, LangId, OrbId, RewardArchive, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
+import type { DayArchive, DayLog, FontId, LangId, OrbId, RewardArchive, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
 
 const THEMES: ThemeId[] = ["black", "wine", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle"];
+const FONTS: FontId[] = ["clear", "soft", "book", "even"];
 const LANGS: LangId[] = ["ru", "en", "ar", "id", "tr", "ur"];
 const ORBS: OrbId[] = ["plain", "glow", "pearl", "line", "double", "soft", "dot", "crescent", "kaaba", "shahada"];
 const COUNTRIES = new Set(["", "RU", "SA", "TR", "ID", "PK", "AE", "QA", "EG", "PS", "HL", "MA", "DZ", "MY", "GB", "US", "DE", "FR", "KZ", "UZ", "AZ", "TJ"]);
@@ -55,6 +56,7 @@ export function initialData(): ZikrState {
     showWisdom: true,
     quoteArabic: true,
     theme: "black",
+    font: "clear",
     lang: "ru",
     country: "",
     orb: "plain",
@@ -243,6 +245,7 @@ export function normalize(raw: unknown): ZikrState {
     showWisdom: r.showWisdom !== false,
     quoteArabic: r.quoteArabic !== false,
     theme: THEMES.includes(r.theme as ThemeId) ? (r.theme as ThemeId) : base.theme,
+    font: FONTS.includes(r.font as FontId) ? (r.font as FontId) : "clear",
     lang: LANGS.includes(r.lang as LangId) ? (r.lang as LangId) : "ru",
     country: typeof r.country === "string" && COUNTRIES.has(r.country) ? r.country : "",
     orb: "plain",
@@ -352,6 +355,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     doneToday: { ...remote.doneToday, ...local.doneToday },
     bestDay: best,
     theme: local.theme,
+    font: local.font,
     lang: local.lang,
     country: local.country,
     orb: local.orb,
@@ -581,6 +585,7 @@ type Actions = {
   togglePool: (id: string) => void;
   setGoal: (n: number) => void;
   setTheme: (t: ThemeId) => void;
+  setFont: (f: FontId) => void;
   setLang: (l: LangId) => void;
   setCountry: (c: string) => void;
   setOrb: (o: OrbId) => void;
@@ -634,6 +639,9 @@ export const useZikr = create<ZikrState & Actions>()(
         if ((GOALS as readonly number[]).includes(n)) set({ goal: n });
       },
       setTheme: (t) => set({ theme: t }),
+      setFont: (f) => {
+        if (FONTS.includes(f)) set({ font: f });
+      },
       setLang: (l) => {
         if (LANGS.includes(l)) set({ lang: l });
       },

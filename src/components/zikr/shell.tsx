@@ -79,6 +79,7 @@ export function Shell() {
   const cloud = useCloud(hydrated);
   useWorldSync(hydrated && cloud.ready);
   const theme = useZikr((s) => s.theme);
+  const font = useZikr((s) => s.font);
   const lang = useZikr((s) => s.lang);
   const publicId = useZikr((s) => s.publicId);
   const sound = useZikr((s) => s.sound);
@@ -253,6 +254,10 @@ export function Shell() {
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", bg || "#050505");
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.dataset.font = font || "clear";
+  }, [font]);
 
   useEffect(() => {
     document.documentElement.lang = lang;

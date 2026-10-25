@@ -1659,6 +1659,47 @@ export function themeName(lang: LangId, id: string): string {
 export function themeHint(lang: LangId, id: string): string {
   return THEME_HINT[id]?.[lang] ?? THEME_HINT[id]?.ru ?? "";
 }
+
+const FONT_NAME: Record<string, Record<LangId, string>> = {
+  clear: { ru: "Ясный", en: "Clear", ar: "واضح", id: "Jelas", tr: "Berrak", ur: "صاف" },
+  soft: { ru: "Мягкий", en: "Soft", ar: "ناعم", id: "Lembut", tr: "Yumuşak", ur: "نرم" },
+  book: { ru: "Книжный", en: "Book", ar: "كتابي", id: "Buku", tr: "Kitap", ur: "کتابی" },
+  even: { ru: "Ровный", en: "Even", ar: "مستقيم", id: "Rata", tr: "Düz", ur: "ہموار" },
+};
+const FONT_HINT: Record<string, Record<LangId, string>> = {
+  clear: { ru: "Как сейчас", en: "As it is now", ar: "كما هو الآن", id: "Seperti sekarang", tr: "Şimdiki gibi", ur: "جیسا اب ہے" },
+  soft: { ru: "Круглые буквы", en: "Round letters", ar: "حروف مستديرة", id: "Huruf bulat", tr: "Yuvarlak harfler", ur: "گول حروف" },
+  book: { ru: "Приятное чтение", en: "Pleasant reading", ar: "قراءة مريحة", id: "Nyaman dibaca", tr: "Rahat okuma", ur: "خوشگوار پڑھائی" },
+  even: { ru: "Спокойные буквы", en: "Calm letters", ar: "حروف هادئة", id: "Huruf tenang", tr: "Sakin harfler", ur: "پرسکون حروف" },
+};
+const FONT_LEAD: Record<LangId, string> = {
+  ru: "Шрифт",
+  en: "Font",
+  ar: "الخط",
+  id: "Huruf",
+  tr: "Yazı tipi",
+  ur: "فونٹ",
+};
+const FONT_NOTE: Record<LangId, string> = {
+  ru: "Буквы на всём экране. Арабский текст остаётся своим.",
+  en: "Letters across the whole screen. Arabic text stays as it is.",
+  ar: "الحروف في الشاشة كلها. النص العربي يبقى كما هو.",
+  id: "Huruf di seluruh layar. Teks Arab tetap.",
+  tr: "Harfler bütün ekranda. Arapça metin aynı kalır.",
+  ur: "حروف پوری اسکرین پر۔ عربی متن اپنی جگہ رہتا ہے۔",
+};
+export function fontTitle(lang: LangId): string {
+  return FONT_LEAD[lang] ?? FONT_LEAD.ru;
+}
+export function fontNote(lang: LangId): string {
+  return FONT_NOTE[lang] ?? FONT_NOTE.ru;
+}
+export function fontName(lang: LangId, id: string): string {
+  return FONT_NAME[id]?.[lang] ?? FONT_NAME[id]?.ru ?? id;
+}
+export function fontHint(lang: LangId, id: string): string {
+  return FONT_HINT[id]?.[lang] ?? FONT_HINT[id]?.ru ?? "";
+}
 export function orbName(lang: LangId, id: string): string {
   return ORB_NAME[id]?.[lang] ?? ORB_NAME[id]?.ru ?? id;
 }
