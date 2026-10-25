@@ -1305,6 +1305,22 @@
   inset: 0;
   overflow: hidden;
 }
+.mask-tap {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  touch-action: manipulation;
+  cursor: pointer;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
 .pane {
   overscroll-behavior: contain;
   overflow-anchor: none;
