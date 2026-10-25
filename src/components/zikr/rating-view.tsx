@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
@@ -153,17 +153,13 @@ export function RatingView() {
   const chart = recentDays(days, 14, day);
   const mark = Math.max(record, today);
   const mine = (n: number) => (maskMine ? "***" : formatNum(n));
-  const maskAt = useRef(0);
   const toggleMine = () => {
-    const now = Date.now();
-    if (now - maskAt.current < 400) return;
-    maskAt.current = now;
     setMaskMine((hidden) => {
       const next = !hidden;
       try {
         localStorage.setItem("zikr-rating-mask", next ? "1" : "0");
       } catch {
-        /* the phone can still hide the numbers for this visit */
+        /* keep the hide for this visit */
       }
       return next;
     });
@@ -320,9 +316,9 @@ export function RatingView() {
     <div className="pane px-4 pt-2 pb-8">
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
         <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "selfTitle")}</p>
-        <MaskTap onTap={toggleMine} className="mt-1 text-start text-2xl text-fg">
+        <h2 className="mt-1 text-2xl text-fg" onClick={toggleMine}>
           {mine(mark)} {zikrWord(mark, lang)}
-        </MaskTap>
+        </h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">{selfLine}</p>
       </article>
       <div className="mt-3 grid grid-cols-2 gap-2">
@@ -355,73 +351,56 @@ export function RatingView() {
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
       <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} mask={maskMine} onMine={toggleMine} />
-      {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? (
-        <MaskTap onTap={toggleMine} className="mt-2 text-start text-sm text-muted">
-          {t(lang, "dailyPlace")}: {maskMine ? "***" : formatNum(myDailyRank)}.
-        </MaskTap>
-      ) : null}
+      {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted" onClick={toggleMine}>{t(lang, "dailyPlace")}: {maskMine ? "***" : formatNum(myDailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
-      <MaskTap onTap={toggleMine} className="mt-1 text-start text-sm leading-relaxed text-muted">
+      <p className="mt-1 text-sm leading-relaxed text-muted" onClick={toggleMine}>
         {t(lang, "ratingWorld")}{" "}
         <span className="tabular-nums text-fg">{publicId && !HIDDEN_RATING_IDS.has(publicId) ? (maskMine ? "***" : publicId) : "…"}</span>
-      </MaskTap>
+      </p>
       {clock ? <p className="mt-1 text-xs text-muted">{(held ? t(lang, "ratingHeld") : t(lang, "ratingAt")).replace("{time}", clock)}</p> : null}
       {worldError && !worldShown?.length ? <p className="mt-3 text-sm text-muted">{t(lang, "worldClosed")}</p> : null}
       {worldShown && worldShown.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "worldQuiet")}</p>}
       {worldShown && worldShown.length > 0 && (
         <ol className="mt-3 grid gap-1.5">
           {worldShown.map((row) => {
-            const own = samePerson(row.id, publicId);
+            const own = row.id === publicId;
             return (
             <li
               key={row.id}
+              onClick={own ? toggleMine : undefined}
               className={cn(
                 "flex items-center justify-between gap-3 rounded-2xl border px-3 py-2",
                 own ? "border-gold bg-surface" : "border-line bg-surface",
               )}
             >
-              {own ? (
-                <MaskTap onTap={toggleMine} className="flex items-center justify-between gap-3 text-start">
-                  <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                    <span className="mr-2 text-muted">{row.rank}.</span>
-                    {maskMine ? "***" : row.id}
-                    {` · ${tx(lang, "you")}`}
-                  </span>
-                  <span className="shrink-0 text-sm tabular-nums text-gold">{maskMine ? "***" : row.hidden ? "—" : formatNum(row.total)}</span>
-                </MaskTap>
-              ) : (
-                <>
-                  <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                    <span className="mr-2 text-muted">{row.rank}.</span>
-                    {row.id}
-                  </span>
-                  <span className="shrink-0 text-sm tabular-nums text-gold">{row.hidden ? "—" : formatNum(row.total)}</span>
-                </>
-              )}
+              <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+                <span className="mr-2 text-muted">{row.rank}.</span>
+                {own && maskMine ? "***" : row.id}
+                {own ? ` · ${tx(lang, "you")}` : ""}
+              </span>
+              <span className="shrink-0 text-sm tabular-nums text-gold">{own && maskMine ? "***" : row.hidden ? "—" : formatNum(row.total)}</span>
             </li>
             );
           })}
         </ol>
       )}
-      {worldShown && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => samePerson(row.id, publicId)) ? (
-        <div className="mt-1.5 flex items-center justify-between gap-3 rounded-2xl border border-gold bg-surface px-3 py-2">
-        <MaskTap onTap={toggleMine} className="flex items-center justify-between gap-3 text-start">
+      {worldShown && publicId && !HIDDEN_RATING_IDS.has(publicId) && myWorldRank && !worldShown.some((row) => row.id === publicId) ? (
+        <div className="mt-1.5 flex items-center justify-between gap-3 rounded-2xl border border-gold bg-surface px-3 py-2" onClick={toggleMine}>
           <span className="min-w-0 truncate text-sm tabular-nums text-fg">
             <span className="mr-2 text-muted">{maskMine ? "***" : formatNum(myWorldRank)}.</span>
             {maskMine ? "***" : publicId}
             {` · ${tx(lang, "you")}`}
           </span>
           <span className="shrink-0 text-sm tabular-nums text-gold">{maskMine ? "***" : reveal ? formatNum(total) : "—"}</span>
-        </MaskTap>
         </div>
       ) : null}
       {myWorldRank && !HIDDEN_RATING_IDS.has(publicId) ? (
-        <MaskTap onTap={toggleMine} className="mt-2 text-start text-sm text-fg">
+        <p className="mt-2 text-sm text-fg" onClick={toggleMine}>
           {t(lang, "yourPlace")}: {maskMine ? "***" : formatNum(myWorldRank)}.
           {publicId ? ` · ${maskMine ? "***" : publicId}` : ""}
           {` · ${tx(lang, "you")}`}
-        </MaskTap>
+        </p>
       ) : null}
 
       <article className="mt-5 rounded-3xl border border-line bg-surface px-4 py-4">
@@ -449,43 +428,6 @@ export function RatingView() {
   );
 }
 
-function samePerson(rowId: string, publicId: string): boolean {
-  if (!rowId || !publicId) return false;
-  if (rowId === publicId) return true;
-  const canon = (id: string) => {
-    if (id === "88880455") return "96995742";
-    if (id === "62012303") return "87278839";
-    if (id === "25574036" || id === "50170262") return "52812946";
-    return id;
-  };
-  return canon(rowId) === canon(publicId);
-}
-
-function MaskTap({ onTap, className, children }: { onTap: () => void; className?: string; children: ReactNode }) {
-  const start = useRef({ x: 0, y: 0 });
-  return (
-    <button
-      type="button"
-      className={cn("mask-tap", className)}
-      onPointerDown={(event) => {
-        start.current = { x: event.clientX, y: event.clientY };
-      }}
-      onPointerUp={(event) => {
-        if (Math.abs(event.clientX - start.current.x) > 12 || Math.abs(event.clientY - start.current.y) > 12) return;
-        event.preventDefault();
-        event.stopPropagation();
-        onTap();
-      }}
-      onClick={(event) => {
-        event.preventDefault();
-        onTap();
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
 function Board({
   rows,
   publicId,
@@ -510,34 +452,20 @@ function Board({
   return (
     <ol className="mt-2 grid gap-1.5">
       {list.map((row) => {
-        const own = samePerson(row.id, publicId);
-        const id = own && mask ? "***" : row.id;
-        const score = own && mask ? "***" : formatNum(row.value);
+        const own = row.id === publicId;
         return (
         <li
           key={row.id}
+          onClick={own ? onMine : undefined}
           className={cn("flex items-center justify-between gap-3 rounded-2xl border px-3 py-2", own ? "border-gold bg-surface" : "border-line bg-surface")}
         >
-          {own ? (
-            <MaskTap onTap={onMine ?? (() => {})} className="flex items-center justify-between gap-3 text-start">
-              <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
-                {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
-                {id}
-                {` · ${tx(lang, "you")}`}
-              </span>
-              {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{mask ? "***" : row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{score}</span>}
-            </MaskTap>
-          ) : (
-            <>
-              <span className="min-w-0 truncate text-sm tabular-nums text-fg">
-                <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
-                {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
-                {row.id}
-              </span>
-              {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{formatNum(row.value)}</span>}
-            </>
-          )}
+          <span className="min-w-0 truncate text-sm tabular-nums text-fg">
+            <span className="mr-2 text-muted">{row.rank > 0 ? `${row.rank}.` : ""}</span>
+            {row.country === "HL" ? <i className="rayah" /> : FLAGS[row.country] ? `${FLAGS[row.country]} ` : ""}
+            {own && mask ? "***" : row.id}
+            {own ? ` · ${tx(lang, "you")}` : ""}
+          </span>
+          {namesOnly || row.hidden ? <span className="shrink-0 text-sm text-muted">{own && mask ? "***" : row.hidden && !namesOnly ? "—" : ""}</span> : <span className="shrink-0 text-sm tabular-nums text-gold">{own && mask ? "***" : formatNum(row.value)}</span>}
         </li>
         );
       })}
