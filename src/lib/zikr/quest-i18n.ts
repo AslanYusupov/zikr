@@ -83,11 +83,11 @@ const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
     ur: { title: "ستر «أستغفر الله»", note: "نبی ﷺ دن میں ستر سے زیادہ بار اللہ سے بخشش مانگتے اور اس کی طرف توبہ کرتے تھے۔ (بخاری)" },
   },
   "subhan-100": {
-    en: { title: "One hundred “Subhanallah”", note: "The Prophet ﷺ said: whoever says “Subhanallah” one hundred times, a thousand good deeds are written for him and a thousand sins are forgiven. (Muslim)" },
-    ar: { title: "مئة «سبحان الله»", note: "قال النبي ﷺ: من سبّح مئة تسبيحة كُتبت له ألف حسنة وحُطت عنه ألف خطيئة. (مسلم)" },
-    id: { title: "Seratus “Subhanallah”", note: "Nabi ﷺ bersabda: siapa mengucapkan “Subhanallah” seratus kali, dicatat untuknya seribu kebaikan dan dihapus seribu keburukan. (Muslim)" },
-    tr: { title: "Yüz “Sübhanallah”", note: "Peygamber ﷺ buyurdu: kim “Sübhanallah”ı yüz kez söylerse ona bin sevap yazılır ve bin günahı silinir. (Müslim)" },
-    ur: { title: "سو «سبحان اللہ»", note: "نبی ﷺ نے فرمایا: جو سو بار «سبحان اللہ» کہے، اس کے لیے ہزار نیکیاں لکھی جاتی ہیں اور اس کے ہزار گناہ معاف کیے جاتے ہیں۔ (مسلم)" },
+    en: { title: "One hundred “Subhanallah”", note: "The Prophet ﷺ said: whoever says “Subhanallah” one hundred times, a thousand good deeds are written for him, or a thousand sins are removed. (Muslim)" },
+    ar: { title: "مئة «سبحان الله»", note: "قال النبي ﷺ: من سبّح مئة تسبيحة كُتبت له ألف حسنة أو حُطت عنه ألف خطيئة. (مسلم)" },
+    id: { title: "Seratus “Subhanallah”", note: "Nabi ﷺ bersabda: siapa mengucapkan “Subhanallah” seratus kali, dicatat untuknya seribu kebaikan atau dihapus seribu keburukan. (Muslim)" },
+    tr: { title: "Yüz “Sübhanallah”", note: "Peygamber ﷺ buyurdu: kim “Sübhanallah”ı yüz kez söylerse ona bin sevap yazılır veya bin günahı silinir. (Müslim)" },
+    ur: { title: "سو «سبحان اللہ»", note: "نبی ﷺ نے فرمایا: جو سو بار «سبحان اللہ» کہے، اس کے لیے ہزار نیکیاں لکھی جاتی ہیں یا اس کے ہزار گناہ مٹا دیے جاتے ہیں۔ (مسلم)" },
   },
   "hamd-100": {
     en: { title: "One hundred “Subhanallahi wa bihamdihi”", note: "One hundred times in a day: “Glory and praise be to Allah.”" },
