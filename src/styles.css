@@ -1478,6 +1478,126 @@ details.fold>:not(summary) {
 [data-theme=wine] .text-muted {
   color: var(--muted);
 }
+[data-theme=subhah] {
+  --bg: #06141c;
+  --bg-deep: #030b12;
+  --surface: #0c2433f2;
+  --surface-2: #12344a;
+  --fg: #f4fbff;
+  --muted: #b7d7e6;
+  --gold: #7af4ff;
+  --gold-soft: #d9fbff;
+  --line: #7af4ff40;
+  --ink: #04202a;
+  --chip: #08202c;
+  --orb: #0b2838;
+  --orb-fg: #f4fbff;
+  --orb-gold: #7af4ff;
+  --glow: #00f2fe66;
+  color-scheme: dark;
+}
+[data-theme=subhah] .app-frame {
+  background:
+    radial-gradient(78% 42% at 50% -6%, #00f2fe47, transparent 64%),
+    linear-gradient(180deg, #0a2434 0%, #06141c 46%, #041018 100%);
+}
+[data-theme=firdaus] {
+  --bg: #16060c;
+  --bg-deep: #0c0307;
+  --surface: #2c1018f2;
+  --surface-2: #421820;
+  --fg: #fff6f5;
+  --muted: #f3c9c4;
+  --gold: #ffb199;
+  --gold-soft: #ffe4dc;
+  --line: #ffb19955;
+  --ink: #2a0610;
+  --chip: #220910;
+  --orb: #301018;
+  --orb-fg: #fff6f5;
+  --orb-gold: #ffb199;
+  --glow: #ff084466;
+  color-scheme: dark;
+}
+[data-theme=firdaus] .app-frame {
+  background:
+    radial-gradient(76% 40% at 50% -8%, #ff084447, transparent 62%),
+    linear-gradient(180deg, #2a0c14 0%, #16060c 48%, #10040a 100%);
+}
+[data-theme=amethyst] {
+  --bg: #120818;
+  --bg-deep: #090410;
+  --surface: #241030f2;
+  --surface-2: #341848;
+  --fg: #fbf6ff;
+  --muted: #e0c8f4;
+  --gold: #c77dff;
+  --gold-soft: #edd9ff;
+  --line: #c77dff55;
+  --ink: #1a0828;
+  --chip: #1a0c26;
+  --orb: #281438;
+  --orb-fg: #fbf6ff;
+  --orb-gold: #c77dff;
+  --glow: #9d4edd66;
+  color-scheme: dark;
+}
+[data-theme=amethyst] .app-frame {
+  background:
+    radial-gradient(76% 40% at 50% -8%, #9d4edd47, transparent 62%),
+    linear-gradient(180deg, #1c0c2c 0%, #120818 48%, #0c0614 100%);
+}
+[data-theme=amber] {
+  --bg: #161006;
+  --bg-deep: #0e0a04;
+  --surface: #2c2010f2;
+  --surface-2: #3e2e14;
+  --fg: #fff8ee;
+  --muted: #f0d7b4;
+  --gold: #f2c94c;
+  --gold-soft: #ffe7b0;
+  --line: #f2c94c55;
+  --ink: #1c1204;
+  --chip: #221808;
+  --orb: #2e220e;
+  --orb-fg: #fff8ee;
+  --orb-gold: #f2c94c;
+  --glow: #f2994a66;
+  color-scheme: dark;
+}
+[data-theme=amber] .app-frame {
+  background:
+    radial-gradient(76% 40% at 50% -8%, #f2994a47, transparent 62%),
+    linear-gradient(180deg, #2a1c0c 0%, #161006 48%, #100c06 100%);
+}
+[data-theme=jade] {
+  --bg: #061410;
+  --bg-deep: #030c0a;
+  --surface: #0e2820f2;
+  --surface-2: #14382c;
+  --fg: #f3fff9;
+  --muted: #b7e6d4;
+  --gold: #34d399;
+  --gold-soft: #d4ffef;
+  --line: #34d39955;
+  --ink: #042018;
+  --chip: #082018;
+  --orb: #0e2c22;
+  --orb-fg: #f3fff9;
+  --orb-gold: #34d399;
+  --glow: #10b98166;
+  color-scheme: dark;
+}
+[data-theme=jade] .app-frame {
+  background:
+    radial-gradient(76% 40% at 50% -8%, #10b98147, transparent 62%),
+    linear-gradient(180deg, #0c2820 0%, #061410 48%, #04110e 100%);
+}
+button[data-theme=subhah] { box-shadow: inset 3px 0 0 #00f2fe, 0 0 16px #00f2fe33; }
+button[data-theme=firdaus] { box-shadow: inset 3px 0 0 #ff0844, 0 0 16px #ff084433; }
+button[data-theme=amethyst] { box-shadow: inset 3px 0 0 #9d4edd, 0 0 16px #9d4edd33; }
+button[data-theme=amber] { box-shadow: inset 3px 0 0 #f2c94c, 0 0 16px #f2994a33; }
+button[data-theme=jade] { box-shadow: inset 3px 0 0 #34d399, 0 0 16px #10b98133; }
 [data-font=crimson] .reminder-ar {
   font-size: 1.15rem;
   font-weight: 700;

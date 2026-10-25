@@ -674,6 +674,11 @@ export const THEMES: { id: ThemeId; name: string; hint: string }[] = [
   { id: "peaks", name: "Горы", hint: "Снег и озеро" },
   { id: "lake", name: "Рассвет", hint: "Тихая вода" },
   { id: "jungle", name: "Джунгли", hint: "Листья и свет" },
+  { id: "subhah", name: "Субхах", hint: "Ночное небо" },
+  { id: "firdaus", name: "Аль-Фирдаус", hint: "Рубиновый свет" },
+  { id: "amethyst", name: "Аметист", hint: "Ночной пурпур" },
+  { id: "amber", name: "Янтарь", hint: "Тёплый свет" },
+  { id: "jade", name: "Нефрит", hint: "Мятное свечение" },
 ];
 
 export const ORBS: { id: OrbId; name: string }[] = [

@@ -1574,6 +1574,11 @@ const THEME_NAME: Record<string, Record<LangId, string>> = {
   peaks: { ru: "Горы", en: "Mountains", ar: "جبال", id: "Gunung", tr: "Dağlar", ur: "پہاڑ" },
   lake: { ru: "Рассвет", en: "Dawn", ar: "فجر", id: "Fajar", tr: "Şafak", ur: "صبح" },
   jungle: { ru: "Джунгли", en: "Forest", ar: "غابة", id: "Hutan", tr: "Orman", ur: "جنگل" },
+  subhah: { ru: "Субхах", en: "Subhah", ar: "سبحه", id: "Subhah", tr: "Sübhah", ur: "سبحہ" },
+  firdaus: { ru: "Аль-Фирдаус", en: "Al-Firdaus", ar: "الفردوس", id: "Al-Firdaus", tr: "Firdevs", ur: "الفردوس" },
+  amethyst: { ru: "Аметист", en: "Amethyst", ar: "جمشت", id: "Ametis", tr: "Ametist", ur: "جمشت" },
+  amber: { ru: "Янтарь", en: "Amber", ar: "كهرمان", id: "Amber", tr: "Kehribar", ur: "کہربا" },
+  jade: { ru: "Нефрит", en: "Jade", ar: "يشم", id: "Giok", tr: "Yeşim", ur: "یشم" },
 };
 
 const THEME_HINT: Record<string, Record<LangId, string>> = {
@@ -1587,6 +1592,11 @@ const THEME_HINT: Record<string, Record<LangId, string>> = {
   peaks: { ru: "Снег и озеро", en: "Snow and a lake", ar: "ثلج وبحيرة", id: "Salju dan danau", tr: "Kar ve göl", ur: "برف اور جھیل" },
   lake: { ru: "Тихая вода", en: "Still water", ar: "ماء ساكن", id: "Air yang tenang", tr: "Durgun su", ur: "ساکت پانی" },
   jungle: { ru: "Листья и свет", en: "Leaves and light", ar: "ورق ونور", id: "Daun dan cahaya", tr: "Yaprak ve ışık", ur: "پتے اور روشنی" },
+  subhah: { ru: "Ночное небо", en: "Night sky", ar: "سماء الليل", id: "Langit malam", tr: "Gece göğü", ur: "رات کا آسمان" },
+  firdaus: { ru: "Рубиновый свет", en: "Ruby light", ar: "ضوء ياقوتي", id: "Cahaya delima", tr: "Yakut ışık", ur: "یاقوتی روشنی" },
+  amethyst: { ru: "Ночной пурпур", en: "Night purple", ar: "أرجوان ليلي", id: "Ungu malam", tr: "Gece moru", ur: "رات کی جامنی" },
+  amber: { ru: "Тёплый свет", en: "Warm light", ar: "ضوء دافئ", id: "Cahaya hangat", tr: "Ilık ışık", ur: "گرم روشنی" },
+  jade: { ru: "Мятное свечение", en: "Mint glow", ar: "وهج نعناعي", id: "Cahaya mint", tr: "Nane ışıltısı", ur: "پودینے کی چمک" },
 };
 
 const ORB_NAME: Record<string, Record<LangId, string>> = {
