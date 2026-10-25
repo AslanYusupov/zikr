@@ -1541,7 +1541,7 @@ export function tx(lang: LangId, key: ExtraKey): string {
 
 const THEME_NAME: Record<string, Record<LangId, string>> = {
   black: { ru: "Чёрный", en: "Black", ar: "أسود", id: "Hitam", tr: "Siyah", ur: "سیاہ" },
-  wine: { ru: "Бордо", en: "Burgundy", ar: "خمري", id: "Burgundi", tr: "Bordo", ur: "برگنڈی" },
+  wine: { ru: "Багряный", en: "Crimson", ar: "قرمزي", id: "Merah tua", tr: "Koyu kırmızı", ur: "گہرا سرخ" },
   ivory: { ru: "Белый", en: "White", ar: "أبيض", id: "Putih", tr: "Beyaz", ur: "سفید" },
   roses: { ru: "Розы", en: "Roses", ar: "ورود", id: "Mawar", tr: "Güller", ur: "گلاب" },
   sea: { ru: "Берег", en: "Shore", ar: "شاطئ", id: "Pantai", tr: "Kıyı", ur: "ساحل" },
@@ -1554,7 +1554,7 @@ const THEME_NAME: Record<string, Record<LangId, string>> = {
 
 const THEME_HINT: Record<string, Record<LangId, string>> = {
   black: { ru: "Тихий тёмный", en: "Quiet dark", ar: "مظلم هادئ", id: "Gelap yang tenang", tr: "Sessiz koyu", ur: "خاموش تاریک" },
-  wine: { ru: "Тёмное вино", en: "Dark wine", ar: "خمري داكن", id: "Anggur gelap", tr: "Koyu bordo", ur: "گہرا برگنڈی" },
+  wine: { ru: "Глубокий красный", en: "Deep red", ar: "أحمر داكن", id: "Merah gelap", tr: "Derin kırmızı", ur: "گہرا لال" },
   ivory: { ru: "Светлый и спокойный", en: "Light and calm", ar: "فاتح وهادئ", id: "Terang dan tenang", tr: "Aydınlık ve sakin", ur: "روشن اور پرسکون" },
   roses: { ru: "Мягкий фон из роз", en: "Soft roses", ar: "ورود ناعمة", id: "Mawar yang lembut", tr: "Yumuşak güller", ur: "نرم گلاب" },
   sea: { ru: "Море и пальмы", en: "Sea and palms", ar: "بحر ونخيل", id: "Laut dan palem", tr: "Deniz ve hurma", ur: "سمندر اور کھجور" },
