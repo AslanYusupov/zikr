@@ -2711,8 +2711,8 @@ details.fold>:not(summary) {
   background: radial-gradient(circle, #ffd27a66 0%, #ff8a2480 28%, #ff5a1400 68%);
 }
 .orbit-moon::before {
-  width: 3.15rem;
-  height: 3.15rem;
+  width: 4.4rem;
+  height: 4.4rem;
   background: radial-gradient(circle, #ffffff73 0%, #d7e6f840 36%, #d7e6f800 70%);
 }
 .sun-body,
@@ -2737,8 +2737,8 @@ details.fold>:not(summary) {
   bottom: -.15rem;
 }
 .moon-body {
-  width: calc(1.598rem * 630 / 628);
-  height: calc(1.598rem * 640 / 628);
+  width: 1.731rem;
+  height: 1.744rem;
   transform: translate(-50%, -50%);
 }
 @keyframes orbit-spin {
