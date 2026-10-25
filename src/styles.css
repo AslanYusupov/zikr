@@ -1445,46 +1445,6 @@ details.fold>:not(summary) {
   color-scheme: dark;
 }
 [data-theme=wine] .font-arabic { color: #f6d7b4; }
-[data-theme=wine] .reminder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #e7b8a855;
-  border-radius: .55rem;
-  background:
-    linear-gradient(#f4d2b0, #f4d2b0) left 10px top 10px / 16px 1.5px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) left 10px top 10px / 1.5px 16px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) right 10px top 10px / 16px 1.5px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) right 10px top 10px / 1.5px 16px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) left 10px bottom 10px / 16px 1.5px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) left 10px bottom 10px / 1.5px 16px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) right 10px bottom 10px / 16px 1.5px no-repeat,
-    linear-gradient(#f4d2b0, #f4d2b0) right 10px bottom 10px / 1.5px 16px no-repeat,
-    linear-gradient(180deg, #3a1520, #16070c);
-  padding: .95rem .9rem 1.15rem;
-  box-shadow: inset 0 0 0 1px #0006;
-}
-[data-theme=wine] .reminder-ar {
-  color: #f6d7b4;
-  font-size: 1.15rem;
-  font-weight: 700;
-  line-height: 1.9;
-}
-[data-theme=wine] .reminder-text {
-  color: #fff6f4;
-  font-size: .92rem;
-  line-height: 1.45;
-}
-[data-theme=wine] .reminder-src {
-  align-self: flex-end;
-  margin-top: .55rem;
-  padding: .18rem .7rem;
-  border: 1px solid #f4d2b073;
-  border-radius: 999px;
-  background: #2a1016cc;
-  color: #f6d7b4;
-  font-size: .68rem;
-}
 [data-theme=wine] .phrase-read,
 [data-theme=wine] .stats-dock,
 [data-theme=wine] .app-nav,
