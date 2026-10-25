@@ -1445,6 +1445,21 @@ details.fold>:not(summary) {
   color-scheme: dark;
 }
 [data-theme=wine] .font-arabic { color: #f6d7b4; }
+[data-theme=wine] .reminder-ar {
+  color: #f6d7b4;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.9;
+}
+[data-theme=wine] .reminder-text {
+  color: #fff6f4;
+  font-size: .92rem;
+  line-height: 1.45;
+}
+[data-theme=wine] .reminder-src {
+  color: #f6d7b4;
+  font-size: .72rem;
+}
 [data-theme=wine] .phrase-read,
 [data-theme=wine] .stats-dock,
 [data-theme=wine] .app-nav,
