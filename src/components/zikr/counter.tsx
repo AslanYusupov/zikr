@@ -542,6 +542,12 @@ export function Counter({
                   if (!start) return;
                   const dx = event.clientX - start.x;
                   const dy = event.clientY - start.y;
+                  if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                    quoteSwiped.current = true;
+                    window.setTimeout(() => {
+                      quoteSwiped.current = false;
+                    }, 350);
+                  }
                   if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy)) return;
                   quoteSwiped.current = true;
                   skipStageTap.current = true;
@@ -553,11 +559,13 @@ export function Counter({
                 }}
                 className="reminder reminder-in mx-3 mb-1.5 block w-[calc(100%-1.5rem)] text-center"
               >
+                <span className="reminder-scroll">
                 {shownQuote.arabic && s.arabicOptIn === true && s.lang !== "ar" && s.lang !== "ur" ? (
                   <p className="reminder-ar font-arabic text-sm leading-relaxed text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
                 ) : null}
                 <p className="reminder-text mt-0.5 text-xs leading-snug text-fg">{shownQuote.text}</p>
                 <p className="reminder-src mt-0.5 text-[0.65rem] text-muted">{shownQuote.source}</p>
+                </span>
               </button>
             ) : null}
             {quest && step && !s.questUnder ? (

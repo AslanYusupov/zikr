@@ -1714,9 +1714,16 @@ details.fold>:not(summary) {
   border-radius: 1rem;
 }
 .reminder {
-  padding: .4rem .7rem .45rem;
-  max-height: min(38svh, 18rem);
+  padding: .35rem .65rem .4rem;
+  max-height: min(18svh, 7.2rem);
+  overflow: hidden;
+}
+.reminder-scroll {
+  display: block;
+  max-height: min(16svh, 6.4rem);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   touch-action: pan-y;
 }
 .reminder-ar {
