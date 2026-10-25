@@ -287,6 +287,10 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       out = hamzaSyl(out, syl, ru);
       continue;
     }
+    if (cur.ch === "\u0648" && cur.long && !cur.v && !cur.sh) {
+      out += ru ? "аа" : "aa";
+      continue;
+    }
     if (cur.ch === "\u0648" && !cur.v && !cur.sh && prev && (prev.v === "u" || prev.v === "un" || prev.v === "a" || prev.v === "an")) {
       out += ru ? "у" : "u";
       continue;

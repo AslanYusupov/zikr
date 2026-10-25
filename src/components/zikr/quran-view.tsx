@@ -130,7 +130,6 @@ export function QuranView() {
   const [mean, setMean] = useState<QuranMeaning | null>(null);
   const lastClaim = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const swipe = useRef<{ x: number; y: number } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
   const loopingRef = useRef<string | null>(null);
   const playToken = useRef(0);
@@ -371,21 +370,6 @@ export function QuranView() {
     setOpen(target.n);
   }
 
-  function onSwipeStart(event: PointerEvent) {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    swipe.current = { x: event.clientX, y: event.clientY };
-  }
-
-  function onSwipeEnd(event: PointerEvent) {
-    const start = swipe.current;
-    swipe.current = null;
-    if (!start) return;
-    const dx = event.clientX - start.x;
-    const dy = event.clientY - start.y;
-    if (Math.abs(dx) < 72 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
-    goSurah(dx < 0 ? 1 : -1);
-  }
-
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
   }, [open]);
@@ -494,16 +478,7 @@ export function QuranView() {
     lang === "ar" ? item.name : lang === "ru" ? item.ru : surahSpoken(lang, item.n, item.en);
 
   return (
-    <div
-      ref={scrollRef}
-      className="quran-scroll"
-      style={{ touchAction: "pan-y" }}
-      onPointerDown={onSwipeStart}
-      onPointerUp={onSwipeEnd}
-      onPointerCancel={() => {
-        swipe.current = null;
-      }}
-    >
+    <div ref={scrollRef} className="quran-scroll">
       <button type="button" className="tap-btn" onClick={() => { clearGloss(); setOpen(null); }}>
         {copy.back}
       </button>
