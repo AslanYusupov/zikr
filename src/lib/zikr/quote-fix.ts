@@ -163,12 +163,12 @@ export const QUOTE_FIX: Record<string, FixedQuote> = {
     tr: "Onlara ancak dini Allah’a has kılarak, hanifler olarak O’na ibadet etmeleri, namazı kılmaları ve zekâtı vermeleri emredildi. İşte dosdoğru din budur.",
     ur: "انہیں صرف یہ حکم دیا گیا تھا کہ اللہ کی عبادت کریں، دین کو اسی کے لیے خالص رکھیں، یکسو ہو کر، نماز قائم کریں اور زکوٰۃ دیں۔ یہی سیدھا دین ہے۔",
   },
-  "Стремитесь к прощению вашего Господа и Раю, ширина которого равна небесам и земле, уготованному для богобоязненных,": {
-    en: "Race toward forgiveness from your Lord and a Garden as wide as the heavens and the earth, prepared for the God-fearing.",
-    ar: "وَسَارِعُوا إِلَىٰ مَغْفِرَةٍ مِّن رَّبِّكُمْ وَجَنَّةٍ عَرْضُهَا السَّمَاوَاتُ وَالْأَرْضُ أُعِدَّتْ لِلْمُتَّقِينَ",
-    id: "Bersegeralah menuju ampunan Tuhanmu dan surga yang luasnya seluas langit dan bumi, yang disediakan bagi orang-orang bertakwa.",
-    tr: "Rabbinizin bağışına ve genişliği göklerle yer kadar olan, takva sahipleri için hazırlanmış cennete koşun.",
-    ur: "اپنے رب کی بخشش اور اس جنت کی طرف دوڑو جس کی چوڑائی آسمانوں اور زمین کے برابر ہے، جو پرہیزگاروں کے لیے تیار کی گئی ہے۔",
+  "Стремитесь к прощению вашего Господа и Раю, ширина которого равна небесам и земле, уготованному для богобоязненных, которые делают пожертвования в радости и в горе, сдерживают гнев и прощают людей. Воистину, Аллах1 любит творящих добро.": {
+    en: "Race toward forgiveness from your Lord and a Garden as wide as the heavens and the earth, prepared for the God-fearing, who spend in ease and hardship, restrain anger, and pardon people. Allah loves those who do good.",
+    ar: "وَسَارِعُوا إِلَىٰ مَغْفِرَةٍ مِّن رَّبِّكُمْ وَجَنَّةٍ عَرْضُهَا السَّمَاوَاتُ وَالْأَرْضُ أُعِدَّتْ لِلْمُتَّقِينَ الَّذِينَ يُنفِقُونَ فِي السَّرَّاءِ وَالضَّرَّاءِ وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ",
+    id: "Bersegeralah menuju ampunan Tuhanmu dan surga yang luasnya seluas langit dan bumi, yang disediakan bagi orang bertakwa, yang berinfak dalam senang dan susah, menahan amarah, dan memaafkan manusia. Allah mencintai orang-orang yang berbuat baik.",
+    tr: "Rabbinizin bağışına ve genişliği göklerle yer kadar olan, takva sahipleri için hazırlanmış cennete koşun. Onlar bollukta ve darlıkta harcar, öfkeyi yutar ve insanları affeder. Allah iyilik edenleri sever.",
+    ur: "اپنے رب کی بخشش اور اس جنت کی طرف دوڑو جس کی چوڑائی آسمانوں اور زمین کے برابر ہے، جو پرہیزگاروں کے لیے تیار کی گئی ہے۔ وہ خوشی اور غم میں خرچ کرتے، غصہ پی جاتے اور لوگوں کو معاف کرتے ہیں۔ اللہ نیکوکاروں سے محبت کرتا ہے۔",
   },
   "Дела оцениваются только по намерениям, и каждому достанется лишь то, что он намеревался. Кто переселился к Аллах1у и Его Посланнику, его переселение — к Аллах1у и Его Посланнику. А кто переселился ради мирского, которое хочет получить, или ради женщины, на которой хочет жениться, его переселение — к тому, ради чего он переселился.": {
     en: "Deeds are only by intentions, and each person will have only what he intended. Whoever emigrates to Allah and His Messenger, his emigration is to Allah and His Messenger. Whoever emigrates for a worldly gain he wants, or for a woman he wants to marry, his emigration is to that for which he emigrated.",
@@ -296,11 +296,11 @@ export const QUOTE_FIX: Record<string, FixedQuote> = {
     tr: "İyilik yüzlerinizi doğuya ve batıya çevirmeniz değildir. Asıl iyilik, Allah’a, ahiret gününe, meleklere, Kitap’a ve peygamberlere iman eden, malını sevmesine rağmen akrabaya, yetimlere, yoksullara, yolda kalmışa, isteyene ve köleleri özgürlüğe kavuşturmaya veren, namazı kılan, zekâtı veren, söz verdiğinde sözünü tutan, darlıkta, hastalıkta ve savaşta sabreden kişidir. İşte doğru olanlar onlardır, takva sahipleri onlardır.",
     ur: "نیکی یہ نہیں کہ تم اپنے چہرے مشرق یا مغرب کی طرف پھیر لو۔ نیکی اس کی ہے جو اللہ، آخرت کے دن، فرشتوں، کتاب اور نبیوں پر ایمان لائے، اور مال اللہ کی محبت میں رشتہ داروں، یتیموں، مسکینوں، مسافروں، مانگنے والوں اور غلام آزاد کرنے میں دے، نماز قائم کرے، زکوٰۃ دے، عہد پورا کرے، اور تنگی، بیماری اور جنگ میں صبر کرے۔ یہی سچے ہیں، اور یہی پرہیزگار ہیں۔",
   },
-  "В тот день, когда ни богатство, ни сыновья не принесут пользы никому, кроме тех, которые предстанут перед Аллах1ом с непорочным сердцем».": {
-    en: "On the Day when neither wealth nor children will benefit anyone, except the one who comes to Allah with a sound heart.",
-    ar: "يَوْمَ لَا يَنفَعُ مَالٌ وَلَا بَنُونَ إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ",
-    id: "Pada hari ketika harta dan anak-anak tidak berguna bagi siapa pun, kecuali orang yang datang kepada Allah dengan hati yang bersih.",
-    tr: "O gün ne mal ne de oğullar fayda verir. Ancak Allah’a sağlam bir kalple gelen kurtulur.",
-    ur: "اس دن نہ مال کام آئے گا نہ بیٹے، مگر وہ جو اللہ کے پاس سالم دل لے کر آئے۔",
+  "И не позорь меня в День воскресения - в тот день, когда ни богатство, ни сыновья не принесут пользы никому, кроме тех, которые предстанут перед Аллах1ом с непорочным сердцем».": {
+    en: "And do not disgrace me on the Day they are raised, the Day when neither wealth nor children will benefit anyone, except the one who comes to Allah with a sound heart.",
+    ar: "وَلَا تُخْزِنِي يَوْمَ يُبْعَثُونَ يَوْمَ لَا يَنفَعُ مَالٌ وَلَا بَنُونَ إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ",
+    id: "Dan janganlah Engkau hinakan aku pada hari mereka dibangkitkan, hari ketika harta dan anak-anak tidak berguna bagi siapa pun, kecuali orang yang datang kepada Allah dengan hati yang bersih.",
+    tr: "Beni diriltilecekleri gün rezil etme. O gün ne mal ne de oğullar fayda verir. Ancak Allah’a sağlam bir kalple gelen kurtulur.",
+    ur: "اور مجھے اس دن رسوا نہ کرنا جب لوگ اٹھائے جائیں گے، جس دن نہ مال کام آئے گا نہ بیٹے، مگر وہ جو اللہ کے پاس سالم دل لے کر آئے۔",
   },
 };

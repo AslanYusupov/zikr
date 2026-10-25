@@ -114,19 +114,19 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Ey iman edenler! Mallarınız ve çocuklarınız sizi Allah’ı anmaktan alıkoymasın. Kim böyle yaparsa işte onlar hüsrana uğrayanlardır.",
     ur: "اے ایمان والو! تمہارے مال اور اولاد تمہیں اللہ کے ذکر سے غافل نہ کر دیں۔ جو ایسا کرے وہی نقصان میں ہے۔",
   },
-  "Мужи, которых ни торговля, ни купля-продажа не отвлекают от поминания Аллах1а, совершения намаза и выплаты закята. Они боятся дня, когда перевернутся сердца и взоры,": {
-    en: "There are men whom neither trade nor sale distracts from the remembrance of Allah, from establishing prayer, and from giving zakat. They fear a Day when hearts and eyes will turn about.",
-    ar: "رِجَالٌ لَّا تُلْهِيهِمْ تِجَارَةٌ وَلَا بَيْعٌ عَن ذِكْرِ اللَّهِ وَإِقَامِ الصَّلَاةِ وَإِيتَاءِ الزَّكَاةِ ۙ يَخَافُونَ يَوْمًا تَتَقَلَّبُ فِيهِ الْقُلُوبُ وَالْأَبْصَارُ",
-    id: "Ada orang-orang yang tidak dilalaikan oleh perniagaan dan jual beli dari mengingat Allah, mendirikan salat, dan menunaikan zakat. Mereka takut pada hari ketika hati dan penglihatan terbolak-balik.",
-    tr: "Öyle adamlar vardır ki ne ticaret ne de alışveriş onları Allah’ı anmaktan, namazı kılmaktan ve zekâtı vermekten alıkoyar. Onlar kalplerin ve gözlerin altüst olacağı günden korkarlar.",
-    ur: "کچھ مرد ایسے ہیں جنہیں نہ تجارت اور نہ خرید و فروخت اللہ کے ذکر، نماز قائم کرنے اور زکوٰۃ دینے سے غافل کرتی ہے۔ وہ اس دن سے ڈرتے ہیں جس میں دل اور نگاہیں الٹ جائیں گی۔",
+  "В домах, которые Аллах1 дозволил воздвигнуть, поминается Его имя. Его славят в них по утрам и перед закатом мужи, которых ни торговля, ни купля-продажа не отвлекают от поминания Аллах1а, совершения намаза и выплаты закята. Они боятся дня, когда перевернутся сердца и взоры, чтобы Аллах1 воздал им за наилучшее из того, что они совершили (или лучшим, чем то, что они совершили; или наилучшим образом за то, что они совершили), и приумножил это по Своей милости. Аллах1 наделяет, кого пожелает, без счета.": {
+    en: "In houses which Allah has allowed to be raised and in which His name is remembered, He is glorified morning and evening by men whom neither trade nor sale distracts from the remembrance of Allah, prayer, and zakat. They fear a Day when hearts and eyes will turn about, so that Allah may reward them for the best of what they did and increase them from His bounty. Allah provides for whom He wills without measure.",
+    ar: "فِي بُيُوتٍ أَذِنَ اللَّهُ أَن تُرْفَعَ وَيُذْكَرَ فِيهَا اسْمُهُ يُسَبِّحُ لَهُ فِيهَا بِالْغُدُوِّ وَالْآصَالِ رِجَالٌ لَّا تُلْهِيهِمْ تِجَارَةٌ وَلَا بَيْعٌ عَن ذِكْرِ اللَّهِ وَإِقَامِ الصَّلَاةِ وَإِيتَاءِ الزَّكَاةِ يَخَافُونَ يَوْمًا تَتَقَلَّبُ فِيهِ الْقُلُوبُ وَالْأَبْصَارُ لِيَجْزِيَهُمُ اللَّهُ أَحْسَنَ مَا عَمِلُوا وَيَزِيدَهُم مِّن فَضْلِهِ وَاللَّهُ يَرْزُقُ مَن يَشَاءُ بِغَيْرِ حِسَابٍ",
+    id: "Di rumah-rumah yang Allah izinkan untuk dimuliakan dan disebut nama-Nya, Dia disucikan pagi dan petang oleh orang-orang yang tidak dilalaikan oleh perniagaan dan jual beli dari mengingat Allah, mendirikan salat, dan menunaikan zakat. Mereka takut pada hari ketika hati dan penglihatan terbolak-balik, agar Allah membalas mereka dengan yang terbaik dari amal mereka dan menambah karunia-Nya. Allah memberi rezeki kepada siapa yang Dia kehendaki tanpa perhitungan.",
+    tr: "Allah’ın yükseltilmesine izin verdiği ve içinde adının anıldığı evlerde, O’nu sabah akşam tespih eden öyle adamlar vardır ki ne ticaret ne de alışveriş onları Allah’ı anmaktan, namazdan ve zekâttan alıkoyar. Onlar kalplerin ve gözlerin altüst olacağı günden korkarlar. Allah onları yaptıklarının en güzeliyle ödüllendirir ve lütfundan artırır. Allah dilediğine hesapsız rızık verir.",
+    ur: "ان گھروں میں جنہیں اللہ نے بلند کرنے کی اجازت دی اور جہاں اس کا نام لیا جاتا ہے، صبح و شام اس کی تسبیح ہوتی ہے۔ ایسے مرد جنہیں نہ تجارت اور نہ خرید و فروخت اللہ کے ذکر، نماز اور زکوٰۃ سے غافل کرتی ہے۔ وہ اس دن سے ڈرتے ہیں جس میں دل اور نگاہیں الٹ جائیں گی، تاکہ اللہ انہیں ان کے بہترین عمل کا بدلہ دے اور اپنے فضل سے بڑھا دے۔ اللہ جسے چاہے بے حساب دیتا ہے۔",
   },
-  "Поминай имя твоего Господа утром и перед закатом,": {
-    en: "Remember the name of your Lord morning and evening.",
-    ar: "وَاذْكُرِ اسْمَ رَبِّكَ بُكْرَةً وَأَصِيلًا",
-    id: "Sebutlah nama Tuhanmu pada pagi dan petang.",
-    tr: "Rabbinin adını sabah akşam an.",
-    ur: "اپنے رب کا نام صبح اور شام یاد کر۔",
+  "Поминай имя твоего Господа утром и перед закатом, а также ночью. Падай ниц пред Ним и славь Его долгой ночью.": {
+    en: "Remember the name of your Lord morning and evening, and during the night. Prostrate to Him and glorify Him through the long night.",
+    ar: "وَاذْكُرِ اسْمَ رَبِّكَ بُكْرَةً وَأَصِيلًا وَمِنَ اللَّيْلِ فَاسْجُدْ لَهُ وَسَبِّحْهُ لَيْلًا طَوِيلًا",
+    id: "Sebutlah nama Tuhanmu pada pagi dan petang, serta pada malam hari. Bersujudlah kepada-Nya dan bertasbihlah sepanjang malam.",
+    tr: "Rabbinin adını sabah akşam an, gecenin bir kısmında da. O’na secde et ve geceleyin uzun uzun tespih et.",
+    ur: "اپنے رب کا نام صبح اور شام یاد کر، اور رات کے کچھ حصے میں بھی۔ اس کے آگے سجدہ کر اور رات کے لمبے حصے میں اس کی تسبیح کر۔",
   },
   "Воистину, Я - Аллах1! Нет божества, кроме Меня. Поклоняйся же Мне и совершай намаз, чтобы помнить обо Мне.": {
     en: "Indeed I am Allah. There is no deity except Me. So worship Me and establish prayer for My remembrance.",
@@ -296,12 +296,12 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Andolsun Kur’an’ı öğüt için kolaylaştırdık. Var mı düşünen?",
     ur: "ہم نے قرآن کو نصیحت کے لیے آسان کر دیا۔ تو ہے کوئی نصیحت قبول کرنے والا؟",
   },
-  "Это Писание, в котором нет сомнения, является верным руководством для богобоязненных,": {
-    en: "This is the Book in which there is no doubt, a guidance for those who are mindful of Allah.",
-    ar: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
-    id: "Kitab ini, tidak ada keraguan padanya, petunjuk bagi orang-orang yang bertakwa.",
-    tr: "Bu, kendisinde şüphe olmayan Kitap’tır. Allah’a karşı gelmekten sakınanlar için bir yol göstericidir.",
-    ur: "یہ وہ کتاب ہے جس میں کوئی شک نہیں، پرہیزگاروں کے لیے ہدایت ہے۔",
+  "Это Писание, в котором нет сомнения, является верным руководством для богобоязненных, которые веруют в сокровенное, совершают намаз и расходуют из того, чем Мы их наделили, которые веруют в ниспосланное тебе и ниспосланное до тебя и убеждены в Последней жизни. Они следуют верному руководству от их Господа, и они являются преуспевшими.": {
+    en: "This is the Book in which there is no doubt, a guidance for those who are mindful of Allah, who believe in the unseen, establish prayer, and spend from what We have provided them, who believe in what was sent down to you and before you, and are certain of the Hereafter. They are upon guidance from their Lord, and they are the successful.",
+    ar: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ",
+    id: "Kitab ini tidak ada keraguan padanya, petunjuk bagi orang-orang bertakwa, yang beriman kepada yang gaib, mendirikan salat, dan menginfakkan sebagian rezeki yang Kami berikan, yang beriman kepada apa yang diturunkan kepadamu dan sebelummu, serta yakin akan akhirat. Mereka itulah yang mendapat petunjuk dari Tuhan mereka, dan mereka itulah orang-orang yang beruntung.",
+    tr: "Bu, kendisinde şüphe olmayan Kitap’tır. Takva sahipleri için yol göstericidir: onlar gayba inanır, namazı kılar, kendilerine verdiğimiz rızıktan harcar, sana ve senden önce indirilene inanır ve ahirete kesin olarak inanırlar. İşte onlar Rablerinden bir hidayet üzeredir ve kurtuluşa erenlerdir.",
+    ur: "یہ وہ کتاب ہے جس میں کوئی شک نہیں، پرہیزگاروں کے لیے ہدایت ہے، جو غیب پر ایمان لاتے، نماز قائم کرتے اور جو ہم نے دیا اس میں سے خرچ کرتے ہیں، جو اس پر ایمان لاتے ہیں جو تم پر اور تم سے پہلے نازل ہوا، اور آخرت کا یقین رکھتے ہیں۔ یہی اپنے رب کی ہدایت پر ہیں اور یہی کامیاب ہیں۔",
   },
   "Если вы станете считать милости Аллах1а, то не пересчитаете их! Воистину, Аллах1 - Прощающий, Милосердный.": {
     en: "If you tried to count the favors of Allah, you could not number them. Indeed Allah is Forgiving and Merciful.",
@@ -317,11 +317,11 @@ export const QUOTE_MORE: Record<string, FixedQuote> = {
     tr: "Asra yemin olsun. İnsan hüsrandadır. Ancak iman eden, salih amel işleyen, birbirlerine hakkı tavsiye eden ve sabrı tavsiye edenler başka.",
     ur: "زمانے کی قسم۔ بے شک انسان نقصان میں ہے، سوائے ان کے جو ایمان لائے، نیک عمل کیے، ایک دوسرے کو حق کی نصیحت کی اور ایک دوسرے کو صبر کی نصیحت کی۔",
   },
-  "Разве Мы не раскрыли для тебя грудь твою? и не сняли с тебя ношу, которая отягощала твою спину?": {
-    en: "Did We not expand your breast for you, and remove from you your burden which weighed down your back?",
-    ar: "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ وَوَضَعْنَا عَنكَ وِزْرَكَ الَّذِي أَنقَضَ ظَهْرَكَ",
-    id: "Bukankah Kami telah melapangkan dadamu, dan menurunkan bebanmu yang memberatkan punggungmu?",
-    tr: "Senin göğsünü açmadık mı? Belini büken yükünü senden indirip atmadık mı?",
-    ur: "کیا ہم نے تیرا سینہ نہیں کھول دیا، اور تجھ سے تیرا وہ بوجھ نہیں اتار دیا جو تیری پیٹھ توڑے جا رہا تھا؟",
+  "Разве Мы не раскрыли для тебя грудь твою? и не сняли с тебя ношу, которая отягощала твою спину? Разве Мы не возвеличили для тебя славу твою?": {
+    en: "Did We not expand your breast for you, and remove from you your burden which weighed down your back? And did We not raise high your fame?",
+    ar: "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ وَوَضَعْنَا عَنكَ وِزْرَكَ الَّذِي أَنقَضَ ظَهْرَكَ وَرَفَعْنَا لَكَ ذِكْرَكَ",
+    id: "Bukankah Kami telah melapangkan dadamu, menurunkan bebanmu yang memberatkan punggungmu, dan meninggikan sebutan namamu?",
+    tr: "Senin göğsünü açmadık mı? Belini büken yükünü senden indirip atmadık mı? Senin şanını yüceltmedik mi?",
+    ur: "کیا ہم نے تیرا سینہ نہیں کھول دیا، تجھ سے وہ بوجھ نہیں اتار دیا جو تیری پیٹھ توڑے جا رہا تھا، اور تیرا ذکر بلند نہیں کیا؟",
   },
 };
