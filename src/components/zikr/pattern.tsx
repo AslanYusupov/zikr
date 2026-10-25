@@ -79,7 +79,6 @@ export function Backdrop() {
       <div className="scene-dawn" />
       <div className="scene-horizon" />
       <div className="scene-roses" />
-      <div className="scene-gilt" />
       <div className="scene-wine" />
       <div className="scene-shore">
         <span className="photo-sheen" />

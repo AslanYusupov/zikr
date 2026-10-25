@@ -1541,7 +1541,6 @@ export function tx(lang: LangId, key: ExtraKey): string {
 
 const THEME_NAME: Record<string, Record<LangId, string>> = {
   black: { ru: "Чёрный", en: "Black", ar: "أسود", id: "Hitam", tr: "Siyah", ur: "سیاہ" },
-  gilt: { ru: "Золото", en: "Gold", ar: "ذهب", id: "Emas", tr: "Altın", ur: "سونے" },
   wine: { ru: "Бордо", en: "Burgundy", ar: "خمري", id: "Burgundi", tr: "Bordo", ur: "برگنڈی" },
   ivory: { ru: "Белый", en: "White", ar: "أبيض", id: "Putih", tr: "Beyaz", ur: "سفید" },
   roses: { ru: "Розы", en: "Roses", ar: "ورود", id: "Mawar", tr: "Güller", ur: "گلاب" },
@@ -1555,7 +1554,6 @@ const THEME_NAME: Record<string, Record<LangId, string>> = {
 
 const THEME_HINT: Record<string, Record<LangId, string>> = {
   black: { ru: "Тихий тёмный", en: "Quiet dark", ar: "مظلم هادئ", id: "Gelap yang tenang", tr: "Sessiz koyu", ur: "خاموش تاریک" },
-  gilt: { ru: "Тёмное золото", en: "Dark gold", ar: "ذهب داكن", id: "Emas gelap", tr: "Koyu altın", ur: "گہرا سونا" },
   wine: { ru: "Тёмное вино", en: "Dark wine", ar: "خمري داكن", id: "Anggur gelap", tr: "Koyu bordo", ur: "گہرا برگنڈی" },
   ivory: { ru: "Светлый и спокойный", en: "Light and calm", ar: "فاتح وهادئ", id: "Terang dan tenang", tr: "Aydınlık ve sakin", ur: "روشن اور پرسکون" },
   roses: { ru: "Мягкий фон из роз", en: "Soft roses", ar: "ورود ناعمة", id: "Mawar yang lembut", tr: "Yumuşak güller", ur: "نرم گلاب" },
