@@ -196,6 +196,12 @@ export function SettingsView({
 <details className="fold">
 <summary className="fold-sum">{t(s.lang, "screen")}</summary>
         <Toggle
+          label={tx(s.lang, "quoteArabic")}
+          hint={tx(s.lang, "quoteArabicHint")}
+          on={s.quoteArabic !== false}
+          onChange={s.setQuoteArabic}
+        />
+        <Toggle
           label={tx(s.lang, "vibrate")}
           hint={tx(s.lang, "vibrateHint")}
           on={s.vibrate}
