@@ -665,13 +665,13 @@ export const QUOTES: Quote[] = [
 
 export const THEMES: { id: ThemeId; name: string; hint: string }[] = [
   { id: "firdaus", name: "Аль-Фирдаус", hint: "Высшая степень Рая" },
-  { id: "rayyan", name: "Ар-Райян", hint: "Входят только постящиеся" },
+  { id: "rayyan", name: "Ар-Райян", hint: "Для соблюдающих пост" },
   { id: "salat", name: "Ас-Салят", hint: "Для людей намаза" },
-  { id: "sadaqa", name: "Ас-Садакъа", hint: "Для людей садакъи" },
+  { id: "sadaqa", name: "Ас-Садакъа", hint: "Для дающих милостыню" },
   { id: "jihad", name: "Аль-Джихад", hint: "Для людей джихада" },
-  { id: "kazimin", name: "Аль-Казымин", hint: "Для сдерживающих гнев и прощающих" },
-  { id: "tawba", name: "Ат-Тауба", hint: "Покаяние перед Аллах1ом" },
-  { id: "ayman", name: "Аль-Айман", hint: "Входят без расчёта" },
+  { id: "kazimin", name: "Аль-Казымин", hint: "Для сдерживающих гнев" },
+  { id: "tawba", name: "Ат-Тауба", hint: "Для искренне кающихся" },
+  { id: "ayman", name: "Аль-Айман", hint: "Для входящих без расчёта" },
   { id: "black", name: "Чёрный", hint: "Тихая ночь" },
   { id: "wine", name: "Багряный", hint: "Глубокий красный" },
   { id: "ivory", name: "Белый", hint: "Светлый и спокойный" },

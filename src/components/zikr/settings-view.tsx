@@ -23,6 +23,20 @@ const FONT_FACE: Record<FontId, string> = {
   even: '"Manrope", "Inter", system-ui, sans-serif',
 };
 const FONT_IDS: FontId[] = ["clear", "crimson", "soft", "book", "even"];
+const GATE_THEMES = new Set(["firdaus", "rayyan", "salat", "sadaqa", "jihad", "kazimin", "tawba", "ayman"]);
+function GateMark() {
+  return (
+    <span className="mb-1.5 flex justify-center text-gold" aria-hidden>
+      <svg viewBox="0 0 36 28" className="h-5 w-6">
+        <path d="M7 26 V13.5 C7 8.3 11.2 4.2 18 4.2 S29 8.3 29 13.5 V26" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M5 26 H31" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M18 26 V12.2" fill="none" stroke="currentColor" strokeWidth="1.15" />
+        <circle cx="16.2" cy="19" r=".7" fill="currentColor" />
+        <circle cx="19.8" cy="19" r=".7" fill="currentColor" />
+      </svg>
+    </span>
+  );
+}
 const THEME_PHOTO: Record<string, string> = {
   roses: "/roses.jpg",
   sea: "/shore.jpg",
@@ -112,7 +126,8 @@ export function SettingsView({
               data-theme={theme.id}
               onClick={() => s.setTheme(theme.id)}
               className={cn(
-                "rounded-2xl border px-3 py-3 text-start",
+                "rounded-2xl border px-3 py-3",
+                GATE_THEMES.has(theme.id) ? "text-center" : "text-start",
                 s.theme === theme.id ? "border-fg" : "border-line",
               )}
               style={
@@ -126,6 +141,7 @@ export function SettingsView({
                   : { background: "var(--bg)", color: "var(--fg)" }
               }
             >
+              {GATE_THEMES.has(theme.id) ? <GateMark /> : null}
               <span className="block text-sm">{themeName(s.lang, theme.id)}</span>
               <span className="mt-1 block text-xs" style={{ color: "var(--muted)" }}>
                 {themeHint(s.lang, theme.id)}
