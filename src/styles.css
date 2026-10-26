@@ -1659,7 +1659,7 @@ details.fold>:not(summary) {
   color-scheme: dark;
 }
 [data-theme=tawba] .app-frame {
-  background: linear-gradient(180deg, #07080f 0%, #141a28 58%, #4a5568 100%);
+  background: linear-gradient(180deg, #07080f 0%, #141a28 62%, #243044 100%);
 }
 [data-theme=ayman] {
   --bg: #000;
@@ -1797,18 +1797,27 @@ html[data-theme=ayman], html[data-theme=ayman] body { background: #000 !importan
 html[data-theme=amethyst], html[data-theme=amethyst] body { background: #120818 !important; color: #fbf6ff; }
 html[data-theme=amber], html[data-theme=amber] body { background: #161006 !important; color: #fff8ee; }
 html[data-theme=jade], html[data-theme=jade] body { background: #061410 !important; color: #f3fff9; }
-html[data-theme=subhah] .bg-gold { background-color: #4facfe; background-image: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #042833; }
-html[data-theme=firdaus] .bg-gold { background-color: #f2c94c; background-image: linear-gradient(135deg, #9a1b3a 0%, #f2c94c 100%); color: #fff8f2; }
-html[data-theme=rayyan] .bg-gold { background-color: #6ee7b7; background-image: linear-gradient(135deg, #047857 0%, #6ee7b7 100%); color: #042018; }
-html[data-theme=salat] .bg-gold { background-color: #9ec5ff; background-image: linear-gradient(135deg, #1d4e89 0%, #9ec5ff 100%); color: #071424; }
-html[data-theme=sadaqa] .bg-gold { background-color: #ffc14d; background-image: linear-gradient(135deg, #f2994a 0%, #ffc14d 100%); color: #1c1204; }
-html[data-theme=jihad] .bg-gold { background-color: #9b2335; background-image: linear-gradient(135deg, #6e1424 0%, #c45c6a 100%); color: #fff5f5; }
-html[data-theme=kazimin] .bg-gold { background-color: #c4a6e8; background-image: linear-gradient(135deg, #5b2a86 0%, #c4a6e8 100%); color: #fff8ff; }
-html[data-theme=tawba] .bg-gold { background-color: #d5deee; background-image: linear-gradient(135deg, #2a3348 0%, #d5deee 100%); color: #12151c; }
+html[data-theme=subhah] .bg-gold { background-color: #7af4ff; background-image: linear-gradient(135deg, #5ee9ff 0%, #9af6ff 100%); color: #042833; }
+html[data-theme=firdaus] .bg-gold { background-color: #f2c98a; background-image: linear-gradient(135deg, #e6b15a 0%, #f6d7a2 100%); color: #3a140c; }
+html[data-theme=rayyan] .bg-gold { background-color: #6ee7b7; background-image: linear-gradient(135deg, #5eead4 0%, #a7f3d0 100%); color: #042018; }
+html[data-theme=salat] .bg-gold { background-color: #9ec5ff; background-image: linear-gradient(135deg, #8eb8ff 0%, #d6e6ff 100%); color: #071424; }
+html[data-theme=sadaqa] .bg-gold { background-color: #ffc14d; background-image: linear-gradient(135deg, #f2b13a 0%, #ffe0a0 100%); color: #1c1204; }
+html[data-theme=jihad] .bg-gold { background-color: #8e3140; background-image: linear-gradient(135deg, #7a2432 0%, #a34452 100%); color: #fff5f5; }
+html[data-theme=kazimin] .bg-gold { background-color: #7d4eae; background-image: linear-gradient(135deg, #6d3d9e 0%, #8d62c0 100%); color: #fff8ff; }
+html[data-theme=tawba] .bg-gold { background-color: #e4ebf6; background-image: linear-gradient(135deg, #d5deee 0%, #f7f9fc 100%); color: #12151c; }
 html[data-theme=ayman] .bg-gold { background-color: #f4f1ea; background-image: none; color: #000; }
-html[data-theme=amethyst] .bg-gold { background-color: #9d4edd; background-image: linear-gradient(135deg, #9d4edd 0%, #c77dff 100%); color: #fff8ff; }
-html[data-theme=amber] .bg-gold { background-color: #f2c94c; background-image: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: #1c1204; }
-html[data-theme=jade] .bg-gold { background-color: #10b981; background-image: linear-gradient(135deg, #10b981 0%, #34d399 100%); color: #042018; }
+html[data-theme=amethyst] .bg-gold { background-color: #8b4ec4; background-image: linear-gradient(135deg, #7a3cb5 0%, #9a55d4 100%); color: #fff8ff; }
+html[data-theme=amber] .bg-gold { background-color: #f2c94c; background-image: linear-gradient(135deg, #f2b13a 0%, #ffe29a 100%); color: #1c1204; }
+html[data-theme=jade] .bg-gold { background-color: #5eead4; background-image: linear-gradient(135deg, #34d399 0%, #99f6e4 100%); color: #042018; }
+html[data-theme=wine], html[data-theme=wine] body { background: #14060b !important; color: #fff6f4; }
+html[data-theme=ivory], html[data-theme=ivory] body { background: #f6f3ee !important; color: #1c1a17; }
+html[data-theme=roses], html[data-theme=roses] body { background: #16080d !important; color: #fff7f6; }
+html[data-theme=sea], html[data-theme=sea] body { background: #0c1218 !important; color: #f2f7fb; }
+html[data-theme=desert], html[data-theme=desert] body { background: #1a120c !important; color: #f8f1e6; }
+html[data-theme=cosmos], html[data-theme=cosmos] body { background: #070814 !important; color: #f4f6ff; }
+html[data-theme=peaks], html[data-theme=peaks] body { background: #10161c !important; color: #f4f7fb; }
+html[data-theme=lake], html[data-theme=lake] body { background: #101820 !important; color: #f3f7fb; }
+html[data-theme=jungle], html[data-theme=jungle] body { background: #0c1610 !important; color: #f3f8f4; }
 html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) :is(button,a).bg-gold {
   box-shadow: 0 0 18px var(--glow);
 }
