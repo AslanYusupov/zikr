@@ -119,13 +119,20 @@ export function Shell() {
         }
         if (stop) return;
         const cache = await caches.open("zikr-shell-v2");
-        const urls = new Set([
+        const essential = new Set([
           "/favicon.svg",
           "/orbit-sun.webp",
           "/orbit-moon.webp",
           "/quran.json",
           "/__grok/manifest.webmanifest",
           "/__grok/icon-180.png",
+        ]);
+        document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
+          const src = node.getAttribute("src") || node.getAttribute("href") || "";
+          const path = src.startsWith("/") ? src.split("?")[0] : "";
+          if (path.startsWith("/assets/") || path.endsWith(".css")) essential.add(path);
+        });
+        const later = new Set([
           "/shore.jpg",
           "/desert.jpg",
           "/roses.jpg",
@@ -137,33 +144,31 @@ export function Shell() {
           "/maldives.jpg",
           "/mecca.jpg",
         ]);
-        document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
-          const src = node.getAttribute("src") || node.getAttribute("href") || "";
-          const path = src.startsWith("/") ? src.split("?")[0] : "";
-          if (path.startsWith("/assets/") || path.endsWith(".css")) urls.add(path);
-        });
         for (const face of ["inter-cyr", "inter-latin", "inter-latinext"]) {
-          for (const weight of [500, 600, 700, 800]) urls.add(`/fonts/${face}-${weight}.woff2`);
+          for (const weight of [500, 600, 700, 800]) later.add(`/fonts/${face}-${weight}.woff2`);
         }
-        for (const weight of [400, 700]) urls.add(`/fonts/amiri-${weight}.woff2`);
-        urls.add("/fonts/amiri-400i.woff2");
+        for (const weight of [400, 700]) later.add(`/fonts/amiri-${weight}.woff2`);
+        later.add("/fonts/amiri-400i.woff2");
         const put = async (url: string, res: Response) => {
           const headers = new Headers();
           const type = res.headers.get("content-type");
           if (type) headers.set("content-type", type);
           await cache.put(url, new Response(await res.blob(), { status: 200, headers }));
         };
-        await Promise.all(
-          [...urls].map(async (url) => {
-            try {
-              if (await cache.match(url)) return;
-              const res = await fetch(url, { cache: "force-cache" });
-              if (res.ok) await put(url, res);
-            } catch {
-              /* keep the copy already saved */
-            }
-          }),
-        );
+        const fill = async (urls: Set<string>) => {
+          await Promise.all(
+            [...urls].map(async (url) => {
+              try {
+                if (await cache.match(url)) return;
+                const res = await fetch(url, { cache: "force-cache" });
+                if (res.ok) await put(url, res);
+              } catch {
+                /* keep the copy already saved */
+              }
+            }),
+          );
+        };
+        await fill(essential);
         const assetsReady = async (html: string) => {
           const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
           if (needed.length === 0 || !html.includes("<html")) return false;
@@ -197,6 +202,7 @@ export function Shell() {
         if (!savedPage && !(await cache.match("/"))) {
           await savePage(`<!DOCTYPE html>${document.documentElement.outerHTML}`);
         }
+        if (!stop) void fill(later);
       } catch {
         /* opening must not wait on this */
       }
@@ -206,6 +212,7 @@ export function Shell() {
       void navigator.storage?.persist?.();
     };
     window.addEventListener("pointerdown", ask, { once: true, passive: true });
+    window.addEventListener("touchstart", ask, { once: true, passive: true });
     let warmed = Date.now();
     const again = () => {
       if (document.visibilityState !== "visible") return;
@@ -221,6 +228,7 @@ export function Shell() {
     return () => {
       stop = true;
       window.removeEventListener("pointerdown", ask);
+      window.removeEventListener("touchstart", ask);
       window.removeEventListener("online", again);
       document.removeEventListener("visibilitychange", again);
       link?.removeEventListener?.("change", again);

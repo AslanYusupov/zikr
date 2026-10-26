@@ -1,5 +1,43 @@
 const SHELL = "zikr-shell-v2";
 
+function pathsIn(html) {
+  const out = [];
+  const re = /\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g;
+  let match;
+  while ((match = re.exec(html))) {
+    if (!out.includes(match[0])) out.push(match[0]);
+  }
+  return out;
+}
+
+async function saveShell(cache, res) {
+  let html = "";
+  try {
+    html = await res.text();
+  } catch {
+    return;
+  }
+  if (!html.includes("<html")) return;
+  const needed = pathsIn(html);
+  if (!needed.length) return;
+  await Promise.all(
+    needed.map(async (src) => {
+      if (await cache.match(src)) return;
+      try {
+        const file = await fetch(src);
+        if (!file.ok) return;
+        await cache.put(src, await stored(file));
+      } catch {
+        /* keep what is already stored */
+      }
+    }),
+  );
+  for (const src of needed) {
+    if (!(await cache.match(src))) return;
+  }
+  await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+}
+
 function stored(res) {
   const headers = new Headers();
   const type = res.headers.get("content-type");
@@ -70,6 +108,20 @@ self.addEventListener("fetch", (event) => {
       if (hit) {
         if (!frozen && !navigation) void update();
         return hit;
+      }
+      if (navigation) {
+        try {
+          const fresh = await fetch(req);
+          if (fresh && fresh.ok) {
+            event.waitUntil(saveShell(cache, fresh.clone()));
+            return fresh;
+          }
+        } catch {
+          /* open the saved page */
+        }
+        const page = await cache.match("/", { ignoreSearch: true });
+        if (page) return page;
+        return new Response("", { status: 503 });
       }
       const fresh = await update();
       if (fresh) return fresh;
