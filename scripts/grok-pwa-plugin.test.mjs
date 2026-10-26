@@ -34,7 +34,7 @@ test("injects the extensions script without a project id", () => {
     appName: "Demo",
     projectId: "",
   });
-  assert.match(out, /src="https:\/\/grok\.com\/grok-app-builder\/extensions\.js" defer/);
+  assert.match(out, /src="https:\/\/grok\.com\/grok-app-builder\/extensions\.js" async/);
   assert.doesNotMatch(out, /grok-project-id/);
   assert.doesNotMatch(out, /data-project-id/);
   assert.doesNotMatch(out, /property="grok:app_id"/);

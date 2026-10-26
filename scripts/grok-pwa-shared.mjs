@@ -251,7 +251,7 @@ export function grokExtensionsHeadTags(projectId = readGrokProjectId()) {
   tags.push(
     `<script src="${GROK_EXTENSIONS_SCRIPT_SRC}"${
       projectId ? ` data-project-id="${id}"` : ""
-    } defer></script>`,
+    } async></script>`,
   );
   return tags;
 }
