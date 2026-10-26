@@ -530,13 +530,24 @@ async function idbSet(key: string, value: string) {
 }
 
 let idbQueue: Promise<void> = Promise.resolve();
+let allowLowerSave = false;
 
 const durableStorage = {
   getItem: async (name: string) => {
     const local = readLocal(name);
+    if (!local) {
+      const disk = await Promise.race<string | null>([
+        idbGet(name),
+        new Promise((resolve) => setTimeout(() => resolve(null), 700)),
+      ]);
+      if (disk) {
+        writeLocal(name, disk);
+        return disk;
+      }
+    }
     void idbGet(name)
       .then((disk) => {
-        if (!disk || savedScore(disk) <= savedScore(local)) return;
+        if (!disk || savedScore(disk) <= savedScore(readLocal(name))) return;
         writeLocal(name, disk);
         const apply = () => {
           try {
@@ -562,9 +573,20 @@ const durableStorage = {
   },
   setItem: (name: string, value: string) => {
     const next = savedScore(value);
-    if (next < savedScore(readLocal(name))) return Promise.resolve();
+    const kept = readLocal(name);
+    if (!allowLowerSave && next < savedScore(kept)) return Promise.resolve();
     writeLocal(name, value);
-    idbQueue = idbQueue.then(() => idbSet(name, value)).catch(() => undefined);
+    idbQueue = idbQueue
+      .then(async () => {
+        const disk = await idbGet(name);
+        const latest = readLocal(name) || value;
+        if (!allowLowerSave && savedScore(disk) > savedScore(latest)) {
+          if (disk) writeLocal(name, disk);
+          return;
+        }
+        await idbSet(name, latest);
+      })
+      .catch(() => undefined);
     return idbQueue;
   },
   removeItem: async (name: string) => {
@@ -934,10 +956,12 @@ if (typeof window !== "undefined") {
   };
   if (useZikr.persist.hasHydrated()) {
     armed = true;
+    allowLowerSave = true;
     releaseStuck();
   }
   useZikr.persist.onFinishHydration(() => {
     armed = true;
+    allowLowerSave = true;
     releaseStuck();
   });
   window.addEventListener("pagehide", flush);

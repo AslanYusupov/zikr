@@ -109,7 +109,7 @@ export function Shell() {
       try {
         await navigator.storage?.persist?.();
       } catch {
-        /* the phone may refuse */
+        /* the phone may refuse until the first tap */
       }
       try {
         try {
@@ -147,56 +147,70 @@ export function Shell() {
         }
         for (const weight of [400, 700]) urls.add(`/fonts/amiri-${weight}.woff2`);
         urls.add("/fonts/amiri-400i.woff2");
+        const put = async (url: string, res: Response) => {
+          const headers = new Headers();
+          const type = res.headers.get("content-type");
+          if (type) headers.set("content-type", type);
+          await cache.put(url, new Response(await res.blob(), { status: 200, headers }));
+        };
         await Promise.all(
           [...urls].map(async (url) => {
             try {
-              const res = await fetch(`${url}${url.includes("?") ? "&" : "?"}warm=1`, { cache: "no-store" });
-              if (res.ok) {
-                const headers = new Headers();
-                const type = res.headers.get("content-type");
-                if (type) headers.set("content-type", type);
-                await cache.put(url, new Response(await res.blob(), { status: 200, headers }));
-              }
+              if (await cache.match(url)) return;
+              const res = await fetch(url, { cache: "force-cache" });
+              if (res.ok) await put(url, res);
             } catch {
               /* keep the copy already saved */
             }
           }),
         );
-        let savedPage = false;
         const assetsReady = async (html: string) => {
           const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
           if (needed.length === 0 || !html.includes("<html")) return false;
+          await Promise.all(
+            needed.map(async (src) => {
+              if (await cache.match(src)) return;
+              try {
+                const res = await fetch(src, { cache: "force-cache" });
+                if (res.ok) await put(src, res);
+              } catch {
+                /* the old file stays */
+              }
+            }),
+          );
           const ready = await Promise.all(needed.map(async (src) => Boolean(await cache.match(src))));
           return ready.every(Boolean);
         };
+        const savePage = async (html: string) => {
+          if (!(await assetsReady(html))) return false;
+          await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+          return true;
+        };
+        let savedPage = false;
         try {
-          const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
-          if (page.ok) {
-            const html = await page.text();
-            if (await assetsReady(html)) {
-              await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-              savedPage = true;
-            }
-          }
+          const signal = typeof AbortSignal !== "undefined" && "timeout" in AbortSignal ? AbortSignal.timeout(8000) : undefined;
+          const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal });
+          if (page.ok) savedPage = await savePage(await page.text());
         } catch {
           /* the phone keeps the page it already stored */
         }
         if (!savedPage && !(await cache.match("/"))) {
-          const html = `<!DOCTYPE html>${document.documentElement.outerHTML}`;
-          if (await assetsReady(html)) {
-            await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-          }
+          await savePage(`<!DOCTYPE html>${document.documentElement.outerHTML}`);
         }
       } catch {
         /* opening must not wait on this */
       }
     };
     void keep();
+    const ask = () => {
+      void navigator.storage?.persist?.();
+    };
+    window.addEventListener("pointerdown", ask, { once: true, passive: true });
     let warmed = Date.now();
     const again = () => {
       if (document.visibilityState !== "visible") return;
       const now = Date.now();
-      if (now - warmed < 60_000) return;
+      if (now - warmed < 10 * 60_000) return;
       warmed = now;
       void keep();
     };
@@ -206,6 +220,7 @@ export function Shell() {
     link?.addEventListener?.("change", again);
     return () => {
       stop = true;
+      window.removeEventListener("pointerdown", ask);
       window.removeEventListener("online", again);
       document.removeEventListener("visibilitychange", again);
       link?.removeEventListener?.("change", again);

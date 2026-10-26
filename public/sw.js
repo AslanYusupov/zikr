@@ -52,18 +52,26 @@ self.addEventListener("fetch", (event) => {
       const hit = navigation
         ? (await cache.match("/", { ignoreSearch: true })) || (await cache.match(req, { ignoreSearch: true }))
         : await cache.match(req, { ignoreSearch: true });
-      const update = fetch(req, { cache: "no-store" })
-        .then((res) => {
-          if (res.ok && !navigation) {
-            stored(res.clone())
-              .then((copy) => cache.put(new Request(url.pathname), copy))
-              .catch(() => {});
-          }
-          return res;
-        })
-        .catch(() => null);
-      if (hit) return hit;
-      const fresh = await update;
+      const frozen =
+        url.pathname.startsWith("/assets/") ||
+        url.pathname.startsWith("/fonts/") ||
+        /\.(?:woff2|webp|png|jpg|jpeg|svg)$/.test(url.pathname);
+      const update = () =>
+        fetch(req)
+          .then((res) => {
+            if (res.ok && !navigation && !frozen) {
+              stored(res.clone())
+                .then((copy) => cache.put(new Request(url.pathname), copy))
+                .catch(() => {});
+            }
+            return res;
+          })
+          .catch(() => null);
+      if (hit) {
+        if (!frozen && !navigation) void update();
+        return hit;
+      }
+      const fresh = await update();
       if (fresh) return fresh;
       if (navigation) {
         const page = await cache.match("/", { ignoreSearch: true });
