@@ -664,14 +664,14 @@ export const QUOTES: Quote[] = [
 ];
 
 export const THEMES: { id: ThemeId; name: string; hint: string }[] = [
-  { id: "firdaus", name: "Баб аль-Фирдаус", hint: "Высшая степень Рая" },
-  { id: "rayyan", name: "Баб ар-Райян", hint: "Ворота постящихся" },
-  { id: "salat", name: "Баб ас-Салят", hint: "Ворота намаза" },
-  { id: "sadaqa", name: "Баб ас-Садакъа", hint: "Ворота милостыни" },
-  { id: "jihad", name: "Баб аль-Джихад", hint: "Стойкость на пути Аллах1а" },
-  { id: "kazimin", name: "Баб аль-Казымин", hint: "Сдержал гнев и простил" },
-  { id: "tawba", name: "Баб ат-Тауба", hint: "Ворота покаяния" },
-  { id: "ayman", name: "Баб аль-Айман", hint: "Ворота праведности" },
+  { id: "firdaus", name: "Аль-Фирдаус", hint: "Высшая степень Рая" },
+  { id: "rayyan", name: "Ар-Райян", hint: "Ворота постящихся" },
+  { id: "salat", name: "Ас-Салят", hint: "Ворота намаза" },
+  { id: "sadaqa", name: "Ас-Садакъа", hint: "Ворота милостыни" },
+  { id: "jihad", name: "Аль-Джихад", hint: "Стойкость на пути Аллах1а" },
+  { id: "kazimin", name: "Аль-Казымин", hint: "Сдержал гнев и простил" },
+  { id: "tawba", name: "Ат-Тауба", hint: "Ворота покаяния" },
+  { id: "ayman", name: "Аль-Айман", hint: "Ворота праведности" },
   { id: "black", name: "Чёрный", hint: "Тихая ночь" },
   { id: "wine", name: "Багряный", hint: "Глубокий красный" },
   { id: "ivory", name: "Белый", hint: "Светлый и спокойный" },
