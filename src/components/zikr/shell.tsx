@@ -113,9 +113,9 @@ export function Shell() {
       }
       try {
         try {
-          await navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" });
-        } catch {
           await navigator.serviceWorker.register("/sw.js");
+        } catch {
+          /* the saved copy still opens */
         }
         if (stop) return;
         const cache = await caches.open("zikr-shell-v2");
@@ -123,7 +123,6 @@ export function Shell() {
           "/favicon.svg",
           "/orbit-sun.webp",
           "/orbit-moon.webp",
-          "/quran.json",
           "/__grok/manifest.webmanifest",
           "/__grok/icon-180.png",
         ]);
@@ -132,34 +131,32 @@ export function Shell() {
           const path = src.startsWith("/") ? src.split("?")[0] : "";
           if (path.startsWith("/assets/") || path.endsWith(".css")) essential.add(path);
         });
-        const later = new Set([
-          "/shore.jpg",
-          "/desert.jpg",
-          "/roses.jpg",
-          "/cosmos.jpg",
-          "/peaks.jpg",
-          "/lake.jpg",
-          "/jungle.jpg",
-          "/andromeda.jpg",
-          "/maldives.jpg",
-          "/mecca.jpg",
-        ]);
+        const later = new Set<string>(["/quran.json"]);
         for (const face of ["inter-cyr", "inter-latin", "inter-latinext"]) {
           for (const weight of [500, 600, 700, 800]) later.add(`/fonts/${face}-${weight}.woff2`);
         }
         for (const weight of [400, 700]) later.add(`/fonts/amiri-${weight}.woff2`);
         later.add("/fonts/amiri-400i.woff2");
+        for (const photo of ["shore", "desert", "roses", "cosmos", "peaks", "lake", "jungle", "andromeda", "maldives", "mecca"]) {
+          later.add(`/${photo}.jpg`);
+        }
         const put = async (url: string, res: Response) => {
           const headers = new Headers();
           const type = res.headers.get("content-type");
           if (type) headers.set("content-type", type);
           await cache.put(url, new Response(await res.blob(), { status: 200, headers }));
         };
-        const fill = async (urls: Set<string>) => {
+        const missing = async (urls: Set<string>) => {
+          const absent: string[] = [];
+          for (const url of urls) {
+            if (!(await cache.match(url))) absent.push(url);
+          }
+          return absent;
+        };
+        const fill = async (urls: string[]) => {
           await Promise.all(
-            [...urls].map(async (url) => {
+            urls.map(async (url) => {
               try {
-                if (await cache.match(url)) return;
                 const res = await fetch(url, { cache: "force-cache" });
                 if (res.ok) await put(url, res);
               } catch {
@@ -168,41 +165,52 @@ export function Shell() {
             }),
           );
         };
-        await fill(essential);
-        const assetsReady = async (html: string) => {
-          const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-          if (needed.length === 0 || !html.includes("<html")) return false;
-          await Promise.all(
-            needed.map(async (src) => {
-              if (await cache.match(src)) return;
-              try {
-                const res = await fetch(src, { cache: "force-cache" });
-                if (res.ok) await put(src, res);
-              } catch {
-                /* the old file stays */
+        if (!(await cache.match("/"))) {
+          try {
+            await cache.put(
+              "/",
+              new Response(`<!DOCTYPE html>${document.documentElement.outerHTML}`, {
+                headers: { "content-type": "text/html; charset=utf-8" },
+              }),
+            );
+          } catch {
+            /* the next open keeps the previous copy */
+          }
+        }
+        const quiet = async () => {
+          if (stop || document.visibilityState !== "visible") return;
+          let last = 0;
+          try {
+            last = Number(localStorage.getItem("zikr-shell-check") || 0);
+          } catch {
+            last = 0;
+          }
+          if (Date.now() - last >= 12 * 60 * 60 * 1000) {
+            try {
+              const signal = typeof AbortSignal !== "undefined" && "timeout" in AbortSignal ? AbortSignal.timeout(8000) : undefined;
+              const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal });
+              if (page.ok) {
+                const html = await page.text();
+                const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+                if (needed.length && html.includes("<html")) {
+                  const absent = [];
+                  for (const src of needed) if (!(await cache.match(src))) absent.push(src);
+                  if (absent.length) await fill(absent);
+                  let ready = true;
+                  for (const src of needed) if (!(await cache.match(src))) ready = false;
+                  if (ready) await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+                }
               }
-            }),
-          );
-          const ready = await Promise.all(needed.map(async (src) => Boolean(await cache.match(src))));
-          return ready.every(Boolean);
+              localStorage.setItem("zikr-shell-check", String(Date.now()));
+              void navigator.serviceWorker.getRegistration().then((reg) => reg?.update()).catch(() => {});
+            } catch {
+              /* the phone keeps the page it already stored */
+            }
+          }
+          const rest = await missing(new Set([...essential, ...later]));
+          if (rest.length) await fill(rest);
         };
-        const savePage = async (html: string) => {
-          if (!(await assetsReady(html))) return false;
-          await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-          return true;
-        };
-        let savedPage = false;
-        try {
-          const signal = typeof AbortSignal !== "undefined" && "timeout" in AbortSignal ? AbortSignal.timeout(8000) : undefined;
-          const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal });
-          if (page.ok) savedPage = await savePage(await page.text());
-        } catch {
-          /* the phone keeps the page it already stored */
-        }
-        if (!savedPage && !(await cache.match("/"))) {
-          await savePage(`<!DOCTYPE html>${document.documentElement.outerHTML}`);
-        }
-        if (!stop) void fill(later);
+        window.setTimeout(() => void quiet(), 8000);
       } catch {
         /* opening must not wait on this */
       }

@@ -105,10 +105,7 @@ self.addEventListener("fetch", (event) => {
             return res;
           })
           .catch(() => null);
-      if (hit) {
-        if (!frozen && !navigation) void update();
-        return hit;
-      }
+      if (hit) return hit;
       if (navigation) {
         try {
           const fresh = await fetch(req);
