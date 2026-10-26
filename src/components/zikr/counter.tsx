@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { MILESTONES, QUOTES, REMEMBRANCE, dhikrById, rewardPoints } from "@/lib/zikr/content";
+import { DHIKR, MILESTONES, QUOTES, REMEMBRANCE, dhikrById, rewardPoints } from "@/lib/zikr/content";
 import { ALLAH_NAMES } from "@/lib/zikr/names";
 import { sunnahQuestById } from "@/lib/zikr/quests";
 import { addDays, formatNum, todayKey, zikrWord } from "@/lib/zikr/format";
@@ -607,7 +607,7 @@ export function Counter({
           <h2 className="text-sm font-extrabold text-fg">{tx(s.lang, "statsTitle")}</h2>
           <p className="mt-1 text-xs text-muted">{tx(s.lang, "statsLead")}</p>
           <div className="mt-3 grid gap-1.5">
-            {REMEMBRANCE.map((item) => {
+            {DHIKR.filter((item) => !item.azkar || (s.byDhikr[item.id] ?? 0) > 0).map((item) => {
               const count = s.byDhikr[item.id] ?? 0;
               const todayCount = s.days[day]?.by?.[item.id] ?? 0;
               const line = phraseOf(item, s.lang);

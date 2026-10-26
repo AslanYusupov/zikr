@@ -405,6 +405,98 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
 
 const SAVE_KEY = "nur-zikr-v1";
 const BACKUP_KEY = "nur-zikr-v1-bak";
+const SNAP_KEY = "zikr-stats-snap";
+
+function savedDetail(raw: string | null): number {
+  if (!raw) return 0;
+  try {
+    const state = (JSON.parse(raw) as { state?: { byDhikr?: Record<string, number>; days?: Record<string, unknown> } }).state;
+    const by = state?.byDhikr ? Object.values(state.byDhikr).filter((n) => typeof n === "number" && n > 0).length : 0;
+    const days = state?.days ? Object.keys(state.days).length : 0;
+    return by + days;
+  } catch {
+    return 0;
+  }
+}
+
+function readSnap(): { total: number; bestDay: number; xp: number; by: Record<string, number>; days: Record<string, { total: number; by: Record<string, number> }> } | null {
+  try {
+    const raw = localStorage.getItem(SNAP_KEY);
+    if (!raw) return null;
+    const snap = JSON.parse(raw) as { total?: number; bestDay?: number; xp?: number; by?: Record<string, number>; days?: Record<string, { total?: number; by?: Record<string, number> }> };
+    if (!snap || typeof snap !== "object") return null;
+    const days: Record<string, { total: number; by: Record<string, number> }> = {};
+    if (snap.days && typeof snap.days === "object") {
+      for (const [key, log] of Object.entries(snap.days)) {
+        if (!log || typeof log.total !== "number") continue;
+        days[key] = { total: log.total, by: log.by && typeof log.by === "object" ? log.by : {} };
+      }
+    }
+    return {
+      total: typeof snap.total === "number" ? snap.total : 0,
+      bestDay: typeof snap.bestDay === "number" ? snap.bestDay : 0,
+      xp: typeof snap.xp === "number" ? snap.xp : 0,
+      by: snap.by && typeof snap.by === "object" ? snap.by : {},
+      days,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeSnap(value: string) {
+  try {
+    const state = (JSON.parse(value) as { state?: { total?: number; bestDay?: number; xp?: number; byDhikr?: Record<string, number>; days?: Record<string, { total?: number; by?: Record<string, number> }> } }).state;
+    if (!state) return;
+    const by: Record<string, number> = {};
+    for (const [id, n] of Object.entries(state.byDhikr ?? {})) if (typeof n === "number" && n > 0) by[id] = n;
+    const days: Record<string, { total: number; by: Record<string, number> }> = {};
+    for (const key of Object.keys(state.days ?? {}).sort().slice(-60)) {
+      const log = state.days?.[key];
+      if (!log || typeof log.total !== "number" || log.total <= 0) continue;
+      const dayBy: Record<string, number> = {};
+      for (const [id, n] of Object.entries(log.by ?? {})) if (typeof n === "number" && n > 0) dayBy[id] = n;
+      days[key] = { total: log.total, by: dayBy };
+    }
+    if (Object.keys(by).length === 0 && Object.keys(days).length === 0) return;
+    const prev = readSnap();
+    const prevScore = prev ? Math.max(prev.total, Object.values(prev.by).reduce((sum, n) => sum + n, 0)) : -1;
+    const nextScore = Math.max(state.total ?? 0, Object.values(by).reduce((sum, n) => sum + n, 0));
+    if (prev && prevScore > nextScore && Object.keys(by).length < Object.keys(prev.by).length) return;
+    localStorage.setItem(SNAP_KEY, JSON.stringify({ total: state.total ?? 0, bestDay: state.bestDay ?? 0, xp: state.xp ?? 0, by, days }));
+  } catch {
+    /* the main copy remains */
+  }
+}
+
+function withSnap(raw: string | null): string | null {
+  const snap = readSnap();
+  if (!snap) return raw;
+  if (!raw) return JSON.stringify({ state: { total: snap.total, bestDay: snap.bestDay, xp: snap.xp, byDhikr: snap.by, days: snap.days }, version: 5 });
+  try {
+    const parsed = JSON.parse(raw) as { state?: Record<string, unknown> };
+    if (!parsed.state) return raw;
+    const state = parsed.state;
+    const by = { ...snap.by };
+    const current = state.byDhikr && typeof state.byDhikr === "object" ? (state.byDhikr as Record<string, number>) : {};
+    for (const [id, n] of Object.entries(current)) if (typeof n === "number") by[id] = Math.max(by[id] ?? 0, n);
+    const days = { ...snap.days } as Record<string, { total: number; by: Record<string, number> }>;
+    const currentDays = state.days && typeof state.days === "object" ? (state.days as Record<string, { total?: number; by?: Record<string, number> }>) : {};
+    for (const [key, log] of Object.entries(currentDays)) {
+      const prev = days[key];
+      if (!prev || (log?.total ?? 0) >= prev.total) days[key] = { total: log?.total ?? 0, by: { ...(prev?.by ?? {}), ...(log?.by ?? {}) } };
+    }
+    state.byDhikr = by;
+    state.days = days;
+    const total = typeof state.total === "number" ? state.total : 0;
+    const best = typeof state.bestDay === "number" ? state.bestDay : 0;
+    if (total < snap.total) state.total = snap.total;
+    if (best < snap.bestDay) state.bestDay = snap.bestDay;
+    return JSON.stringify(parsed);
+  } catch {
+    return raw;
+  }
+}
 
 function readRaw(key: string): string | null {
   try {
@@ -534,27 +626,31 @@ let allowLowerSave = false;
 
 const durableStorage = {
   getItem: async (name: string) => {
-    const local = readLocal(name);
-    if (!local) {
+    let local = withSnap(readLocal(name));
+    if (!local || savedDetail(local) === 0) {
       const disk = await Promise.race<string | null>([
         idbGet(name),
         new Promise((resolve) => setTimeout(() => resolve(null), 700)),
       ]);
-      if (disk) {
-        writeLocal(name, disk);
-        return disk;
+      if (disk && (savedScore(disk) > savedScore(local) || savedDetail(disk) > savedDetail(local))) {
+        local = withSnap(disk);
+        if (local) writeLocal(name, local);
       }
     }
     void idbGet(name)
       .then((disk) => {
-        if (!disk || savedScore(disk) <= savedScore(readLocal(name))) return;
-        writeLocal(name, disk);
+        if (!disk) return;
+        const kept = readLocal(name);
+        const richer = savedScore(disk) > savedScore(kept) || (savedScore(disk) >= savedScore(kept) && savedDetail(disk) > savedDetail(kept));
+        if (!richer) return;
+        const next = withSnap(disk);
+        if (next) writeLocal(name, next);
         const apply = () => {
           try {
-            const parsed = JSON.parse(disk) as { state?: Partial<ZikrState> };
+            const parsed = JSON.parse(next || disk) as { state?: Partial<ZikrState> };
             if (!parsed.state) return;
             const live = snapshot(useZikr.getState());
-            if (savedScore(disk) <= savedScore(JSON.stringify({ state: live }))) return;
+            if (savedScore(disk) < savedScore(JSON.stringify({ state: live })) && savedDetail(disk) <= savedDetail(JSON.stringify({ state: live }))) return;
             useZikr.getState().apply(mergeState(live, parsed.state));
           } catch {
             /* keep the count already on screen */
@@ -576,6 +672,7 @@ const durableStorage = {
     const kept = readLocal(name);
     if (!allowLowerSave && next < savedScore(kept)) return Promise.resolve();
     writeLocal(name, value);
+    writeSnap(value);
     idbQueue = idbQueue
       .then(async () => {
         const disk = await idbGet(name);
