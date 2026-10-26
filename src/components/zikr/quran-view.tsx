@@ -445,7 +445,7 @@ export function QuranView() {
               <button key={item.n} type="button" className="surah-row" onClick={() => { clearGloss(); setOpen(item.n); }}>
                 <span className="surah-no">{item.n}</span>
                 <span className="min-w-0 flex-1 text-start">
-                  <span className="block font-arabic text-lg leading-loose text-fg" dir="rtl" lang="ar">
+                  <span className="ar-name block font-arabic text-lg text-fg" dir="rtl" lang="ar">
                     {item.name}
                   </span>
                   {lang !== "ar" ? <span className="block text-xs text-muted">{lang === "ru" ? item.ru : surahSpoken(lang, item.n, item.en)}</span> : null}
@@ -494,7 +494,7 @@ export function QuranView() {
           <span className="surah-side-name">{nextSurah ? surahLabel(nextSurah) : ""}</span>
         </button>
         <div className="surah-now">
-          <h2 className="font-arabic text-2xl leading-loose text-fg" dir="rtl" lang="ar">
+          <h2 className="ar-name font-arabic text-2xl text-fg" dir="rtl" lang="ar">
             {surah.name}
           </h2>
           {lang !== "ar" ? <p className="truncate text-xs text-muted">{surahLabel(surah)}</p> : null}

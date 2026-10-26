@@ -2094,6 +2094,9 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   padding-top: .45rem;
   line-height: 2.7;
 }
+.ar-name {
+  line-height: 1.9;
+}
 .reminder-ar {
   display: block;
   margin-bottom: .15rem;
