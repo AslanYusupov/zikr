@@ -511,7 +511,7 @@ export function Counter({
                   }}
                 >
                   <span className="flex items-center justify-between gap-3 text-xs text-fg">
-                    <span className="min-w-0 truncate">{quest.title}</span>
+                    <span className="min-w-0 truncate">{phraseOf(dhikrById(step.dhikrId), s.lang).short}</span>
                     <span className="shrink-0 tabular-nums">
                       {formatNum(s.questStepProgress)} / {formatNum(step.count)}
                     </span>
@@ -582,10 +582,7 @@ export function Counter({
                 }}
               >
                 <span className="flex items-center justify-between gap-3 text-xs text-fg">
-                  <span className="min-w-0 truncate">
-                    {quest.title}
-                    {step.label ? ` · ${step.label}` : ""} · {phraseOf(dhikrById(step.dhikrId), s.lang).short}
-                  </span>
+                  <span className="min-w-0 truncate">{phraseOf(dhikrById(step.dhikrId), s.lang).short}</span>
                   <span className="shrink-0 tabular-nums">
                     {formatNum(s.questStepProgress)} / {formatNum(step.count)}
                   </span>
