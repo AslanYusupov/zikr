@@ -2433,8 +2433,10 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   }
 }
 .quest-under {
-  text-align: left;
+  text-align: center;
   padding: .4rem .7rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .names-sheet {
   z-index: 40;

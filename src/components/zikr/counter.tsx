@@ -510,7 +510,7 @@ export function Counter({
                     dragY.current = null;
                   }}
                 >
-                  <span className="flex items-center justify-between gap-3 text-xs text-fg">
+                  <span className="flex items-center justify-center gap-3 text-center text-xs text-fg">
                     <span className="min-w-0 truncate">{phraseOf(dhikrById(step.dhikrId), s.lang).short}</span>
                     <span className="shrink-0 tabular-nums">
                       {formatNum(s.questStepProgress)} / {formatNum(step.count)}
@@ -571,7 +571,7 @@ export function Counter({
             {quest && step && !s.questUnder ? (
               <button
                 type="button"
-                className="mx-3 mb-1.5 rounded-2xl border border-line bg-surface/80 px-3 py-1.5 text-start"
+                className="mx-3 mb-1.5 rounded-2xl border border-line bg-surface/80 px-3 py-1.5 text-center"
                 onClick={() => s.setMode(step.dhikrId)}
                 onPointerDown={(e) => {
                   dragY.current = e.clientY;
@@ -581,7 +581,7 @@ export function Counter({
                   dragY.current = null;
                 }}
               >
-                <span className="flex items-center justify-between gap-3 text-xs text-fg">
+                <span className="flex items-center justify-center gap-3 text-center text-xs text-fg">
                   <span className="min-w-0 truncate">{phraseOf(dhikrById(step.dhikrId), s.lang).short}</span>
                   <span className="shrink-0 tabular-nums">
                     {formatNum(s.questStepProgress)} / {formatNum(step.count)}
