@@ -669,7 +669,7 @@ export const THEMES: { id: ThemeId; name: string; hint: string }[] = [
   { id: "salat", name: "Ас-Салят", hint: "Для людей намаза" },
   { id: "sadaqa", name: "Ас-Садакъа", hint: "Для людей садакъи" },
   { id: "jihad", name: "Аль-Джихад", hint: "Для людей джихада" },
-  { id: "kazimin", name: "Аль-Казымин", hint: "Сдерживают гнев и прощают" },
+  { id: "kazimin", name: "Аль-Казымин", hint: "Для сдерживающих гнев и прощающих" },
   { id: "tawba", name: "Ат-Тауба", hint: "Покаяние перед Аллах1ом" },
   { id: "ayman", name: "Аль-Айман", hint: "Входят без расчёта" },
   { id: "black", name: "Чёрный", hint: "Тихая ночь" },

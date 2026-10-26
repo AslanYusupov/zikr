@@ -1605,7 +1605,7 @@ const THEME_HINT: Record<string, Record<LangId, string>> = {
   salat: { ru: "Для людей намаза", en: "For the people of prayer", ar: "لأهل الصلاة", id: "Bagi orang salat", tr: "Namaz ehli için", ur: "نماز والوں کے لیے" },
   sadaqa: { ru: "Для людей садакъи", en: "For the people of charity", ar: "لأهل الصدقة", id: "Bagi orang sedekah", tr: "Sadaka ehli için", ur: "صدقہ والوں کے لیے" },
   jihad: { ru: "Для людей джихада", en: "For the people of jihad", ar: "لأهل الجهاد", id: "Bagi orang jihad", tr: "Cihad ehli için", ur: "جہاد والوں کے لیے" },
-  kazimin: { ru: "Сдерживают гнев и прощают", en: "They restrain anger and pardon", ar: "يكظمون الغيظ ويعفون", id: "Menahan marah dan memaafkan", tr: "Öfkeyi tutar ve affederler", ur: "غصہ روکتے اور معاف کرتے ہیں" },
+  kazimin: { ru: "Для сдерживающих гнев и прощающих", en: "For those who restrain anger and pardon", ar: "للكاظمين الغيظ والعافين", id: "Bagi yang menahan marah dan memaafkan", tr: "Öfkeyi tutan ve affedenler için", ur: "غصہ روکنے اور معاف کرنے والوں کے لیے" },
   tawba: { ru: "Покаяние перед Аллах1ом", en: "Repentance to Allah", ar: "التوبة إلى الله", id: "Tobat kepada Allah", tr: "Allah'a tövbe", ur: "اللہ کی طرف توبہ" },
   ayman: { ru: "Входят без расчёта", en: "They enter without reckoning", ar: "من لا حساب عليه", id: "Masuk tanpa hisab", tr: "Hesapsız girenler", ur: "بغیر حساب داخل ہوتے ہیں" },
   amethyst: { ru: "Ночной пурпур", en: "Night purple", ar: "أرجوان ليلي", id: "Ungu malam", tr: "Gece moru", ur: "رات کی جامنی" },
