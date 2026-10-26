@@ -101,7 +101,7 @@ export function SettingsView({
           <h2 className="text-base font-extrabold text-fg">{t(s.lang, "inviteTitle")}</h2>
           <p className="mt-1 text-sm leading-relaxed text-muted">{t(s.lang, "inviteHadith")}</p>
           <InviteButtons />
-          <p className="mt-3 text-center font-arabic text-lg leading-snug text-fg" dir="rtl" lang="ar">
+          <p className="mt-3 text-center font-arabic text-lg leading-loose text-fg" dir="rtl" lang="ar">
             سُبْحَانَ اللَّهِ وَبِحَمْدِهِ
           </p>
           <p className="mt-1 text-center text-sm font-extrabold text-fg">{t(s.lang, "invitePhrase")}</p>

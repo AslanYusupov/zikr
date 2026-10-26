@@ -887,6 +887,10 @@
     --tw-leading: var(--leading-snug);
     line-height: var(--leading-snug);
   }
+  .leading-loose {
+    --tw-leading: 2.55;
+    line-height: 2.55;
+  }
   .leading-tight {
     --tw-leading: var(--leading-tight);
     line-height: var(--leading-tight);
@@ -2085,6 +2089,11 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   overscroll-behavior: contain;
   touch-action: pan-y;
 }
+.dua-ar {
+  display: block;
+  padding-top: .45rem;
+  line-height: 2.7;
+}
 .reminder-ar {
   display: block;
   margin-bottom: .15rem;
@@ -2956,6 +2965,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .phrase-arabic {
   overflow-wrap: anywhere;
   text-wrap: balance;
+  line-height: 2.15;
 }
 .stat-value {
   font-family: var(--font-display);
@@ -3779,7 +3789,7 @@ html, body {
 .home-switch button.on { border-color: var(--fg); background: color-mix(in srgb, var(--surface) 96%, var(--fg) 4%); }
 .quran-scroll { flex: 1; min-height: 0; overflow: auto; -webkit-overflow-scrolling: touch; padding: .35rem .7rem 1.1rem; background: color-mix(in srgb, var(--bg) 97%, var(--surface)); color: var(--fg); }
 .quran-hadith { margin-bottom: .7rem; padding: .7rem .75rem .6rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--fg); }
-.quran-hadith-ar { color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.12rem; font-weight: 700; line-height: 2; text-align: center; }
+.quran-hadith-ar { color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.12rem; font-weight: 700; line-height: 2.45; text-align: center; }
 .quran-hadith-text { margin-top: .35rem; color: var(--fg); font-size: .84rem; line-height: 1.55; }
 .quran-hadith-src { margin-top: .4rem; color: var(--gold); font-size: .72rem; line-height: 1.4; }
 .surah-row { display: flex; align-items: center; gap: .65rem; width: 100%; padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--fg); text-align: left; }
@@ -3801,7 +3811,7 @@ html, body {
 .ayah-play { display: grid; flex: none; place-items: center; width: 1.7rem; height: 1.7rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--fg); }
 .ayah-play.on { border-color: var(--gold); color: var(--gold); }
 .ayah-no { display: block; margin: 0; color: var(--muted); font-size: .68rem; font-weight: 800; text-align: left; }
-.ayah-ar { display: block; color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.35rem; font-weight: 700; line-height: 2.2; }
+.ayah-ar { display: block; color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.35rem; font-weight: 700; line-height: 2.55; }
 .ayah-meta { display: block; margin-top: .2rem; color: var(--gold); font-size: .68rem; text-align: left; }
 .phrase-read { background: color-mix(in srgb, var(--bg) 90%, transparent); border-radius: 1rem; }
 .nav-dua {
@@ -3816,7 +3826,7 @@ html, body {
 .taj-lesson .surah-row { border: 0; border-radius: 0; background: transparent; }
 .taj-body { padding: 0 .8rem .8rem; }
 .taj-row { margin-top: .7rem; padding-top: .55rem; border-top: 1px solid var(--line); text-align: center; }
-.taj-ar { color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.45rem; font-weight: 700; line-height: 2.1; }
+.taj-ar { color: var(--fg); font-family: var(--font-arabic), "Amiri", serif; font-size: 1.45rem; font-weight: 700; line-height: 2.45; }
 .taj-read { margin-top: .15rem; color: var(--fg); font-size: .92rem; font-weight: 800; line-height: 1.35; }
 .taj-gloss { margin-top: .15rem; color: var(--muted); font-size: .8rem; line-height: 1.45; }
 .taj-meter { margin-top: .65rem; padding: .65rem .75rem .7rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }

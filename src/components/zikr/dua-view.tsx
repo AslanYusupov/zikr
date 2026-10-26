@@ -25,8 +25,8 @@ export function DuaView() {
               <h3 className="text-lg leading-snug font-extrabold text-fg">{line.name}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted">{line.forWhat}</p>
               {open ? (
-                <div className="mt-4 border-t border-line pt-4">
-                  <p className="text-center font-arabic text-xl leading-loose text-fg" dir="rtl" lang="ar">
+                <div className="mt-4 border-t border-line pt-5">
+                  <p className="dua-ar text-center font-arabic text-xl text-fg" dir="rtl" lang="ar">
                     {dua.arabic}
                   </p>
                   <p className="mt-3 text-[0.95rem] leading-relaxed text-fg">{duaRead(dua.id, lang)}</p>

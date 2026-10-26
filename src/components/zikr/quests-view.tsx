@@ -151,7 +151,7 @@ function DhikrSunnah({ id, lang, label }: { id: string; lang: LangId; label?: st
   return (
     <div className="mt-3 border-t border-line pt-3">
       {label ? <p className="text-xs text-gold">{label}</p> : null}
-      <p className="text-center font-arabic text-xl leading-snug text-fg" dir="rtl" lang="ar">
+      <p className="text-center font-arabic text-xl leading-loose text-fg" dir="rtl" lang="ar">
         {d.arabic}
       </p>
       <p className="mt-2 text-center text-sm font-extrabold leading-snug text-fg">{line.name}</p>

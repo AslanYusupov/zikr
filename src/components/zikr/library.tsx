@@ -29,7 +29,7 @@ export function Library({ focus, onClose }: { focus: number; onClose: () => void
           return (
             <article key={d.id} className="rounded-2xl border border-line bg-surface px-3 py-3">
               {arabicAside ? (
-                <p className="text-center font-arabic text-xl leading-snug text-fg" dir="rtl" lang="ar">
+                <p className="text-center font-arabic text-xl leading-loose text-fg" dir="rtl" lang="ar">
                   {d.arabic}
                 </p>
               ) : null}
@@ -57,7 +57,7 @@ export function Library({ focus, onClose }: { focus: number; onClose: () => void
               )}
             >
               {line.arabic && arabicAside ? (
-                <p className="text-center font-arabic text-lg leading-snug text-fg" dir="rtl" lang="ar">
+                <p className="text-center font-arabic text-lg leading-loose text-fg" dir="rtl" lang="ar">
                   {line.arabic}
                 </p>
               ) : null}

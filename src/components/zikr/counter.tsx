@@ -561,7 +561,7 @@ export function Counter({
               >
                 <span className="reminder-scroll">
                 {shownQuote.arabic && s.arabicOptIn === true && s.lang !== "ar" && s.lang !== "ur" ? (
-                  <p className="reminder-ar font-arabic text-sm leading-relaxed text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
+                  <p className="reminder-ar font-arabic text-sm leading-loose text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
                 ) : null}
                 <p className="reminder-text mt-0.5 text-xs leading-snug text-fg">{shownQuote.text}</p>
                 <p className="reminder-src mt-0.5 text-[0.65rem] text-muted">{shownQuote.source}</p>
