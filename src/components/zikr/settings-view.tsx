@@ -27,12 +27,12 @@ const GATE_THEMES = new Set(["firdaus", "rayyan", "salat", "sadaqa", "jihad", "k
 function GateMark() {
   return (
     <span className="mb-1.5 flex justify-center text-gold" aria-hidden>
-      <svg viewBox="0 0 36 28" className="h-5 w-6">
-        <path d="M7 26 V13.5 C7 8.3 11.2 4.2 18 4.2 S29 8.3 29 13.5 V26" fill="none" stroke="currentColor" strokeWidth="1.6" />
-        <path d="M5 26 H31" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M18 26 V12.2" fill="none" stroke="currentColor" strokeWidth="1.15" />
-        <circle cx="16.2" cy="19" r=".7" fill="currentColor" />
-        <circle cx="19.8" cy="19" r=".7" fill="currentColor" />
+      <svg viewBox="0 0 24 32" className="h-6 w-5">
+        <circle cx="12" cy="7.2" r="4.6" fill="none" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="12" cy="7.2" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.15" />
+        <path d="M12 11.8 V27.2" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M12 20.4 H16.4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M12 24.2 H15.6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
       </svg>
     </span>
   );
