@@ -240,20 +240,11 @@ export function grokXCreatorHeadTags(creator = readXCreator(), creatorId = readX
   ];
 }
 
-/** Platform "Created with Grok" banner — injected into every HTML document. */
+/** Project id only. A script from grok.com is not loaded: that host does not open without a VPN, and it stops the app from starting. */
 export function grokExtensionsHeadTags(projectId = readGrokProjectId()) {
   const id = escapeHtml(projectId);
-  const tags = [];
-  if (projectId) {
-    tags.push(`<meta name="grok-project-id" content="${id}">`);
-  }
-  if (!readGrokExtensionsEnabled()) return tags;
-  tags.push(
-    `<script src="${GROK_EXTENSIONS_SCRIPT_SRC}"${
-      projectId ? ` data-project-id="${id}"` : ""
-    } async></script>`,
-  );
-  return tags;
+  if (!projectId) return [];
+  return [`<meta name="grok-project-id" content="${id}">`];
 }
 
 export function readOgSite(cwd = process.cwd()) {
@@ -453,8 +444,7 @@ export function injectGrokPwaHead(html, ctx = {}) {
     host,
     documentTitle,
   );
-  let next = stripShareMetaTags(html);
-  if (!readGrokExtensionsEnabled()) next = stripGrokExtensionsScript(next);
+  let next = stripGrokExtensionsScript(stripShareMetaTags(html));
 
   const missing = grokPwaHeadTags(appName)
     .filter(([key]) => {
@@ -469,10 +459,8 @@ export function injectGrokPwaHead(html, ctx = {}) {
     grokOgHeadTags({ host, appName, site, documentTitle, cwd }).join(""),
   );
 
-  if (readGrokExtensionsEnabled() && !next.includes("/grok-app-builder/extensions.js")) {
+  if (projectId && !next.includes('name="grok-project-id"')) {
     missing.push(...grokExtensionsHeadTags(projectId));
-  } else if (projectId && !next.includes('name="grok-project-id"')) {
-    missing.push(`<meta name="grok-project-id" content="${escapeHtml(projectId)}">`);
   }
   if (
     projectId &&

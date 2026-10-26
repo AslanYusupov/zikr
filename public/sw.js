@@ -38,6 +38,19 @@ async function saveShell(cache, res) {
   await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
 }
 
+function cleanPage(html) {
+  return html.replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
+}
+
+async function pageFrom(res) {
+  try {
+    const html = await res.text();
+    return new Response(cleanPage(html), { status: 200, headers: { "content-type": "text/html; charset=utf-8" } });
+  } catch {
+    return res;
+  }
+}
+
 function stored(res) {
   const headers = new Headers();
   const type = res.headers.get("content-type");
@@ -105,13 +118,19 @@ self.addEventListener("fetch", (event) => {
             return res;
           })
           .catch(() => null);
-      if (hit) return hit;
+      if (hit) {
+        if (!navigation) return hit;
+        const page = await pageFrom(hit);
+        event.waitUntil(cache.put("/", page.clone()).catch(() => {}));
+        return page;
+      }
       if (navigation) {
         try {
           const fresh = await fetch(req);
           if (fresh && fresh.ok) {
-            event.waitUntil(saveShell(cache, fresh.clone()));
-            return fresh;
+            const page = await pageFrom(fresh.clone());
+            event.waitUntil(saveShell(cache, page.clone()));
+            return page;
           }
         } catch {
           /* open the saved page */
