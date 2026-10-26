@@ -1775,6 +1775,16 @@ button[data-theme=ayman] { box-shadow: inset 3px 0 0 #f4f1ea, 0 0 16px #ffffff22
 button[data-theme=amethyst] { box-shadow: inset 3px 0 0 #9d4edd, 0 0 16px #9d4edd33; }
 button[data-theme=amber] { box-shadow: inset 3px 0 0 #f2c94c, 0 0 16px #f2994a33; }
 button[data-theme=jade] { box-shadow: inset 3px 0 0 #34d399, 0 0 16px #10b98133; }
+button[data-theme=black] { box-shadow: inset 3px 0 0 #f4f1ea, 0 0 16px #ffffff2a; }
+button[data-theme=wine] { box-shadow: inset 3px 0 0 #e8b4bc, 0 0 16px #c0405833; }
+button[data-theme=ivory] { box-shadow: inset 3px 0 0 #3d3832, 0 0 14px #0000001f; }
+button[data-theme=roses] { box-shadow: inset 3px 0 0 #f6d6d8, 0 0 16px #b43c5033; }
+button[data-theme=sea] { box-shadow: inset 3px 0 0 #9ec5e0, 0 0 16px #78a0c833; }
+button[data-theme=desert] { box-shadow: inset 3px 0 0 #f3e0c4, 0 0 16px #e6c48a44; }
+button[data-theme=cosmos] { box-shadow: inset 3px 0 0 #c9d4ff, 0 0 16px #7a8cff44; }
+button[data-theme=peaks] { box-shadow: inset 3px 0 0 #e7eef6, 0 0 16px #9eb4cc44; }
+button[data-theme=lake] { box-shadow: inset 3px 0 0 #d5e6f2, 0 0 16px #7eb0d044; }
+button[data-theme=jungle] { box-shadow: inset 3px 0 0 #b7e0c4, 0 0 16px #3d9a6244; }
 html[data-theme=subhah], html[data-theme=subhah] body { background: #06141c !important; color: #f4fbff; }
 html[data-theme=firdaus], html[data-theme=firdaus] body { background: #14080c !important; color: #fff8f2; }
 html[data-theme=rayyan], html[data-theme=rayyan] body { background: #04241c !important; color: #f3fff8; }
@@ -1812,8 +1822,11 @@ html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme
 }
 html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) .text-gold { color: var(--gold); }
 html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) .text-muted { color: var(--muted); }
-html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) .orb-face {
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade],[data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=roses],[data-theme=sea],[data-theme=desert],[data-theme=cosmos],[data-theme=peaks],[data-theme=lake],[data-theme=jungle]) .orb-face {
   box-shadow: inset 0 0 0 1px var(--gold), 0 0 28px var(--glow);
+}
+html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=roses],[data-theme=sea],[data-theme=desert],[data-theme=cosmos],[data-theme=peaks],[data-theme=lake],[data-theme=jungle]) :is(button,a).bg-gold {
+  box-shadow: 0 0 16px var(--glow);
 }
 [data-font=crimson] .reminder-ar {
   font-size: 1.15rem;
@@ -3652,7 +3665,7 @@ html, body {
   --orb: #000;
   --orb-fg: #fff;
   --orb-gold: #fff;
-  --glow: #ffffff14;
+  --glow: #ffffff33;
 }
 [data-theme=black] .phrase-read,
 [data-theme=black] .reminder,
@@ -3693,19 +3706,19 @@ html, body {
 [data-theme=lake] .scene-lake,
 [data-theme=jungle] .scene-jungle { opacity: 1; }
 [data-theme=desert] {
-  --bg: #1a120c; --fg: #f8f1e6; --muted: #e4d2bc; --gold: #f3e0c4; --line: #f3e0c433; --surface: #2a1c12cc; --ink: #1a120c; --chip: #1a120cb8; --orb: #24180f; --orb-fg: #f8f1e6; color-scheme: dark;
+  --bg: #1a120c; --fg: #f8f1e6; --muted: #e4d2bc; --gold: #f3e0c4; --glow: #e6c48a55; --line: #f3e0c433; --surface: #2a1c12cc; --ink: #1a120c; --chip: #1a120cb8; --orb: #24180f; --orb-fg: #f8f1e6; color-scheme: dark;
 }
 [data-theme=cosmos] {
-  --bg: #070814; --fg: #f4f6ff; --muted: #c9d0ea; --gold: #e4e8ff; --line: #e4e8ff33; --surface: #12162acc; --ink: #070814; --chip: #070814b8; --orb: #12162a; --orb-fg: #f4f6ff; color-scheme: dark;
+  --bg: #070814; --fg: #f4f6ff; --muted: #c9d0ea; --gold: #e4e8ff; --glow: #9eb0ff55; --line: #e4e8ff33; --surface: #12162acc; --ink: #070814; --chip: #070814b8; --orb: #12162a; --orb-fg: #f4f6ff; color-scheme: dark;
 }
 [data-theme=peaks] {
-  --bg: #10161c; --fg: #f4f7fb; --muted: #d0d8e2; --gold: #e7eef6; --line: #e7eef633; --surface: #1a242ecc; --ink: #10161c; --chip: #10161cb8; --orb: #18222c; --orb-fg: #f4f7fb; color-scheme: dark;
+  --bg: #10161c; --fg: #f4f7fb; --muted: #d0d8e2; --gold: #e7eef6; --glow: #d5e4f255; --line: #e7eef633; --surface: #1a242ecc; --ink: #10161c; --chip: #10161cb8; --orb: #18222c; --orb-fg: #f4f7fb; color-scheme: dark;
 }
 [data-theme=lake] {
-  --bg: #101820; --fg: #f3f7fb; --muted: #d2dde6; --gold: #e6eef4; --line: #e6eef433; --surface: #182430cc; --ink: #101820; --chip: #101820b8; --orb: #16222c; --orb-fg: #f3f7fb; color-scheme: dark;
+  --bg: #101820; --fg: #f3f7fb; --muted: #d2dde6; --gold: #e6eef4; --glow: #9ec8e255; --line: #e6eef433; --surface: #182430cc; --ink: #101820; --chip: #101820b8; --orb: #16222c; --orb-fg: #f3f7fb; color-scheme: dark;
 }
 [data-theme=jungle] {
-  --bg: #0c1610; --fg: #f3f8f4; --muted: #cfe0d4; --gold: #e4f2e8; --line: #e4f2e833; --surface: #14261acc; --ink: #0c1610; --chip: #0c1610b8; --orb: #122016; --orb-fg: #f3f8f4; color-scheme: dark;
+  --bg: #0c1610; --fg: #f3f8f4; --muted: #cfe0d4; --gold: #e4f2e8; --glow: #7dcaa055; --line: #e4f2e833; --surface: #14261acc; --ink: #0c1610; --chip: #0c1610b8; --orb: #122016; --orb-fg: #f3f8f4; color-scheme: dark;
 }
 .photo-sheen,.photo-glint,.photo-rays,.photo-dust,.photo-stars,.photo-nebula,.photo-mist,.photo-sun { position: absolute; inset: 0; pointer-events: none; }
 .photo-rays { background: radial-gradient(40% 28% at 70% 18%, #fff3 0%, transparent 70%); }
