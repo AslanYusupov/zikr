@@ -77,12 +77,12 @@ const env = (key: string): string | undefined => {
 // provisions auth; set it to "false" to force auth off everywhere (dev user).
 const authDisabled = env("VITE_AUTH_ENABLED") === "false";
 
-// Broker federation creds: the deployer injects a per-app client when deployed;
-// otherwise fall back to the shared live-preview client, which the broker accepts
-// for any `*.grok-sandbox.com` callback (see `./preview`).
-const grokIssuer = env("GROK_AUTH_ISSUER") ?? GROK_ISSUER_DEFAULT;
-const grokClientId = env("GROK_AUTH_CLIENT_ID") ?? PREVIEW_CLIENT_ID;
-const grokClientSecret = env("GROK_AUTH_CLIENT_SECRET") ?? PREVIEW_CLIENT_SECRET;
+// The published site never talks to Grok. Sign-in is email and password in its
+// own database. The sandbox preview can still use the preview client.
+const deployed = Boolean(env("DATABASE_URL"));
+const grokIssuer = deployed ? "" : (env("GROK_AUTH_ISSUER") ?? GROK_ISSUER_DEFAULT);
+const grokClientId = deployed ? undefined : (env("GROK_AUTH_CLIENT_ID") ?? PREVIEW_CLIENT_ID);
+const grokClientSecret = deployed ? undefined : (env("GROK_AUTH_CLIENT_SECRET") ?? PREVIEW_CLIENT_SECRET);
 
 /** True when federated sign-in is active (real auth is enforced). */
 export const authConfigured =
@@ -137,9 +137,9 @@ const databaseUrl = env("DATABASE_URL");
 // even redirect to Google/X — the live-preview popup felt stuck on the app for
 // that whole round-trip. These paths match the broker's discovery document.
 const issuerBase = grokIssuer.replace(/\/+$/, "");
-const grokAuthorizationUrl = `${issuerBase}/api/auth/oauth2/authorize`;
-const grokTokenUrl = `${issuerBase}/api/auth/oauth2/token`;
-const grokUserInfoUrl = `${issuerBase}/api/auth/oauth2/userinfo`;
+const grokAuthorizationUrl = issuerBase ? `${issuerBase}/api/auth/oauth2/authorize` : "";
+const grokTokenUrl = issuerBase ? `${issuerBase}/api/auth/oauth2/token` : "";
+const grokUserInfoUrl = issuerBase ? `${issuerBase}/api/auth/oauth2/userinfo` : "";
 
 // Real Postgres when `DATABASE_URL` is set (deployed apps), else the app's
 // embedded PGLite (preview) via a Kysely dialect — so Better Auth persists to the
@@ -166,8 +166,9 @@ export const SESSION_TOKEN_COOKIE = "__Host-grok-auth.session_token";
 
 // Built separately so the `betterAuth({...})` call stays easy to edit without
 // breaking brackets (models often trip on the conditional plugin spread).
-const grokOAuthPlugin = authConfigured
-  ? genericOAuth({
+const grokOAuthPlugin =
+  authConfigured && grokAuthorizationUrl
+    ? genericOAuth({
       config: GROK_PROVIDERS.map(({ providerId, idp }) => ({
         providerId,
         clientId: grokClientId as string,
