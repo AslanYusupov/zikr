@@ -1574,7 +1574,7 @@ const THEME_NAME: Record<string, Record<LangId, string>> = {
   peaks: { ru: "Горы", en: "Mountains", ar: "جبال", id: "Gunung", tr: "Dağlar", ur: "پہاڑ" },
   lake: { ru: "Рассвет", en: "Dawn", ar: "فجر", id: "Fajar", tr: "Şafak", ur: "صبح" },
   jungle: { ru: "Джунгли", en: "Forest", ar: "غابة", id: "Hutan", tr: "Orman", ur: "جنگل" },
-  subhah: { ru: "Субхах", en: "Subhah", ar: "سبحه", id: "Subhah", tr: "Sübhah", ur: "سبحہ" },
+  subhah: { ru: "Субх1а", en: "Subha", ar: "سُبْحَة", id: "Subha", tr: "Sübha", ur: "سُبْحَة" },
   firdaus: { ru: "Аль-Фирдаус", en: "Al-Firdaus", ar: "الفردوس", id: "Al-Firdaus", tr: "Firdevs", ur: "الفردوس" },
   rayyan: { ru: "Ар-Райян", en: "Ar-Rayyan", ar: "الريان", id: "Ar-Rayyan", tr: "Rayyân", ur: "الریان" },
   salat: { ru: "Ас-Салят", en: "As-Salah", ar: "الصلاة", id: "As-Salat", tr: "Salât", ur: "الصلاة" },
