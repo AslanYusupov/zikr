@@ -1502,27 +1502,197 @@ details.fold>:not(summary) {
     linear-gradient(180deg, #0a2434 0%, #06141c 46%, #041018 100%);
 }
 [data-theme=firdaus] {
-  --bg: #16060c;
-  --bg-deep: #0c0307;
-  --surface: #2c1018f2;
-  --surface-2: #421820;
-  --fg: #fff6f5;
-  --muted: #f3c9c4;
-  --gold: #ffb199;
-  --gold-soft: #ffe4dc;
-  --line: #ffb19955;
-  --ink: #2a0610;
-  --chip: #220910;
-  --orb: #301018;
-  --orb-fg: #fff6f5;
-  --orb-gold: #ffb199;
-  --glow: #ff084466;
+  --bg: #14080c;
+  --bg-deep: #0c0408;
+  --surface: #2a1210f2;
+  --surface-2: #3e1c14;
+  --fg: #fff8f2;
+  --muted: #f0d2c0;
+  --gold: #f2c98a;
+  --gold-soft: #ffe7c2;
+  --line: #f2c98a55;
+  --ink: #1c0c08;
+  --chip: #1c0c10;
+  --orb: #2a1410;
+  --orb-fg: #fff8f2;
+  --orb-gold: #f2c98a;
+  --glow: #ff084455;
   color-scheme: dark;
 }
 [data-theme=firdaus] .app-frame {
   background:
-    radial-gradient(76% 40% at 50% -8%, #ff084447, transparent 62%),
-    linear-gradient(180deg, #2a0c14 0%, #16060c 48%, #10040a 100%);
+    radial-gradient(68% 34% at 50% -8%, #f2c94c38, transparent 60%),
+    radial-gradient(54% 30% at 88% 0%, #ff084436, transparent 64%),
+    linear-gradient(180deg, #2a1014 0%, #14080c 52%, #10060a 100%);
+}
+[data-theme=rayyan] {
+  --bg: #04241c;
+  --bg-deep: #021610;
+  --surface: #0c3328f2;
+  --surface-2: #124838;
+  --fg: #f3fff8;
+  --muted: #b7e4d2;
+  --gold: #6ee7b7;
+  --gold-soft: #d8fff0;
+  --line: #6ee7b755;
+  --ink: #042018;
+  --chip: #063028;
+  --orb: #0c382c;
+  --orb-fg: #f3fff8;
+  --orb-gold: #6ee7b7;
+  --glow: #10b98166;
+  color-scheme: dark;
+}
+[data-theme=rayyan] .app-frame {
+  background:
+    radial-gradient(74% 38% at 50% -8%, #10b98140, transparent 62%),
+    linear-gradient(180deg, #06382c 0%, #04241c 50%, #021610 100%);
+}
+[data-theme=salat] {
+  --bg: #07101c;
+  --bg-deep: #040814;
+  --surface: #102038f2;
+  --surface-2: #183054;
+  --fg: #f4f7ff;
+  --muted: #c5d2ea;
+  --gold: #9ec5ff;
+  --gold-soft: #e4eeff;
+  --line: #9ec5ff55;
+  --ink: #071424;
+  --chip: #0c1830;
+  --orb: #12243c;
+  --orb-fg: #f4f7ff;
+  --orb-gold: #9ec5ff;
+  --glow: #4f8fe266;
+  color-scheme: dark;
+}
+[data-theme=salat] .app-frame {
+  background:
+    radial-gradient(74% 38% at 50% -8%, #4f8fe238, transparent 62%),
+    linear-gradient(180deg, #10243c 0%, #07101c 52%, #040814 100%);
+}
+[data-theme=sadaqa] {
+  --bg: #1a1206;
+  --bg-deep: #100c04;
+  --surface: #2e220ef2;
+  --surface-2: #423214;
+  --fg: #fff8ee;
+  --muted: #f0d7b0;
+  --gold: #ffc14d;
+  --gold-soft: #ffe6b0;
+  --line: #ffc14d55;
+  --ink: #1c1204;
+  --chip: #241808;
+  --orb: #322410;
+  --orb-fg: #fff8ee;
+  --orb-gold: #ffc14d;
+  --glow: #f2994a66;
+  color-scheme: dark;
+}
+[data-theme=sadaqa] .app-frame {
+  background:
+    radial-gradient(74% 38% at 50% -8%, #f2c94c40, transparent 62%),
+    linear-gradient(180deg, #2e1e0c 0%, #1a1206 52%, #100c04 100%);
+}
+[data-theme=jihad] {
+  --bg: #140608;
+  --bg-deep: #0c0305;
+  --surface: #2a1014f2;
+  --surface-2: #3c161c;
+  --fg: #fff5f5;
+  --muted: #e8c4c8;
+  --gold: #e09aa2;
+  --gold-soft: #ffd8dc;
+  --line: #e09aa255;
+  --ink: #1c060a;
+  --chip: #20080c;
+  --orb: #301014;
+  --orb-fg: #fff5f5;
+  --orb-gold: #e09aa2;
+  --glow: #9b233566;
+  color-scheme: dark;
+}
+[data-theme=jihad] .app-frame {
+  background:
+    radial-gradient(72% 36% at 50% -8%, #9b233540, transparent 62%),
+    linear-gradient(180deg, #2a0c12 0%, #140608 52%, #0c0305 100%);
+}
+[data-theme=kazimin] {
+  --bg: #120a18;
+  --bg-deep: #0a0610;
+  --surface: #241430f2;
+  --surface-2: #341c46;
+  --fg: #faf6ff;
+  --muted: #dcc8ee;
+  --gold: #c4a6e8;
+  --gold-soft: #efe4ff;
+  --line: #c4a6e855;
+  --ink: #160a20;
+  --chip: #1a0e24;
+  --orb: #281438;
+  --orb-fg: #faf6ff;
+  --orb-gold: #c4a6e8;
+  --glow: #7c4db866;
+  color-scheme: dark;
+}
+[data-theme=kazimin] .app-frame {
+  background:
+    radial-gradient(72% 36% at 50% -8%, #7c4db838, transparent 62%),
+    linear-gradient(180deg, #1c1028 0%, #120a18 52%, #0a0610 100%);
+}
+[data-theme=tawba] {
+  --bg: #10131c;
+  --bg-deep: #080a12;
+  --surface: #1c2230f2;
+  --surface-2: #2a3344;
+  --fg: #f6f7fb;
+  --muted: #cdd3e2;
+  --gold: #d5deee;
+  --gold-soft: #f4f7fc;
+  --line: #d5deee44;
+  --ink: #12151c;
+  --chip: #161a26;
+  --orb: #1e2434;
+  --orb-fg: #f6f7fb;
+  --orb-gold: #d5deee;
+  --glow: #9aadc833;
+  color-scheme: dark;
+}
+[data-theme=tawba] .app-frame {
+  background: linear-gradient(180deg, #07080f 0%, #141a28 58%, #4a5568 100%);
+}
+[data-theme=ayman] {
+  --bg: #000;
+  --bg-deep: #000;
+  --surface: #101010f2;
+  --surface-2: #1a1a1a;
+  --fg: #f7f4ee;
+  --muted: #c8c4bc;
+  --gold: #f4f1ea;
+  --gold-soft: #fff;
+  --line: #ffffff2e;
+  --ink: #000;
+  --chip: #0c0c0c;
+  --orb: #141414;
+  --orb-fg: #f7f4ee;
+  --orb-gold: #f4f1ea;
+  --glow: #ffffff22;
+  color-scheme: dark;
+}
+[data-theme=ayman] .app-frame {
+  background-color: #000;
+  background-image:
+    radial-gradient(1.2px 1.2px at 14% 16%, #fff8 55%, transparent 62%),
+    radial-gradient(1px 1px at 28% 24%, #fff6 55%, transparent 62%),
+    radial-gradient(1.4px 1.4px at 46% 10%, #fff 55%, transparent 62%),
+    radial-gradient(1px 1px at 62% 20%, #fff6 55%, transparent 62%),
+    radial-gradient(1.3px 1.3px at 78% 14%, #fff8 55%, transparent 62%),
+    radial-gradient(1px 1px at 88% 30%, #fff5 55%, transparent 62%),
+    radial-gradient(1.1px 1.1px at 18% 42%, #fff6 55%, transparent 62%),
+    radial-gradient(1px 1px at 36% 48%, #fff4 55%, transparent 62%),
+    radial-gradient(1.5px 1.5px at 70% 40%, #fff7 55%, transparent 62%),
+    radial-gradient(1px 1px at 90% 52%, #fff5 55%, transparent 62%),
+    #000;
 }
 [data-theme=amethyst] {
   --bg: #120818;
@@ -1594,71 +1764,55 @@ details.fold>:not(summary) {
     linear-gradient(180deg, #0c2820 0%, #061410 48%, #04110e 100%);
 }
 button[data-theme=subhah] { box-shadow: inset 3px 0 0 #00f2fe, 0 0 16px #00f2fe33; }
-button[data-theme=firdaus] { box-shadow: inset 3px 0 0 #ff0844, 0 0 16px #ff084433; }
+button[data-theme=firdaus] { box-shadow: inset 3px 0 0 #f2c98a, 0 0 16px #ff084433; }
+button[data-theme=rayyan] { box-shadow: inset 3px 0 0 #6ee7b7, 0 0 16px #10b98133; }
+button[data-theme=salat] { box-shadow: inset 3px 0 0 #9ec5ff, 0 0 16px #4f8fe233; }
+button[data-theme=sadaqa] { box-shadow: inset 3px 0 0 #ffc14d, 0 0 16px #f2994a33; }
+button[data-theme=jihad] { box-shadow: inset 3px 0 0 #9b2335, 0 0 16px #9b233533; }
+button[data-theme=kazimin] { box-shadow: inset 3px 0 0 #c4a6e8, 0 0 16px #7c4db833; }
+button[data-theme=tawba] { box-shadow: inset 3px 0 0 #d5deee, 0 0 16px #9aadc833; }
+button[data-theme=ayman] { box-shadow: inset 3px 0 0 #f4f1ea, 0 0 16px #ffffff22; }
 button[data-theme=amethyst] { box-shadow: inset 3px 0 0 #9d4edd, 0 0 16px #9d4edd33; }
 button[data-theme=amber] { box-shadow: inset 3px 0 0 #f2c94c, 0 0 16px #f2994a33; }
 button[data-theme=jade] { box-shadow: inset 3px 0 0 #34d399, 0 0 16px #10b98133; }
 html[data-theme=subhah], html[data-theme=subhah] body { background: #06141c !important; color: #f4fbff; }
-html[data-theme=firdaus], html[data-theme=firdaus] body { background: #16060c !important; color: #fff6f5; }
+html[data-theme=firdaus], html[data-theme=firdaus] body { background: #14080c !important; color: #fff8f2; }
+html[data-theme=rayyan], html[data-theme=rayyan] body { background: #04241c !important; color: #f3fff8; }
+html[data-theme=salat], html[data-theme=salat] body { background: #07101c !important; color: #f4f7ff; }
+html[data-theme=sadaqa], html[data-theme=sadaqa] body { background: #1a1206 !important; color: #fff8ee; }
+html[data-theme=jihad], html[data-theme=jihad] body { background: #140608 !important; color: #fff5f5; }
+html[data-theme=kazimin], html[data-theme=kazimin] body { background: #120a18 !important; color: #faf6ff; }
+html[data-theme=tawba], html[data-theme=tawba] body { background: #10131c !important; color: #f6f7fb; }
+html[data-theme=ayman], html[data-theme=ayman] body { background: #000 !important; color: #f7f4ee; }
 html[data-theme=amethyst], html[data-theme=amethyst] body { background: #120818 !important; color: #fbf6ff; }
 html[data-theme=amber], html[data-theme=amber] body { background: #161006 !important; color: #fff8ee; }
 html[data-theme=jade], html[data-theme=jade] body { background: #061410 !important; color: #f3fff9; }
 html[data-theme=subhah] .bg-gold { background-color: #4facfe; background-image: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #042833; }
-html[data-theme=firdaus] .bg-gold { background-color: #ff0844; background-image: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff7f6; }
+html[data-theme=firdaus] .bg-gold { background-color: #f2c94c; background-image: linear-gradient(135deg, #9a1b3a 0%, #f2c94c 100%); color: #fff8f2; }
+html[data-theme=rayyan] .bg-gold { background-color: #6ee7b7; background-image: linear-gradient(135deg, #047857 0%, #6ee7b7 100%); color: #042018; }
+html[data-theme=salat] .bg-gold { background-color: #9ec5ff; background-image: linear-gradient(135deg, #1d4e89 0%, #9ec5ff 100%); color: #071424; }
+html[data-theme=sadaqa] .bg-gold { background-color: #ffc14d; background-image: linear-gradient(135deg, #f2994a 0%, #ffc14d 100%); color: #1c1204; }
+html[data-theme=jihad] .bg-gold { background-color: #9b2335; background-image: linear-gradient(135deg, #6e1424 0%, #c45c6a 100%); color: #fff5f5; }
+html[data-theme=kazimin] .bg-gold { background-color: #c4a6e8; background-image: linear-gradient(135deg, #5b2a86 0%, #c4a6e8 100%); color: #fff8ff; }
+html[data-theme=tawba] .bg-gold { background-color: #d5deee; background-image: linear-gradient(135deg, #2a3348 0%, #d5deee 100%); color: #12151c; }
+html[data-theme=ayman] .bg-gold { background-color: #f4f1ea; background-image: none; color: #000; }
 html[data-theme=amethyst] .bg-gold { background-color: #9d4edd; background-image: linear-gradient(135deg, #9d4edd 0%, #c77dff 100%); color: #fff8ff; }
 html[data-theme=amber] .bg-gold { background-color: #f2c94c; background-image: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: #1c1204; }
 html[data-theme=jade] .bg-gold { background-color: #10b981; background-image: linear-gradient(135deg, #10b981 0%, #34d399 100%); color: #042018; }
-html[data-theme=subhah] button.bg-gold,
-html[data-theme=subhah] a.bg-gold { box-shadow: 0 0 18px #00f2fe66; }
-html[data-theme=firdaus] button.bg-gold,
-html[data-theme=firdaus] a.bg-gold { box-shadow: 0 0 18px #ff084466; }
-html[data-theme=amethyst] button.bg-gold,
-html[data-theme=amethyst] a.bg-gold { box-shadow: 0 0 18px #9d4edd66; }
-html[data-theme=amber] button.bg-gold,
-html[data-theme=amber] a.bg-gold { box-shadow: 0 0 18px #f2994a66; }
-html[data-theme=jade] button.bg-gold,
-html[data-theme=jade] a.bg-gold { box-shadow: 0 0 18px #10b98166; }
-html[data-theme=subhah] .sheet,
-html[data-theme=firdaus] .sheet,
-html[data-theme=amethyst] .sheet,
-html[data-theme=amber] .sheet,
-html[data-theme=jade] .sheet,
-html[data-theme=subhah] .app-nav,
-html[data-theme=firdaus] .app-nav,
-html[data-theme=amethyst] .app-nav,
-html[data-theme=amber] .app-nav,
-html[data-theme=jade] .app-nav {
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) :is(button,a).bg-gold {
+  box-shadow: 0 0 18px var(--glow);
+}
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) :is(.sheet,.app-nav) {
   background: var(--bg);
   color: var(--fg);
 }
-html[data-theme=subhah] .reminder,
-html[data-theme=firdaus] .reminder,
-html[data-theme=amethyst] .reminder,
-html[data-theme=amber] .reminder,
-html[data-theme=jade] .reminder,
-html[data-theme=subhah] .phrase-read,
-html[data-theme=firdaus] .phrase-read,
-html[data-theme=amethyst] .phrase-read,
-html[data-theme=amber] .phrase-read,
-html[data-theme=jade] .phrase-read {
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) :is(.reminder,.phrase-read) {
   background: color-mix(in srgb, var(--surface) 94%, transparent);
   color: var(--fg);
 }
-html[data-theme=subhah] .text-gold,
-html[data-theme=firdaus] .text-gold,
-html[data-theme=amethyst] .text-gold,
-html[data-theme=amber] .text-gold,
-html[data-theme=jade] .text-gold { color: var(--gold); }
-html[data-theme=subhah] .text-muted,
-html[data-theme=firdaus] .text-muted,
-html[data-theme=amethyst] .text-muted,
-html[data-theme=amber] .text-muted,
-html[data-theme=jade] .text-muted { color: var(--muted); }
-html[data-theme=subhah] .orb-face,
-html[data-theme=firdaus] .orb-face,
-html[data-theme=amethyst] .orb-face,
-html[data-theme=amber] .orb-face,
-html[data-theme=jade] .orb-face {
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) .text-gold { color: var(--gold); }
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) .text-muted { color: var(--muted); }
+html:is([data-theme=subhah],[data-theme=firdaus],[data-theme=rayyan],[data-theme=salat],[data-theme=sadaqa],[data-theme=jihad],[data-theme=kazimin],[data-theme=tawba],[data-theme=ayman],[data-theme=amethyst],[data-theme=amber],[data-theme=jade]) .orb-face {
   box-shadow: inset 0 0 0 1px var(--gold), 0 0 28px var(--glow);
 }
 [data-font=crimson] .reminder-ar {
