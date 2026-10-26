@@ -475,7 +475,7 @@ export const TAJWEED: TajLesson[] = [
         read: "Бисмилляах1ир-Рахьмаанир-Рахьиим",
         lat: "Bismillaahir-Rahmaanir-Rahiim",
         gloss: L(
-          "Во имя Аллах1а, Милостивого, Милосердного.",
+          "Во имя Аллах1а, Милостивого, Милосердного!",
           "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
           "باسم الله الرحمن الرحيم.",
           "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
@@ -488,7 +488,7 @@ export const TAJWEED: TajLesson[] = [
         read: "Альхьамду лиллях1и Раббиль-1алямин",
         lat: "Alhamdu lillahi Rabbil-alamin",
         gloss: L(
-          "Хвала Аллах1у, Господу миров.",
+          "Хвала Аллах1у, Господу миров,",
           "Praise be to Allah, Lord of the worlds.",
           "الحمد لله رب العالمين.",
           "Segala puji bagi Allah, Tuhan semesta alam.",
@@ -501,7 +501,7 @@ export const TAJWEED: TajLesson[] = [
         read: "Ар-Рахьманир-Рахьим",
         lat: "Ar-Rahmanir-Rahim",
         gloss: L(
-          "Милостивому, Милосердному.",
+          "Милостивому, Милосердному,",
           "The Entirely Merciful, the Especially Merciful.",
           "الرحمن الرحيم.",
           "Yang Maha Pengasih, Maha Penyayang.",
@@ -514,7 +514,7 @@ export const TAJWEED: TajLesson[] = [
         read: "Маалики йаумид-дин",
         lat: "Maliki yawmid-din",
         gloss: L(
-          "Властелину Дня воздаяния.",
+          "Властелину Дня воздаяния!",
           "Master of the Day of Judgement.",
           "مالك يوم الدين.",
           "Pemilik Hari Pembalasan.",
@@ -540,7 +540,7 @@ export const TAJWEED: TajLesson[] = [
         read: "Их1динас-сират1аль-мустакъим",
         lat: "Ihdinas-siratal-mustaqim",
         gloss: L(
-          "Веди нас прямым путём.",
+          "Веди нас прямым путем,",
           "Guide us to the straight path.",
           "اهدنا الصراط المستقيم.",
           "Tunjukilah kami jalan yang lurus.",
@@ -553,7 +553,7 @@ export const TAJWEED: TajLesson[] = [
         read: "Сират1ал-лязина ан1амта 1аляйх1им, г1айриль-маг1д1ууби 1аляйх1им ва лад1-д1ааллин",
         lat: "Siratal-ladhina an'amta alayhim, ghayril-maghdubi alayhim wa lad-dallin",
         gloss: L(
-          "Путём тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.",
+          "путем тех, кого Ты облагодетельствовал, не тех, на кого пал гнев, и не заблудших.",
           "The path of those You have blessed, not of those who earned anger, nor of those who went astray.",
           "صراط الذين أنعمت عليهم غير المغضوب عليهم ولا الضالين.",
           "Jalan orang yang Engkau beri nikmat, bukan orang yang dimurkai dan bukan orang yang sesat.",
