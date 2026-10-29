@@ -537,7 +537,6 @@ export const onlineNow = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       return { online: await openNow(sql, data.publicId) };
     } catch (err) {
       console.error("[zikr] online", err);
@@ -723,7 +722,6 @@ export const worldBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const day = data.dayKey ?? "";
       const rows = await sql<{ public_id: string; total: number; concealed: boolean; day_key: string; day_total: number }>`
@@ -828,8 +826,6 @@ export const presenceBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
-      await liftGrokBonus(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const n = await openNow(sql, publicId);
     const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`

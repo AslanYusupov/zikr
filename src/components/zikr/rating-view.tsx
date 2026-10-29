@@ -106,6 +106,22 @@ function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
   return next.map((row) => (row.hidden ? row : open[openAt++]));
 }
 
+function until<T>(work: Promise<T>, ms = 8000): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error("slow")), ms);
+    work.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        window.clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
+
 function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean }>(rows: T[] | null | undefined): T[] {
   return (rows ?? []).filter((row) => {
     if (HIDDEN_RATING_IDS.has(row.id)) return false;
@@ -224,7 +240,7 @@ export function RatingView() {
     let stop = false;
     const load = () => {
       if (document.hidden) return;
-      worldBoard({ data: { publicId, dayKey: day } })
+      until(worldBoard({ data: { publicId, dayKey: day } }))
         .then((res) => {
           if (stop) return;
           const rows = shown(res.rows);
@@ -238,7 +254,7 @@ export function RatingView() {
           if (bag.current) setHeld(true);
           else setWorldError(true);
         });
-      presenceBoard({ data: { publicId, dayKey: day } })
+      until(presenceBoard({ data: { publicId, dayKey: day } }))
         .then((res) => {
           if (stop) return;
           const liveRows = shown(res.live);
