@@ -570,8 +570,10 @@ export function Shell() {
                 type="button"
                 onClick={() => selectTab(item.id)}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 text-[0.7rem] leading-tight",
+                  "flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 text-[0.7rem] leading-tight transition-colors duration-300",
+                  item.id === "quran" && "nav-quran",
                   active ? "text-gold" : "text-muted",
+                  item.id === "quran" && active && "on",
                 )}
               >
                 <span className="relative">
