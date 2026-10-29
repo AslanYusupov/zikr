@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Award, ChevronLeft } from "lucide-react";
+import { ChevronLeft, Moon } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
@@ -341,7 +341,7 @@ export function RatingView() {
   return (
     <div className="pane px-4 pt-2 pb-8">
       <button type="button" onClick={() => setRewards(true)} className="mb-3 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-line bg-surface text-sm text-fg">
-        <Award className="size-5" strokeWidth={1.5} />
+        <Moon className="size-5" strokeWidth={1.5} />
         {t(lang, "rewards")}
       </button>
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
