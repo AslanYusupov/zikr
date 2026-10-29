@@ -3798,6 +3798,35 @@ html, body {
   animation: comet-live var(--dur, 1.35s) linear 1;
 }
 .tap-star { z-index: 3; }
+.reward-peak {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  width: 100%;
+  height: 3.35rem;
+  margin-bottom: .75rem;
+  padding-top: .35rem;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font-size: .875rem;
+}
+.reward-peak-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.reward-peak-line path {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.4;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
 .app-nav { position: relative; padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { position: relative; z-index: 1; min-height: 3.15rem; }
 .nav-pill {

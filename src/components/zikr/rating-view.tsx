@@ -340,7 +340,10 @@ export function RatingView() {
 
   return (
     <div className="pane px-4 pt-2 pb-8">
-      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-line bg-surface text-sm text-fg">
+      <button type="button" onClick={() => setRewards(true)} className="reward-peak">
+        <svg className="reward-peak-line" viewBox="0 0 360 58" preserveAspectRatio="none" aria-hidden>
+          <path d="M18 20H156L180 6l24 14h138l8 8v18l-8 6H18l-8-6V28Z" />
+        </svg>
         <Moon className="size-5" strokeWidth={1.5} />
         {t(lang, "rewards")}
       </button>
