@@ -1458,6 +1458,7 @@ details.fold>:not(summary) {
   color-scheme: dark;
 }
 [data-theme=wine] .font-arabic { color: #f6d7b4; }
+[data-theme=wine] button[data-active="true"] .font-arabic { color: var(--ink); }
 [data-theme=wine] .reminder-ar {
   color: #f6d7b4;
   font-size: 1.15rem;
