@@ -393,7 +393,7 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "En yakın göğü kandillerle süsledik ve onları şeytanlara atış yaptık.",
     ur: "ہم نے قریبی آسمان کو چراغوں سے سجایا اور انہیں شیطانوں پر پھینکنے کے لیے کیا۔",
   },
-  "Мы украсили ближайшее небо красотой звезд и оберегаем его от всякого мятежного дьявола. Они не могут прислушаться к высшему сонму, и их забрасывают со всех сторон, чтобы изгнать оттуда. Им уготованы вечные мучения. Но если кто из дьяволов выхватит слово, то за ним последует яркий пылающий огонь.": {
+  "Мы украсили ближайшее небо красотой звезд (или звездами) и оберегаем его от всякого мятежного дьявола. Они не могут прислушаться к высшему сонму, и их забрасывают со всех сторон, чтобы изгнать оттуда. Им уготованы вечные мучения. Но если кто из дьяволов выхватит слово, то за ним последует яркий пылающий огонь.": {
     en: "We adorned the nearest heaven with the beauty of the stars and guard it against every rebellious devil. They cannot listen to the highest assembly and are pelted from every side, to drive them away. For them is a lasting torment. But if one of them snatches a word, a piercing flame follows him.",
     ar: "إِنَّا زَيَّنَّا ٱلسَّمَآءَ ٱلدُّنْيَا بِزِينَةٍ ٱلْكَوَاكِبِ وَحِفْظًۭا مِّن كُلِّ شَيْطَٰنٍۢ مَّارِدٍۢ",
     id: "Kami menghiasi langit terdekat dengan keindahan bintang dan menjaganya dari setiap setan yang durhaka. Mereka dilempari dari segala penjuru.",
@@ -407,21 +407,21 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "Gökte burçlar yarattık ve onu bakanlar için süsledik. Onu kovulmuş şeytandan koruduk.",
     ur: "ہم نے آسمان میں برج بنائے اور اسے دیکھنے والوں کے لیے سجایا، اور اسے ہر راندے شیطان سے بچایا۔",
   },
-  "Вечно юные отроки будут обходить их с фруктами, которые они выбирают, и мясом птиц, которое они желают.": {
-    en: "Eternal youths will pass around them with fruits of their choice and the meat of birds they desire.",
-    ar: "يَطُوفُ عَلَيْهِمْ وِلْدَٰنٌۭ مُّخَلَّدُونَ بِفَٰكِهَةٍۢ مِّمَّا يَتَخَيَّرُونَ وَلَحْمِ طَيْرٍۢ مِّمَّا يَشْتَهُونَ",
-    id: "Anak-anak muda yang kekal mengelilingi mereka dengan buah-buahan yang mereka pilih dan daging burung yang mereka inginkan.",
-    tr: "Ölümsüz gençler, seçecekleri meyveler ve arzuladıkları kuş etiyle yanlarında dolaşır.",
-    ur: "ہمیشہ جوان لڑکے ان کے پاس وہ پھل لے کر آئیں گے جو وہ چنیں، اور پرندوں کا گوشت جو وہ چاہیں۔",
+  "Вечно юные отроки будут обходить их с чашами, кувшинами и кубками с родниковым напитком (вином), от которого не болит голова и не теряют рассудок, с фруктами, которые они выбирают, и мясом птиц, которое они желают.": {
+    en: "Eternal youths will pass among them with cups, pitchers and a cup from a flowing spring, from which they will get no headache and will not lose their reason, with fruits of their choice and the meat of birds they desire.",
+    ar: "يَطُوفُ عَلَيْهِمْ وِلْدَٰنٌۭ مُّخَلَّدُونَ بِأَكْوَابٍۢ وَأَبَارِيقَ وَكَأْسٍۢ مِّن مَّعِينٍۢ لَّا يُصَدَّعُونَ عَنْهَا وَلَا يُنزِفُونَ وَفَٰكِهَةٍۢ مِّمَّا يَتَخَيَّرُونَ وَلَحْمِ طَيْرٍۢ مِّمَّا يَشْتَهُونَ",
+    id: "Anak-anak muda yang kekal mengelilingi mereka dengan gelas, kendi dan cawan dari mata air, yang tidak menyebabkan pusing dan tidak memabukkan, dengan buah pilihan dan daging burung yang mereka inginkan.",
+    tr: "Ölümsüz gençler, baş ağrıtmayan ve sarhoş etmeyen bir pınardan kadehler, ibrikler ve taslarla, seçtikleri meyveler ve arzuladıkları kuş etiyle yanlarında dolaşır.",
+    ur: "ہمیشہ جوان لڑکے ان کے پاس جام، صراحیاں اور چشمے کا پیالہ لے کر آئیں گے، جس سے نہ سر درد ہو نہ عقل جائے، اور وہ پھل جو وہ چنیں، اور پرندوں کا گوشت جو وہ چاہیں۔",
   },
-  "Они пребудут среди лотосов, лишенных шипов, под бананами с висящими рядами плодами, в распростертой тени, среди разлитых вод и многочисленных фруктов, которые не кончаются и доступны.": {
+  "Они пребудут среди лотосов, лишенных шипов, под бананами (или акациями камеденосными) с висящими рядами плодами, в распростертой тени, среди разлитых вод и многочисленных фруктов, которые не кончаются и доступны.": {
     en: "They will be among thornless lote trees, and banana trees with fruits hanging in clusters, in extended shade, by flowing water, and abundant fruit, neither cut off nor forbidden.",
     ar: "فِى سِدْرٍۢ مَّخْضُودٍۢ وَطَلْحٍۢ مَّنضُودٍۢ وَظِلٍّۢ مَّمْدُودٍۢ وَمَآءٍۢ مَّسْكُوبٍۢ وَفَٰكِهَةٍۢ كَثِيرَةٍۢ لَّا مَقْطُوعَةٍۢ وَلَا مَمْنُوعَةٍۢ",
     id: "Mereka berada di antara pohon bidara tanpa duri, pohon pisang yang bersusun buahnya, naungan yang terbentang, air yang tercurah, dan buah-buahan yang banyak, tidak terputus dan tidak terlarang.",
     tr: "Dikensiz sidr ağaçları, salkım salkım meyveli muzlar, uzayıp giden gölge, çağlayan su ve bitmeyen, yasak olmayan bol meyve içindedirler.",
     ur: "وہ بے کانٹے بیروں میں، قطار اندر قطار پھلوں والے کیلوں میں، لمبے سائے میں، بہتے پانی میں، اور بہت سے پھلوں میں ہوں گے جو نہ ختم ہوتے ہیں نہ منع۔",
   },
-  "Поистине, в Раю есть дерево: всадник будет ехать в его тени сто лет и не пройдёт её.": {
+  "Поистине, в Раю есть дерево: всадник будет ехать в его тени сто лет и не пройдёт его.": {
     en: "In Paradise there is a tree: a rider may travel in its shade for a hundred years and not pass beyond it.",
     ar: "إِنَّ فِي الْجَنَّةِ شَجَرَةً يَسِيرُ الرَّاكِبُ فِي ظِلِّهَا مِائَةَ عَامٍ لَا يَقْطَعُهَا",
     id: "Di surga ada pohon yang penunggang kuda berjalan di bawah naungannya seratus tahun dan tidak habis.",
