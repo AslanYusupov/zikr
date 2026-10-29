@@ -3811,8 +3811,13 @@ html, body {
   background: transparent;
   color: var(--fg);
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1;
+}
+.reward-peak > :not(.reward-peak-line) {
+  position: relative;
+  z-index: 1;
+  color: var(--fg);
 }
 .reward-peak-line {
   position: absolute;
