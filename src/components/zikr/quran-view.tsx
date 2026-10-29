@@ -123,9 +123,7 @@ export function QuranView() {
   const [done, setDone] = useState(readDone);
   const [note, setNote] = useState("");
   const [part, setPart] = useState<"surahs" | "tajweed">("surahs");
-  const [glossMode, setGlossMode] = useState<"off" | "one" | "all">("off");
-  const [glossNext, setGlossNext] = useState<"one" | "all">("one");
-  const [glossKey, setGlossKey] = useState<string | null>(null);
+  const [glossOn, setGlossOn] = useState(false);
   const [glossSurah, setGlossSurah] = useState<number | null>(null);
   const [mean, setMean] = useState<QuranMeaning | null>(null);
   const lastClaim = useRef(0);
@@ -307,27 +305,20 @@ export function QuranView() {
   }, [surah]);
 
   function clearGloss() {
-    setGlossMode("off");
-    setGlossNext("one");
-    setGlossKey(null);
+    setGlossOn(false);
     setGlossSurah(null);
   }
-  function glossOpen(surahN: number, key: string) {
-    if (glossSurah !== surahN || glossMode === "off") return false;
-    return glossMode === "all" || glossKey === key;
+  function glossOpen(surahN: number) {
+    return glossOn && glossSurah === surahN;
   }
 
-  function onGloss(surahN: number, key: string) {
-    if (glossSurah === surahN && glossMode !== "off") {
-      setGlossNext(glossMode === "one" ? "all" : "one");
-      setGlossMode("off");
-      setGlossKey(null);
+  function onGloss(surahN: number) {
+    if (glossOn && glossSurah === surahN) {
+      setGlossOn(false);
       return;
     }
-    const next = glossSurah === surahN ? glossNext : "one";
     setGlossSurah(surahN);
-    setGlossKey(key);
-    setGlossMode(next);
+    setGlossOn(true);
   }
 
   function claim(pieces: Piece[]) {
@@ -617,11 +608,11 @@ export function QuranView() {
                     </span>
                   </button>
                   {lang !== "ar" ? (
-                    <button type="button" className="ayah-read" onClick={() => onGloss(surah.n, key)}>
+                    <button type="button" className="ayah-read" onClick={() => onGloss(surah.n)}>
                       {reads[key] ?? ""}
                     </button>
                   ) : null}
-                  {glossOpen(surah.n, key) && meaning ? <p className="ayah-gloss">{meaning}</p> : null}
+                  {glossOpen(surah.n) && meaning ? <p className="ayah-gloss">{meaning}</p> : null}
                   <span className="ayah-meta">
                     {formatNum(ayah.l)} {copy.letters} · +{formatNum(letterReward(ayah.l))}
                   </span>
