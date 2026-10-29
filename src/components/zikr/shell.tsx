@@ -34,7 +34,6 @@ function QuranMark({ className }: { className?: string }) {
       <path d="M12 4.6C10 2.8 7.2 2.2 3.8 2.6H2.2v15.6h2.2c2.8 0 5.2.7 7.6 2.2" />
       <path d="M12 4.6C14 2.8 16.8 2.2 20.2 2.6h1.6v15.6h-2.2c-2.8 0-5.2.7-7.6 2.2" />
       <path d="M12 4.6v16" />
-      <path d="M6 8.4h2.8M15.2 8.4h2.8" />
     </svg>
   );
 }
