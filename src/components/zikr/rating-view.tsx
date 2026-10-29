@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Award, ChevronLeft } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { InviteButtons } from "./settings-view";
 import { RewardsView } from "./rewards-view";
-import { t, tx, degreeName } from "@/lib/zikr/i18n";
+import { t, tx } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
-import { levelFromXp } from "@/lib/zikr/levels";
 import { cn } from "@/lib/cn";
 
 const HIDDEN_RATING_IDS = new Set(["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262"]);
@@ -148,7 +147,6 @@ export function RatingView() {
   const publicId = useZikr((s) => s.publicId);
   const listed = useZikr((s) => s.publicBoard);
   const total = useZikr((s) => s.total);
-  const xp = useZikr((s) => s.xp);
   const lang = useZikr((s) => s.lang);
   const saved = useSavedRating();
   const bag = useRef<RatingCache | null>(saved);
@@ -327,7 +325,6 @@ export function RatingView() {
   const onlineOpen = total >= ratingNeed;
   const left = Math.max(0, ratingNeed - total);
   const done = Math.max(0, Math.min(100, (total / ratingNeed) * 100));
-  const degree = levelFromXp(xp);
 
   if (rewards) {
     return (
@@ -343,13 +340,9 @@ export function RatingView() {
 
   return (
     <div className="pane px-4 pt-2 pb-8">
-      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex w-full items-center gap-3 rounded-3xl border border-line bg-surface px-4 py-3 text-start">
-        <span className="min-w-0 flex-1">
-          <span dir="rtl" lang="ar" className="block font-arabic text-[1.55rem] leading-none text-gold">حَسَنَات</span>
-          <span className="mt-1 block text-sm font-semibold text-fg">{t(lang, "rewards")}</span>
-          <span className="mt-0.5 block truncate text-xs text-muted">{t(lang, "degree")} {formatNum(degree.level)} · {degreeName(lang, degree.level)}</span>
-        </span>
-        <ChevronRight className="size-4 shrink-0 text-gold rtl:rotate-180" />
+      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-line bg-surface text-sm text-fg">
+        <Award className="size-5" strokeWidth={1.5} />
+        {t(lang, "rewards")}
       </button>
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
         <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "selfTitle")}</p>
