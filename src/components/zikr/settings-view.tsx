@@ -736,7 +736,7 @@ export function InviteButtons() {
           WhatsApp
         </a>
         <a
-          className="flex h-11 items-center justify-center rounded-full border border-line text-sm font-bold text-fg"
+          className="flex h-11 items-center justify-center rounded-full bg-gold text-sm font-bold text-ink"
           href={code ? telegramHref(body, link) : undefined}
           target="_blank"
           rel="noopener noreferrer"
