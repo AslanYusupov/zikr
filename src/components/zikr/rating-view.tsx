@@ -343,10 +343,10 @@ export function RatingView() {
 
   return (
     <div className="pane px-4 pt-2 pb-8">
-      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex w-full items-center gap-3 rounded-3xl border border-line bg-surface px-3.5 py-3 text-start">
-        <span dir="rtl" lang="ar" className="shrink-0 font-arabic text-[1.7rem] leading-none text-gold">حَسَنَة</span>
+      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex w-full items-center gap-3 rounded-3xl border border-line bg-surface px-4 py-3 text-start">
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold text-fg">{t(lang, "rewards")}</span>
+          <span dir="rtl" lang="ar" className="block font-arabic text-[1.55rem] leading-none text-gold">حَسَنَات</span>
+          <span className="mt-1 block text-sm font-semibold text-fg">{t(lang, "rewards")}</span>
           <span className="mt-0.5 block truncate text-xs text-muted">{t(lang, "degree")} {formatNum(degree.level)} · {degreeName(lang, degree.level)}</span>
         </span>
         <ChevronRight className="size-4 shrink-0 text-gold rtl:rotate-180" />
