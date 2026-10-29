@@ -362,9 +362,13 @@ export function RatingView() {
 
   return (
     <div className="pane px-4 pt-2 pb-8">
-      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-line bg-surface text-sm text-fg">
-        <Award className="size-4" strokeWidth={1.5} />
-        {t(lang, "rewards")}
+      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex h-12 w-full items-center justify-between gap-2 rounded-full border border-line bg-surface px-3 text-sm text-fg">
+        <RewardLace />
+        <span className="flex min-w-0 items-center justify-center gap-2">
+          <Award className="size-4 shrink-0 text-gold" strokeWidth={1.5} />
+          <span className="truncate">{t(lang, "rewards")}</span>
+        </span>
+        <RewardLace flip />
       </button>
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
         <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "selfTitle")}</p>
@@ -543,6 +547,21 @@ function Board({
         );
       })}
     </ol>
+  );
+}
+
+function RewardLace({ flip }: { flip?: boolean }) {
+  return (
+    <svg viewBox="0 0 78 28" className={cn("h-6 w-14 shrink-0 text-gold", flip && "-scale-x-100")} fill="none" aria-hidden>
+      <path d="M2 14h12" stroke="currentColor" strokeWidth="1" />
+      <path d="M16 14c3.2-6.2 7.2-6.2 10.4 0 3.2 6.2 7.2 6.2 10.4 0" stroke="currentColor" strokeWidth="1" />
+      <path d="M26.4 8.2 31.2 14l-4.8 5.8-4.8-5.8z" stroke="currentColor" strokeWidth="1" />
+      <path d="M26.4 14 31.2 8.2 36 14l-4.8 5.8z" stroke="currentColor" strokeWidth="1" />
+      <circle cx="31.2" cy="14" r="1.35" fill="currentColor" />
+      <path d="M40 14h16" stroke="currentColor" strokeWidth="1" />
+      <path d="M58 14c2.2-3.4 4.4-3.4 6.6 0 2.2 3.4 4.4 3.4 6.6 0" stroke="currentColor" strokeWidth="1" />
+      <circle cx="64.6" cy="14" r="1" fill="currentColor" />
+    </svg>
   );
 }
 
