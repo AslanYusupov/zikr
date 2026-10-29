@@ -28,7 +28,7 @@ export function Library({ focus, onClose }: { focus: number; onClose: () => void
           const line = phraseOf(d, lang);
           return (
             <article key={d.id} className="rounded-2xl border border-line bg-surface px-3 py-3">
-              {arabicAside ? (
+              {arabicAside && /[\u0600-\u06FF]/.test(d.arabic) ? (
                 <p className="text-center font-arabic text-xl leading-loose text-fg" dir="rtl" lang="ar">
                   {d.arabic}
                 </p>

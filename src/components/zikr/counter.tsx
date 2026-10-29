@@ -150,7 +150,9 @@ export function ModeStrip({
           const line = phraseOf(item, s.lang);
           return (
             <Chip key={id} active={s.mode === id && !busy} onClick={() => { onLeave(); s.setMode(id); }}>
-              <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">{chipArabic(item.arabic)}</span>
+              {/[\u0600-\u06FF]/.test(item.arabic) ? (
+                <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">{chipArabic(item.arabic)}</span>
+              ) : null}
               <span className="chip-label">{chipText(line.short)}</span>
             </Chip>
           );
@@ -261,7 +263,7 @@ export function Counter({
     const id = ++seq.current;
     setPulse(id);
     const spokenNow = dhikrById(result.dhikrId);
-    setRises(burst(id, floatWord(spokenNow.arabic)));
+    setRises(burst(id, floatWord(spokenNow.arabic || spokenNow.name)));
     setRipples((list) => [...list.slice(-3), id]);
     window.setTimeout(() => {
       setRises((list) => list.filter((item) => Math.floor(item.id / 10) !== id));
@@ -303,9 +305,10 @@ export function Counter({
   const nameIndex = ALLAH_NAMES.findIndex((item) => item.id === s.mode);
   const showPhrase = !(s.mode === "random" && pulse === 0);
   const arabic = showPhrase ? phrase.arabic : "ذِكْر";
-  const compact = showPhrase && arabic.length > 90;
+  const hasArabic = /[\u0600-\u06FF]/.test(arabic);
   const arabicShown = arabic;
   const name = showPhrase ? spoken.name : t(s.lang, "random");
+  const compact = showPhrase && (hasArabic ? arabic.length > 90 : name.length > 90);
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
   const quoteIndex = quoteSlot(s.wisdomStep, quoteAt);
@@ -411,6 +414,7 @@ export function Counter({
               setVirtue((v) => !v);
             }}
           >
+            {hasArabic ? (
             <p
               className={cn(
                 "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
@@ -421,7 +425,8 @@ export function Counter({
             >
               {arabicShown}
             </p>
-            <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
+            ) : null}
+            <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", !hasArabic ? "text-sm" : name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
             {virtue && showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-fg">
                 {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
@@ -699,9 +704,11 @@ export function Counter({
                 >
                   <span className="name-head">
                     <span className="name-no">{index + 1}</span>
-                    <span className="name-ar" dir="rtl" lang="ar">
-                      {d.arabic}
-                    </span>
+                    {/[\u0600-\u06FF]/.test(d.arabic) ? (
+                      <span className="name-ar" dir="rtl" lang="ar">
+                        {d.arabic}
+                      </span>
+                    ) : null}
                   </span>
                   <span className="name-ru">{line.name}</span>
                   <span className="name-mean">{line.meaning}</span>
