@@ -30,11 +30,22 @@ const TABS: { id: Tab; icon?: typeof Moon }[] = [
 
 function QuranMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M3.8 5.1h6.4c1.15.85 1.8 1.7 1.8 2.55V19.2c-1.55-.95-3.35-1.35-5.4-1.35H3.8V5.1z" />
-      <path d="M20.2 5.1h-6.4c-1.15.85-1.8 1.7-1.8 2.55V19.2c1.55-.95 3.35-1.35 5.4-1.35h2.8V5.1z" />
-      <path d="M12 7.35V19.2" />
-      <path d="M7.15 9.15h2.15M14.7 9.15h2.15M7.15 11.45h2.15M14.7 11.45h2.15" />
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <path fill="currentColor" d="M6 58 L20 58 L46 34 L34 34 Z" />
+      <path fill="currentColor" d="M58 58 L44 58 L18 34 L30 34 Z" />
+      <path fill="currentColor" d="M16 32 H48 L45 37 H19 Z" />
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M8 12.5c0-3 6-5.2 13.6-3.4C26 10.2 28.6 12.2 32 14.4c3.4-2.2 6-4.2 10.4-5.3C50 7.3 56 9.5 56 12.5V30c-6.4 3-12 4.6-16.8 7.2C30 34.6 22.4 33 8 30V12.5zM16 16c4-.8 8.6.4 12.4 3.2V28c-4-1.4-8.2-2.6-12.4-3.8V16zm32 0c-4-.8-8.6.4-12.4 3.2V28c4-1.4 8.2-2.6 12.4-3.8V16z"
+      />
+      <path
+        d="M18 24.5c4.2 1.3 8.2 2.3 11.2 3.2M46 24.5c-4.2 1.3-8.2 2.3-11.2 3.2M18 27.4c4.4 1.2 8.6 2.2 11.6 3M46 27.4c-4.4 1.2-8.6 2.2-11.6 3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -589,7 +600,7 @@ export function Shell() {
                   {item.id === "dua" ? (
                     <span className="nav-dua" aria-hidden />
                   ) : item.id === "quran" ? (
-                    <QuranMark className="size-5" />
+                    <QuranMark className="size-6" />
                   ) : Icon ? (
                     <Icon className="size-5" strokeWidth={1.5} />
                   ) : null}
