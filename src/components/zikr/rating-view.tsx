@@ -162,6 +162,8 @@ export function RatingView() {
   const [guests, setGuests] = useState<Invitee[] | null>(saved ? shown(saved.guests) : null);
   const [copied, setCopied] = useState(false);
   const [maskMine, setMaskMine] = useState(false);
+  const [vpn, setVpn] = useState(false);
+  const miss = useRef({ world: false, live: false });
   const day = todayKey();
   const today = days[day]?.total ?? 0;
   const record = recordToBeat(days, bestDay, day);
@@ -240,6 +242,10 @@ export function RatingView() {
     let stop = false;
     const load = () => {
       if (document.hidden) return;
+      const mark = (part: "world" | "live", ok: boolean) => {
+        miss.current[part] = !ok;
+        setVpn(miss.current.world || miss.current.live);
+      };
       until(worldBoard({ data: { publicId, dayKey: day } }))
         .then((res) => {
           if (stop) return;
@@ -248,11 +254,13 @@ export function RatingView() {
           setWorld(rows);
           setWorldRank(rank);
           remember({ world: rows, worldRank: rank }, true);
+          mark("world", true);
         })
         .catch(() => {
           if (stop) return;
           if (bag.current) setHeld(true);
           else setWorldError(true);
+          mark("world", false);
         });
       until(presenceBoard({ data: { publicId, dayKey: day } }))
         .then((res) => {
@@ -265,9 +273,12 @@ export function RatingView() {
           setDaily(dailyRows);
           setDailyRank(res.dailyRank);
           remember({ online: res.remembering, allTaps: res.allTaps, live: liveRows, daily: dailyRows, dailyRank: res.dailyRank }, true);
+          mark("live", true);
         })
         .catch(() => {
-          if (!stop && bag.current) setHeld(true);
+          if (stop) return;
+          if (bag.current) setHeld(true);
+          mark("live", false);
         });
     };
     load();
@@ -397,6 +408,7 @@ export function RatingView() {
       {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted" onClick={toggleMine}>{t(lang, "dailyPlace")}: {maskMine ? "***" : formatNum(myDailyRank)}.</p> : null}
 
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
+      {vpn ? <p className="mt-1 text-sm text-gold">{t(lang, "ratingVpn")}</p> : null}
       <p className="mt-1 text-sm leading-relaxed text-muted" onClick={toggleMine}>
         {t(lang, "ratingWorld")}{" "}
         <span className="tabular-nums text-fg">{publicId && !HIDDEN_RATING_IDS.has(publicId) ? (maskMine ? "***" : publicId) : "…"}</span>

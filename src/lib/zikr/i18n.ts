@@ -128,6 +128,7 @@ const DICT = {
     ratingLock: "До 10 000 поминаний рейтинг закрыт.",
     ratingOpen: "Открыть рейтинг",
     ratingScale: "Шкала до 10 000",
+    ratingVpn: "Для обновления включите VPN.",
   },
   en: {
     zikr: "Dhikr",
@@ -256,6 +257,7 @@ const DICT = {
     ratingLock: "The rank stays closed until 10,000 remembrances.",
     ratingOpen: "Open the rank",
     ratingScale: "Scale to 10,000",
+    ratingVpn: "Turn on a VPN to refresh.",
   },
   ar: {
     zikr: "ذكر",
@@ -384,6 +386,7 @@ const DICT = {
     ratingLock: "الترتيب مغلق حتى 10٬000 ذكر.",
     ratingOpen: "افتح الترتيب",
     ratingScale: "المقياس حتى 10٬000",
+    ratingVpn: "للتحديث شغّل VPN.",
   },
   id: {
     zikr: "Zikir",
@@ -512,6 +515,7 @@ const DICT = {
     ratingLock: "Peringkat tertutup sampai 10.000 zikir.",
     ratingOpen: "Buka peringkat",
     ratingScale: "Skala sampai 10.000",
+    ratingVpn: "Nyalakan VPN untuk memperbarui.",
   },
   tr: {
     zikr: "Zikir",
@@ -640,6 +644,7 @@ const DICT = {
     ratingLock: "10.000 zikre kadar sıralama kapalı.",
     ratingOpen: "Sıralamayı aç",
     ratingScale: "10.000'e kadar ölçek",
+    ratingVpn: "Güncellemek için VPN açın.",
   },
   ur: {
     zikr: "ذکر",
@@ -768,6 +773,7 @@ const DICT = {
     ratingLock: "10,000 ذکر تک درجہ بند ہے۔",
     ratingOpen: "درجہ کھولیں",
     ratingScale: "10,000 تک پیمانہ",
+    ratingVpn: "تازہ کرنے کے لیے VPN چلائیں۔",
   },
 } as const;
 
