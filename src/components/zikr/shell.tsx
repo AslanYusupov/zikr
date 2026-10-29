@@ -30,20 +30,13 @@ const TABS: { id: Tab; icon?: typeof Moon }[] = [
 
 function QuranMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 36" className={className} aria-hidden>
-      <path fill="currentColor" d="M2.4 9.2h3.1v16.4H2.4zM58.5 9.2H61.6v16.4H58.5z" />
-      <path
-        fill="currentColor"
-        fillRule="evenodd"
-        d="M6.6 7.2C16 2.8 26 3.8 32 9.2 38 3.8 48 2.8 57.4 7.2L59 26.2C49.4 22.4 40.2 23.4 32 30.4 23.8 23.4 14.6 22.4 5 26.2Z M12.2 10.4C19.4 7.4 26.4 8.2 30.6 12.4V25.2C25 22 18 21.6 12.4 23.8Z M51.8 10.4C44.6 7.4 37.6 8.2 33.4 12.4V25.2C39 22 46 21.6 51.6 23.8Z"
-      />
-      <path
-        d="M13 20.4c5.4-1.7 11.2-1.2 15.4 1.8M51 20.4c-5.4-1.7-11.2-1.2-15.4 1.8M13.4 22.8c5-1.4 10.6-1 14.6 1.4M50.6 22.8c-5-1.4-10.6-1-14.6 1.4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.15"
-        strokeLinecap="round"
-      />
+    <svg viewBox="0 0 48 28" className={className} fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round" aria-hidden>
+      <path d="M2.2 7v15" strokeWidth="2.2" />
+      <path d="M45.8 7v15" strokeWidth="2.2" />
+      <path d="M6 8.2C13 4.4 20 4.6 24 9.2V23.6C18 20 11.2 19.6 6 22.8Z" strokeWidth="1.7" />
+      <path d="M42 8.2C35 4.4 28 4.6 24 9.2V23.6C30 20 36.8 19.6 42 22.8Z" strokeWidth="1.7" />
+      <path d="M9 16.6c4.2-1.5 8.6-1.2 11.4 1.5M9.2 18.8c4-1.2 8.2-1 11 1.2" strokeWidth="1.1" />
+      <path d="M39 16.6c-4.2-1.5-8.6-1.2-11.4 1.5M38.8 18.8c-4-1.2-8.2-1-11 1.2" strokeWidth="1.1" />
     </svg>
   );
 }
