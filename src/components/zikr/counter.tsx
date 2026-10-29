@@ -679,7 +679,7 @@ export function Counter({
             {t(s.lang, "dhikrLead")}
           </p>
           <div className="names-list">
-            {REMEMBRANCE.map((d, index) => {
+            {REMEMBRANCE.filter((d) => d.id !== "kursi").map((d, index) => {
               const line = phraseOf(d, s.lang);
               return (
                 <button
