@@ -3843,6 +3843,7 @@ html, body {
 .ayah-btn { display: block; width: 100%; margin-top: .45rem; padding: .7rem .8rem .55rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--fg); text-align: right; }
 .ayah-hit,.ayah-read { display: block; width: 100%; border: 0; background: transparent; color: inherit; padding: 0; text-align: inherit; }
 .ayah-read { margin-top: .4rem; color: var(--fg); font-size: .84rem; font-weight: 700; line-height: 1.45; text-align: center; }
+.ayah-more { display: block; margin-top: .2rem; color: var(--gold); font-size: 1.15rem; letter-spacing: .28em; line-height: 1; }
 .ayah-gloss { margin-top: .28rem; color: var(--fg); font-size: .8rem; line-height: 1.45; text-align: center; }
 .ayah-btn.is-read { opacity: .72; }
 .ayah-top { display: flex; align-items: center; justify-content: flex-start; gap: .4rem; margin-bottom: .15rem; }

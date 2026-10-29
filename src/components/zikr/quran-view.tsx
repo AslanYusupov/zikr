@@ -541,11 +541,12 @@ export function QuranView() {
             </span>
           </button>
           {lang !== "ar" ? (
-            <button type="button" className="ayah-read" onClick={() => onGloss(surah.n, `${surah.n}:b`)}>
+            <button type="button" className="ayah-read" onClick={() => onGloss(surah.n)}>
               {reads[`${surah.n}:b`] ?? ""}
+              {glossOpen(surah.n) ? null : <span className="ayah-more">···</span>}
             </button>
           ) : null}
-          {glossOpen(surah.n, `${surah.n}:b`) && mean?.surahs[0]?.[0] ? (
+          {glossOpen(surah.n) && mean?.surahs[0]?.[0] ? (
             <p className="ayah-gloss">{mean.surahs[0][0]}</p>
           ) : null}
           <span className="ayah-meta">
@@ -610,6 +611,7 @@ export function QuranView() {
                   {lang !== "ar" ? (
                     <button type="button" className="ayah-read" onClick={() => onGloss(surah.n)}>
                       {reads[key] ?? ""}
+                      {surah.n === 1 && ayah.n === 1 && !glossOpen(surah.n) ? <span className="ayah-more">···</span> : null}
                     </button>
                   ) : null}
                   {glossOpen(surah.n) && meaning ? <p className="ayah-gloss">{meaning}</p> : null}
