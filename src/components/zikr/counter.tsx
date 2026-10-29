@@ -194,7 +194,6 @@ export function Counter({
   const riseRef = useRef<HTMLDivElement>(null);
   const pressRef = useRef<() => void>(() => {});
   const [quoteAt, setQuoteAt] = useState(0);
-  const [quoteDir, setQuoteDir] = useState<1 | -1>(1);
   const quoteLive = useRef(false);
   const [virtue, setVirtue] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
@@ -227,7 +226,6 @@ export function Counter({
     const current = QUOTES[quoteSlot(s.wisdomStep, quoteAt)];
     const wait = quoteHold(current?.text ?? "");
     const timer = window.setTimeout(() => {
-      setQuoteDir(1);
       setQuoteAt((value) => value + 1);
     }, wait);
     return () => window.clearTimeout(timer);
@@ -308,7 +306,6 @@ export function Counter({
   const quoteIndex = quoteSlot(s.wisdomStep, quoteAt);
   const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
-  const quoteMs = quoteHold(shownQuote.text);
   const rewardRing = totalReward <= 0 ? 0 : 1 - 1 / (1 + totalReward / 800);
   function stepName(dir: number) {
     if (nameIndex < 0) return;
@@ -560,7 +557,6 @@ export function Counter({
                   if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy)) return;
                   quoteSwiped.current = true;
                   skipStageTap.current = true;
-                  setQuoteDir(dx < 0 ? 1 : -1);
                   setQuoteAt((value) => value + (dx < 0 ? 1 : -1));
                   window.setTimeout(() => {
                     quoteSwiped.current = false;
@@ -569,10 +565,7 @@ export function Counter({
                 }}
                 className="reminder reminder-in relative mx-3 mb-1.5 block w-[calc(100%-1.5rem)] overflow-hidden text-center"
               >
-                <span className="story-bar" aria-hidden>
-                  <i key={quoteAt} style={{ animationDuration: `${quoteMs}ms` }} />
-                </span>
-                <span className={cn("reminder-scroll", quoteDir > 0 ? "story-next" : "story-prev")}>
+                <span className="reminder-scroll">
                 {shownQuote.arabic && s.arabicOptIn === true && s.lang !== "ar" && s.lang !== "ur" ? (
                   <p className="reminder-ar font-arabic text-sm leading-loose text-fg" dir="rtl" lang="ar">{shownQuote.arabic}</p>
                 ) : null}

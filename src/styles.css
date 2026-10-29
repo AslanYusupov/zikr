@@ -2105,36 +2105,6 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .reminder-in {
   animation: .42s notice-in;
 }
-.story-bar {
-  position: absolute;
-  top: .28rem;
-  left: .7rem;
-  right: .7rem;
-  z-index: 2;
-  height: 2px;
-  overflow: hidden;
-  border-radius: 99px;
-  background: color-mix(in srgb, var(--fg) 16%, transparent);
-  pointer-events: none;
-}
-.story-bar i {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: var(--gold);
-  animation: story-fill linear forwards;
-}
-@keyframes story-fill { to { width: 100%; } }
-.story-next { animation: story-next .34s cubic-bezier(.22, .8, .28, 1); }
-.story-prev { animation: story-prev .34s cubic-bezier(.22, .8, .28, 1); }
-@keyframes story-next {
-  from { transform: translateX(72%); }
-  to { transform: none; }
-}
-@keyframes story-prev {
-  from { transform: translateX(-72%); }
-  to { transform: none; }
-}
 .reminder { padding-top: .55rem; }
 .read-pane {
   -webkit-overflow-scrolling: touch;
