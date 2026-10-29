@@ -428,6 +428,14 @@ export function Counter({
             ) : (
               <p className="mt-0.5 text-xs leading-snug text-fg">{showPhrase ? spoken.meaning : ""}</p>
             )}
+            {phrase.id === "kursi" && showPhrase ? (
+              <p className="mt-1 text-xs leading-snug text-fg">
+                {s.lang === "ru"
+                  ? "Кто прочитает аят аль-Курси после каждого обязательного намаза, того не отделяет от Рая ничего, кроме смерти."
+                  : spoken.reward}
+                {s.lang === "ru" ? <span className="mt-0.5 block text-[0.65rem] text-muted">ан-Насаи</span> : null}
+              </p>
+            ) : null}
           </button>
           {nameIndex >= 0 ? (
             <div className="name-switch" dir="ltr">
