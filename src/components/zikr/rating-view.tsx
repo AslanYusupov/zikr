@@ -344,7 +344,7 @@ export function RatingView() {
         <svg className="reward-peak-line" viewBox="0 0 360 58" preserveAspectRatio="none" aria-hidden>
           <path d="M18 20H156L180 6l24 14h138l8 8v18l-8 6H18l-8-6V28Z" />
         </svg>
-        <Moon className="size-5" strokeWidth={1.5} />
+        <Moon className="size-6" strokeWidth={1.6} />
         {t(lang, "rewards")}
       </button>
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
