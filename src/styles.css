@@ -3779,6 +3779,16 @@ html, body {
   100% { opacity: 0; transform: translate3d(var(--x2, -36vw), var(--y2, 40vh), 0) rotate(var(--rot, -16deg)); }
 }
 .bismillah-sky { position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 42%, #1a2430, #000 72%); }
+.splash-pass {
+  --x: var(--pass-x, 108vw);
+  --y: var(--pass-y, 8vh);
+  --x2: var(--pass-x2, -36vw);
+  --y2: var(--pass-y2, 40vh);
+  --rot: var(--pass-rot, -16deg);
+  --dur: 1.35s;
+  --len: 11rem;
+  --bright: 0.95;
+}
 .comet-live {
   width: var(--len, 11rem);
   height: 6px;

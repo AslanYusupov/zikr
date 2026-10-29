@@ -50,20 +50,7 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
     <div className="bismillah-splash" onClick={close} suppressHydrationWarning>
       <span className="bismillah-glow" aria-hidden />
       <span className="bismillah-sky" aria-hidden />
-      <span
-        className="comet comet-live splash-pass"
-        aria-hidden
-        style={{
-          ["--x" as string]: "108vw",
-          ["--y" as string]: "8vh",
-          ["--x2" as string]: "-36vw",
-          ["--y2" as string]: "40vh",
-          ["--rot" as string]: "-16deg",
-          ["--dur" as string]: "1.35s",
-          ["--len" as string]: "11rem",
-          ["--bright" as string]: "0.95",
-        }}
-      >
+      <span className="comet comet-live splash-pass" aria-hidden>
         <span className="comet-tail" />
         <span className="comet-head" />
       </span>
