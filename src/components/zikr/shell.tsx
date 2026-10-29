@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BarChart3, BookOpen, ChevronLeft, ListChecks, Maximize2, Minimize2, Moon, Settings, Volume2, VolumeX } from "lucide-react";
+import { BarChart3, ChevronLeft, ListChecks, Maximize2, Minimize2, Moon, Settings, Volume2, VolumeX } from "lucide-react";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 import { Celebrate } from "./celebrate";
@@ -20,13 +20,24 @@ import { Library } from "./library";
 
 type Tab = "zikr" | "quests" | "dua" | "quran" | "rating";
 
-const TABS: { id: Tab; icon?: typeof BookOpen }[] = [
+const TABS: { id: Tab; icon?: typeof Moon }[] = [
   { id: "zikr", icon: Moon },
-  { id: "quran", icon: BookOpen },
+  { id: "quran" },
   { id: "dua" },
   { id: "quests", icon: ListChecks },
   { id: "rating", icon: BarChart3 },
 ];
+
+function QuranMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3.8 5.1h6.4c1.15.85 1.8 1.7 1.8 2.55V19.2c-1.55-.95-3.35-1.35-5.4-1.35H3.8V5.1z" />
+      <path d="M20.2 5.1h-6.4c-1.15.85-1.8 1.7-1.8 2.55V19.2c1.55-.95 3.35-1.35 5.4-1.35h2.8V5.1z" />
+      <path d="M12 7.35V19.2" />
+      <path d="M7.15 9.15h2.15M14.7 9.15h2.15M7.15 11.45h2.15M14.7 11.45h2.15" />
+    </svg>
+  );
+}
 
 export function Splash({ onEnter }: { onEnter: () => void }) {
   const done = useRef(false);
@@ -570,15 +581,15 @@ export function Shell() {
                 type="button"
                 onClick={() => selectTab(item.id)}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 text-[0.7rem] leading-tight transition-colors duration-300",
-                  item.id === "quran" && "nav-quran",
+                  "flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 text-[0.7rem] leading-tight",
                   active ? "text-gold" : "text-muted",
-                  item.id === "quran" && active && "on",
                 )}
               >
                 <span className="relative">
                   {item.id === "dua" ? (
                     <span className="nav-dua" aria-hidden />
+                  ) : item.id === "quran" ? (
+                    <QuranMark className="size-5" />
                   ) : Icon ? (
                     <Icon className="size-5" strokeWidth={1.5} />
                   ) : null}
