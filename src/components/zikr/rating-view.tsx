@@ -3,7 +3,7 @@ import { Award, ChevronLeft } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
-import { formatNum, bestWeek, goalStreak, inviteBody, inviteLink, inviteText, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
+import { formatNum, bestWeek, goalStreak, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { InviteButtons } from "./settings-view";
 import { RewardsView } from "./rewards-view";
 import { t, tx } from "@/lib/zikr/i18n";
@@ -162,7 +162,6 @@ export function RatingView() {
   const [daily, setDaily] = useState<PresenceRow[] | null>(saved ? shown(saved.daily) : null);
   const [dailyRank, setDailyRank] = useState<number | null>(saved?.dailyRank ?? null);
   const [guests, setGuests] = useState<Invitee[] | null>(saved ? shown(saved.guests) : null);
-  const [copied, setCopied] = useState(false);
   const [maskMine, setMaskMine] = useState(false);
   const [vpn, setVpn] = useState(false);
   const [rewards, setRewards] = useState(false);
@@ -305,27 +304,6 @@ export function RatingView() {
     };
   }, [publicId, day, total]);
 
-  async function share() {
-    const code = /^\d{8}$/.test(publicId) ? publicId : useZikr.getState().ensurePublicId();
-    const link = inviteLink(code);
-    const text = inviteText(link, lang);
-    try {
-      if (navigator.share) await navigator.share({ title: t(lang, "zikr"), text: inviteBody(lang), url: link });
-      else {
-        await navigator.clipboard.writeText(text);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 2000);
-      }
-    } catch {
-      try {
-        await navigator.clipboard.writeText(text);
-        setCopied(true);
-      } catch {
-        /* the button stays */
-      }
-    }
-  }
-
   const selfLine =
     record > today
       ? `${t(lang, "selfRecord")} — ${mine(record)}. ${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfLeft")} ${mine(record - today)}. ${t(lang, "selfNote")}`
@@ -390,9 +368,6 @@ export function RatingView() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <button type="button" onClick={() => void share()} className="mt-2 h-11 w-full rounded-full bg-gold text-sm text-ink">
-        {copied ? t(lang, "shareCopied") : t(lang, "shareResult")}
-      </button>
       <InviteButtons />
 
       {onlineOpen ? (
