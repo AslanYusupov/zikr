@@ -125,6 +125,9 @@ const DICT = {
     placeAbout: "Ваше место примерно",
     ratingAt: "Обновлено в {time}",
     ratingHeld: "Показан рейтинг на {time}",
+    ratingLock: "До 10 000 поминаний рейтинг закрыт.",
+    ratingOpen: "Открыть рейтинг",
+    ratingScale: "Шкала до 10 000",
   },
   en: {
     zikr: "Dhikr",
@@ -250,6 +253,9 @@ const DICT = {
     placeAbout: "Your place is about",
     ratingAt: "Updated at {time}",
     ratingHeld: "Showing the rating from {time}",
+    ratingLock: "The rank stays closed until 10,000 remembrances.",
+    ratingOpen: "Open the rank",
+    ratingScale: "Scale to 10,000",
   },
   ar: {
     zikr: "ذكر",
@@ -375,6 +381,9 @@ const DICT = {
     placeAbout: "مكانك نحو",
     ratingAt: "آخر تحديث {time}",
     ratingHeld: "الترتيب كما كان في {time}",
+    ratingLock: "الترتيب مغلق حتى 10٬000 ذكر.",
+    ratingOpen: "افتح الترتيب",
+    ratingScale: "المقياس حتى 10٬000",
   },
   id: {
     zikr: "Zikir",
@@ -500,6 +509,9 @@ const DICT = {
     placeAbout: "Tempatmu kira-kira",
     ratingAt: "Diperbarui pukul {time}",
     ratingHeld: "Peringkat terakhir, pukul {time}",
+    ratingLock: "Peringkat tertutup sampai 10.000 zikir.",
+    ratingOpen: "Buka peringkat",
+    ratingScale: "Skala sampai 10.000",
   },
   tr: {
     zikr: "Zikir",
@@ -625,6 +637,9 @@ const DICT = {
     placeAbout: "Yerin yaklaşık",
     ratingAt: "Güncellendi: {time}",
     ratingHeld: "Son sıralama, saat {time}",
+    ratingLock: "10.000 zikre kadar sıralama kapalı.",
+    ratingOpen: "Sıralamayı aç",
+    ratingScale: "10.000'e kadar ölçek",
   },
   ur: {
     zikr: "ذکر",
@@ -750,6 +765,9 @@ const DICT = {
     placeAbout: "آپ کی جگہ تقریباً",
     ratingAt: "آخری تازہ کاری {time}",
     ratingHeld: "آخری درجہ، وقت {time}",
+    ratingLock: "10,000 ذکر تک درجہ بند ہے۔",
+    ratingOpen: "درجہ کھولیں",
+    ratingScale: "10,000 تک پیمانہ",
   },
 } as const;
 

@@ -194,6 +194,7 @@ export function RatingView() {
   }
 
   useEffect(() => {
+    if (total < 10_000) return;
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
     const load = () => {
@@ -215,9 +216,10 @@ export function RatingView() {
       stop = true;
       window.clearInterval(id);
     };
-  }, [publicId]);
+  }, [publicId, total]);
 
   useEffect(() => {
+    if (total < 10_000) return;
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
     const load = () => {
@@ -271,7 +273,7 @@ export function RatingView() {
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onWake);
     };
-  }, [publicId, day]);
+  }, [publicId, day, total]);
 
   async function share() {
     const code = /^\d{8}$/.test(publicId) ? publicId : useZikr.getState().ensurePublicId();
@@ -311,6 +313,31 @@ export function RatingView() {
   const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
   const clock = updatedAt ? clockOf(updatedAt, lang) : "";
+  const ratingNeed = 10_000;
+
+  if (total < ratingNeed) {
+    const left = ratingNeed - total;
+    const done = Math.max(0, Math.min(100, (total / ratingNeed) * 100));
+    return (
+      <div className="pane px-4 pt-6 pb-8">
+        <article className="rounded-3xl border border-line bg-surface px-4 py-5">
+          <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "rating")}</p>
+          <h2 className="mt-2 text-xl leading-snug text-fg">{t(lang, "ratingLock")}</h2>
+          <div className="mt-5 flex items-baseline justify-between gap-3">
+            <p className="text-2xl tabular-nums text-fg">{formatNum(total)}</p>
+            <p className="text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
+            <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
+          </div>
+          <p className="mt-2 text-xs text-muted">{t(lang, "ratingScale")}</p>
+          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold text-sm text-ink opacity-45">
+            {t(lang, "ratingOpen")}
+          </button>
+        </article>
+      </div>
+    );
+  }
 
   return (
     <div className="pane px-4 pt-2 pb-8">
