@@ -614,8 +614,8 @@ const ROWS: { q: ExtraQuote; tr: FixedQuote }[] = [
     tr: {
       en: "Whoever recites the Verse of the Throne after every prescribed prayer, nothing will keep him from entering Paradise except death.",
       ar: "مَنْ قَرَأَ آيَةَ الْكُرْسِيِّ دُبُرَ كُلِّ صَلَاةٍ مَكْتُوبَةٍ لَمْ يَمْنَعْهُ مِنْ دُخُولِ الْجَنَّةِ إِلَّا أَنْ يَمُوتَ",
-      id: "Siapa yang membaca Ayat Kursi setelah setiap salat wajib, tidak ada yang menghalanginya masuk surga selain kematian.",
-      tr: "Kim her farz namazın ardından Ayetelkürsî’yi okursa, onu cennete girmekten ancak ölüm alıkoyar.",
+      id: "Barang siapa membaca Ayat Kursi setiap selesai salat wajib, tidak ada yang menghalanginya masuk surga selain kematian.",
+      tr: "Kim her farz namazın ardından Ayetelkürsî’yi okursa, onu cennete girmekten ancak ölüm men eder.",
       ur: "جو ہر فرض نماز کے بعد آیت الکرسی پڑھے، اسے جنت میں داخل ہونے سے صرف موت روکے گی۔",
     },
   },
