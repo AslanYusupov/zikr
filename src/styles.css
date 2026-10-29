@@ -3814,10 +3814,15 @@ html, body {
   font-weight: 500;
   line-height: 1;
 }
-.reward-peak > :not(.reward-peak-line) {
+.reward-peak-label {
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
   color: var(--fg);
+  -webkit-text-fill-color: var(--fg);
+  font-weight: 500;
 }
 .reward-peak-line {
   position: absolute;
