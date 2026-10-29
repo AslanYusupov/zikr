@@ -84,7 +84,6 @@ export function Shell() {
   const reached = achievements.length;
   const celebrated = useZikr((s) => s.celebrated);
   const [tab, setTab] = useState<Tab>("zikr");
-  const [slide, setSlide] = useState("");
   const [dhikrList, setDhikrList] = useState(false);
   const [namesOpen, setNamesOpen] = useState(false);
   const [settings, setSettings] = useState(false);
@@ -377,16 +376,12 @@ export function Shell() {
   function selectTab(next: Tab) {
     setSettings(false);
     setLibrary(null);
-    const go = next === tab && next !== "zikr" ? "zikr" : next;
-    if (go === tab) {
+    if (next === tab) {
       setDhikrList(false);
+      if (next !== "zikr") setTab("zikr");
       return;
     }
-    const from = TABS.findIndex((item) => item.id === tab);
-    const to = TABS.findIndex((item) => item.id === go);
-    setSlide(to > from ? "tab-from-right" : "tab-from-left");
-    setDhikrList(false);
-    setTab(go);
+    setTab(next);
   }
 
   function pushNotice(text: string) {
@@ -520,7 +515,7 @@ export function Shell() {
           </button>
         ) : null}
 
-        <div key={tab} className={cn("shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden", slide)}>
+        <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
           {tab === "zikr" && (
             <ModeStrip
               listOn={dhikrList}
@@ -562,6 +557,9 @@ export function Shell() {
         )}
 
         <nav className="app-nav safe-bottom z-30 grid shrink-0 grid-cols-5 border-t border-line bg-bg">
+          <span className="nav-pill" style={{ transform: `translateX(${Math.max(0, TABS.findIndex((item) => item.id === tab)) * 100}%)` }} aria-hidden>
+            <i />
+          </span>
           {TABS.map((item) => {
             const active = tab === item.id;
             const Icon = item.icon;
@@ -575,7 +573,7 @@ export function Shell() {
                   active ? "on text-gold" : "text-muted",
                 )}
               >
-                <span className="nav-ico relative">
+                <span className="relative">
                   {item.id === "dua" ? (
                     <span className="nav-dua" aria-hidden />
                   ) : item.id === "quran" ? (
