@@ -9,7 +9,6 @@ import { noteTap } from "@/lib/zikr/live";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { triggerHaptic } from "@/lib/zikr/haptic";
 import { useZikr } from "@/lib/zikr/store";
-import { quranCopy } from "@/lib/zikr/quran";
 import { cite, localQuote, nameText, phraseOf } from "@/lib/zikr/tr";
 import { cn } from "@/lib/cn";
 import { Crescent } from "./pattern";
@@ -84,43 +83,34 @@ function burst(id: number, word: string): Rise[] {
 }
 
 export function ModeStrip({
-  quranOn,
   listOn,
   namesOn,
-  onQuran,
   onList,
   onNames,
   onLeave,
 }: {
-  quranOn: boolean;
   listOn: boolean;
   namesOn: boolean;
-  onQuran: () => void;
   onList: () => void;
   onNames: () => void;
   onLeave: () => void;
 }) {
   const s = useZikr();
-  const copy = quranCopy(s.lang);
   const scroller = useRef<HTMLDivElement>(null);
-  const busy = quranOn || listOn || namesOn;
+  const busy = listOn || namesOn;
 
   useEffect(() => {
     const root = scroller.current;
     const active = root?.querySelector("[data-active='true']");
     if (!(active instanceof HTMLElement)) return;
     active.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
-  }, [s.mode, quranOn, listOn, namesOn]);
+  }, [s.mode, listOn, namesOn]);
 
   return (
     <div ref={scroller} dir="rtl" className="mode-strip scroll-x shrink-0 px-3 pt-1">
       <div className="flex w-max gap-1.5 pb-1">
         <Chip active={s.mode === "random" && !busy} onClick={() => { onLeave(); s.setMode("random"); }}>
           {t(s.lang, "random")}
-        </Chip>
-        <Chip active={quranOn} onClick={onQuran}>
-          <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">الْقُرْآنُ الْكَرِيمُ</span>
-          <span className="chip-label">{copy.quran}</span>
         </Chip>
         <Chip active={listOn} onClick={onList}>
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">ذِكْرُ اللَّهِ</span>

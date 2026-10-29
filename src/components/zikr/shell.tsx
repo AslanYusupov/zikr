@@ -85,7 +85,6 @@ export function Shell() {
   const reached = achievements.length;
   const celebrated = useZikr((s) => s.celebrated);
   const [tab, setTab] = useState<Tab>("zikr");
-  const [home, setHome] = useState<"dhikr" | "quran">("dhikr");
   const [dhikrList, setDhikrList] = useState(false);
   const [namesOpen, setNamesOpen] = useState(false);
   const [settings, setSettings] = useState(false);
@@ -379,7 +378,6 @@ export function Shell() {
     setSettings(false);
     setLibrary(null);
     if (next === tab) {
-      setHome("dhikr");
       setDhikrList(false);
       if (next !== "zikr") setTab("zikr");
       return;
@@ -422,9 +420,7 @@ export function Shell() {
   const head =
     tab !== "zikr"
       ? { ar: "", title: t(lang, tab) }
-      : home === "quran"
-        ? { ar: "الْقُرْآنُ الْكَرِيمُ", title: headLabel(lang, "quran") }
-        : namesOpen
+      : namesOpen
           ? { ar: "أَسْمَاءُ اللَّهِ الْحُسْنَى", title: headLabel(lang, "names") }
           : dhikrList
             ? { ar: "ذِكْرُ اللَّهِ", title: t(lang, "zikr") }
@@ -523,32 +519,23 @@ export function Shell() {
         <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
           {tab === "zikr" && (
             <ModeStrip
-              quranOn={home === "quran"}
-              listOn={home === "dhikr" && dhikrList}
-              namesOn={home === "dhikr" && namesOpen}
-              onQuran={() => {
-                setDhikrList(false);
-                setNamesOpen(false);
-                setHome((current) => (current === "quran" ? "dhikr" : "quran"));
-              }}
+              listOn={dhikrList}
+              namesOn={namesOpen}
               onList={() => {
                 setNamesOpen(false);
-                setHome("dhikr");
-                setDhikrList((open) => (home === "quran" ? true : !open));
+                setDhikrList((open) => !open);
               }}
               onNames={() => {
                 setDhikrList(false);
-                setHome("dhikr");
-                setNamesOpen((open) => (home === "quran" ? true : !open));
+                setNamesOpen((open) => !open);
               }}
               onLeave={() => {
-                setHome("dhikr");
                 setDhikrList(false);
                 setNamesOpen(false);
               }}
             />
           )}
-          {tab === "zikr" && home === "dhikr" && (
+          {tab === "zikr" && (
             <Counter
               onNotice={pushNotice}
               onOpenLibrary={openLibrary}
@@ -558,7 +545,6 @@ export function Shell() {
               onNamesClose={() => setNamesOpen(false)}
             />
           )}
-          {tab === "zikr" && home === "quran" && <QuranView />}
           {tab === "quran" && <QuranView />}
           {tab === "quests" && <QuestsView onBegin={() => selectTab("zikr")} />}
           {tab === "dua" && <DuaView />}
