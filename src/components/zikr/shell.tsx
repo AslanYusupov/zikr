@@ -31,10 +31,10 @@ const TABS: { id: Tab; icon?: typeof Moon }[] = [
 function QuranMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 6.2c-1.6-1.2-3.6-1.8-6.2-1.4H4.2v12.4h1.8c2.2 0 4 .5 6 1.7" />
-      <path d="M12 6.2c1.6-1.2 3.6-1.8 6.2-1.4h1.6v12.4h-1.8c-2.2 0-4 .5-6 1.7" />
-      <path d="M12 6.2v12.7" />
-      <path d="M7.3 9.3h2.2M14.5 9.3h2.2" />
+      <path d="M12 4.6C10 2.8 7.2 2.2 3.8 2.6H2.2v15.6h2.2c2.8 0 5.2.7 7.6 2.2" />
+      <path d="M12 4.6C14 2.8 16.8 2.2 20.2 2.6h1.6v15.6h-2.2c-2.8 0-5.2.7-7.6 2.2" />
+      <path d="M12 4.6v16" />
+      <path d="M6 8.4h2.8M15.2 8.4h2.8" />
     </svg>
   );
 }
