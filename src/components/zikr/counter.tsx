@@ -120,7 +120,7 @@ export function ModeStrip({
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ</span>
           <span className="chip-label">{t(s.lang, "names")}</span>
         </Chip>
-        {REMEMBRANCE.filter((d) => d.id !== "kursi" && d.id !== "salawat-full").map((d) => (
+        {REMEMBRANCE.filter((d) => d.id !== "salawat-full").map((d) => (
           <Chip
             key={d.id}
             active={s.mode === d.id && !busy}
@@ -135,7 +135,7 @@ export function ModeStrip({
             <span className="chip-label">{chipText(phraseOf(d, s.lang).short)}</span>
           </Chip>
         ))}
-        {(["salawat-full", "kursi"] as const).map((id) => {
+        {(["salawat-full"] as const).map((id) => {
           const item = dhikrById(id);
           const line = phraseOf(item, s.lang);
           return (
@@ -689,7 +689,7 @@ export function Counter({
             {t(s.lang, "dhikrLead")}
           </p>
           <div className="names-list">
-            {REMEMBRANCE.filter((d) => d.id !== "kursi").map((d, index) => {
+            {REMEMBRANCE.map((d, index) => {
               const line = phraseOf(d, s.lang);
               return (
                 <button

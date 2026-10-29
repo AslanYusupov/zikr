@@ -211,8 +211,13 @@ export function normalize(raw: unknown): ZikrState {
   }
   for (const d of DHIKR) byDhikr[d.id] = Math.max(byDhikr[d.id] ?? 0, fromDays[d.id] ?? 0);
   const known = knownIds();
-  const pool = Array.isArray(r.pool) ? r.pool.filter((id) => known.has(id)) : base.pool;
-  const mode = r.mode === "random" || (typeof r.mode === "string" && known.has(r.mode)) ? r.mode : base.mode;
+  const azkar = new Set(DHIKR.filter((item) => item.azkar).map((item) => item.id));
+  const savedQuest = sunnahQuestById(typeof r.activeQuestId === "string" ? r.activeQuestId : null);
+  const questLive = savedQuest && clampInt(r.questStep, 20) < savedQuest.steps.length ? savedQuest : null;
+  const questDhikr = new Set(questLive?.steps.map((step) => step.dhikrId) ?? []);
+  const pool = Array.isArray(r.pool) ? r.pool.filter((id) => known.has(id) && !azkar.has(id)) : base.pool;
+  const savedMode = r.mode === "random" || (typeof r.mode === "string" && known.has(r.mode)) ? r.mode : base.mode;
+  const mode = savedMode !== "random" && azkar.has(savedMode) && !questDhikr.has(savedMode) ? base.mode : savedMode;
   const totalFromParts = Object.values(byDhikr).reduce((a, b) => a + b, 0);
   const total = Math.max(clampInt(r.total, CAP), totalFromParts);
   for (const n of ALLAH_NAMES) {
@@ -291,7 +296,7 @@ export function normalize(raw: unknown): ZikrState {
     publicBoard: r.publicBoard !== false,
     wisdomStep: clampInt(r.wisdomStep, 1_000_000),
     bestDay: clampInt(r.bestDay, CAP),
-    lastDhikrId: typeof r.lastDhikrId === "string" && known.has(r.lastDhikrId) ? r.lastDhikrId : base.lastDhikrId,
+    lastDhikrId: typeof r.lastDhikrId === "string" && known.has(r.lastDhikrId) && (!azkar.has(r.lastDhikrId) || questDhikr.has(r.lastDhikrId)) ? r.lastDhikrId : base.lastDhikrId,
     countGen: clampInt(r.countGen, 1_000_000),
     dayCut: r.dayCut === true,
     dayArchive: readDayArchive(r.dayArchive),
@@ -907,7 +912,15 @@ export const useZikr = create<ZikrState & Actions>()(
           lastDhikrId: first.dhikrId,
         });
       },
-      leaveQuest: () => set({ activeQuestId: null, questStep: 0, questStepProgress: 0 }),
+      leaveQuest: () => {
+        const current = dhikrById(get().mode);
+        set({
+          activeQuestId: null,
+          questStep: 0,
+          questStepProgress: 0,
+          ...(current.azkar ? { mode: "subhanallah", lastDhikrId: "subhanallah" } : {}),
+        });
+      },
       rollDay: () => {
         const day = todayKey();
         const current = get().doneToday;
@@ -970,6 +983,10 @@ export const useZikr = create<ZikrState & Actions>()(
                 activeQuestId = null;
                 questStep = 0;
                 questStepProgress = 0;
+                if (dhikrById(id).azkar) {
+                  mode = "subhanallah";
+                  lastShown = "subhanallah";
+                }
               }
             } else questStepProgress = nextProg;
           }

@@ -7,6 +7,7 @@ const LABELS: Record<string, Record<LangId, string>> = {
   "Астаг1фируллах1": { ru: "Астаг1фируллах1", en: "Astaghfirullah", ar: "أستغفر الله", id: "Astaghfirullah", tr: "Estağfirullah", ur: "أستغفر الله" },
   "Антас-салям": { ru: "Антас-салям", en: "Antas-salam", ar: "أنت السلام", id: "Antas-salam", tr: "Entes-selam", ur: "أنت السلام" },
   "Сотый раз": { ru: "Сотый раз", en: "The hundredth", ar: "المرة المتممة للمئة", id: "Yang keseratus", tr: "Yüzüncü", ur: "سوواں" },
+  "После намаза": { ru: "После намаза", en: "After the prayer", ar: "بعد الصلاة", id: "Setelah salat", tr: "Namazdan sonra", ur: "نماز کے بعد" },
 };
 
 type Line = { title: string; note: string };
@@ -60,6 +61,13 @@ const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
     id: { title: "Sayyidul-istighfar", note: "Satu kali di pagi hari." },
     tr: { title: "Seyyidü’l-istiğfar", note: "Sabah bir kez." },
     ur: { title: "سید الاستغفار", note: "صبح ایک بار۔" },
+  },
+  "ayat-kursi": {
+    en: { title: "Ayat al-Kursi", note: "Once after every obligatory prayer: nothing keeps the reciter from Paradise except death. Before sleep it is read separately: a guardian from Allah stays with him, and a devil does not approach until morning." },
+    ar: { title: "آية الكرسي", note: "مرة بعد كل صلاة مكتوبة: لا يمنعه من دخول الجنة إلا الموت. وقبل النوم تُقرأ على حدة: يبقى معه حافظ من الله، ولا يقربه شيطان حتى يصبح." },
+    id: { title: "Ayat Kursi", note: "Satu kali setelah setiap salat wajib: tidak ada yang menghalangi pembacanya masuk surga selain kematian. Sebelum tidur dibaca tersendiri: ada penjaga dari Allah bersamanya, dan setan tidak mendekat sampai pagi." },
+    tr: { title: "Ayetelkürsî", note: "Her farz namazdan sonra bir kez: okuyanı cennetten ancak ölüm men eder. Uyumadan önce ayrıca okunur: yanında Allah’tan bir koruyucu olur ve sabaha kadar şeytan yaklaşmaz." },
+    ur: { title: "آیت الکرسی", note: "ہر فرض نماز کے بعد ایک بار: پڑھنے والے کو جنت سے صرف موت روکتی ہے۔ سونے سے پہلے الگ پڑھی جاتی ہے: اس کے ساتھ اللہ کی طرف سے محافظ رہتا ہے، اور صبح تک شیطان نہیں آتا۔" },
   },
   "after-ten": {
     en: { title: "Ten after the prayer", note: "After the prayer: ten “Subhanallah”, ten “Alhamdulillah”, and ten “Allahu Akbar”. Over five prayers that is one hundred and fifty on the tongue and one thousand five hundred on the Scale." },

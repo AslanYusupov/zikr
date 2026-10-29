@@ -396,6 +396,16 @@ export const SUNNAH_QUESTS: SunnahQuest[] = [
     steps: [{ dhikrId: "sayyid", count: 1 }],
   },
   {
+    id: "ayat-kursi",
+    tier: "easy",
+    tierLabel: "Лёгкое",
+    title: "Аят аль-Курси",
+    points: 120,
+    source: "ан-Насаи; аль-Бухари",
+    note: "Один раз после каждого обязательного намаза: читающего не отделяет от Рая ничего, кроме смерти. Перед сном его читают отдельно: с человеком будет хранитель от Аллах1а, и шайтан не приблизится до утра.",
+    steps: [{ dhikrId: "kursi", count: 1, label: "После намаза" }],
+  },
+  {
     id: "after-ten",
     tier: "medium",
     tierLabel: "Среднее",
