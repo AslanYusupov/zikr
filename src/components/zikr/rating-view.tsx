@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { Award, ChevronLeft } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, inviteBody, inviteLink, inviteText, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { InviteButtons } from "./settings-view";
+import { RewardsView } from "./rewards-view";
 import { t, tx } from "@/lib/zikr/i18n";
 import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
@@ -163,6 +165,7 @@ export function RatingView() {
   const [copied, setCopied] = useState(false);
   const [maskMine, setMaskMine] = useState(false);
   const [vpn, setVpn] = useState(false);
+  const [rewards, setRewards] = useState(false);
   const miss = useRef({ world: false, live: false });
   const day = todayKey();
   const today = days[day]?.total ?? 0;
@@ -345,8 +348,24 @@ export function RatingView() {
   const left = Math.max(0, ratingNeed - total);
   const done = Math.max(0, Math.min(100, (total / ratingNeed) * 100));
 
+  if (rewards) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <button type="button" onClick={() => setRewards(false)} className="mx-4 mt-2 flex h-10 shrink-0 items-center gap-1 text-sm text-gold">
+          <ChevronLeft className="size-4" />
+          {t(lang, "rating")}
+        </button>
+        <RewardsView />
+      </div>
+    );
+  }
+
   return (
     <div className="pane px-4 pt-2 pb-8">
+      <button type="button" onClick={() => setRewards(true)} className="mb-3 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-line bg-surface text-sm text-fg">
+        <Award className="size-4" strokeWidth={1.5} />
+        {t(lang, "rewards")}
+      </button>
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
         <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "selfTitle")}</p>
         <h2 className="mt-1 break-words text-2xl leading-tight text-fg" onClick={toggleMine}>

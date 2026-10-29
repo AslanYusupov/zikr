@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Award, BarChart3, ChevronLeft, ListChecks, Maximize2, Minimize2, Moon, Settings, Volume2, VolumeX } from "lucide-react";
+import { BarChart3, BookOpen, ChevronLeft, ListChecks, Maximize2, Minimize2, Moon, Settings, Volume2, VolumeX } from "lucide-react";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 import { Celebrate } from "./celebrate";
@@ -13,19 +13,18 @@ import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
 import { DuaView } from "./dua-view";
 import { QuestsView } from "./quests-view";
-import { RewardsView } from "./rewards-view";
 import { RatingView } from "./rating-view";
 import { syncReach } from "@/lib/zikr/reach";
 import { SettingsView } from "./settings-view";
 import { Library } from "./library";
 
-type Tab = "zikr" | "quests" | "dua" | "rewards" | "rating";
+type Tab = "zikr" | "quests" | "dua" | "quran" | "rating";
 
-const TABS: { id: Tab; icon?: typeof Award }[] = [
+const TABS: { id: Tab; icon?: typeof BookOpen }[] = [
   { id: "zikr", icon: Moon },
   { id: "quests", icon: ListChecks },
   { id: "dua" },
-  { id: "rewards", icon: Award },
+  { id: "quran", icon: BookOpen },
   { id: "rating", icon: BarChart3 },
 ];
 
@@ -549,9 +548,9 @@ export function Shell() {
             />
           )}
           {tab === "zikr" && home === "quran" && <QuranView />}
+          {tab === "quran" && <QuranView />}
           {tab === "quests" && <QuestsView onBegin={() => selectTab("zikr")} />}
           {tab === "dua" && <DuaView />}
-          {tab === "rewards" && <RewardsView />}
           {tab === "rating" && <RatingView />}
         </div>
 
@@ -581,7 +580,7 @@ export function Shell() {
                   ) : Icon ? (
                     <Icon className="size-5" strokeWidth={1.5} />
                   ) : null}
-                  {item.id === "rewards" && unseen && <span className="absolute -top-0.5 -right-1 h-1.5 w-1.5 rounded-full bg-gold" />}
+                  {item.id === "rating" && unseen && <span className="absolute -top-0.5 -right-1 h-1.5 w-1.5 rounded-full bg-gold" />}
                 </span>
                 {t(lang, item.id)}
               </button>
