@@ -86,19 +86,17 @@ const PASSES = [
 
 function TapStar() {
   const [shot, setShot] = useState<{ id: number; pass: (typeof PASSES)[number] } | null>(null);
-  const busy = useRef(false);
+  const nextAt = useRef(0);
   useEffect(() => {
     let timer = 0;
     const fly = () => {
-      if (busy.current) return;
-      busy.current = true;
+      const now = Date.now();
+      if (now < nextAt.current) return;
+      nextAt.current = now + 10_000 + Math.floor(Math.random() * 5_001);
       const pass = PASSES[Math.floor(Math.random() * PASSES.length)]!;
-      setShot({ id: Date.now(), pass });
+      setShot({ id: now, pass });
       window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        busy.current = false;
-        setShot(null);
-      }, 1500);
+      timer = window.setTimeout(() => setShot(null), 1500);
     };
     window.addEventListener("zikr-star", fly);
     return () => {
