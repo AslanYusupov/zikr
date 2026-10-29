@@ -115,10 +115,6 @@ export function ModeStrip({
   return (
     <div ref={scroller} dir="rtl" className="mode-strip scroll-x shrink-0 px-3 pt-1">
       <div className="flex w-max gap-1.5 pb-1">
-        <Chip active={s.mode === "kursi" && !busy} onClick={() => { onLeave(); s.setMode("kursi"); }}>
-          <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">آيَةُ الْكُرْسِيِّ</span>
-          <span className="chip-label">{phraseOf(dhikrById("kursi"), s.lang).short}</span>
-        </Chip>
         <Chip active={s.mode === "random" && !busy} onClick={() => { onLeave(); s.setMode("random"); }}>
           {t(s.lang, "random")}
         </Chip>
@@ -134,7 +130,7 @@ export function ModeStrip({
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ</span>
           <span className="chip-label">{t(s.lang, "names")}</span>
         </Chip>
-        {REMEMBRANCE.filter((d) => d.id !== "kursi").map((d) => (
+        {REMEMBRANCE.filter((d) => d.id !== "kursi" && d.id !== "salawat-full").map((d) => (
           <Chip
             key={d.id}
             active={s.mode === d.id && !busy}
@@ -149,6 +145,16 @@ export function ModeStrip({
             <span className="chip-label">{chipText(phraseOf(d, s.lang).short)}</span>
           </Chip>
         ))}
+        {(["salawat-full", "kursi"] as const).map((id) => {
+          const item = dhikrById(id);
+          const line = phraseOf(item, s.lang);
+          return (
+            <Chip key={id} active={s.mode === id && !busy} onClick={() => { onLeave(); s.setMode(id); }}>
+              <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">{chipArabic(item.arabic)}</span>
+              <span className="chip-label">{chipText(line.short)}</span>
+            </Chip>
+          );
+        })}
       </div>
     </div>
   );
@@ -298,7 +304,7 @@ export function Counter({
   const showPhrase = !(s.mode === "random" && pulse === 0);
   const arabic = showPhrase ? phrase.arabic : "ذِكْر";
   const compact = showPhrase && arabic.length > 90;
-  const arabicShown = compact ? `${arabic.split(/\s+/).slice(0, 3).join(" ")}…` : arabic;
+  const arabicShown = arabic;
   const name = showPhrase ? spoken.name : t(s.lang, "random");
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
@@ -408,7 +414,7 @@ export function Counter({
             <p
               className={cn(
                 "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
-                compact ? "text-lg" : arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
+                compact ? "text-sm" : arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
               )}
               dir="rtl"
               lang="ar"
@@ -416,9 +422,7 @@ export function Counter({
               {arabicShown}
             </p>
             <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
-            {compact && !virtue ? (
-              <p className="mt-1 text-xs leading-snug text-fg">{spoken.reward}</p>
-            ) : virtue && showPhrase ? (
+            {virtue && showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-fg">
                 {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
                 <p className="mt-1 text-fg">{spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
