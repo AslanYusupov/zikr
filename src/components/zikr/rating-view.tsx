@@ -341,30 +341,9 @@ export function RatingView() {
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
   const clock = updatedAt ? clockOf(updatedAt, lang) : "";
   const ratingNeed = 10_000;
-
-  if (total < ratingNeed) {
-    const left = ratingNeed - total;
-    const done = Math.max(0, Math.min(100, (total / ratingNeed) * 100));
-    return (
-      <div className="pane px-4 pt-6 pb-8">
-        <article className="rounded-3xl border border-line bg-surface px-4 py-5">
-          <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "rating")}</p>
-          <h2 className="mt-2 text-xl leading-snug text-fg">{t(lang, "ratingLock")}</h2>
-          <div className="mt-5 flex items-baseline justify-between gap-3">
-            <p className="text-2xl tabular-nums text-fg">{formatNum(total)}</p>
-            <p className="text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
-            <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
-          </div>
-          <p className="mt-2 text-xs text-muted">{t(lang, "ratingScale")}</p>
-          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold text-sm text-ink opacity-45">
-            {t(lang, "ratingOpen")}
-          </button>
-        </article>
-      </div>
-    );
-  }
+  const onlineOpen = total >= ratingNeed;
+  const left = Math.max(0, ratingNeed - total);
+  const done = Math.max(0, Math.min(100, (total / ratingNeed) * 100));
 
   return (
     <div className="pane px-4 pt-2 pb-8">
@@ -397,6 +376,8 @@ export function RatingView() {
       </button>
       <InviteButtons />
 
+      {onlineOpen ? (
+      <>
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
       <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? "…" : formatNum(tapsShown)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
@@ -479,6 +460,24 @@ export function RatingView() {
           </p>
         ) : null}
       </article>
+      </>
+      ) : (
+        <article className="mt-6 rounded-3xl border border-line bg-surface px-4 py-5">
+          <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</p>
+          <h2 className="mt-2 text-xl leading-snug text-fg">{t(lang, "ratingLock")}</h2>
+          <div className="mt-5 flex items-baseline justify-between gap-3">
+            <p className="text-2xl tabular-nums text-fg">{formatNum(total)}</p>
+            <p className="text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
+            <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
+          </div>
+          <p className="mt-2 text-xs text-muted">{t(lang, "ratingScale")}</p>
+          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold text-sm text-ink opacity-45">
+            {t(lang, "ratingOpen")}
+          </button>
+        </article>
+      )}
     </div>
   );
 }
