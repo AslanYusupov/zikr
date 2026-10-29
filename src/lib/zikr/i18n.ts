@@ -125,7 +125,7 @@ const DICT = {
     placeAbout: "Ваше место примерно",
     ratingAt: "Обновлено в {time}",
     ratingHeld: "Показан рейтинг на {time}",
-    ratingLock: "Онлайн-рейтинг откроется после 10 000 поминаний.",
+    ratingLock: "Онлайн откроется после 10 000 поминаний.",
     ratingOpen: "Открыть рейтинг",
     ratingScale: "Шкала до 10 000",
     ratingVpn: "Для обновления включите VPN.",

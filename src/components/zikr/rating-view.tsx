@@ -349,10 +349,10 @@ export function RatingView() {
     <div className="pane px-4 pt-2 pb-8">
       <article className="rounded-3xl border border-line bg-surface px-4 py-4">
         <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "selfTitle")}</p>
-        <h2 className="mt-1 text-2xl text-fg" onClick={toggleMine}>
+        <h2 className="mt-1 break-words text-2xl leading-tight text-fg" onClick={toggleMine}>
           {mine(mark)} {zikrWord(mark, lang)}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{selfLine}</p>
+        <p className="mt-2 break-words text-sm leading-relaxed text-muted">{selfLine}</p>
       </article>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Mini label={t(lang, "bestDayLabel")} value={mine(bestDay)} />
@@ -462,18 +462,18 @@ export function RatingView() {
       </article>
       </>
       ) : (
-        <article className="mt-6 rounded-3xl border border-line bg-surface px-4 py-5">
+        <article className="mt-6 min-w-0 overflow-hidden rounded-3xl border border-line bg-surface px-4 py-5">
           <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</p>
-          <h2 className="mt-2 text-xl leading-snug text-fg">{t(lang, "ratingLock")}</h2>
-          <div className="mt-5 flex items-baseline justify-between gap-3">
-            <p className="text-2xl tabular-nums text-fg">{formatNum(total)}</p>
-            <p className="text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
+          <h2 className="mt-2 text-base leading-snug break-words text-balance text-fg">{t(lang, "ratingLock")}</h2>
+          <div className="mt-5 flex min-w-0 items-baseline justify-between gap-3">
+            <p className="min-w-0 truncate text-2xl tabular-nums text-fg">{formatNum(total)}</p>
+            <p className="shrink-0 text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
             <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
           </div>
-          <p className="mt-2 text-xs text-muted">{t(lang, "ratingScale")}</p>
-          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold text-sm text-ink opacity-45">
+          <p className="mt-2 text-xs break-words text-muted">{t(lang, "ratingScale")}</p>
+          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold px-3 text-sm text-ink opacity-45">
             {t(lang, "ratingOpen")}
           </button>
         </article>
@@ -529,9 +529,9 @@ function Board({
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-line bg-surface px-3 py-3">
-      <p className="text-xs text-muted">{label}</p>
-      <p className="stat-value mt-1 leading-none text-fg tabular-nums">{value}</p>
+    <div className="min-w-0 overflow-hidden rounded-2xl border border-line bg-surface px-3 py-3">
+      <p className="text-xs break-words text-muted">{label}</p>
+      <p className="stat-value mt-1 truncate leading-none text-fg tabular-nums">{value}</p>
     </div>
   );
 }
