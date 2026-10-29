@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Medal } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
@@ -344,9 +344,7 @@ export function RatingView() {
   return (
     <div className="pane px-4 pt-2 pb-8">
       <button type="button" onClick={() => setRewards(true)} className="mb-3 flex w-full items-center gap-3 rounded-3xl border border-line bg-surface px-3.5 py-3 text-start">
-        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-gold text-ink">
-          <Medal className="size-6" strokeWidth={1.8} />
-        </span>
+        <span dir="rtl" lang="ar" className="shrink-0 font-arabic text-[1.7rem] leading-none text-gold">حَسَنَة</span>
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-semibold text-fg">{t(lang, "rewards")}</span>
           <span className="mt-0.5 block truncate text-xs text-muted">{t(lang, "degree")} {formatNum(degree.level)} · {degreeName(lang, degree.level)}</span>
