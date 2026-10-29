@@ -3830,6 +3830,16 @@ html, body {
 .tap-star { z-index: 3; }
 .app-nav { padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { min-height: 3.15rem; }
+.app-nav button .nav-ico { display: grid; transform-origin: center; transition: transform .22s cubic-bezier(.2, .85, .2, 1); }
+.app-nav button.on .nav-ico { transform: scale(1.08); }
+.app-nav button:active .nav-ico { transform: scale(.88); }
+.tab-from-right { animation: tab-from-right .32s cubic-bezier(.22, .8, .24, 1); }
+.tab-from-left { animation: tab-from-left .32s cubic-bezier(.22, .8, .24, 1); }
+@keyframes tab-from-right { from { transform: translateX(18%); } to { transform: none; } }
+@keyframes tab-from-left { from { transform: translateX(-18%); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .tab-from-right, .tab-from-left, .app-nav button .nav-ico { animation: none; transition: none; }
+}
 .home-switch { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; flex: none; padding: .1rem .75rem .35rem; }
 .home-switch button { min-height: 2.45rem; padding: .25rem .45rem; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--bg) 84%, transparent); color: var(--fg); font-size: .74rem; font-weight: 800; line-height: 1.15; }
 .home-switch button.on { border-color: var(--fg); background: color-mix(in srgb, var(--surface) 96%, var(--fg) 4%); }

@@ -84,6 +84,7 @@ export function Shell() {
   const reached = achievements.length;
   const celebrated = useZikr((s) => s.celebrated);
   const [tab, setTab] = useState<Tab>("zikr");
+  const [slide, setSlide] = useState("");
   const [dhikrList, setDhikrList] = useState(false);
   const [namesOpen, setNamesOpen] = useState(false);
   const [settings, setSettings] = useState(false);
@@ -376,12 +377,16 @@ export function Shell() {
   function selectTab(next: Tab) {
     setSettings(false);
     setLibrary(null);
-    if (next === tab) {
+    const go = next === tab && next !== "zikr" ? "zikr" : next;
+    if (go === tab) {
       setDhikrList(false);
-      if (next !== "zikr") setTab("zikr");
       return;
     }
-    setTab(next);
+    const from = TABS.findIndex((item) => item.id === tab);
+    const to = TABS.findIndex((item) => item.id === go);
+    setSlide(to > from ? "tab-from-right" : "tab-from-left");
+    setDhikrList(false);
+    setTab(go);
   }
 
   function pushNotice(text: string) {
@@ -515,7 +520,7 @@ export function Shell() {
           </button>
         ) : null}
 
-        <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div key={tab} className={cn("shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden", slide)}>
           {tab === "zikr" && (
             <ModeStrip
               listOn={dhikrList}
@@ -567,10 +572,10 @@ export function Shell() {
                 onClick={() => selectTab(item.id)}
                 className={cn(
                   "flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 text-[0.7rem] leading-tight",
-                  active ? "text-gold" : "text-muted",
+                  active ? "on text-gold" : "text-muted",
                 )}
               >
-                <span className="relative">
+                <span className="nav-ico relative">
                   {item.id === "dua" ? (
                     <span className="nav-dua" aria-hidden />
                   ) : item.id === "quran" ? (
