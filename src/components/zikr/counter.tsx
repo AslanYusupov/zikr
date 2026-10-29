@@ -115,6 +115,10 @@ export function ModeStrip({
   return (
     <div ref={scroller} dir="rtl" className="mode-strip scroll-x shrink-0 px-3 pt-1">
       <div className="flex w-max gap-1.5 pb-1">
+        <Chip active={s.mode === "kursi" && !busy} onClick={() => { onLeave(); s.setMode("kursi"); }}>
+          <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">آيَةُ الْكُرْسِيِّ</span>
+          <span className="chip-label">{phraseOf(dhikrById("kursi"), s.lang).short}</span>
+        </Chip>
         <Chip active={s.mode === "random" && !busy} onClick={() => { onLeave(); s.setMode("random"); }}>
           {t(s.lang, "random")}
         </Chip>
@@ -130,7 +134,7 @@ export function ModeStrip({
           <span className="block max-w-36 truncate font-arabic text-sm leading-none" dir="rtl" lang="ar">أَسْمَاءُ اللَّهِ</span>
           <span className="chip-label">{t(s.lang, "names")}</span>
         </Chip>
-        {REMEMBRANCE.map((d) => (
+        {REMEMBRANCE.filter((d) => d.id !== "kursi").map((d) => (
           <Chip
             key={d.id}
             active={s.mode === d.id && !busy}
