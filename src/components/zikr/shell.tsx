@@ -30,13 +30,11 @@ const TABS: { id: Tab; icon?: typeof Moon }[] = [
 
 function QuranMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 28" className={className} fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round" aria-hidden>
-      <path d="M2.2 7v15" strokeWidth="2.2" />
-      <path d="M45.8 7v15" strokeWidth="2.2" />
-      <path d="M6 8.2C13 4.4 20 4.6 24 9.2V23.6C18 20 11.2 19.6 6 22.8Z" strokeWidth="1.7" />
-      <path d="M42 8.2C35 4.4 28 4.6 24 9.2V23.6C30 20 36.8 19.6 42 22.8Z" strokeWidth="1.7" />
-      <path d="M9 16.6c4.2-1.5 8.6-1.2 11.4 1.5M9.2 18.8c4-1.2 8.2-1 11 1.2" strokeWidth="1.1" />
-      <path d="M39 16.6c-4.2-1.5-8.6-1.2-11.4 1.5M38.8 18.8c-4-1.2-8.2-1-11 1.2" strokeWidth="1.1" />
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 6.2c-1.6-1.2-3.6-1.8-6.2-1.4H4.2v12.4h1.8c2.2 0 4 .5 6 1.7" />
+      <path d="M12 6.2c1.6-1.2 3.6-1.8 6.2-1.4h1.6v12.4h-1.8c-2.2 0-4 .5-6 1.7" />
+      <path d="M12 6.2v12.7" />
+      <path d="M7.3 9.3h2.2M14.5 9.3h2.2" />
     </svg>
   );
 }
@@ -591,7 +589,7 @@ export function Shell() {
                   {item.id === "dua" ? (
                     <span className="nav-dua" aria-hidden />
                   ) : item.id === "quran" ? (
-                    <QuranMark className="size-6" />
+                    <QuranMark className="size-5" />
                   ) : Icon ? (
                     <Icon className="size-5" strokeWidth={1.5} />
                   ) : null}
