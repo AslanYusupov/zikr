@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Award, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
@@ -344,8 +344,8 @@ export function RatingView() {
   return (
     <div className="pane px-4 pt-2 pb-8">
       <button type="button" onClick={() => setRewards(true)} className="mb-3 flex w-full items-center gap-3 rounded-3xl border border-line bg-surface px-3.5 py-3 text-start">
-        <span className="grid size-11 shrink-0 place-items-center rounded-2xl border border-gold/40 bg-gold/10 text-gold">
-          <Award className="size-5" strokeWidth={1.6} />
+        <span className="grid size-11 shrink-0 place-items-center rounded-full border border-gold/45 bg-gold/10 text-gold">
+          <MedalMark className="size-7" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-semibold text-fg">{t(lang, "rewards")}</span>
@@ -546,5 +546,16 @@ function Tip({ active, payload, lang }: TooltipProps<number, string> & { lang?: 
     <div className="rounded-xl border border-line bg-surface px-2 py-1 text-xs text-fg">
       {formatNum(n)} {zikrWord(n, lang ?? "ru")}
     </div>
+  );
+}
+
+function MedalMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path d="M8.3 12.6 6.5 20.4 12 17.7l5.5 2.7-1.8-7.8" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="9" r="5.15" fill="currentColor" opacity="0.16" />
+      <circle cx="12" cy="9" r="5.15" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      <path fill="currentColor" d="M12.15 6.85a2.35 2.35 0 1 0 .05 4.35 1.8 1.8 0 1 1-.05-4.35z" />
+    </svg>
   );
 }
