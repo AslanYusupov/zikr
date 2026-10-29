@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useZikr } from "@/lib/zikr/store";
 import { tx } from "@/lib/zikr/i18n";
@@ -71,6 +71,64 @@ function Rain() {
   );
 }
 
+const PASSES = [
+  { x: "108vw", y: "8vh", x2: "-36vw", y2: "40vh", rot: "-16deg" },
+  { x: "112vw", y: "2vh", x2: "-40vw", y2: "16vh", rot: "-8deg" },
+  { x: "100vw", y: "-8vh", x2: "-30vw", y2: "58vh", rot: "-28deg" },
+  { x: "-40vw", y: "10vh", x2: "112vw", y2: "38vh", rot: "-158deg" },
+  { x: "-36vw", y: "-4vh", x2: "108vw", y2: "52vh", rot: "-143deg" },
+  { x: "-42vw", y: "32vh", x2: "110vw", y2: "64vh", rot: "-155deg" },
+  { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "-97deg" },
+  { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg" },
+  { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg" },
+  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "-73deg" },
+] as const;
+
+function TapStar() {
+  const [shot, setShot] = useState<{ id: number; pass: (typeof PASSES)[number] } | null>(null);
+  const busy = useRef(false);
+  useEffect(() => {
+    let timer = 0;
+    const fly = () => {
+      if (busy.current) return;
+      busy.current = true;
+      const pass = PASSES[Math.floor(Math.random() * PASSES.length)]!;
+      setShot({ id: Date.now(), pass });
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        busy.current = false;
+        setShot(null);
+      }, 1500);
+    };
+    window.addEventListener("zikr-star", fly);
+    return () => {
+      window.removeEventListener("zikr-star", fly);
+      window.clearTimeout(timer);
+    };
+  }, []);
+  if (!shot) return null;
+  const pass = shot.pass;
+  return (
+    <span
+      key={shot.id}
+      className="comet comet-live tap-star"
+      style={{
+        ["--x" as string]: pass.x,
+        ["--y" as string]: pass.y,
+        ["--x2" as string]: pass.x2,
+        ["--y2" as string]: pass.y2,
+        ["--rot" as string]: pass.rot,
+        ["--dur" as string]: "1.35s",
+        ["--len" as string]: "11rem",
+        ["--bright" as string]: "0.9",
+      }}
+    >
+      <span className="comet-tail" />
+      <span className="comet-head" />
+    </span>
+  );
+}
+
 export function Backdrop() {
   const stars = useZikr((s) => s.starFlow);
   return (
@@ -125,18 +183,7 @@ export function Backdrop() {
           ))}
         </div>
       )}
-      {stars && (
-        <>
-          <span className="sky-shot sky-shot-a" aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
-          </span>
-          <span className="sky-shot sky-shot-b" aria-hidden>
-            <span className="comet-tail" />
-            <span className="comet-head" />
-          </span>
-        </>
-      )}
+      {stars && <TapStar />}
     </div>
   );
 }

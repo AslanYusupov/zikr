@@ -245,6 +245,7 @@ export function Counter({
     }
     const result = useZikr.getState().tap();
     noteTap();
+    window.dispatchEvent(new Event("zikr-star"));
     const state = useZikr.getState();
     playTap(state.sound === "on" ? state.voice : "off", state.volume);
     const id = ++seq.current;
