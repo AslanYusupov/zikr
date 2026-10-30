@@ -3842,8 +3842,10 @@ html, body {
 .listen-head { padding: .15rem .9rem .2rem; }
 .listen-kicker { padding: .35rem .9rem .25rem; color: var(--gold); font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; }
 .listen-reciters { display: flex; gap: .45rem; overflow-x: auto; padding: 0 .9rem .55rem; }
-.listen-card { flex: none; width: 11.5rem; min-height: 4.6rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); padding: .55rem .7rem; text-align: start; }
+.listen-card { flex: none; width: max-content; max-width: 18rem; min-width: 10.5rem; min-height: 4.6rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); padding: .55rem .7rem; text-align: start; }
 .listen-card.on { border-color: var(--gold); background: color-mix(in srgb, var(--surface) 82%, var(--gold) 18%); }
+.listen-name { display: block; color: var(--fg); font-size: .9rem; line-height: 1.25; white-space: nowrap; }
+.listen-style { display: block; max-width: 15rem; margin-top: .25rem; color: var(--muted); font-size: .68rem; line-height: 1.35; white-space: normal; }
 .listen-list { flex: 1; min-height: 0; overflow: auto; padding: 0 .75rem .4rem; }
 .listen-surah { display: flex; align-items: center; gap: .65rem; width: 100%; margin-bottom: .4rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); padding: .55rem .7rem; text-align: start; }
 .listen-surah.on { border-color: var(--gold); }

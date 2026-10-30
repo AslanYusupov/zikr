@@ -158,8 +158,8 @@ export function ListenView() {
             className={cn("listen-card", item.id === reciterId && "on")}
             onClick={() => playSurah(item.id, surah)}
           >
-            <span className="block truncate text-sm text-fg">{item.name[lang]}</span>
-            <span className="mt-1 block text-[0.68rem] leading-snug text-muted">{item.style[lang]}</span>
+            <span className="listen-name">{item.name[lang]}</span>
+            <span className="listen-style">{item.style[lang]}</span>
           </button>
         ))}
       </div>
