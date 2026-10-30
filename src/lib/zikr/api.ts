@@ -513,6 +513,7 @@ async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
 }
 
 async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: string) {
+  await aliasTable(sql);
   const id = (publicId ?? "").trim();
   const real = /^\d{8}$/.test(id) ? realPublicId(id) : "";
   const online = /^\d{8}$/.test(real)
@@ -534,6 +535,7 @@ async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: strin
 
 export async function rememberingNow(publicId?: string) {
   const sql = await getSql();
+  await keepOldRating(sql);
   return openNow(sql, publicId);
 }
 
@@ -703,6 +705,7 @@ export const invitees = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await keepOldRating(sql);
       const host = realPublicId(data.publicId);
       const rows = await sql<{ guest_id: string; total: number }>`
         select guest_id, total from zikr_invites
@@ -721,6 +724,7 @@ export const worldBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const day = data.dayKey ?? "";
       const rows = await sql<{ public_id: string; total: number; concealed: boolean; day_key: string; day_total: number }>`
@@ -825,6 +829,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const n = await openNow(sql, publicId);
     const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`
