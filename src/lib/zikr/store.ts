@@ -8,7 +8,7 @@ import { sunnahQuestById } from "./quests";
 import type { DayArchive, DayLog, FontId, LangId, OrbId, RewardArchive, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
 
 const THEMES: ThemeId[] = ["firdaus", "rayyan", "salat", "sadaqa", "jihad", "kazimin", "tawba", "ayman", "black", "wine", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle", "subhah", "amethyst", "amber", "jade"];
-const FONTS: FontId[] = ["clear", "crimson", "soft", "book", "even"];
+const FONTS: FontId[] = ["clear", "crimson", "wide", "soft", "book", "even"];
 const LANGS: LangId[] = ["ru", "en", "ar", "id", "tr", "ur"];
 const ORBS: OrbId[] = ["plain", "glow", "pearl", "line", "double", "soft", "dot", "crescent", "kaaba", "shahada"];
 const COUNTRIES = new Set(["", "RU", "SA", "TR", "ID", "PK", "AE", "QA", "EG", "PS", "HL", "MA", "DZ", "MY", "GB", "US", "DE", "FR", "KZ", "UZ", "AZ", "TJ"]);

@@ -1857,6 +1857,34 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 [data-font=crimson] .phrase-read p {
   line-height: 1.45;
 }
+[data-font=wide] .phrase-read p:not(.font-arabic) {
+  font-size: 1rem;
+  line-height: 1.45;
+}
+[data-font=wide] .reminder-text {
+  font-size: 1rem;
+  line-height: 1.45;
+}
+[data-font=wide] .reminder-src,
+[data-font=wide] .day-line,
+[data-font=wide] .text-\[0\.6rem\],
+[data-font=wide] .text-\[0\.62rem\],
+[data-font=wide] .text-\[0\.65rem\],
+[data-font=wide] .text-\[0\.68rem\],
+[data-font=wide] .text-\[0\.7rem\] {
+  font-size: .9rem;
+  line-height: 1.35;
+}
+[data-font=wide] .chip-label {
+  max-width: 9.4rem;
+  font-size: .8rem;
+  line-height: 1.2;
+}
+[data-font=wide] .quest-line,
+[data-font=wide] .quest-line span {
+  font-size: .95rem;
+  line-height: 1.35;
+}
 [data-font=soft] {
   --default-font-family: "Nunito", "Inter", system-ui, sans-serif;
   --font-sans: "Nunito", "Inter", system-ui, sans-serif;
