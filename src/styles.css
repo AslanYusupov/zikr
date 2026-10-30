@@ -3840,6 +3840,7 @@ html, body {
 }
 .listen { display: flex; flex-direction: column; min-height: 0; flex: 1; }
 .listen-head { padding: .15rem .9rem .2rem; }
+.listen-head .font-arabic { margin-top: .7rem; }
 .listen-mode { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; margin-top: .45rem; }
 .listen-mode button { min-height: 2.15rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--fg); font-size: .78rem; font-weight: 500; }
 .listen-mode button.on { border-color: var(--gold); background: color-mix(in srgb, var(--surface) 78%, var(--gold) 22%); }
