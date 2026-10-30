@@ -35,6 +35,10 @@ function cloudSurah(edition: string, surah: number) {
   return `https://cdn.islamic.network/quran/audio-surah/128/${edition}/${surah}.mp3`;
 }
 
+function dosariArchive(surah: number) {
+  return `https://github.com/AslanYusupov/zikr-quran-audio/releases/download/quran-dosari/${pad(surah)}.mp3`;
+}
+
 function every(folder: string, surah: number, ayah: number) {
   return `https://everyayah.com/data/${folder}/${ayahFile(surah, ayah)}.mp3`;
 }
@@ -68,7 +72,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n), qari("yasser_ad-dussary", n)],
+    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n), qari("yasser_ad-dussary", n), dosariArchive(n)],
     ayahs: (s, a) => [every("Yasser_Ad-Dussary_128kbps", s, a)],
   },
   {
