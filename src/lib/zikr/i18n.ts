@@ -1725,7 +1725,7 @@ const FONT_NAME: Record<string, Record<LangId, string>> = {
 const FONT_HINT: Record<string, Record<LangId, string>> = {
   clear: { ru: "Как сейчас", en: "As it is now", ar: "كما هو الآن", id: "Seperti sekarang", tr: "Şimdiki gibi", ur: "جیسا اب ہے" },
   crimson: { ru: "Основной", en: "Default", ar: "الأساسي", id: "Utama", tr: "Varsayılan", ur: "بنیادی" },
-  wide: { ru: "Как у аятов, мелкий текст крупнее", en: "The ayah letters, with larger small text", ar: "خط الآيات، والنص الصغير أكبر", id: "Huruf ayat, teks kecil lebih besar", tr: "Ayet yazısı, küçük metin daha büyük", ur: "آیات والا خط، چھوٹا متن بڑا" },
+  wide: { ru: "Основной, мелкий текст крупнее", en: "Default, small text is larger", ar: "الأساسي، والنص الصغير أكبر", id: "Utama, teks kecil lebih besar", tr: "Varsayılan, küçük metin daha büyük", ur: "بنیادی، چھوٹا متن بڑا" },
   soft: { ru: "Круглые буквы", en: "Round letters", ar: "حروف مستديرة", id: "Huruf bulat", tr: "Yuvarlak harfler", ur: "گول حروف" },
   book: { ru: "Приятное чтение", en: "Pleasant reading", ar: "قراءة مريحة", id: "Nyaman dibaca", tr: "Rahat okuma", ur: "خوشگوار پڑھائی" },
   even: { ru: "Спокойные буквы", en: "Calm letters", ar: "حروف هادئة", id: "Huruf tenang", tr: "Sakin harfler", ur: "پرسکون حروف" },
