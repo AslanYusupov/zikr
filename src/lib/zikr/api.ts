@@ -532,16 +532,15 @@ async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: strin
   return online[0]?.n ?? 0;
 }
 
+export async function rememberingNow(publicId?: string) {
+  const sql = await getSql();
+  return openNow(sql, publicId);
+}
+
 export const onlineNow = createServerFn({ method: "POST" })
   .validator((raw: unknown) => z.object({ publicId: z.string().max(16).optional() }).parse(raw ?? {}))
   .handler(async ({ data }) => {
-    try {
-      const sql = await getSql();
-      return { online: await openNow(sql, data.publicId) };
-    } catch (err) {
-      console.error("[zikr] online", err);
-      return { online: 0 };
-    }
+    return { online: await rememberingNow(data.publicId) };
   });
 
 export const loadSave = createServerFn({ method: "GET" })

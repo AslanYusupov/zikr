@@ -4,6 +4,7 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 import type { TooltipProps } from "recharts";
 import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
+import { saveOnline } from "@/lib/zikr/online-count";
 import { InviteButtons } from "./settings-view";
 import { RewardsView } from "./rewards-view";
 import { t, tx } from "@/lib/zikr/i18n";
@@ -270,6 +271,7 @@ export function RatingView() {
           const liveRows = shown(res.live);
           const dailyRows = shown(res.daily);
           setOnline(res.remembering);
+          saveOnline(res.remembering);
           setAllTaps(res.allTaps);
           setLive(liveRows);
           setDaily(dailyRows);

@@ -8,7 +8,7 @@ import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
 import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
-import { onlineNow } from "@/lib/zikr/api";
+import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
 import { DuaView } from "./dua-view";
@@ -304,12 +304,14 @@ export function Shell() {
     let stop = false;
     const load = () => {
       if (document.hidden) return;
+      const known = readSavedOnline();
+      if (known) setOnline((prev) => prev ?? known);
       const id = useZikr.getState().publicId;
-      void onlineNow({ data: { publicId: /^\d{8}$/.test(id) ? id : undefined } })
-        .then((res) => {
-          if (!stop) setOnline(res.online);
-        })
-        .catch(() => {});
+      void fetchOnline(/^\d{8}$/.test(id) ? id : undefined).then((n) => {
+        if (stop || n === null) return;
+        setOnline(n);
+        saveOnline(n);
+      });
     };
     load();
     const id = window.setInterval(load, 30_000);

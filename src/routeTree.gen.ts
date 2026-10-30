@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ApiOnlineRouteImport } from './routes/api/online'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiAyahIdRouteImport } from './routes/api/ayah/$id'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOnlineRoute = ApiOnlineRouteImport.update({
+  id: '/api/online',
+  path: '/api/online',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -38,12 +44,14 @@ const ApiAyahIdRoute = ApiAyahIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/online': typeof ApiOnlineRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/ayah/$id': typeof ApiAyahIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/online': typeof ApiOnlineRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/ayah/$id': typeof ApiAyahIdRoute
 }
@@ -51,20 +59,28 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/online': typeof ApiOnlineRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/ayah/$id': typeof ApiAyahIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/api/auth/$' | '/api/ayah/$id'
+  fullPaths: '/' | '/login' | '/api/online' | '/api/auth/$' | '/api/ayah/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/api/auth/$' | '/api/ayah/$id'
-  id: '__root__' | '/' | '/login' | '/api/auth/$' | '/api/ayah/$id'
+  to: '/' | '/login' | '/api/online' | '/api/auth/$' | '/api/ayah/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/api/online'
+    | '/api/auth/$'
+    | '/api/ayah/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  ApiOnlineRoute: typeof ApiOnlineRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiAyahIdRoute: typeof ApiAyahIdRoute
 }
@@ -83,6 +99,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/online': {
+      id: '/api/online'
+      path: '/api/online'
+      fullPath: '/api/online'
+      preLoaderRoute: typeof ApiOnlineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -105,6 +128,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  ApiOnlineRoute: ApiOnlineRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiAyahIdRoute: ApiAyahIdRoute,
 }
