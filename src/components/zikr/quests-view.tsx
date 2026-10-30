@@ -155,6 +155,7 @@ function DhikrSunnah({ id, lang, label }: { id: string; lang: LangId; label?: st
         {d.arabic}
       </p>
       <p className="mt-2 text-center text-sm font-extrabold leading-snug text-fg">{line.name}</p>
+      {line.translation ? <p className="mt-2 text-center text-sm leading-relaxed text-fg">{line.translation}</p> : null}
       <p className="mt-1 text-center text-sm leading-snug text-muted">{line.meaning}</p>
       <p className="mt-2 text-sm leading-relaxed text-fg">{line.reward}</p>
       <p className="mt-1 text-xs text-gold">{cite(d.source, lang)}</p>
