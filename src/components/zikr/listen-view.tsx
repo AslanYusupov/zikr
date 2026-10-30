@@ -118,13 +118,23 @@ export function ListenView() {
         moved = true;
         attempt();
       };
-      el.onerror = move;
+      el.onerror = () => {
+        if (mine !== token.current || el.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
+        move();
+      };
       el.src = url;
       void el.play().then(() => {
         if (mine !== token.current) return;
-        el.onerror = null;
         if (!want.current) el.pause();
-      }).catch(move);
+      }).catch((error: unknown) => {
+        const name = error instanceof DOMException ? error.name : "";
+        if (mine !== token.current || name === "AbortError") return;
+        if (name === "NotAllowedError") {
+          setPlaying(false);
+          return;
+        }
+        move();
+      });
     };
     attempt();
   }
