@@ -4,7 +4,7 @@ export type QuranAyah = { n: number; t: string; p: number; l: number };
 export type QuranSurah = { n: number; name: string; ru: string; en: string; ayahs: QuranAyah[] };
 export type QuranBook = { bismillah: string; bismillahLetters: number; surahs: QuranSurah[] };
 
-const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading: string; fail: string; retry: string; hadithAr: string; hadith: string; source: string; page: string; pageBtn: string; surahBtn: string; wait: string; taken: string; again: string; letters: string; surahs: string; tajweed: string }> = {
+const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading: string; fail: string; retry: string; hadithAr: string; hadith: string; source: string; page: string; pageBtn: string; surahBtn: string; wait: string; taken: string; again: string; letters: string; surahs: string; tajweed: string; listen: string }> = {
   ru: {
     dhikr: "Поминание Аллах1а",
     quran: "Священный Коран",
@@ -24,6 +24,7 @@ const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading
     letters: "букв",
     surahs: "Суры",
     tajweed: "Таджвид",
+    listen: "Слушать",
   },
   en: {
     dhikr: "Remembrance of Allah",
@@ -44,6 +45,7 @@ const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading
     letters: "letters",
     surahs: "Surahs",
     tajweed: "Tajweed",
+    listen: "Listen",
   },
   ar: {
     dhikr: "ذكر الله",
@@ -64,6 +66,7 @@ const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading
     letters: "حرفًا",
     surahs: "السور",
     tajweed: "التجويد",
+    listen: "استماع",
   },
   id: {
     dhikr: "Zikir kepada Allah",
@@ -84,6 +87,7 @@ const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading
     letters: "huruf",
     surahs: "Surah",
     tajweed: "Tajwid",
+    listen: "Dengar",
   },
   tr: {
     dhikr: "Allah'ı anmak",
@@ -104,6 +108,7 @@ const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading
     letters: "harf",
     surahs: "Sureler",
     tajweed: "Tecvid",
+    listen: "Dinle",
   },
   ur: {
     dhikr: "اللہ کا ذکر",
@@ -124,6 +129,7 @@ const COPY: Record<LangId, { dhikr: string; quran: string; back: string; loading
     letters: "حروف",
     surahs: "سورتیں",
     tajweed: "تجوید",
+    listen: "سنیں",
   },
 };
 

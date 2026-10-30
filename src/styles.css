@@ -3838,6 +3838,23 @@ html, body {
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
+.listen { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.listen-head { padding: .15rem .9rem .2rem; }
+.listen-kicker { padding: .35rem .9rem .25rem; color: var(--gold); font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; }
+.listen-reciters { display: flex; gap: .45rem; overflow-x: auto; padding: 0 .9rem .55rem; }
+.listen-card { flex: none; width: 11.5rem; min-height: 4.6rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); padding: .55rem .7rem; text-align: start; }
+.listen-card.on { border-color: var(--gold); background: color-mix(in srgb, var(--surface) 82%, var(--gold) 18%); }
+.listen-list { flex: 1; min-height: 0; overflow: auto; padding: 0 .75rem .4rem; }
+.listen-surah { display: flex; align-items: center; gap: .65rem; width: 100%; margin-bottom: .4rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); padding: .55rem .7rem; text-align: start; }
+.listen-surah.on { border-color: var(--gold); }
+.listen-no { display: grid; width: 1.7rem; height: 1.7rem; flex: none; place-items: center; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); color: var(--muted); font-size: .72rem; }
+.listen-player { flex: none; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, var(--bg)); padding: .55rem .85rem calc(.65rem + env(safe-area-inset-bottom)); }
+.listen-seek { width: 100%; margin-top: .45rem; accent-color: var(--gold); }
+.listen-bar { height: 3px; margin-top: .35rem; overflow: hidden; border-radius: 999px; background: var(--line); }
+.listen-bar i { display: block; height: 100%; background: var(--gold); }
+.listen-controls { display: flex; align-items: center; justify-content: center; gap: .7rem; margin-top: .45rem; }
+.listen-play { display: grid; width: 3.1rem; height: 3.1rem; place-items: center; border: 0; border-radius: 999px; background: var(--gold); color: var(--ink); }
+.listen-side { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--fg); }
 .app-nav { position: relative; padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { position: relative; z-index: 1; min-height: 3.15rem; }
 .nav-pill {
@@ -3863,6 +3880,7 @@ html, body {
   .nav-pill { transition: none; }
 }
 .home-switch { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; flex: none; padding: .1rem .75rem .35rem; }
+.home-switch.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
 .home-switch button { min-height: 2.45rem; padding: .25rem .45rem; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--bg) 84%, transparent); color: var(--fg); font-size: .74rem; font-weight: 800; line-height: 1.15; }
 .home-switch button.on { border-color: var(--fg); background: color-mix(in srgb, var(--surface) 96%, var(--fg) 4%); }
 .quran-scroll { flex: 1; min-height: 0; overflow: auto; -webkit-overflow-scrolling: touch; padding: .35rem .7rem 1.1rem; background: color-mix(in srgb, var(--bg) 97%, var(--surface)); color: var(--fg); }

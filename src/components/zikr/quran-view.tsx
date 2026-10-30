@@ -11,6 +11,7 @@ import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 import { loadAyahUrl } from "@/lib/zikr/ayah-audio";
 import { TajweedView } from "./tajweed-view";
+import { ListenView } from "./listen-view";
 
 const DONE_KEY = "zikr-quran-done";
 
@@ -122,7 +123,7 @@ export function QuranView() {
   const [open, setOpen] = useState<number | null>(null);
   const [done, setDone] = useState(readDone);
   const [note, setNote] = useState("");
-  const [part, setPart] = useState<"surahs" | "tajweed">("surahs");
+  const [part, setPart] = useState<"surahs" | "tajweed" | "listen">("surahs");
   const [glossSurah, setGlossSurah] = useState<number | null>(null);
   const [mean, setMean] = useState<QuranMeaning | null>(null);
   const lastClaim = useRef(0);
@@ -355,15 +356,27 @@ export function QuranView() {
   }, [open]);
 
   const switcher = !surah ? (
-    <div className="home-switch">
+    <div className="home-switch cols-3">
       <button type="button" className={part === "surahs" ? "on" : ""} onClick={() => setPart("surahs")}>
         {copy.surahs}
+      </button>
+      <button type="button" className={part === "listen" ? "on" : ""} onClick={() => setPart("listen")}>
+        {copy.listen}
       </button>
       <button type="button" className={part === "tajweed" ? "on" : ""} onClick={() => setPart("tajweed")}>
         {copy.tajweed}
       </button>
     </div>
   ) : null;
+
+  if (!surah && part === "listen") {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col">
+        {switcher}
+        <ListenView />
+      </div>
+    );
+  }
 
   if (!surah && part === "tajweed") {
     return (
