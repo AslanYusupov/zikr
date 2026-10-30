@@ -1920,6 +1920,78 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 [data-font=even] .reminder-text {
   line-height: 1.45;
 }
+[data-font=clear],
+[data-font=soft],
+[data-font=book],
+[data-font=even] {
+  --text-xs: 0.84rem;
+  --text-sm: 0.95rem;
+}
+[data-font=clear] .phrase-read p:not(.font-arabic),
+[data-font=soft] .phrase-read p:not(.font-arabic),
+[data-font=book] .phrase-read p:not(.font-arabic),
+[data-font=even] .phrase-read p:not(.font-arabic),
+[data-font=clear] .reminder-text,
+[data-font=soft] .reminder-text,
+[data-font=book] .reminder-text,
+[data-font=even] .reminder-text,
+[data-font=clear] .ayah-gloss,
+[data-font=soft] .ayah-gloss,
+[data-font=book] .ayah-gloss,
+[data-font=even] .ayah-gloss,
+[data-font=clear] .ayah-read,
+[data-font=soft] .ayah-read,
+[data-font=book] .ayah-read,
+[data-font=even] .ayah-read {
+  font-size: .9rem;
+  line-height: 1.45;
+}
+[data-font=clear] .reminder-src,
+[data-font=soft] .reminder-src,
+[data-font=book] .reminder-src,
+[data-font=even] .reminder-src,
+[data-font=clear] .day-line,
+[data-font=soft] .day-line,
+[data-font=book] .day-line,
+[data-font=even] .day-line,
+[data-font=clear] .text-\[0\.6rem\],
+[data-font=soft] .text-\[0\.6rem\],
+[data-font=book] .text-\[0\.6rem\],
+[data-font=even] .text-\[0\.6rem\],
+[data-font=clear] .text-\[0\.62rem\],
+[data-font=soft] .text-\[0\.62rem\],
+[data-font=book] .text-\[0\.62rem\],
+[data-font=even] .text-\[0\.62rem\],
+[data-font=clear] .text-\[0\.65rem\],
+[data-font=soft] .text-\[0\.65rem\],
+[data-font=book] .text-\[0\.65rem\],
+[data-font=even] .text-\[0\.65rem\],
+[data-font=clear] .text-\[0\.68rem\],
+[data-font=soft] .text-\[0\.68rem\],
+[data-font=book] .text-\[0\.68rem\],
+[data-font=even] .text-\[0\.68rem\],
+[data-font=clear] .text-\[0\.7rem\],
+[data-font=soft] .text-\[0\.7rem\],
+[data-font=book] .text-\[0\.7rem\],
+[data-font=even] .text-\[0\.7rem\],
+[data-font=clear] .quest-line,
+[data-font=soft] .quest-line,
+[data-font=book] .quest-line,
+[data-font=even] .quest-line,
+[data-font=clear] .quest-line span,
+[data-font=soft] .quest-line span,
+[data-font=book] .quest-line span,
+[data-font=even] .quest-line span {
+  font-size: .82rem;
+  line-height: 1.35;
+}
+[data-font=clear] .chip-label,
+[data-font=soft] .chip-label,
+[data-font=book] .chip-label,
+[data-font=even] .chip-label {
+  max-width: 9rem;
+  font-size: .74rem;
+}
 .safe-top {
   padding-top: max(.35rem, env(safe-area-inset-top));
   padding-left: max(.75rem, env(safe-area-inset-left));
