@@ -1,4 +1,5 @@
 import type { LangId } from "./types";
+import { ayahFile, globalAyah } from "./ayah-audio";
 
 type Line = Record<LangId, string>;
 
@@ -7,6 +8,7 @@ export type Reciter = {
   name: Line;
   style: Line;
   files: (surah: number) => string[];
+  ayahs: (surah: number, ayah: number) => string[];
 };
 
 function pad(surah: number) {
@@ -19,6 +21,14 @@ function cdn(path: string, surah: number) {
 
 function mirror(server: string, folder: string, surah: number) {
   return `https://${server}.mp3quran.net/${folder}/${pad(surah)}.mp3`;
+}
+
+function every(folder: string, surah: number, ayah: number) {
+  return `https://everyayah.com/data/${folder}/${ayahFile(surah, ayah)}.mp3`;
+}
+
+function islamic(edition: string, bitrate: 64 | 128, surah: number, ayah: number) {
+  return `https://cdn.islamic.network/quran/audio/${bitrate}/${edition}/${globalAyah(surah, ayah)}.mp3`;
 }
 
 function line(ru: string, en: string, ar: string, id: string, tr: string, ur: string): Line {
@@ -39,6 +49,7 @@ export const RECITERS: Reciter[] = [
       "مرتل۔ روایت حفص عن عاصم۔",
     ),
     files: (n) => [cdn("mishary-alafasy/r1", n), mirror("server8", "afs", n)],
+    ayahs: (s, a) => [every("Alafasy_128kbps", s, a), islamic("ar.alafasy", 128, s, a)],
   },
   {
     id: "sudais",
@@ -52,6 +63,7 @@ export const RECITERS: Reciter[] = [
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
     files: (n) => [cdn("abdulrahman-sudais/r1", n), mirror("server11", "sds", n)],
+    ayahs: (s, a) => [every("Abdurrahmaan_As-Sudais_192kbps", s, a), islamic("ar.abdurrahmaansudais", 64, s, a)],
   },
   {
     id: "shuraim",
@@ -65,6 +77,7 @@ export const RECITERS: Reciter[] = [
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
     files: (n) => [cdn("saud-shuraim/r1", n), mirror("server7", "shur", n)],
+    ayahs: (s, a) => [every("Saood_ash-Shuraym_128kbps", s, a), islamic("ar.saoodshuraym", 64, s, a)],
   },
   {
     id: "muaiqly",
@@ -78,6 +91,7 @@ export const RECITERS: Reciter[] = [
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
     files: (n) => [cdn("maher-muaiqly/r1", n), mirror("server12", "maher", n)],
+    ayahs: (s, a) => [every("MaherAlMuaiqly128kbps", s, a), islamic("ar.mahermuaiqly", 128, s, a)],
   },
   {
     id: "husary",
@@ -91,6 +105,7 @@ export const RECITERS: Reciter[] = [
       "تعلیمی مرتل۔ روایت حفص۔ آہستہ، واضح وقفوں کے ساتھ۔",
     ),
     files: (n) => [cdn("mahmoud-husary/r1", n), mirror("server13", "husr", n)],
+    ayahs: (s, a) => [every("Husary_128kbps", s, a), islamic("ar.husary", 128, s, a)],
   },
   {
     id: "minshawi",
@@ -104,6 +119,7 @@ export const RECITERS: Reciter[] = [
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
     files: (n) => [cdn("muhammad-minshawi/r2", n)],
+    ayahs: (s, a) => [islamic("ar.minshawimujawwad", 64, s, a)],
   },
   {
     id: "basit",
@@ -117,6 +133,7 @@ export const RECITERS: Reciter[] = [
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
     files: (n) => [cdn("abdulbasit-abdulsamad/r1", n)],
+    ayahs: (s, a) => [every("Abdul_Basit_Mujawwad_128kbps", s, a)],
   },
   {
     id: "hudhaify",
@@ -130,6 +147,7 @@ export const RECITERS: Reciter[] = [
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
     files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n)],
+    ayahs: (s, a) => [every("Hudhaify_128kbps", s, a), islamic("ar.hudhaify", 128, s, a)],
   },
   {
     id: "dosari",
@@ -143,6 +161,7 @@ export const RECITERS: Reciter[] = [
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
     files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n)],
+    ayahs: (s, a) => [every("Yasser_Ad-Dussary_128kbps", s, a)],
   },
   {
     id: "ayyub",
@@ -156,6 +175,7 @@ export const RECITERS: Reciter[] = [
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
     files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n)],
+    ayahs: (s, a) => [every("Muhammad_Ayyoub_128kbps", s, a), islamic("ar.muhammadayyoub", 128, s, a)],
   },
 ];
 
