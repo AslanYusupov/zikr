@@ -569,9 +569,8 @@ export const pushSave = createServerFn({ method: "POST" })
     if (existing[0]) {
       const previous = boardNumber(existing[0].payload);
       if (/^\d{8}$/.test(previous) && /^\d{8}$/.test(number) && previous !== number) {
-        const keep = await absorbAlias(sql, previous, number);
-        payload = payload.replaceAll(`"publicId":"${number}"`, `"publicId":"${keep}"`);
-        number = keep;
+        payload = payload.replaceAll(`"publicId":"${number}"`, `"publicId":"${previous}"`);
+        number = previous;
       }
       const kept = keptScore(existing[0].payload, existing[0].total);
       const incoming = keptScore(payload, data.total);
@@ -956,14 +955,7 @@ export const pushDevice = createServerFn({ method: "POST" })
       await deviceTable(sql);
       const total = data.total ?? 0;
       const incoming = await aliasOf(sql, data.publicId ?? "");
-      const sameDevice = await sql<{ publicId: string }>`
-        select public_id as "publicId" from zikr_device where sync_key = ${data.key} limit 1`;
-      const previousId = await aliasOf(sql, sameDevice[0]?.publicId ?? "");
       let publicId = incoming;
-      if (/^\d{8}$/.test(previousId) && previousId !== incoming) {
-        publicId = previousId;
-        await absorbAlias(sql, previousId, incoming);
-      }
       let payload = (data.payload ?? "").replaceAll(`"publicId":"${data.publicId ?? ""}"`, `"publicId":"${publicId}"`);
       payload = payload.replaceAll('"publicId":"88880455"', '"publicId":"96995742"').replaceAll('"publicId":"62012303"', '"publicId":"87278839"').replaceAll('"publicId":"25574036"', '"publicId":"52812946"').replaceAll('"publicId":"50170262"', '"publicId":"52812946"');
       if (data.tgId) {
@@ -972,8 +964,7 @@ export const pushDevice = createServerFn({ method: "POST" })
           from zikr_device where tg_id = ${data.tgId} limit 1`;
         const saved = prior[0];
         if (saved && saved.syncKey !== data.key) {
-          const kept = await aliasOf(sql, saved.publicId);
-          if (/^\d{8}$/.test(publicId) && publicId !== kept) await absorbAlias(sql, kept, publicId);
+          const kept = /^\d{8}$/.test(publicId) ? publicId : await aliasOf(sql, saved.publicId);
           const nextPayload = payload.replaceAll(`"publicId":"${publicId}"`, `"publicId":"${kept}"`);
           const nextTotal = Math.max(total, saved.total);
           if (nextTotal > saved.total || saved.publicId !== kept) {
@@ -989,10 +980,7 @@ export const pushDevice = createServerFn({ method: "POST" })
         insert into zikr_device (sync_key, public_id, tg_id, payload, total)
         values (${data.key}, ${publicId}, ${data.tgId ?? null}, ${payload}, ${total})
         on conflict (sync_key) do update set
-          public_id = case
-            when zikr_device.public_id ~ '^[0-9]{8}$' then zikr_device.public_id
-            else excluded.public_id
-          end,
+          public_id = excluded.public_id,
           tg_id = coalesce(zikr_device.tg_id, excluded.tg_id),
           payload = case when zikr_device.total > excluded.total then zikr_device.payload else excluded.payload end,
           total = greatest(zikr_device.total, excluded.total),

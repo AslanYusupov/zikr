@@ -99,20 +99,7 @@ export function useCloud(hydrated: boolean) {
           try {
             const local = snapshot(useZikr.getState());
             const parsed = JSON.parse(remote.payload) as { publicId?: string };
-            const localId = /^\d{8}$/.test(local.publicId) ? local.publicId : "";
             const savedId = /^\d{8}$/.test(parsed.publicId ?? "") ? parsed.publicId ?? "" : "";
-            if (localId && savedId && localId !== savedId) {
-              await pushSave({
-                data: {
-                  displayName: local.displayName,
-                  publicBoard: local.publicBoard,
-                  total: local.total,
-                  bestDay: local.bestDay,
-                  inviteCodeToApply: storedInvite(),
-                  payload: JSON.stringify(local),
-                },
-              });
-            }
             const merged = mergeState(local, parsed as unknown);
             useZikr.getState().apply(savedId ? { ...merged, publicId: savedId } : merged);
           } catch {
@@ -261,7 +248,8 @@ export function useWorldSync(hydrated: boolean) {
         data: { key, publicId: id, total: state.total, payload: JSON.stringify(state), ...(tgId ? { tgId } : {}) },
       });
       if (stop || !saved) return;
-      if (/^\d{8}$/.test(saved.publicId) && saved.publicId !== useZikr.getState().publicId) {
+      const current = useZikr.getState().publicId;
+      if (/^\d{8}$/.test(saved.publicId) && !/^\d{8}$/.test(current)) {
         useZikr.setState({ publicId: saved.publicId });
       }
       const local = useZikr.getState();
