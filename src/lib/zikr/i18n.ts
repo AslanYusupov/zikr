@@ -1746,6 +1746,17 @@ const FONT_NOTE: Record<LangId, string> = {
   tr: "Harfler bütün ekranda. Arapça metin aynı kalır.",
   ur: "حروف پوری اسکرین پر۔ عربی متن اپنی جگہ رہتا ہے۔",
 };
+const FONT_SIZE: Record<LangId, string> = {
+  ru: "Размер",
+  en: "Size",
+  ar: "الحجم",
+  id: "Ukuran",
+  tr: "Boyut",
+  ur: "سائز",
+};
+export function fontSizeTitle(lang: LangId): string {
+  return FONT_SIZE[lang] ?? FONT_SIZE.ru;
+}
 export function fontTitle(lang: LangId): string {
   return FONT_LEAD[lang] ?? FONT_LEAD.ru;
 }

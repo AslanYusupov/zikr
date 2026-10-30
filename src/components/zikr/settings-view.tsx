@@ -5,7 +5,7 @@ import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr
 import { formatNum, inviteBody, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { triggerHaptic } from "@/lib/zikr/haptic";
-import { countryName, COUNTRY_IDS, fontHint, fontName, fontNote, fontTitle, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
+import { countryName, COUNTRY_IDS, fontHint, fontName, fontNote, fontSizeTitle, fontTitle, t, themeHint, themeName, tx, voiceHint, voiceName } from "@/lib/zikr/i18n";
 import type { FontId, LangId } from "@/lib/zikr/types";
 import { phraseOf } from "@/lib/zikr/tr";
 import { AYAHS_TOTAL, ayahCount, ayahFile, downloadAyahs, savedAyahFiles } from "@/lib/zikr/ayah-audio";
@@ -168,6 +168,14 @@ export function SettingsView({
                 <span className={cn("mt-1 block text-muted", id === "wide" ? "" : "text-xs")} style={id === "wide" ? { fontSize: "0.95rem", lineHeight: 1.4 } : undefined}>{fontHint(s.lang, id)}</span>
               </button>
             ))}
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-3 py-2">
+            <span className="text-sm text-fg">{fontSizeTitle(s.lang)}</span>
+            <span className="flex items-center gap-2">
+              <button type="button" className="grid size-9 place-items-center rounded-full border border-line text-lg text-fg disabled:opacity-35" disabled={s.fontScale <= 94} onClick={() => s.setFontScale(s.fontScale - 3)} aria-label="-">−</button>
+              <span className="w-12 text-center text-sm tabular-nums text-fg">{s.fontScale}%</span>
+              <button type="button" className="grid size-9 place-items-center rounded-full border border-line text-lg text-fg disabled:opacity-35" disabled={s.fontScale >= 112} onClick={() => s.setFontScale(s.fontScale + 3)} aria-label="+">+</button>
+            </span>
           </div>
         </details>
 

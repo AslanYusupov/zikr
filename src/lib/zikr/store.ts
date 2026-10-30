@@ -9,6 +9,7 @@ import type { DayArchive, DayLog, FontId, LangId, OrbId, RewardArchive, SoundId,
 
 const THEMES: ThemeId[] = ["firdaus", "rayyan", "salat", "sadaqa", "jihad", "kazimin", "tawba", "ayman", "black", "wine", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle", "subhah", "amethyst", "amber", "jade"];
 const FONTS: FontId[] = ["clear", "crimson", "wide", "soft", "book", "even"];
+const FONT_SCALES = [94, 97, 100, 103, 106, 109, 112];
 const LANGS: LangId[] = ["ru", "en", "ar", "id", "tr", "ur"];
 const ORBS: OrbId[] = ["plain", "glow", "pearl", "line", "double", "soft", "dot", "crescent", "kaaba", "shahada"];
 const COUNTRIES = new Set(["", "RU", "SA", "TR", "ID", "PK", "AE", "QA", "EG", "PS", "HL", "MA", "DZ", "MY", "GB", "US", "DE", "FR", "KZ", "UZ", "AZ", "TJ"]);
@@ -59,6 +60,7 @@ export function initialData(): ZikrState {
     themeChosen: false,
     font: "crimson",
     fontChosen: false,
+    fontScale: 100,
     lang: "ru",
     country: "",
     orb: "plain",
@@ -259,6 +261,7 @@ export function normalize(raw: unknown): ZikrState {
     themeChosen: r.themeChosen === true || (THEMES.includes(r.theme as ThemeId) && r.theme !== "black"),
     font: r.fontChosen === true && FONTS.includes(r.font as FontId) ? (r.font as FontId) : "crimson",
     fontChosen: r.fontChosen === true,
+    fontScale: FONT_SCALES.includes(Number(r.fontScale)) ? Number(r.fontScale) : 100,
     lang: LANGS.includes(r.lang as LangId) ? (r.lang as LangId) : "ru",
     country: typeof r.country === "string" && COUNTRIES.has(r.country) ? r.country : "",
     orb: "plain",
@@ -371,6 +374,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     themeChosen: local.themeChosen || local.theme !== "black",
     font: local.fontChosen ? local.font : "crimson",
     fontChosen: local.fontChosen,
+    fontScale: FONT_SCALES.includes(local.fontScale) ? local.fontScale : 100,
     lang: local.lang,
     country: local.country,
     orb: local.orb,
@@ -720,6 +724,7 @@ type Actions = {
   setGoal: (n: number) => void;
   setTheme: (t: ThemeId) => void;
   setFont: (f: FontId) => void;
+  setFontScale: (n: number) => void;
   setLang: (l: LangId) => void;
   setCountry: (c: string) => void;
   setOrb: (o: OrbId) => void;
@@ -777,6 +782,9 @@ export const useZikr = create<ZikrState & Actions>()(
       },
       setFont: (f) => {
         if (FONTS.includes(f)) set({ font: f, fontChosen: true });
+      },
+      setFontScale: (n) => {
+        if (FONT_SCALES.includes(n)) set({ fontScale: n });
       },
       setLang: (l) => {
         if (LANGS.includes(l)) set({ lang: l });

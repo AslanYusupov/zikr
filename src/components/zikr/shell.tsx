@@ -76,6 +76,7 @@ export function Shell() {
   useWorldSync(hydrated && cloud.ready);
   const theme = useZikr((s) => s.theme);
   const font = useZikr((s) => s.font);
+  const fontScale = useZikr((s) => s.fontScale);
   const lang = useZikr((s) => s.lang);
   const publicId = useZikr((s) => s.publicId);
   const sound = useZikr((s) => s.sound);
@@ -284,6 +285,14 @@ export function Shell() {
   useEffect(() => {
     document.documentElement.dataset.font = font || "clear";
   }, [font]);
+
+  useEffect(() => {
+    const scale = fontScale === 100 ? "" : `${(16 * fontScale) / 100}px`;
+    document.documentElement.style.fontSize = scale;
+    return () => {
+      document.documentElement.style.fontSize = "";
+    };
+  }, [fontScale]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
