@@ -58,6 +58,20 @@ function line(ru: string, en: string, ar: string, id: string, tr: string, ur: st
 /** Десять полных чтений Корана. Стиль — только вид чтения и риваят, без оценки голоса. */
 export const RECITERS: Reciter[] = [
   {
+    id: "dosari",
+    name: line("Ясир ад-Дусари", "Yasser al-Dosari", "ياسر الدوسري", "Yasir ad-Dusari", "Yasir ed-Devserî", "یاسر الدوسری"),
+    style: line(
+      "Имам мечети аль-Харам. Муратталь. Риваят Хафс.",
+      "Imam of al-Masjid al-Haram. Murattal. Riwayah of Hafs.",
+      "إمام المسجد الحرام. مرتل. رواية حفص.",
+      "Imam Masjidil Haram. Murattal. Riwayat Hafs.",
+      "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
+      "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
+    ),
+    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n), qari("yasser_ad-dussary", n)],
+    ayahs: (s, a) => [every("Yasser_Ad-Dussary_128kbps", s, a)],
+  },
+  {
     id: "afasy",
     name: line("Мишари Рашид", "Mishari Rashid", "مشاري راشد", "Mishari Rashid", "Mişari Raşid", "مشاری راشد"),
     style: line(
@@ -168,20 +182,6 @@ export const RECITERS: Reciter[] = [
     ),
     files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n), qari("huthayfi", n)],
     ayahs: (s, a) => [every("Hudhaify_128kbps", s, a), islamic("ar.hudhaify", 128, s, a)],
-  },
-  {
-    id: "dosari",
-    name: line("Ясир ад-Дусари", "Yasser al-Dosari", "ياسر الدوسري", "Yasir ad-Dusari", "Yasir ed-Devserî", "یاسر الدوسری"),
-    style: line(
-      "Имам мечети аль-Харам. Муратталь. Риваят Хафс.",
-      "Imam of al-Masjid al-Haram. Murattal. Riwayah of Hafs.",
-      "إمام المسجد الحرام. مرتل. رواية حفص.",
-      "Imam Masjidil Haram. Murattal. Riwayat Hafs.",
-      "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
-      "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
-    ),
-    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n), qari("yasser_ad-dussary", n)],
-    ayahs: (s, a) => [every("Yasser_Ad-Dussary_128kbps", s, a)],
   },
   {
     id: "ayyub",
