@@ -40,6 +40,7 @@ export function remoteAyahUrls(surah: number, ayah: number) {
   return [
     `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${id}.mp3`,
     `https://audio.qurancdn.com/Alafasy/mp3/${file}.mp3`,
+    `https://verses.quran.com/Alafasy/mp3/${file}.mp3`,
     `https://everyayah.com/data/Alafasy_128kbps/${file}.mp3`,
   ];
 }

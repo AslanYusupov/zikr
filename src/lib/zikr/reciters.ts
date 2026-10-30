@@ -23,12 +23,32 @@ function mirror(server: string, folder: string, surah: number) {
   return `https://${server}.mp3quran.net/${folder}/${pad(surah)}.mp3`;
 }
 
+function qari(folder: string, surah: number) {
+  return `https://download.quranicaudio.com/quran/${folder}/${pad(surah)}.mp3`;
+}
+
+function qdc(path: string, surah: number, padded = false) {
+  return `https://download.quranicaudio.com/qdc/${path}/${padded ? pad(surah) : String(surah)}.mp3`;
+}
+
+function cloudSurah(edition: string, surah: number) {
+  return `https://cdn.islamic.network/quran/audio-surah/128/${edition}/${surah}.mp3`;
+}
+
 function every(folder: string, surah: number, ayah: number) {
   return `https://everyayah.com/data/${folder}/${ayahFile(surah, ayah)}.mp3`;
 }
 
 function islamic(edition: string, bitrate: 64 | 128, surah: number, ayah: number) {
   return `https://cdn.islamic.network/quran/audio/${bitrate}/${edition}/${globalAyah(surah, ayah)}.mp3`;
+}
+
+function quranCom(surah: number, ayah: number) {
+  const file = ayahFile(surah, ayah);
+  return [
+    `https://audio.qurancdn.com/Alafasy/mp3/${file}.mp3`,
+    `https://verses.quran.com/Alafasy/mp3/${file}.mp3`,
+  ];
 }
 
 function line(ru: string, en: string, ar: string, id: string, tr: string, ur: string): Line {
@@ -48,8 +68,8 @@ export const RECITERS: Reciter[] = [
       "Murattal. Hafs rivayeti.",
       "مرتل۔ روایت حفص عن عاصم۔",
     ),
-    files: (n) => [cdn("mishary-alafasy/r1", n), mirror("server8", "afs", n)],
-    ayahs: (s, a) => [every("Alafasy_128kbps", s, a), islamic("ar.alafasy", 128, s, a)],
+    files: (n) => [cdn("mishary-alafasy/r1", n), mirror("server8", "afs", n), qari("mishaari_raashid_al_3afaasee", n), cloudSurah("ar.alafasy", n), qdc("mishari_al_afasy/murattal", n)],
+    ayahs: (s, a) => [every("Alafasy_128kbps", s, a), islamic("ar.alafasy", 128, s, a), ...quranCom(s, a)],
   },
   {
     id: "sudais",
@@ -62,7 +82,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("abdulrahman-sudais/r1", n), mirror("server11", "sds", n)],
+    files: (n) => [cdn("abdulrahman-sudais/r1", n), mirror("server11", "sds", n), qari("abdurrahmaan_as-sudays", n), qdc("abdurrahmaan_as_sudais/murattal", n)],
     ayahs: (s, a) => [every("Abdurrahmaan_As-Sudais_192kbps", s, a), islamic("ar.abdurrahmaansudais", 64, s, a)],
   },
   {
@@ -76,7 +96,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("saud-shuraim/r1", n), mirror("server7", "shur", n)],
+    files: (n) => [cdn("saud-shuraim/r1", n), mirror("server7", "shur", n), qari("sa3ood_al-shuraym", n)],
     ayahs: (s, a) => [every("Saood_ash-Shuraym_128kbps", s, a), islamic("ar.saoodshuraym", 64, s, a)],
   },
   {
@@ -90,7 +110,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("maher-muaiqly/r1", n), mirror("server12", "maher", n)],
+    files: (n) => [cdn("maher-muaiqly/r1", n), mirror("server12", "maher", n), qari("maher_256", n)],
     ayahs: (s, a) => [every("MaherAlMuaiqly128kbps", s, a), islamic("ar.mahermuaiqly", 128, s, a)],
   },
   {
@@ -104,7 +124,7 @@ export const RECITERS: Reciter[] = [
       "Öğretici murattal. Hafs rivayeti. Yavaş, duraklar açık.",
       "تعلیمی مرتل۔ روایت حفص۔ آہستہ، واضح وقفوں کے ساتھ۔",
     ),
-    files: (n) => [cdn("mahmoud-husary/r1", n), mirror("server13", "husr", n)],
+    files: (n) => [cdn("mahmoud-husary/r1", n), mirror("server13", "husr", n), qari("mahmood_khaleel_al-husaree", n)],
     ayahs: (s, a) => [every("Husary_128kbps", s, a), islamic("ar.husary", 128, s, a)],
   },
   {
@@ -118,7 +138,7 @@ export const RECITERS: Reciter[] = [
       "Mücevved. Hafs rivayeti. Makamlı kıraat.",
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
-    files: (n) => [cdn("muhammad-minshawi/r2", n)],
+    files: (n) => [cdn("muhammad-minshawi/r2", n), qari("minshawi_mujawwad", n), cloudSurah("ar.muhammadsiddiqalminshawimujawwad", n), qdc("siddiq_al-minshawi/mujawwad", n, true)],
     ayahs: (s, a) => [islamic("ar.minshawimujawwad", 64, s, a)],
   },
   {
@@ -132,7 +152,7 @@ export const RECITERS: Reciter[] = [
       "Mücevved. Hafs rivayeti. Makamlı kıraat.",
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
-    files: (n) => [cdn("abdulbasit-abdulsamad/r1", n)],
+    files: (n) => [cdn("abdulbasit-abdulsamad/r1", n), qari("abdulbaset_mujawwad", n), cloudSurah("ar.abdulbasitmujawwad", n)],
     ayahs: (s, a) => [every("Abdul_Basit_Mujawwad_128kbps", s, a)],
   },
   {
@@ -146,7 +166,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Nebevî imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n)],
+    files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n), qari("huthayfi", n)],
     ayahs: (s, a) => [every("Hudhaify_128kbps", s, a), islamic("ar.hudhaify", 128, s, a)],
   },
   {
@@ -160,7 +180,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n)],
+    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n), qari("yasser_ad-dussary", n)],
     ayahs: (s, a) => [every("Yasser_Ad-Dussary_128kbps", s, a)],
   },
   {
@@ -174,7 +194,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Nebevî imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n)],
+    files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n), qari("muhammad_ayyoob", n), cloudSurah("ar.muhammadayyub", n)],
     ayahs: (s, a) => [every("Muhammad_Ayyoub_128kbps", s, a), islamic("ar.muhammadayyoub", 128, s, a)],
   },
 ];
