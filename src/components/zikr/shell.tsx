@@ -22,9 +22,9 @@ type Tab = "zikr" | "quests" | "dua" | "quran" | "rating";
 
 const TABS: { id: Tab; icon?: typeof Moon }[] = [
   { id: "zikr", icon: Moon },
-  { id: "quran" },
-  { id: "dua" },
   { id: "quests", icon: ListChecks },
+  { id: "dua" },
+  { id: "quran" },
   { id: "rating", icon: BarChart3 },
 ];
 
