@@ -406,6 +406,16 @@ export const SUNNAH_QUESTS: SunnahQuest[] = [
     steps: [{ dhikrId: "kursi", count: 1, label: "После намаза" }],
   },
   {
+    id: "baqarah-night",
+    tier: "easy",
+    tierLabel: "Лёгкое",
+    title: "Два аята аль-Бакары",
+    points: 120,
+    source: "аль-Бухари, Муслим",
+    note: "Один раз ночью. Кто прочитает два последних аята суры аль-Бакара ночью, этого будет ему достаточно.",
+    steps: [{ dhikrId: "baqarah", count: 1, label: "Ночью" }],
+  },
+  {
     id: "after-ten",
     tier: "medium",
     tierLabel: "Среднее",

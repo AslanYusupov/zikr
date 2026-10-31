@@ -8,6 +8,7 @@ const LABELS: Record<string, Record<LangId, string>> = {
   "Антас-салям": { ru: "Антас-салям", en: "Antas-salam", ar: "أنت السلام", id: "Antas-salam", tr: "Entes-selam", ur: "أنت السلام" },
   "Сотый раз": { ru: "Сотый раз", en: "The hundredth", ar: "المرة المتممة للمئة", id: "Yang keseratus", tr: "Yüzüncü", ur: "سوواں" },
   "После намаза": { ru: "После намаза", en: "After the prayer", ar: "بعد الصلاة", id: "Setelah salat", tr: "Namazdan sonra", ur: "نماز کے بعد" },
+  "Ночью": { ru: "Ночью", en: "At night", ar: "في الليل", id: "Di malam hari", tr: "Gece", ur: "رات کو" },
 };
 
 type Line = { title: string; note: string };
@@ -68,6 +69,13 @@ const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
     id: { title: "Ayat Kursi", note: "Satu kali setelah setiap salat wajib: tidak ada yang menghalangi pembacanya masuk surga selain kematian. Sebelum tidur dibaca tersendiri: ada penjaga dari Allah bersamanya, dan setan tidak mendekat sampai pagi." },
     tr: { title: "Ayetelkürsî", note: "Her farz namazdan sonra bir kez: okuyanı cennetten ancak ölüm men eder. Uyumadan önce ayrıca okunur: yanında Allah’tan bir koruyucu olur ve sabaha kadar şeytan yaklaşmaz." },
     ur: { title: "آیت الکرسی", note: "ہر فرض نماز کے بعد ایک بار: پڑھنے والے کو جنت سے صرف موت روکتی ہے۔ سونے سے پہلے الگ پڑھی جاتی ہے: اس کے ساتھ اللہ کی طرف سے محافظ رہتا ہے، اور صبح تک شیطان نہیں آتا۔" },
+  },
+  "baqarah-night": {
+    en: { title: "The last two verses of al-Baqarah", note: "Once at night. Whoever recites the last two verses of Surat al-Baqarah at night, they will suffice him." },
+    ar: { title: "آخر آيتين من البقرة", note: "مرة في الليل. من قرأ بالآيتين من آخر سورة البقرة في ليلة كفتاه." },
+    id: { title: "Dua ayat terakhir al-Baqarah", note: "Satu kali di malam hari. Siapa membaca dua ayat terakhir surah al-Baqarah di malam hari, keduanya mencukupinya." },
+    tr: { title: "Bakara’nın son iki âyeti", note: "Gece bir kez. Bakara suresinin son iki âyetini gece okuyan kimseye bu yeter." },
+    ur: { title: "بقرہ کی آخری دو آیتیں", note: "رات کو ایک بار۔ جو سورۃ البقرہ کی آخری دو آیتیں رات کو پڑھے، وہ اس کے لیے کافی ہیں۔" },
   },
   "after-ten": {
     en: { title: "Ten after the prayer", note: "After the prayer: ten “Subhanallah”, ten “Alhamdulillah”, and ten “Allahu Akbar”. Over five prayers that is one hundred and fifty on the tongue and one thousand five hundred on the Scale." },
