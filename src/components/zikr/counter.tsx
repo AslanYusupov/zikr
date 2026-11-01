@@ -407,7 +407,7 @@ export function Counter({
             }}
           >
             <div className="phrase-scroll">
-            {hasArabic && arabic.length <= 72 ? (
+            {hasArabic ? (
             <p
               className={cn(
                 "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
@@ -423,9 +423,7 @@ export function Counter({
             {virtue && showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-fg">
                 {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
-                {compact && spoken.translation ? <p className="mt-1 text-fg">{spoken.translation}</p> : null}
-                {!spoken.translation && compact && spoken.meaning.length >= 90 ? <p className="mt-1 text-fg">{spoken.meaning}</p> : null}
-                <p className="mt-1 text-fg">{spoken.reward}</p>
+                <p className="mt-1 text-fg">{spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
                 <p className="mt-1 text-[0.65rem] text-fg">{cite(phrase.source, s.lang)}</p>
               </div>
             ) : showPhrase && spoken.meaning && spoken.meaning.length < 90 ? (
