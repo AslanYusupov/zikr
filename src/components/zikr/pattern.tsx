@@ -86,10 +86,10 @@ const PASSES = [
   { x: "-40vw", y: "10vh", x2: "112vw", y2: "38vh", rot: "-158deg" },
   { x: "-36vw", y: "-4vh", x2: "108vw", y2: "52vh", rot: "-143deg" },
   { x: "-42vw", y: "32vh", x2: "110vw", y2: "64vh", rot: "-155deg" },
-  { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "97deg" },
-  { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "82deg" },
-  { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "105deg" },
-  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "74deg" },
+  { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "-97deg" },
+  { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg" },
+  { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg" },
+  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "-74deg" },
 ] as const;
 
 function TapStar() {
