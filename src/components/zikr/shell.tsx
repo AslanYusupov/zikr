@@ -119,8 +119,8 @@ export function Shell() {
           "/favicon.svg",
           "/orbit-sun.webp",
           "/orbit-moon.webp",
-          "/__grok/manifest.webmanifest",
-          "/__grok/icon-180.png",
+          "/manifest.webmanifest",
+          "/icon-180.png",
         ]);
         document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
           const src = node.getAttribute("src") || node.getAttribute("href") || "";
