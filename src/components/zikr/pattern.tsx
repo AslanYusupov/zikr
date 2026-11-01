@@ -89,7 +89,7 @@ const PASSES = [
   { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "-97deg" },
   { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg" },
   { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg" },
-  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "-73deg" },
+  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "74deg" },
 ] as const;
 
 function TapStar() {
