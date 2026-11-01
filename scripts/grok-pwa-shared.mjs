@@ -179,7 +179,7 @@ export function renderWebManifest(hostHeader, site = {}) {
       theme_color: "#000000",
       icons: [
         {
-          src: "/__grok/icon-180.png",
+          src: "/icon-180.png",
           sizes: "180x180",
           type: "image/png",
         },
@@ -194,8 +194,8 @@ export function grokPwaHeadTags(appName = DEFAULT_APP_NAME) {
   return [
     // Standalone display comes from the manifest ("display": "standalone");
     // the legacy *-web-app-capable metas it replaces are deliberately absent.
-    ["manifest", '<link rel="manifest" href="/__grok/manifest.webmanifest">'],
-    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/__grok/icon-180.png">'],
+    ["manifest", '<link rel="manifest" href="/manifest.webmanifest">'],
+    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/icon-180.png">'],
     [
       "apple-mobile-web-app-title",
       `<meta name="apple-mobile-web-app-title" content="${escapeHtml(appName)}">`,
@@ -240,11 +240,9 @@ export function grokXCreatorHeadTags(creator = readXCreator(), creatorId = readX
   ];
 }
 
-/** Project id only. A script from grok.com is not loaded: that host does not open without a VPN, and it stops the app from starting. */
-export function grokExtensionsHeadTags(projectId = readGrokProjectId()) {
-  const id = escapeHtml(projectId);
-  if (!projectId) return [];
-  return [`<meta name="grok-project-id" content="${id}">`];
+/** Nothing from grok.com is sent. A script from there does not open without a VPN and stops the page. */
+export function grokExtensionsHeadTags(_projectId = readGrokProjectId()) {
+  return [];
 }
 
 export function readOgSite(cwd = process.cwd()) {
@@ -380,7 +378,8 @@ export function grokOgHeadTags({
 function stripGrokExtensionsScript(html) {
   return String(html)
     .replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok\.me|extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "")
-    .replace(/<link\b[^>]*\bhref\s*=\s*["'][^"']*(?:grok\.com|grok\.me)[^"']*["'][^>]*>/gi, "");
+    .replace(/<link\b[^>]*\bhref\s*=\s*["'][^"']*(?:grok\.com|grok\.me|\/__grok\/)[^"']*["'][^>]*>/gi, "")
+    .replace(/<meta\b[^>]*(?:grok-project-id|grok:app_id|property=["']grok:)[^>]*>/gi, "");
 }
 
 export function stripShareMetaTags(html) {
@@ -432,7 +431,7 @@ export function normalizeHeadContext(ctx = {}) {
 
 export function injectGrokPwaHead(html, ctx = {}) {
   if (typeof html !== "string") return html;
-  const { site, projectId, creator, creatorId, host, cwd } = normalizeHeadContext(ctx);
+  const { site, creator, creatorId, host, cwd } = normalizeHeadContext(ctx);
   const documentTitle = titleFromDocument(html);
   const appName = resolveOgTitle(
     site,
@@ -445,7 +444,7 @@ export function injectGrokPwaHead(html, ctx = {}) {
   const missing = grokPwaHeadTags(appName)
     .filter(([key]) => {
       if (key === "manifest") return !/rel=["']manifest["']/i.test(next);
-      if (key === "apple-touch-icon") return !next.includes('href="/__grok/icon-180.png"');
+      if (key === "apple-touch-icon") return !/rel=["']apple-touch-icon["']/i.test(next);
       return !next.includes(`name="${key}"`);
     })
     .map(([, tag]) => tag);
@@ -455,16 +454,6 @@ export function injectGrokPwaHead(html, ctx = {}) {
     grokOgHeadTags({ host, appName, site, documentTitle, cwd }).join(""),
   );
 
-  if (projectId && !next.includes('name="grok-project-id"')) {
-    missing.push(...grokExtensionsHeadTags(projectId));
-  }
-  if (
-    projectId &&
-    !next.includes('property="grok:app_id"') &&
-    !next.includes("property='grok:app_id'")
-  ) {
-    missing.push(`<meta property="grok:app_id" content="${escapeHtml(projectId)}">`);
-  }
   const creatorTags = grokXCreatorHeadTags(creator, creatorId);
   if (creatorTags.length > 0) {
     const hasCreator =

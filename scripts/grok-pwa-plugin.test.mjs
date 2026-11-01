@@ -45,9 +45,10 @@ test("injects project id on the script and meta when provided", () => {
     appName: "Demo",
     projectId: "proj-123",
   });
-  assert.match(out, /name="grok-project-id" content="proj-123"/);
+  assert.doesNotMatch(out, /name="grok-project-id"/);
   assert.doesNotMatch(out, /data-project-id=/);
-  assert.match(out, /property="grok:app_id" content="proj-123"/);
+  assert.doesNotMatch(out, /property="grok:app_id"/);
+  assert.doesNotMatch(out, /grok\.com/);
 });
 
 test("does not duplicate grok:app_id", () => {
@@ -55,7 +56,7 @@ test("does not duplicate grok:app_id", () => {
   const once = injectGrokPwaHead("<html><head></head></html>", ctx);
   const twice = injectGrokPwaHead(once, ctx);
   assert.equal(once, twice);
-  assert.equal(twice.split('property="grok:app_id"').length - 1, 1);
+  assert.equal(twice.split('property="grok:app_id"').length - 1, 0);
 });
 
 test("omits x:creator tags without both creator values", () => {
@@ -477,7 +478,7 @@ test("renders the manifest with the per-app name", () => {
   const manifest = JSON.parse(renderWebManifest("wild-race.grok.me"));
   assert.equal(manifest.name, "Wild Race");
   assert.equal(manifest.short_name, "Wild Race");
-  assert.equal(manifest.icons[0].src, "/__grok/icon-180.png");
+  assert.equal(manifest.icons[0].src, "/icon-180.png");
 });
 
 // Tripwires: the deployed-app path only works if Nitro scans server/ — an
