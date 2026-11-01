@@ -378,10 +378,9 @@ export function grokOgHeadTags({
 }
 
 function stripGrokExtensionsScript(html) {
-  return String(html).replace(
-    /<script\b[^>]*\bsrc\s*=\s*["'][^"']*\/grok-app-builder\/extensions\.js[^"']*["'][^>]*>\s*<\/script>/gi,
-    "",
-  );
+  return String(html)
+    .replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok\.me|extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "")
+    .replace(/<link\b[^>]*\bhref\s*=\s*["'][^"']*(?:grok\.com|grok\.me)[^"']*["'][^>]*>/gi, "");
 }
 
 export function stripShareMetaTags(html) {
@@ -475,8 +474,8 @@ export function injectGrokPwaHead(html, ctx = {}) {
     if (!next.includes('property="x:creator:id"')) missing.push(creatorTags[1]);
   }
 
-  if (missing.length === 0) return next;
-  return insertBeforeHeadClose(next, missing.join(""));
+  if (missing.length === 0) return stripGrokExtensionsScript(next);
+  return stripGrokExtensionsScript(insertBeforeHeadClose(next, missing.join("")));
 }
 
 function findHeadClose(buf) {
