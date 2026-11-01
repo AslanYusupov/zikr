@@ -395,7 +395,7 @@ export function Counter({
           </div>
           <button
             type="button"
-            className={cn("phrase-read shrink-0 overflow-y-auto px-4 pt-2 text-center", virtue && "phrase-open", compact && "phrase-compact", slide?.dir === "left" && "phrase-slide-left", slide?.dir === "right" && "phrase-slide-right")}
+            className={cn("phrase-read shrink-0 px-0 pt-0 text-center", virtue && "phrase-open", compact && "phrase-compact", slide?.dir === "left" && "phrase-slide-left", slide?.dir === "right" && "phrase-slide-right")}
             key={slide?.n}
             onPointerDown={dhikrSwipeStart}
             onPointerMove={dhikrSwipeMove}
@@ -406,6 +406,7 @@ export function Counter({
               setVirtue((v) => !v);
             }}
           >
+            <div className="phrase-scroll">
             {hasArabic ? (
             <p
               className={cn(
@@ -436,6 +437,7 @@ export function Counter({
                 {s.lang === "ru" ? <span className="mt-0.5 block text-[0.65rem] text-muted">ан-Насаи</span> : null}
               </p>
             ) : null}
+            </div>
           </button>
           {nameIndex >= 0 ? (
             <div className="name-switch" dir="ltr">
