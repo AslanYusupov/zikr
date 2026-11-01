@@ -423,7 +423,7 @@ export function Counter({
             {virtue && showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-fg">
                 {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
-                <p className="mt-1 text-fg">{phrase.id === "la-yadurru" || phrase.id === "istighfar-azim" || phrase.id === "wahdahu" ? spoken.reward : spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
+                <p className="mt-1 text-fg">{phrase.id === "la-yadurru" || phrase.id === "istighfar-azim" || phrase.id === "wahdahu" || phrase.id === "hasbuna" ? spoken.reward : spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
                 <p className="mt-1 text-[0.65rem] text-fg">{cite(phrase.source, s.lang)}</p>
               </div>
             ) : showPhrase && spoken.meaning && spoken.meaning.length < 90 ? (
