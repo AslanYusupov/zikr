@@ -421,22 +421,23 @@ export function Counter({
             </p>
             ) : null}
             <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", !hasArabic ? "text-sm" : name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
-            {virtue && showPhrase ? (
+            {nameIndex >= 0 ? (
+              virtue && showPhrase ? (
+                <div className="mt-1 text-xs leading-snug text-fg">
+                  {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
+                  <p className="mt-1 text-fg">{compact ? spoken.meaning : spoken.reward}</p>
+                  <p className="mt-1 text-[0.65rem] text-fg">{cite(phrase.source, s.lang)}</p>
+                </div>
+              ) : showPhrase && spoken.meaning && spoken.meaning.length < 90 ? (
+                <p className="mt-0.5 text-xs leading-snug text-fg">{spoken.meaning}</p>
+              ) : null
+            ) : virtue && showPhrase ? (
               <div className="mt-1 text-xs leading-snug text-fg">
-                {spoken.full ? <p className="text-sm leading-snug text-fg">{spoken.full}</p> : null}
-                <p className="mt-1 text-fg">{phrase.id === "la-yadurru" || phrase.id === "istighfar-azim" || phrase.id === "adad" || phrase.id === "wahdahu" || phrase.id === "hasbuna" ? spoken.reward : spoken.translation && compact ? spoken.translation : compact ? spoken.meaning : spoken.reward}</p>
+                <p className="text-fg">{spoken.reward}</p>
                 <p className="mt-1 text-[0.65rem] text-fg">{cite(phrase.source, s.lang)}</p>
               </div>
-            ) : showPhrase && spoken.meaning && (spoken.meaning.length < 90 || phrase.id === "istighfar-azim" || phrase.id === "adad") ? (
-              <p className="mt-0.5 text-xs leading-snug text-fg">{spoken.meaning}</p>
-            ) : null}
-            {phrase.id === "kursi" && showPhrase ? (
-              <p className="mt-1 text-xs leading-snug text-fg">
-                {s.lang === "ru"
-                  ? "Кто прочитает аят аль-Курси после каждого обязательного намаза, того не отделяет от Рая ничего, кроме смерти."
-                  : spoken.reward}
-                {s.lang === "ru" ? <span className="mt-0.5 block text-[0.65rem] text-muted">ан-Насаи</span> : null}
-              </p>
+            ) : showPhrase && (spoken.translation || spoken.meaning) ? (
+              <p className="mt-0.5 text-xs leading-snug text-fg">{spoken.translation || spoken.meaning}</p>
             ) : null}
             </div>
           </button>
