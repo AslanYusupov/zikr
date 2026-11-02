@@ -8,13 +8,13 @@ import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 
-const UI: Record<LangId, { title: string; ayah: string; whole: string; again: string; fail: string; pick: string; ayahNo: string }> = {
-  ru: { title: "Слушать Коран", ayah: "По аяту", whole: "Полностью", again: "Сначала", fail: "Это чтение не открылось. Проверь связь или выбери другого чтеца.", pick: "Чтецы", ayahNo: "аят" },
-  en: { title: "Listen to the Quran", ayah: "By ayah", whole: "Whole surah", again: "Again", fail: "This recitation did not open. Check the connection or choose another reciter.", pick: "Reciters", ayahNo: "ayah" },
-  ar: { title: "استماع القرآن", ayah: "آية آية", whole: "كاملة", again: "من الأول", fail: "لم تُفتح هذه التلاوة. تحقق من الاتصال أو اختر قارئًا آخر.", pick: "القرّاء", ayahNo: "آية" },
-  id: { title: "Dengarkan Quran", ayah: "Per ayat", whole: "Utuh", again: "Dari awal", fail: "Bacaan ini tidak terbuka. Periksa sambungan atau pilih qari lain.", pick: "Qari", ayahNo: "ayat" },
-  tr: { title: "Kur’an dinle", ayah: "Ayet ayet", whole: "Tam sure", again: "Baştan", fail: "Bu kıraat açılmadı. Bağlantıyı kontrol et veya başka bir kari seç.", pick: "Kariler", ayahNo: "ayet" },
-  ur: { title: "قرآن سنیں", ayah: "آیت وار", whole: "پوری", again: "شروع سے", fail: "یہ تلاوت نہیں کھلی۔ رابطہ دیکھیں یا دوسرا قاری چنیں۔", pick: "قاری", ayahNo: "آیت" },
+const UI: Record<LangId, { title: string; ayah: string; whole: string; again: string; fail: string; pick: string; ayahNo: string; hafs: string; surahs: string }> = {
+  ru: { title: "Слушать Коран", ayah: "По аяту", whole: "Сура целиком", again: "Повтор", fail: "Это чтение не открылось. Проверь связь или выбери другого чтеца.", pick: "Чтение", ayahNo: "аят", hafs: "Все чтения — риваят Хафс от Асима, как в мусхафе Медины.", surahs: "Суры" },
+  en: { title: "Listen to the Quran", ayah: "By ayah", whole: "Whole surah", again: "Repeat", fail: "This recitation did not open. Check the connection or choose another reciter.", pick: "Recitation", ayahNo: "ayah", hafs: "Every recitation is the riwayah of Hafs from Asim, as in the Madinah mushaf.", surahs: "Surahs" },
+  ar: { title: "استماع القرآن", ayah: "آية آية", whole: "السورة", again: "تكرار", fail: "لم تُفتح هذه التلاوة. تحقق من الاتصال أو اختر قارئًا آخر.", pick: "التلاوة", ayahNo: "آية", hafs: "هذه التلاوات برواية حفص عن عاصم، كما في مصحف المدينة.", surahs: "السور" },
+  id: { title: "Dengarkan Quran", ayah: "Per ayat", whole: "Surah utuh", again: "Ulangi", fail: "Bacaan ini tidak terbuka. Periksa sambungan atau pilih qari lain.", pick: "Bacaan", ayahNo: "ayat", hafs: "Semua bacaan adalah riwayat Hafs dari Asim, seperti mushaf Madinah.", surahs: "Surah" },
+  tr: { title: "Kur’an dinle", ayah: "Ayet ayet", whole: "Sure bütün", again: "Tekrar", fail: "Bu kıraat açılmadı. Bağlantıyı kontrol et veya başka bir kari seç.", pick: "Kıraat", ayahNo: "ayet", hafs: "Bütün kıraatler, Medine mushafındaki gibi Hafs rivayetidir.", surahs: "Sureler" },
+  ur: { title: "قرآن سنیں", ayah: "آیت وار", whole: "پوری سورت", again: "دہراؤ", fail: "یہ تلاوت نہیں کھلی۔ رابطہ دیکھیں یا دوسرا قاری چنیں۔", pick: "تلاوت", ayahNo: "آیت", hafs: "یہ تمام تلاوتیں روایت حفص عن عاصم ہیں، جیسے مصحف مدینہ۔", surahs: "سورتیں" },
 };
 
 type ListenMode = "ayah" | "whole";
@@ -40,15 +40,18 @@ export function ListenView() {
   const [ayah, setAyah] = useState(1);
   const [playing, setPlaying] = useState(false);
   const [fail, setFail] = useState(false);
+  const [loop, setLoop] = useState(false);
   const [now, setNow] = useState(0);
   const [dur, setDur] = useState(0);
   const audio = useRef<HTMLAudioElement | null>(null);
   const list = useRef<HTMLDivElement | null>(null);
   const token = useRef(0);
   const want = useRef(false);
+  const again = useRef(false);
   const spot = useRef({ mode, reciterId, surah, ayah });
   const go = useRef<(id: string, nextSurah: number, nextAyah: number, nextMode: ListenMode) => void>(() => {});
   spot.current = { mode, reciterId, surah, ayah };
+  again.current = loop;
 
   useEffect(() => {
     const el = document.createElement("audio");
@@ -61,6 +64,10 @@ export function ListenView() {
     };
     const onEnd = () => {
       const here = spot.current;
+      if (again.current) {
+        go.current(here.reciterId, here.surah, here.mode === "ayah" ? here.ayah : 1, here.mode);
+        return;
+      }
       if (here.mode === "ayah" && here.ayah < ayahCount(here.surah)) {
         go.current(here.reciterId, here.surah, here.ayah + 1, "ayah");
         return;
@@ -167,6 +174,10 @@ export function ListenView() {
     el.currentTime = Math.min(el.duration, Math.max(0, value * el.duration));
   }
 
+  useEffect(() => {
+    list.current?.querySelector(`[data-n="${surah}"]`)?.scrollIntoView({ block: "nearest" });
+  }, [surah]);
+
   const current = book?.surahs[surah - 1];
   const label = current
     ? lang === "ar"
@@ -176,12 +187,14 @@ export function ListenView() {
         : surahSpoken(lang, current.n, current.en)
     : "";
   const place = dur > 0 ? Math.min(1, now / dur) : 0;
+  const reciter = reciterById(reciterId);
 
   return (
     <div className="listen">
       <div className="listen-head">
         <p className="font-arabic text-xl leading-none text-gold" dir="rtl" lang="ar">اسْتَمِعْ لِلْقُرْآنِ</p>
         <h2 className="mt-1 text-base text-fg">{copy.title}</h2>
+        <p className="listen-hafs">{copy.hafs}</p>
         <div className="listen-mode">
           <button type="button" className={mode === "ayah" ? "on" : ""} onClick={() => chooseMode("ayah")}>{copy.ayah}</button>
           <button type="button" className={mode === "whole" ? "on" : ""} onClick={() => chooseMode("whole")}>{copy.whole}</button>
@@ -197,10 +210,12 @@ export function ListenView() {
             onClick={() => play(item.id, surah, mode === "ayah" ? ayah : 1, mode)}
           >
             <span className="listen-name">{item.name[lang]}</span>
-            <span className="listen-style">{item.style[lang]}</span>
+            <span className="listen-form">{item.form[lang]}</span>
           </button>
         ))}
       </div>
+      <p className="listen-about">{reciter.style[lang]}</p>
+      <p className="listen-kicker">{copy.surahs}</p>
       <div ref={list} className="listen-list">
         {book?.surahs.map((item) => {
           const name = lang === "ar" ? item.name : lang === "ru" ? item.ru : surahSpoken(lang, item.n, item.en);
@@ -221,13 +236,17 @@ export function ListenView() {
                 <span className="block truncate font-arabic text-lg leading-none text-fg" dir="rtl" lang="ar">{item.name}</span>
                 {lang !== "ar" ? <span className="mt-1 block truncate text-xs text-muted">{name}</span> : null}
               </span>
+              <span className="listen-count">{ayahCount(item.n)}</span>
             </button>
           );
         })}
       </div>
       <div className="listen-player">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="min-w-0 truncate text-sm text-fg">{label}</p>
+        <div className="min-w-0">
+          <p className="truncate text-sm text-fg">{label}</p>
+          <p className="truncate text-xs text-muted">{reciter.name[lang]} · {reciter.form[lang]}</p>
+        </div>
           <p className="shrink-0 text-xs tabular-nums text-muted">
             {mode === "ayah" ? `${copy.ayahNo} ${ayah} / ${ayahCount(surah)} · ` : ""}
             {clock(now)} / {clock(dur)}
@@ -242,9 +261,6 @@ export function ListenView() {
           onChange={(event) => seek(Number(event.target.value) / 1000)}
           aria-label={label}
         />
-        <div className="listen-bar" aria-hidden>
-          <i style={{ width: `${Math.min(100, place * 100)}%` }} />
-        </div>
         {fail ? <p className="mt-1 text-xs text-gold">{copy.fail}</p> : null}
         <div className="listen-controls">
           <button type="button" className="listen-side" onClick={() => mode === "ayah" ? play(reciterId, surah, ayah - 1, mode) : play(reciterId, surah - 1, 1, mode)} aria-label="prev">
@@ -256,7 +272,7 @@ export function ListenView() {
           <button type="button" className="listen-side" onClick={() => mode === "ayah" ? play(reciterId, surah, ayah + 1, mode) : play(reciterId, surah + 1, 1, mode)} aria-label="next">
             <SkipForward className="size-5" strokeWidth={1.6} />
           </button>
-          <button type="button" className="listen-side" onClick={() => play(reciterId, surah, mode === "ayah" ? ayah : 1, mode)} aria-label={copy.again}>
+          <button type="button" className={cn("listen-side", loop && "on")} onClick={() => setLoop((on) => !on)} aria-label={copy.again} aria-pressed={loop}>
             <Repeat className="size-5" strokeWidth={1.6} />
           </button>
         </div>
