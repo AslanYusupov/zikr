@@ -201,15 +201,30 @@ export function ListenDock() {
 
   if (!started || onScreen || (!playing && now <= 0)) return null;
 
+  function step(dir: number) {
+    const here = useListen.getState();
+    const next = here.surah + dir;
+    if (next < 1 || next > 114) return;
+    playListen(here.reciterId, next, 1, here.mode);
+  }
+
   return (
     <div className="listen-dock">
-      <p className="truncate" dir={lang === "ar" ? "rtl" : "auto"}>{name}</p>
-      <button type="button" onClick={toggleListen} aria-label={playing ? "pause" : "play"}>
-        {playing ? <Pause className="size-4" strokeWidth={1.8} /> : <Play className="size-4" strokeWidth={1.8} />}
-      </button>
       <button type="button" className="listen-x" onClick={stopListen} aria-label="close">
         <X className="size-3.5" strokeWidth={2} />
       </button>
+      <p className="truncate" dir={lang === "ar" ? "rtl" : "auto"}>{name}</p>
+      <div className="listen-row">
+        <button type="button" className="listen-skip" onClick={() => step(-1)} aria-label="prev">
+          <SkipBack className="size-3.5" strokeWidth={1.8} />
+        </button>
+        <button type="button" onClick={toggleListen} aria-label={playing ? "pause" : "play"}>
+          {playing ? <Pause className="size-4" strokeWidth={1.8} /> : <Play className="size-4" strokeWidth={1.8} />}
+        </button>
+        <button type="button" className="listen-skip" onClick={() => step(1)} aria-label="next">
+          <SkipForward className="size-3.5" strokeWidth={1.8} />
+        </button>
+      </div>
     </div>
   );
 }
