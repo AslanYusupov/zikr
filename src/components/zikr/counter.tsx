@@ -12,6 +12,7 @@ import { useZikr } from "@/lib/zikr/store";
 import { cite, localQuote, nameText, phraseOf } from "@/lib/zikr/tr";
 import { cn } from "@/lib/cn";
 import { Crescent } from "./pattern";
+import { ListenDock } from "./listen-view";
 
 const C = 2 * Math.PI * 44;
 
@@ -453,6 +454,7 @@ export function Counter({
             </div>
           ) : null}
           <div className="orb-slot">
+            <ListenDock />
             <div className="relative grid place-items-center">
               <div className="halo" />
               <div className="halo halo-2" />

@@ -122,6 +122,17 @@ export function playListen(id: string, nextSurah: number, nextAyah: number, next
   attempt();
 }
 
+export function stopListen() {
+  want = false;
+  token += 1;
+  if (audio) {
+    audio.pause();
+    audio.removeAttribute("src");
+    audio.load();
+  }
+  useListen.setState({ playing: false, started: false, now: 0, dur: 0, fail: false });
+}
+
 export function toggleListen() {
   const el = audio;
   const here = useListen.getState();

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play, Repeat, SkipBack, SkipForward } from "lucide-react";
+import { Pause, Play, Repeat, SkipBack, SkipForward, X } from "lucide-react";
 import { ayahCount } from "@/lib/zikr/ayah-audio";
 import { loadQuran, type QuranBook } from "@/lib/zikr/quran";
 import { RECITERS, reciterById } from "@/lib/zikr/reciters";
@@ -12,6 +12,7 @@ import {
   setListenLoop,
   setListenMode,
   setListenScreen,
+  stopListen,
   toggleListen,
   useListen,
   type ListenMode,
@@ -205,6 +206,9 @@ export function ListenDock() {
       <p className="truncate" dir={lang === "ar" ? "rtl" : "auto"}>{name}</p>
       <button type="button" onClick={toggleListen} aria-label={playing ? "pause" : "play"}>
         {playing ? <Pause className="size-4" strokeWidth={1.8} /> : <Play className="size-4" strokeWidth={1.8} />}
+      </button>
+      <button type="button" className="listen-x" onClick={stopListen} aria-label="close">
+        <X className="size-3.5" strokeWidth={2} />
       </button>
     </div>
   );
