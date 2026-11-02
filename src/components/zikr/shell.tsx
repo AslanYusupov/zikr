@@ -5,6 +5,7 @@ import { cn } from "@/lib/cn";
 import { Celebrate } from "./celebrate";
 import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
+import { ListenDock } from "./listen-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
 import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
@@ -525,6 +526,8 @@ export function Shell() {
             <span className="block text-sm font-bold text-fg">{tx(lang, "updateHere")}</span>
           </button>
         ) : null}
+
+        <ListenDock />
 
         <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
           {tab === "zikr" && (

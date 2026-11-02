@@ -6,6 +6,16 @@ import { RECITERS, reciterById } from "@/lib/zikr/reciters";
 import { surahSpoken } from "@/lib/zikr/surah-name";
 import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
+import {
+  playListen,
+  seekListen,
+  setListenLoop,
+  setListenMode,
+  setListenScreen,
+  toggleListen,
+  useListen,
+  type ListenMode,
+} from "@/lib/zikr/quran-listen";
 import { cn } from "@/lib/cn";
 
 const UI: Record<LangId, { title: string; ayah: string; whole: string; again: string; fail: string; pick: string; ayahNo: string; hafs: string; surahs: string }> = {
@@ -16,8 +26,6 @@ const UI: Record<LangId, { title: string; ayah: string; whole: string; again: st
   tr: { title: "Kur’an dinle", ayah: "Ayet ayet", whole: "Sure bütün", again: "Tekrar", fail: "Bu kıraat açılmadı. Bağlantıyı kontrol et veya başka bir kari seç.", pick: "Kıraat", ayahNo: "ayet", hafs: "Bütün kıraatler, Medine mushafındaki gibi Hafs rivayetidir.", surahs: "Sureler" },
   ur: { title: "قرآن سنیں", ayah: "آیت وار", whole: "پوری سورت", again: "دہراؤ", fail: "یہ تلاوت نہیں کھلی۔ رابطہ دیکھیں یا دوسرا قاری چنیں۔", pick: "تلاوت", ayahNo: "آیت", hafs: "یہ تمام تلاوتیں روایت حفص عن عاصم ہیں، جیسے مصحف مدینہ۔", surahs: "سورتیں" },
 };
-
-type ListenMode = "ayah" | "whole";
 
 function clock(seconds: number) {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -34,144 +42,30 @@ export function ListenView() {
   const lang = useZikr((s) => s.lang);
   const copy = UI[lang];
   const [book, setBook] = useState<QuranBook | null>(null);
-  const [reciterId, setReciterId] = useState(RECITERS[0]!.id);
-  const [mode, setMode] = useState<ListenMode>("whole");
-  const [surah, setSurah] = useState(1);
-  const [ayah, setAyah] = useState(1);
-  const [playing, setPlaying] = useState(false);
-  const [fail, setFail] = useState(false);
-  const [loop, setLoop] = useState(false);
-  const [now, setNow] = useState(0);
-  const [dur, setDur] = useState(0);
-  const audio = useRef<HTMLAudioElement | null>(null);
+  const reciterId = useListen((s) => s.reciterId);
+  const mode = useListen((s) => s.mode);
+  const surah = useListen((s) => s.surah);
+  const ayah = useListen((s) => s.ayah);
+  const playing = useListen((s) => s.playing);
+  const fail = useListen((s) => s.fail);
+  const loop = useListen((s) => s.loop);
+  const now = useListen((s) => s.now);
+  const dur = useListen((s) => s.dur);
   const list = useRef<HTMLDivElement | null>(null);
-  const token = useRef(0);
-  const want = useRef(false);
-  const again = useRef(false);
-  const spot = useRef({ mode, reciterId, surah, ayah });
-  const go = useRef<(id: string, nextSurah: number, nextAyah: number, nextMode: ListenMode) => void>(() => {});
-  spot.current = { mode, reciterId, surah, ayah };
-  again.current = loop;
 
   useEffect(() => {
-    const el = document.createElement("audio");
-    el.preload = "auto";
-    audio.current = el;
-    const onTime = () => {
-      const length = el.duration;
-      setNow(el.currentTime || 0);
-      setDur(Number.isFinite(length) ? length : 0);
-    };
-    const onEnd = () => {
-      const here = spot.current;
-      if (again.current) {
-        go.current(here.reciterId, here.surah, here.mode === "ayah" ? here.ayah : 1, here.mode);
-        return;
-      }
-      if (here.mode === "ayah" && here.ayah < ayahCount(here.surah)) {
-        go.current(here.reciterId, here.surah, here.ayah + 1, "ayah");
-        return;
-      }
-      setPlaying(false);
-      setNow(0);
-      if (here.mode === "ayah") setAyah(1);
-      el.currentTime = 0;
-    };
-    el.addEventListener("timeupdate", onTime);
-    el.addEventListener("ended", onEnd);
-    return () => {
-      el.pause();
-      el.removeAttribute("src");
-      el.load();
-      audio.current = null;
-    };
+    setListenScreen(true);
+    return () => setListenScreen(false);
   }, []);
 
   useEffect(() => {
     void loadQuran().then(setBook).catch(() => setBook(null));
   }, []);
 
-  function play(id: string, nextSurah: number, nextAyah: number, nextMode: ListenMode) {
-    const el = audio.current;
-    const reciter = reciterById(id);
-    const n = Math.min(114, Math.max(1, nextSurah));
-    const count = ayahCount(n);
-    const a = Math.min(count || 1, Math.max(1, nextAyah));
-    if (!el) return;
-    const urls = nextMode === "whole" ? reciter.files(n) : reciter.ayahs(n, a);
-    const mine = ++token.current;
-    let step = 0;
-    want.current = true;
-    setReciterId(id);
-    setMode(nextMode);
-    setSurah(n);
-    setAyah(a);
-    setFail(false);
-    setNow(0);
-    setDur(0);
-    setPlaying(true);
-    const attempt = () => {
-      if (mine !== token.current || !audio.current) return;
-      if (step >= urls.length) {
-        setPlaying(false);
-        setFail(true);
-        return;
-      }
-      const url = urls[step]!;
-      step += 1;
-      let moved = false;
-      const move = () => {
-        if (moved || mine !== token.current) return;
-        moved = true;
-        attempt();
-      };
-      el.onerror = () => {
-        if (mine !== token.current || el.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
-        move();
-      };
-      el.src = url;
-      void el.play().then(() => {
-        if (mine !== token.current) return;
-        if (!want.current) el.pause();
-      }).catch((error: unknown) => {
-        const name = error instanceof DOMException ? error.name : "";
-        if (mine !== token.current || name === "AbortError") return;
-        if (name === "NotAllowedError") {
-          setPlaying(false);
-          return;
-        }
-        move();
-      });
-    };
-    attempt();
-  }
-  go.current = play;
-
-  function toggle() {
-    const el = audio.current;
-    if (playing && el && !el.paused) {
-      want.current = false;
-      el.pause();
-      setPlaying(false);
-      return;
-    }
-    if (el && el.src && el.paused && el.currentTime > 0 && !fail) {
-      void el.play().then(() => setPlaying(true)).catch(() => play(reciterId, surah, ayah, mode));
-      return;
-    }
-    play(reciterId, surah, mode === "ayah" ? ayah : 1, mode);
-  }
-
   function chooseMode(next: ListenMode) {
     if (next === mode) return;
-    if (playing || want.current) play(reciterId, surah, 1, next);
-    else setMode(next);
-  }
-
-  function seek(value: number) {
-    const el = audio.current;
-    if (!el || !Number.isFinite(el.duration) || el.duration <= 0) return;
-    el.currentTime = Math.min(el.duration, Math.max(0, value * el.duration));
+    if (playing) playListen(reciterId, surah, 1, next);
+    else setListenMode(next);
   }
 
   useEffect(() => {
@@ -207,7 +101,7 @@ export function ListenView() {
             key={item.id}
             type="button"
             className={cn("listen-card", item.id === reciterId && "on")}
-            onClick={() => play(item.id, surah, mode === "ayah" ? ayah : 1, mode)}
+            onClick={() => playListen(item.id, surah, mode === "ayah" ? ayah : 1, mode)}
           >
             <span className="listen-name">{item.name[lang]}</span>
             <span className="listen-form">{item.form[lang]}</span>
@@ -226,7 +120,7 @@ export function ListenView() {
               type="button"
               className={cn("listen-surah", on && "on")}
               onClick={() => {
-                play(reciterId, item.n, 1, mode);
+                playListen(reciterId, item.n, 1, mode);
                 list.current?.querySelector(`[data-n="${item.n}"]`)?.scrollIntoView({ block: "nearest" });
               }}
               data-n={item.n}
@@ -258,25 +152,60 @@ export function ListenView() {
           min={0}
           max={1000}
           value={Math.round(place * 1000)}
-          onChange={(event) => seek(Number(event.target.value) / 1000)}
+          onChange={(event) => seekListen(Number(event.target.value) / 1000)}
           aria-label={label}
         />
         {fail ? <p className="mt-1 text-xs text-gold">{copy.fail}</p> : null}
         <div className="listen-controls">
-          <button type="button" className="listen-side" onClick={() => mode === "ayah" ? play(reciterId, surah, ayah - 1, mode) : play(reciterId, surah - 1, 1, mode)} aria-label="prev">
+          <button type="button" className="listen-side" onClick={() => mode === "ayah" ? playListen(reciterId, surah, ayah - 1, mode) : playListen(reciterId, surah - 1, 1, mode)} aria-label="prev">
             <SkipBack className="size-5" strokeWidth={1.6} />
           </button>
-          <button type="button" className="listen-play" onClick={toggle} aria-label={playing ? "pause" : "play"}>
+          <button type="button" className="listen-play" onClick={toggleListen} aria-label={playing ? "pause" : "play"}>
             {playing ? <Pause className="size-6" strokeWidth={1.7} /> : <Play className="size-6" strokeWidth={1.7} />}
           </button>
-          <button type="button" className="listen-side" onClick={() => mode === "ayah" ? play(reciterId, surah, ayah + 1, mode) : play(reciterId, surah + 1, 1, mode)} aria-label="next">
+          <button type="button" className="listen-side" onClick={() => mode === "ayah" ? playListen(reciterId, surah, ayah + 1, mode) : playListen(reciterId, surah + 1, 1, mode)} aria-label="next">
             <SkipForward className="size-5" strokeWidth={1.6} />
           </button>
-          <button type="button" className={cn("listen-side", loop && "on")} onClick={() => setLoop((on) => !on)} aria-label={copy.again} aria-pressed={loop}>
+          <button type="button" className={cn("listen-side", loop && "on")} onClick={() => setListenLoop(!loop)} aria-label={copy.again} aria-pressed={loop}>
             <Repeat className="size-5" strokeWidth={1.6} />
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function ListenDock() {
+  const lang = useZikr((s) => s.lang);
+  const onScreen = useListen((s) => s.onScreen);
+  const started = useListen((s) => s.started);
+  const playing = useListen((s) => s.playing);
+  const surah = useListen((s) => s.surah);
+  const now = useListen((s) => s.now);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    if (!started) return;
+    let stop = false;
+    void loadQuran().then((book) => {
+      if (stop) return;
+      const item = book.surahs[surah - 1];
+      if (!item) return;
+      setName(lang === "ar" ? item.name : lang === "ru" ? item.ru : surahSpoken(lang, item.n, item.en));
+    }).catch(() => {});
+    return () => {
+      stop = true;
+    };
+  }, [started, surah, lang]);
+
+  if (!started || onScreen || (!playing && now <= 0)) return null;
+
+  return (
+    <div className="listen-dock">
+      <p className="truncate" dir={lang === "ar" ? "rtl" : "auto"}>{name}</p>
+      <button type="button" onClick={toggleListen} aria-label={playing ? "pause" : "play"}>
+        {playing ? <Pause className="size-4" strokeWidth={1.8} /> : <Play className="size-4" strokeWidth={1.8} />}
+      </button>
     </div>
   );
 }
