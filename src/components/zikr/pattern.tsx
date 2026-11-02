@@ -89,11 +89,26 @@ const PASSES = [
   { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "-97deg", dur: "1.35s" },
   { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg", dur: "1.35s" },
   { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg", dur: "1.35s" },
-  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "-74deg", dur: "0.78s" },
+  { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "0deg", dur: "0.78s" },
 ] as const;
 
+/** Голова при нуле смотрит влево. Угол — по тем же vw/vh, что и сам полёт. */
+function flightAim(x: string, y: string, x2: string, y2: string): string {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;width:100vw;height:100vh;visibility:hidden;pointer-events:none";
+  document.body.appendChild(probe);
+  const w = probe.offsetWidth || window.innerWidth || 390;
+  const h = probe.offsetHeight || window.innerHeight || 844;
+  probe.remove();
+  const px = (value: string) => (parseFloat(value) / 100) * (value.endsWith("vw") ? w : h);
+  const dx = px(x2) - px(x);
+  const dy = px(y2) - px(y);
+  const heading = (Math.atan2(dy, dx) * 180) / Math.PI;
+  return `${(heading - 180).toFixed(1)}deg`;
+}
+
 function TapStar() {
-  const [shot, setShot] = useState<{ id: number; pass: (typeof PASSES)[number] } | null>(null);
+  const [shot, setShot] = useState<{ id: number; pass: (typeof PASSES)[number]; rot: string } | null>(null);
   const nextAt = useRef(0);
   useEffect(() => {
     let timer = 0;
@@ -102,7 +117,8 @@ function TapStar() {
       if (now < nextAt.current) return;
       nextAt.current = now + 10_000 + Math.floor(Math.random() * 5_001);
       const pass = PASSES[Math.floor(Math.random() * PASSES.length)]!;
-      setShot({ id: now, pass });
+      const rot = pass.x === "90vw" ? flightAim(pass.x, pass.y, pass.x2, pass.y2) : pass.rot;
+      setShot({ id: now, pass, rot });
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setShot(null), 1500);
     };
@@ -123,7 +139,7 @@ function TapStar() {
         ["--y" as string]: pass.y,
         ["--x2" as string]: pass.x2,
         ["--y2" as string]: pass.y2,
-        ["--rot" as string]: pass.rot,
+        ["--rot" as string]: shot.rot,
         ["--dur" as string]: pass.dur,
         ["--len" as string]: "11rem",
         ["--bright" as string]: "0.9",
