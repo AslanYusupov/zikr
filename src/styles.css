@@ -3990,7 +3990,7 @@ html, body {
 .listen-row { display: flex; align-items: center; justify-content: center; gap: .22rem; }
 .listen-dock button { display: grid; flex: none; width: 1.7rem; height: 1.7rem; place-items: center; border: 0; border-radius: 999px; background: var(--gold); color: var(--ink); }
 .listen-dock .listen-skip { background: transparent; color: var(--fg); border: 1px solid var(--line); }
-.listen-dock .listen-x { position: absolute; top: .12rem; right: .12rem; width: 1.15rem; height: 1.15rem; background: transparent; color: var(--muted); border: 0; }
+.listen-dock .listen-x { position: absolute; top: .12rem; right: .48rem; width: 1.15rem; height: 1.15rem; background: transparent; color: var(--muted); border: 0; }
 .app-nav { position: relative; padding-bottom: max(.35rem, env(safe-area-inset-bottom)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 .app-nav button { position: relative; z-index: 1; min-height: 3.15rem; }
 .nav-pill {
