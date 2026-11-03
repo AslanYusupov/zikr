@@ -80,15 +80,15 @@ function Rain() {
 }
 
 const PASSES = [
-  { x: "108vw", y: "8vh", x2: "-36vw", y2: "40vh", rot: "-16deg", dur: "1.35s" },
-  { x: "112vw", y: "2vh", x2: "-40vw", y2: "16vh", rot: "-8deg", dur: "1.35s" },
-  { x: "100vw", y: "-8vh", x2: "-30vw", y2: "58vh", rot: "-28deg", dur: "1.35s" },
-  { x: "-40vw", y: "10vh", x2: "112vw", y2: "38vh", rot: "-158deg", dur: "1.35s" },
-  { x: "-36vw", y: "-4vh", x2: "108vw", y2: "52vh", rot: "-143deg", dur: "1.35s" },
-  { x: "-42vw", y: "32vh", x2: "110vw", y2: "64vh", rot: "-155deg", dur: "1.35s" },
-  { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "-97deg", dur: "1.35s" },
-  { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg", dur: "1.35s" },
-  { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg", dur: "1.35s" },
+  { x: "108vw", y: "8vh", x2: "-36vw", y2: "40vh", rot: "-16deg", dur: "0.78s" },
+  { x: "112vw", y: "2vh", x2: "-40vw", y2: "16vh", rot: "-8deg", dur: "0.78s" },
+  { x: "100vw", y: "-8vh", x2: "-30vw", y2: "58vh", rot: "-28deg", dur: "0.78s" },
+  { x: "-40vw", y: "10vh", x2: "112vw", y2: "38vh", rot: "-158deg", dur: "0.78s" },
+  { x: "-36vw", y: "-4vh", x2: "108vw", y2: "52vh", rot: "-143deg", dur: "0.78s" },
+  { x: "-42vw", y: "32vh", x2: "110vw", y2: "64vh", rot: "-155deg", dur: "0.78s" },
+  { x: "30vw", y: "-18vh", x2: "64vw", y2: "114vh", rot: "-97deg", dur: "0.78s" },
+  { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg", dur: "0.78s" },
+  { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg", dur: "0.78s" },
   { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "0deg", dur: "0.78s" },
 ] as const;
 
