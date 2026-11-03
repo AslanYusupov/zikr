@@ -90,6 +90,9 @@ const PASSES = [
   { x: "72vw", y: "-16vh", x2: "34vw", y2: "114vh", rot: "-81deg", dur: "0.78s" },
   { x: "10vw", y: "-14vh", x2: "80vw", y2: "110vh", rot: "-106deg", dur: "0.78s" },
   { x: "90vw", y: "-12vh", x2: "16vw", y2: "110vh", rot: "0deg", dur: "0.78s" },
+  { x: "118vw", y: "-6vh", x2: "-22vw", y2: "86vh", rot: "0deg", dur: "0.78s" },
+  { x: "-30vw", y: "-12vh", x2: "104vw", y2: "92vh", rot: "0deg", dur: "0.78s" },
+  { x: "54vw", y: "-22vh", x2: "6vw", y2: "118vh", rot: "0deg", dur: "0.78s" },
 ] as const;
 
 /** Голова при нуле смотрит влево. Угол — по тем же vw/vh, что и сам полёт. */
@@ -108,17 +111,31 @@ function flightAim(x: string, y: string, x2: string, y2: string): string {
 }
 
 function TapStar() {
-  const [shot, setShot] = useState<{ id: number; pass: (typeof PASSES)[number]; rot: string } | null>(null);
+  const [shot, setShot] = useState<{ id: number; pass: { x: string; y: string; x2: string; y2: string; dur: string }; rot: string } | null>(null);
   const nextAt = useRef(0);
+  const last = useRef(-1);
   useEffect(() => {
     let timer = 0;
     const fly = () => {
       const now = Date.now();
       if (now < nextAt.current) return;
       nextAt.current = now + 10_000 + Math.floor(Math.random() * 5_001);
-      const pass = PASSES[Math.floor(Math.random() * PASSES.length)]!;
-      const rot = pass.x === "90vw" ? flightAim(pass.x, pass.y, pass.x2, pass.y2) : pass.rot;
-      setShot({ id: now, pass, rot });
+      let index = Math.floor(Math.random() * PASSES.length);
+      if (index === last.current) index = (index + 1 + Math.floor(Math.random() * (PASSES.length - 1))) % PASSES.length;
+      last.current = index;
+      const base = PASSES[index]!;
+      const nudge = (value: string, spread: number) => {
+        const unit = value.endsWith("vw") ? "vw" : "vh";
+        return `${(parseFloat(value) + (Math.random() * 2 - 1) * spread).toFixed(1)}${unit}`;
+      };
+      const pass = {
+        x: nudge(base.x, 7),
+        y: nudge(base.y, 5),
+        x2: nudge(base.x2, 7),
+        y2: nudge(base.y2, 5),
+        dur: "0.78s",
+      };
+      setShot({ id: now, pass, rot: flightAim(pass.x, pass.y, pass.x2, pass.y2) });
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setShot(null), 1500);
     };
