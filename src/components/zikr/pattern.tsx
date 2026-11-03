@@ -97,16 +97,18 @@ const PASSES = [
 
 /** Голова при нуле смотрит влево. Угол — по тем же vw/vh, что и сам полёт. */
 function flightAim(x: string, y: string, x2: string, y2: string): string {
-  const probe = document.createElement("div");
-  probe.style.cssText = "position:absolute;width:100vw;height:100vh;visibility:hidden;pointer-events:none";
-  document.body.appendChild(probe);
-  const w = probe.offsetWidth || window.innerWidth || 390;
-  const h = probe.offsetHeight || window.innerHeight || 844;
-  probe.remove();
-  const px = (value: string) => (parseFloat(value) / 100) * (value.endsWith("vw") ? w : h);
+  const w = window.innerWidth || 390;
+  const h = window.innerHeight || 844;
+  const px = (value: string) => {
+    const n = parseFloat(value);
+    if (!Number.isFinite(n)) return 0;
+    return (n / 100) * (value.endsWith("vw") ? w : h);
+  };
   const dx = px(x2) - px(x);
   const dy = px(y2) - px(y);
+  if (!dx && !dy) return "-16deg";
   const heading = (Math.atan2(dy, dx) * 180) / Math.PI;
+  if (!Number.isFinite(heading)) return "-16deg";
   return `${(heading - 180).toFixed(1)}deg`;
 }
 

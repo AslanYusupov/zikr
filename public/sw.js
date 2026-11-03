@@ -1,5 +1,24 @@
 const SHELL = "zikr-shell-v2";
 
+function buildStamp(html) {
+  const named = html.match(/name="zikr-build"[^>]*content="([^"]+)"/);
+  if (named) return named[1];
+  const flipped = html.match(/content="([^"]+)"[^>]*name="zikr-build"/);
+  return flipped ? flipped[1] : "";
+}
+
+function newerBuild(next, prev) {
+  if (!next) return false;
+  if (!prev) return true;
+  const nextParts = next.split("-");
+  const prevParts = prev.split("-");
+  if (nextParts[0] !== prevParts[0]) return nextParts[0] > prevParts[0];
+  const nextN = Number(nextParts[1] || 0);
+  const prevN = Number(prevParts[1] || 0);
+  if (Number.isFinite(nextN) && Number.isFinite(prevN)) return nextN > prevN;
+  return next > prev;
+}
+
 function pathsIn(html) {
   const out = [];
   const re = /\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g;
@@ -58,7 +77,8 @@ async function storeFresh(cache) {
   const previous = before ? await before.text() : "";
   const cleaned = await pageFrom(fresh);
   const html = await cleaned.clone().text();
-  await saveShell(cache, cleaned);
+  if (!newerBuild(buildStamp(html), buildStamp(previous))) return;
+  await saveShell(cache, new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   const saved = await cache.match("/");
   const now = saved ? await saved.text() : "";
   const next = pathsIn(now).join("|");
