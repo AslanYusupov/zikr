@@ -30,7 +30,7 @@ export const QURAN_HADITHS: QuranHadith[] = [
   {
     ar: "«أَيَعْجِزُ أَحَدُكُمْ أَنْ يَقْرَأَ فِي لَيْلَةٍ ثُلُثَ الْقُرْآنِ؟ قَالُوا: وَكَيْفَ يَقْرَأُ ثُلُثَ الْقُرْآنِ؟ قَالَ: قُلْ هُوَ اللَّهُ أَحَدٌ تَعْدِلُ ثُلُثَ الْقُرْآنِ»",
     text: {
-      ru: "Не способен ли кто-нибудь из вас прочитать за ночь треть Корана? Спросили: как же прочитать треть Корана? Он сказал: «Скажи: Он — Аллах1, Един» равна трети Корана.",
+      ru: "Не способен ли кто-нибудь из вас прочитать за ночь треть Корана? Спросили: как же прочитать треть Корана? Он сказал: «Скажи: Он — Аллах1, Един» — она равна трети Корана.",
       en: "Is one of you unable to recite a third of the Quran in a night? They said: How could he recite a third of the Quran? He said: “Say: He is Allah, One” equals a third of the Quran.",
       ar: "أيعجز أحدكم أن يقرأ في ليلة ثلث القرآن؟ قالوا: وكيف يقرأ ثلث القرآن؟ قال: قل هو الله أحد تعدل ثلث القرآن.",
       id: "Tidakkah seorang dari kalian mampu membaca sepertiga Quran dalam semalam? Mereka bertanya: bagaimana membaca sepertiga Quran? Beliau bersabda: “Qul huwallahu ahad” menyamai sepertiga Quran.",
@@ -76,9 +76,9 @@ export const QURAN_HADITHS: QuranHadith[] = [
     src: SRC.both,
   },
   {
-    ar: "«يُقَالُ لِصَاحِبِ الْقُرْآنِ: اقْرَأْ وَارْتَقِ وَرَتِّلْ كَمَا كُنْتَ تُرَتِّلُ فِي الدُّنْيَا، فَإِنَّ مَنْزِلَكَ عِنْدَ آخِرِ آيَةٍ تَقْرَأُهَا»",
+    ar: "«يُقَالُ لِصَاحِبِ الْقُرْآنِ: اقْرَأْ وَارْتَقِ وَرَتِّلْ كَمَا كُنْتَ تُرَتِّلُ فِي الدُّنْيَا، فَإِنَّ مَنْزِلَتَكَ عِنْدَ آخِرِ آيَةٍ تَقْرَأُ بِهَا»",
     text: {
-      ru: "Читателю Корана скажут: читай, поднимайся и читай размеренно, как читал в этом мире. Твоё место — у последнего аята, который ты прочитаешь.",
+      ru: "Читателю Корана скажут: читай, поднимайся и читай размеренно, как читал в этом мире. Твоя степень — у последнего аята, который ты прочитаешь.",
       en: "The companion of the Quran will be told: Recite, ascend, and recite with care as you recited in the world. Your station is at the last verse you recite.",
       ar: "يقال لصاحب القرآن: اقرأ وارتق ورتل كما كنت ترتل في الدنيا، فإن منزلك عند آخر آية تقرأها.",
       id: "Kepada sahabat Quran dikatakan: Bacalah, naiklah, dan bacalah dengan tartil sebagaimana engkau membaca di dunia. Tempatmu ada pada ayat terakhir yang engkau baca.",
