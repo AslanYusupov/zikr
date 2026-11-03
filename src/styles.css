@@ -4017,6 +4017,8 @@ html, body {
 }
 .home-switch { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; flex: none; padding: .1rem .75rem .35rem; }
 .home-switch.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.home-switch.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.home-switch.cols-4 button { padding-inline: .3rem; font-size: .66rem; }
 .home-switch button { min-height: 2.45rem; padding: .25rem .45rem; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--bg) 84%, transparent); color: var(--fg); font-size: .74rem; font-weight: 800; line-height: 1.15; }
 .home-switch button.on { border-color: var(--fg); background: color-mix(in srgb, var(--surface) 96%, var(--fg) 4%); }
 .quran-scroll { flex: 1; min-height: 0; overflow: auto; -webkit-overflow-scrolling: touch; padding: .35rem .7rem 1.1rem; background: color-mix(in srgb, var(--bg) 97%, var(--surface)); color: var(--fg); }

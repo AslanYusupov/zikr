@@ -148,6 +148,21 @@ export function letterReward(letters: number): number {
   return Math.floor(letters) * 10;
 }
 
+/** Все буквы мусхафа в том счёте, которым приложение пишет награду за чтение. */
+export function mushafLetters(book: QuranBook): number {
+  let n = 0;
+  for (const item of book.surahs) {
+    for (const ayah of item.ayahs) n += ayah.l;
+    if (item.n !== 1 && item.n !== 9) n += book.bismillahLetters;
+  }
+  return n;
+}
+
+/** «Куль хува-Ллаху ахад» равна трети Корана: треть всех хасанат мусхафа, в буквах счёта. */
+export function ikhlasShare(book: QuranBook): number {
+  return Math.floor(mushafLetters(book) / 3);
+}
+
 function applyRasm(book: QuranBook): QuranBook {
   book.bismillahLetters = rasmLetters(book.bismillah);
   for (const surah of book.surahs) {

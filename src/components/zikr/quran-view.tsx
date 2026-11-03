@@ -3,7 +3,8 @@ import { Pause, Play, Repeat1 } from "lucide-react";
 import { rewardPoints } from "@/lib/zikr/content";
 import { formatNum, plural } from "@/lib/zikr/format";
 import { t } from "@/lib/zikr/i18n";
-import { letterReward, loadMeaning, loadQuran, quranCopy, type QuranAyah, type QuranBook, type QuranMeaning } from "@/lib/zikr/quran";
+import { ikhlasShare, letterReward, loadMeaning, loadQuran, quranCopy, type QuranAyah, type QuranBook, type QuranMeaning } from "@/lib/zikr/quran";
+import { hadithHead, hadithTab, QURAN_HADITHS, thirdWord } from "@/lib/zikr/quran-hadiths";
 import { surahSpoken } from "@/lib/zikr/surah-name";
 import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
@@ -101,6 +102,12 @@ function writeDone(done: DoneMap) {
   }
 }
 
+function ikhlasRead(book: QuranBook, done: DoneMap) {
+  const item = book.surahs.find((surah) => surah.n === 112);
+  if (!item || !done["112:b"]) return false;
+  return item.ayahs.every((ayah) => done[`112:${ayah.n}`]);
+}
+
 function unpaid(pieces: Piece[], done: DoneMap): Piece[] {
   return pieces.filter((piece) => !done[piece.key] && piece.letters > 0);
 }
@@ -123,7 +130,7 @@ export function QuranView() {
   const [open, setOpen] = useState<number | null>(null);
   const [done, setDone] = useState(readDone);
   const [note, setNote] = useState("");
-  const [part, setPart] = useState<"surahs" | "tajweed" | "listen">("surahs");
+  const [part, setPart] = useState<"surahs" | "tajweed" | "listen" | "hadiths">("surahs");
   const [glossSurah, setGlossSurah] = useState<number | null>(null);
   const [mean, setMean] = useState<QuranMeaning | null>(null);
   const lastClaim = useRef(0);
@@ -315,8 +322,9 @@ export function QuranView() {
     const at = Date.now();
     if (at - lastClaim.current < 380) return;
     const fresh = unpaid(pieces, done);
-    if (!fresh.length) return;
+    if (!fresh.length || !book) return;
     lastClaim.current = at;
+    const wasIkhlas = ikhlasRead(book, done);
     const result = addLetters(sumLetters(fresh));
     if (!result.added) return;
     let budget = result.added;
@@ -328,8 +336,15 @@ export function QuranView() {
     }
     setDone(nextDone);
     writeDone(nextDone);
+    let reward = letterReward(result.added);
+    let third = false;
+    if (!wasIkhlas && ikhlasRead(book, nextDone)) {
+      const extra = addLetters(ikhlasShare(book));
+      reward += extra.reward;
+      third = extra.reward > 0;
+    }
     const word = lang === "ru" ? plural(result.added, "буква", "буквы", "букв") : copy.letters;
-    setNote(`${formatNum(result.added)} ${word} · +${formatNum(letterReward(result.added))}`);
+    setNote(`${formatNum(result.added)} ${word} · +${formatNum(reward)}${third ? ` · ${thirdWord(lang)}` : ""}`);
     if (sound === "on") playTap(voice, volume);
   }
 
@@ -356,12 +371,15 @@ export function QuranView() {
   }, [open]);
 
   const switcher = !surah ? (
-    <div className="home-switch cols-3">
+    <div className="home-switch cols-4">
       <button type="button" className={part === "surahs" ? "on" : ""} onClick={() => setPart("surahs")}>
         {copy.surahs}
       </button>
       <button type="button" className={part === "listen" ? "on" : ""} onClick={() => setPart("listen")}>
         {copy.listen}
+      </button>
+      <button type="button" className={part === "hadiths" ? "on" : ""} onClick={() => setPart("hadiths")}>
+        {hadithTab(lang)}
       </button>
       <button type="button" className={part === "tajweed" ? "on" : ""} onClick={() => setPart("tajweed")}>
         {copy.tajweed}
@@ -374,6 +392,28 @@ export function QuranView() {
       <div className="flex min-h-0 flex-1 flex-col">
         {switcher}
         <ListenView />
+      </div>
+    );
+  }
+
+  if (!surah && part === "hadiths") {
+    const head = hadithHead(lang);
+    return (
+      <div className="flex min-h-0 flex-1 flex-col">
+        {switcher}
+        <div className="quran-scroll">
+          <div className="mb-3 text-center">
+            <p className="font-arabic text-2xl leading-none text-gold" dir="rtl" lang="ar">{head.ar}</p>
+            {lang !== "ar" ? <p className="mt-1 text-sm font-bold text-fg">{head.title}</p> : null}
+          </div>
+          {QURAN_HADITHS.map((item) => (
+            <article key={item.ar} className="quran-hadith">
+              <p className="quran-hadith-ar" dir="rtl" lang="ar">{item.ar}</p>
+              {lang !== "ar" ? <p className="quran-hadith-text">{item.text[lang]}</p> : null}
+              <p className="quran-hadith-src">{item.src[lang]}</p>
+            </article>
+          ))}
+        </div>
       </div>
     );
   }
@@ -434,6 +474,7 @@ export function QuranView() {
             const pieces: Piece[] = item.ayahs.map((ayah) => ({ key: `${item.n}:${ayah.n}`, letters: ayah.l }));
             if (item.n !== 1 && item.n !== 9) pieces.unshift({ key: `${item.n}:b`, letters: book.bismillahLetters });
             const letters = sumLetters(pieces);
+            const reward = letterReward(letters) + (item.n === 112 ? letterReward(ikhlasShare(book)) : 0);
             return (
               <button key={item.n} type="button" className="surah-row" onClick={() => { clearGloss(); setOpen(item.n); }}>
                 <span className="surah-no">{item.n}</span>
@@ -445,7 +486,8 @@ export function QuranView() {
                 </span>
                 <span className="shrink-0 text-right text-[0.65rem] leading-tight text-gold">
                   {formatNum(letters)} {copy.letters}
-                  <span className="mt-0.5 block">+{formatNum(letterReward(letters))}</span>
+                  <span className="mt-0.5 block">+{formatNum(reward)}</span>
+                  {item.n === 112 ? <span className="mt-0.5 block">{thirdWord(lang)}</span> : null}
                 </span>
               </button>
             );
@@ -509,7 +551,7 @@ export function QuranView() {
         <button type="button" className="quran-claim" onClick={() => claim(surahPieces)}>
           {copy.surahBtn}
           <span className="mt-0.5 block text-[0.7rem] font-bold text-gold">
-            {formatNum(surahLeft)} {copy.letters} · +{formatNum(letterReward(surahLeft))}
+            {formatNum(surahLeft)} {copy.letters} · +{formatNum(letterReward(surahLeft) + (surah.n === 112 ? letterReward(ikhlasShare(book)) : 0))}
           </span>
         </button>
       ) : (
