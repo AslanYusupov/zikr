@@ -297,8 +297,9 @@ export function Counter({
   const spoken = phraseOf(phrase, s.lang);
   const nameIndex = ALLAH_NAMES.findIndex((item) => item.id === s.mode);
   const showPhrase = !(s.mode === "random" && pulse === 0);
+  const sayyidScript = showPhrase && phrase.id === "sayyid" ? spoken.full || "" : "";
   const arabic = showPhrase ? phrase.arabic : "ذِكْر";
-  const hasArabic = /[\u0600-\u06FF]/.test(arabic);
+  const hasArabic = !sayyidScript && /[\u0600-\u06FF]/.test(arabic);
   const arabicShown = arabic;
   const name = showPhrase ? spoken.name : t(s.lang, "random");
   const compact = showPhrase && (hasArabic ? arabic.length > 90 : name.length > 90);
@@ -408,7 +409,11 @@ export function Counter({
             }}
           >
             <div className="phrase-scroll">
-            {hasArabic ? (
+            {sayyidScript ? (
+            <p className="phrase-arabic mx-auto max-w-sm text-sm font-bold leading-snug text-fg">
+              {sayyidScript}
+            </p>
+            ) : hasArabic ? (
             <p
               className={cn(
                 "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
