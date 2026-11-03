@@ -1,5 +1,5 @@
-/** Shown in the document. Detection uses the script file names, which change on every publish. */
-export const APP_BUILD = "20261002-4";
+import { fetchShellFile, fetchShellHtml } from "./mirror";
+export const APP_BUILD = "20261103-1";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -30,13 +30,8 @@ export function publishedIsNewer(html: string): boolean {
 /** `fresh` means a newer publish is on the server. */
 export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unknown"> {
   if (typeof navigator !== "undefined" && navigator.onLine === false) return "unknown";
-  const res = await fetch(`${window.location.pathname}?probe=${Date.now()}`, {
-    cache: "no-store",
-    signal: AbortSignal.timeout(4000),
-    headers: { "cache-control": "no-cache", pragma: "no-cache" },
-  });
-  if (!res.ok) return "unknown";
-  const html = await res.text();
+  const html = await fetchShellHtml();
+  if (!html) return "unknown";
   if (!publishedIsNewer(html)) return "same";
   const marker = assetScriptsIn(html).sort().join(",");
   try {
@@ -50,16 +45,15 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
 export async function takeUpdate(): Promise<void> {
   const cacheName = "zikr-shell-v2";
   try {
-    const res = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
-    if (!res.ok) return;
-    const html = await res.text();
+    const html = await fetchShellHtml();
+    if (!html) return;
     const cache = await caches.open(cacheName);
     const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
     if (assets.length === 0) return;
     const saved = await Promise.all(
       assets.map(async (src) => {
-        const file = await fetch(`${src}?warm=${Date.now()}`, { cache: "no-store" });
-        if (!file.ok) return false;
+        const file = await fetchShellFile(src);
+        if (!file) return false;
         await cache.put(src, file);
         return true;
       }),

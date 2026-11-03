@@ -8,6 +8,7 @@ import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
 import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
+import { fetchShellFile, fetchShellHtml } from "@/lib/zikr/mirror";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
@@ -153,10 +154,10 @@ export function Shell() {
           await Promise.all(
             urls.map(async (url) => {
               try {
-                const res = await fetch(url, { cache: "force-cache" });
-                if (res.ok) await put(url, res);
+                const res = await fetchShellFile(url);
+                if (res) await put(url, res);
               } catch {
-                /* keep the copy already saved */
+                /* keep the copy already stored */
               }
             }),
           );
@@ -183,21 +184,21 @@ export function Shell() {
           }
           if (Date.now() - last >= 60 * 1000) {
             try {
-              const signal = typeof AbortSignal !== "undefined" && "timeout" in AbortSignal ? AbortSignal.timeout(8000) : undefined;
-              const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal });
-              if (page.ok) {
-                const html = (await page.text()).replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
+              const html = await fetchShellHtml();
+              if (html) {
                 const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-                if (needed.length && html.includes("<html")) {
+                if (needed.length) {
                   const absent = [];
                   for (const src of needed) if (!(await cache.match(src))) absent.push(src);
                   if (absent.length) await fill(absent);
                   let ready = true;
                   for (const src of needed) if (!(await cache.match(src))) ready = false;
-                  if (ready) await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+                  if (ready) {
+                    await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+                    localStorage.setItem("zikr-shell-check", String(Date.now()));
+                  }
                 }
               }
-              localStorage.setItem("zikr-shell-check", String(Date.now()));
               void navigator.serviceWorker.getRegistration().then((reg) => reg?.update()).catch(() => {});
             } catch {
               /* the phone keeps the page it already stored */

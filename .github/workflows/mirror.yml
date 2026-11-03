@@ -1,0 +1,32 @@
+name: mirror
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Copy the published page
+        run: node scripts/publish-mirror.mjs /tmp/zikr-mirror
+      - name: Push the copy
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ ! -f /tmp/zikr-mirror/index.html ]; then
+            echo "no page yet"
+            exit 0
+          fi
+          cd /tmp/zikr-mirror
+          git init
+          git checkout -b release
+          git config user.email "zikr@users.noreply.github.com"
+          git config user.name "zikr"
+          git add -A
+          git commit -m "mirror"
+          git push --force "https://x-access-token:${TOKEN}@github.com/AslanYusupov/zikr.git" HEAD:release

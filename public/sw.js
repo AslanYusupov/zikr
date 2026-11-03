@@ -10,6 +10,24 @@ function pathsIn(html) {
   return out;
 }
 
+const MIRROR = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release";
+
+async function fetchAsset(src) {
+  try {
+    const file = await fetch(src);
+    if (file.ok) return file;
+  } catch {
+    /* the site did not answer */
+  }
+  try {
+    const file = await fetch(MIRROR + src);
+    if (file.ok) return file;
+  } catch {
+    /* the copy did not answer */
+  }
+  return null;
+}
+
 async function saveShell(cache, res) {
   let html = "";
   try {
@@ -24,8 +42,8 @@ async function saveShell(cache, res) {
     needed.map(async (src) => {
       if (await cache.match(src)) return;
       try {
-        const file = await fetch(src);
-        if (!file.ok) return;
+        const file = await fetchAsset(src);
+        if (!file) return;
         await cache.put(src, await stored(file));
       } catch {
         /* keep what is already stored */
@@ -121,13 +139,26 @@ self.addEventListener("fetch", (event) => {
         if (!navigation) return hit;
         const page = await pageFrom(hit);
         event.waitUntil(
-          fetch(new Request(url.pathname + url.search, { cache: "no-store" }))
-            .then(async (fresh) => {
-              if (!fresh.ok) return;
-              const cleaned = await pageFrom(fresh);
-              await saveShell(cache, cleaned.clone());
-            })
-            .catch(() => {}),
+          (async () => {
+            let fresh = null;
+            try {
+              const local = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
+              if (local.ok) fresh = local;
+            } catch {
+              /* try the copy */
+            }
+            if (!fresh) {
+              try {
+                const remote = await fetch(MIRROR + "/index.html", { cache: "no-store" });
+                if (remote.ok) fresh = remote;
+              } catch {
+                /* keep the saved page */
+              }
+            }
+            if (!fresh) return;
+            const cleaned = await pageFrom(fresh);
+            await saveShell(cache, cleaned.clone());
+          })(),
         );
         return page;
       }
