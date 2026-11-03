@@ -1,5 +1,5 @@
 import { fetchShellFile, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261103-3";
+export const APP_BUILD = "20261103-4";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -97,5 +97,6 @@ export async function takeUpdate(): Promise<void> {
   } catch {
     return;
   }
+  if (audioBusy()) return;
   window.location.reload();
 }

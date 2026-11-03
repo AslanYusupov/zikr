@@ -162,18 +162,6 @@ export function Shell() {
             }),
           );
         };
-        if (!(await cache.match("/"))) {
-          try {
-            await cache.put(
-              "/",
-              new Response(`<!DOCTYPE html>${document.documentElement.outerHTML}`, {
-                headers: { "content-type": "text/html; charset=utf-8" },
-              }),
-            );
-          } catch {
-            /* the next open keeps the previous copy */
-          }
-        }
         const quiet = async () => {
           if (stop || document.visibilityState !== "visible") return;
           let last = 0;

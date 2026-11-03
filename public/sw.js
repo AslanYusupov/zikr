@@ -77,7 +77,11 @@ async function storeFresh(cache) {
   const previous = before ? await before.text() : "";
   const cleaned = await pageFrom(fresh);
   const html = await cleaned.clone().text();
-  if (!newerBuild(buildStamp(html), buildStamp(previous))) return;
+  const prevBuild = buildStamp(previous);
+  const nextBuild = buildStamp(html);
+  const broken = !previous.includes("/assets/") || !prevBuild;
+  const sound = html.includes("/assets/") && !!nextBuild;
+  if (!newerBuild(nextBuild, prevBuild) && !(broken && sound)) return;
   await saveShell(cache, new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   const saved = await cache.match("/");
   const now = saved ? await saved.text() : "";
@@ -197,6 +201,25 @@ self.addEventListener("fetch", (event) => {
           .catch(() => null);
       if (hit) {
         if (!navigation) return hit;
+        let savedHtml = "";
+        try {
+          savedHtml = await hit.clone().text();
+        } catch {
+          savedHtml = "";
+        }
+        const healthy = savedHtml.includes("/assets/") && savedHtml.includes("zikr-build");
+        if (!healthy) {
+          try {
+            const fresh = await fetch(req);
+            if (fresh && fresh.ok) {
+              const page = await pageFrom(fresh.clone());
+              event.waitUntil(saveShell(cache, page.clone()));
+              return page;
+            }
+          } catch {
+            /* the saved page is still better than a blank screen */
+          }
+        }
         const page = await pageFrom(hit);
         event.waitUntil(storeFresh(cache));
         return page;

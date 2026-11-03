@@ -137,7 +137,11 @@ function TapStar() {
         y2: nudge(base.y2, 5),
         dur: "0.78s",
       };
-      setShot({ id: now, pass, rot: flightAim(pass.x, pass.y, pass.x2, pass.y2) });
+      try {
+        setShot({ id: now, pass, rot: flightAim(pass.x, pass.y, pass.x2, pass.y2) });
+      } catch {
+        return;
+      }
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setShot(null), 1500);
     };
