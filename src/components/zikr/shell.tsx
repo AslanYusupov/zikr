@@ -7,7 +7,7 @@ import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
-import { checkUpdate, takeUpdate } from "@/lib/zikr/build";
+import { checkUpdate, publishedIsNewer, takeUpdate } from "@/lib/zikr/build";
 import { fetchShellFile, fetchShellHtml } from "@/lib/zikr/mirror";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
@@ -196,6 +196,16 @@ export function Shell() {
                   if (ready) {
                     await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
                     localStorage.setItem("zikr-shell-check", String(Date.now()));
+                    if (publishedIsNewer(html)) {
+                      const sig = needed.join("|");
+                      try {
+                        if (sessionStorage.getItem("zikr-reloaded") === sig) return;
+                        sessionStorage.setItem("zikr-reloaded", sig);
+                      } catch {
+                        /* private mode still reloads once */
+                      }
+                      window.location.reload();
+                    }
                   }
                 }
               }
@@ -228,6 +238,18 @@ export function Shell() {
     };
     window.addEventListener("online", again);
     document.addEventListener("visibilitychange", again);
+    const onShell = (event: MessageEvent) => {
+      const data = event.data as { type?: string; sig?: string } | null;
+      if (!data || data.type !== "zikr-reload" || !data.sig) return;
+      try {
+        if (sessionStorage.getItem("zikr-reloaded") === data.sig) return;
+        sessionStorage.setItem("zikr-reloaded", data.sig);
+      } catch {
+        /* reload anyway */
+      }
+      window.location.reload();
+    };
+    navigator.serviceWorker?.addEventListener("message", onShell);
     const link = (navigator as Navigator & { connection?: EventTarget }).connection;
     link?.addEventListener?.("change", again);
     return () => {
@@ -236,6 +258,7 @@ export function Shell() {
       window.removeEventListener("touchstart", ask);
       window.removeEventListener("online", again);
       document.removeEventListener("visibilitychange", again);
+      navigator.serviceWorker?.removeEventListener("message", onShell);
       link?.removeEventListener?.("change", again);
     };
   }, []);

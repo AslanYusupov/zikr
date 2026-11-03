@@ -13,19 +13,57 @@ function pathsIn(html) {
 const MIRROR = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release";
 
 async function fetchAsset(src) {
-  try {
-    const file = await fetch(src);
-    if (file.ok) return file;
-  } catch {
-    /* the site did not answer */
-  }
-  try {
-    const file = await fetch(MIRROR + src);
-    if (file.ok) return file;
-  } catch {
-    /* the copy did not answer */
-  }
-  return null;
+  const grab = async (url, ms) => {
+    try {
+      const file = await fetch(url, { signal: AbortSignal.timeout(ms) });
+      return file.ok ? file : null;
+    } catch {
+      return null;
+    }
+  };
+  return (await grab(src, 8000)) || (await grab(MIRROR + src, 12000));
+}
+
+function within(ms, run) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(null), ms);
+    run()
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch(() => {
+        clearTimeout(timer);
+        resolve(null);
+      });
+  });
+}
+
+async function freshPage() {
+  const local = await within(5000, async () => {
+    const res = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
+    return res.ok ? res : null;
+  });
+  if (local) return local;
+  return within(8000, async () => {
+    const res = await fetch(MIRROR + "/index.html", { cache: "no-store" });
+    return res.ok ? res : null;
+  });
+}
+
+async function storeFresh(cache) {
+  const fresh = await freshPage();
+  if (!fresh) return;
+  const before = await cache.match("/");
+  const previous = before ? await before.text() : "";
+  const cleaned = await pageFrom(fresh);
+  const html = await cleaned.clone().text();
+  await saveShell(cache, cleaned);
+  const next = pathsIn(html).join("|");
+  const prev = pathsIn(previous).join("|");
+  if (!next || next === prev) return;
+  const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  for (const client of windows) client.postMessage({ type: "zikr-reload", sig: next });
 }
 
 async function saveShell(cache, res) {
@@ -138,28 +176,7 @@ self.addEventListener("fetch", (event) => {
       if (hit) {
         if (!navigation) return hit;
         const page = await pageFrom(hit);
-        event.waitUntil(
-          (async () => {
-            let fresh = null;
-            try {
-              const local = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
-              if (local.ok) fresh = local;
-            } catch {
-              /* try the copy */
-            }
-            if (!fresh) {
-              try {
-                const remote = await fetch(MIRROR + "/index.html", { cache: "no-store" });
-                if (remote.ok) fresh = remote;
-              } catch {
-                /* keep the saved page */
-              }
-            }
-            if (!fresh) return;
-            const cleaned = await pageFrom(fresh);
-            await saveShell(cache, cleaned.clone());
-          })(),
-        );
+        event.waitUntil(storeFresh(cache));
         return page;
       }
       if (navigation) {

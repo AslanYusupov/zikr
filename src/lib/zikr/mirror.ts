@@ -17,18 +17,21 @@ async function pull(url: string, ms: number): Promise<Response | null> {
   }
 }
 
+function usable(html: string): string | null {
+  const cleanHtml = clean(html);
+  return cleanHtml.includes("<html") && cleanHtml.includes("/assets/") ? cleanHtml : null;
+}
+
 /** The published page. The site itself is tried first, then the GitHub copy. */
 export async function fetchShellHtml(): Promise<string | null> {
-  const local = await pull(`/?warm=${Date.now()}`, 12000);
+  const local = await pull(`/?warm=${Date.now()}`, 6000);
   if (local) {
-    const html = clean(await local.text());
-    if (html.includes("<html") && html.includes("/assets/")) return html;
+    const html = usable(await local.text());
+    if (html) return html;
   }
-  const remote = await pull(`${MIRROR}/index.html`, 15000);
+  const remote = await pull(`${MIRROR}/index.html`, 8000);
   if (!remote) return null;
-  const html = clean(await remote.text());
-  if (!html.includes("<html") || !html.includes("/assets/")) return null;
-  return html;
+  return usable(await remote.text());
 }
 
 /** One published file, from the site or from the GitHub copy. */
