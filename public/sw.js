@@ -78,7 +78,6 @@ function keep(url) {
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/fonts/") ||
     url.pathname.startsWith("/quran-mean/") ||
-    url.pathname.startsWith("/__grok/") ||
     /\.(?:js|css|woff2|webp|svg|png|jpg|jpeg|json|webmanifest)$/.test(url.pathname)
   );
 }
@@ -121,7 +120,15 @@ self.addEventListener("fetch", (event) => {
       if (hit) {
         if (!navigation) return hit;
         const page = await pageFrom(hit);
-        event.waitUntil(cache.put("/", page.clone()).catch(() => {}));
+        event.waitUntil(
+          fetch(new Request(url.pathname + url.search, { cache: "no-store" }))
+            .then(async (fresh) => {
+              if (!fresh.ok) return;
+              const cleaned = await pageFrom(fresh);
+              await saveShell(cache, cleaned.clone());
+            })
+            .catch(() => {}),
+        );
         return page;
       }
       if (navigation) {

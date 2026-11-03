@@ -151,22 +151,14 @@ export function stripInstallParams(url) {
   return rest ? `${path}?${rest}` : path;
 }
 
-export function displayAppName(hostHeader, site = {}) {
-  const fromHost = appNameFromHost(hostHeader);
-  if (fromHost !== DEFAULT_APP_NAME) return fromHost;
-  const fromSite = String(site?.title ?? "").trim();
-  if (!fromSite || fromSite.toLowerCase() === "grok app") return "Zikr";
-  return fromSite.charAt(0).toUpperCase() + fromSite.slice(1);
-}
-
-export function renderInstallPageHtml(template, { host, url, site } = {}) {
+export function renderInstallPageHtml(template, { host, url } = {}) {
   return String(template)
-    .replaceAll("{{APP_NAME}}", escapeHtml(displayAppName(host, site)))
+    .replaceAll("{{APP_NAME}}", escapeHtml(appNameFromHost(host)))
     .replaceAll("{{APP_URL}}", escapeHtml(stripInstallParams(url)));
 }
 
-export function renderWebManifest(hostHeader, site = {}) {
-  const name = displayAppName(hostHeader, site);
+export function renderWebManifest(hostHeader) {
+  const name = appNameFromHost(hostHeader);
   return JSON.stringify(
     {
       name,
@@ -179,7 +171,7 @@ export function renderWebManifest(hostHeader, site = {}) {
       theme_color: "#000000",
       icons: [
         {
-          src: "/icon-180.png",
+          src: "/__grok/icon-180.png",
           sizes: "180x180",
           type: "image/png",
         },
@@ -194,8 +186,8 @@ export function grokPwaHeadTags(appName = DEFAULT_APP_NAME) {
   return [
     // Standalone display comes from the manifest ("display": "standalone");
     // the legacy *-web-app-capable metas it replaces are deliberately absent.
-    ["manifest", '<link rel="manifest" href="/manifest.webmanifest">'],
-    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/icon-180.png">'],
+    ["manifest", '<link rel="manifest" href="/__grok/manifest.webmanifest">'],
+    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/__grok/icon-180.png">'],
     [
       "apple-mobile-web-app-title",
       `<meta name="apple-mobile-web-app-title" content="${escapeHtml(appName)}">`,
@@ -216,6 +208,8 @@ export function readGrokProjectId() {
 }
 
 export function readGrokExtensionsEnabled() {
+  // The published site must not call grok.com. Vercel sets this on build and at runtime.
+  if (String(process.env?.VERCEL ?? "") === "1") return false;
   const fromProcess = typeof process !== "undefined" ? process.env?.VITE_GROK_EXTENSIONS : "";
   return String(fromProcess ?? "").trim() !== "0";
 }
@@ -240,9 +234,20 @@ export function grokXCreatorHeadTags(creator = readXCreator(), creatorId = readX
   ];
 }
 
-/** Nothing from grok.com is sent. A script from there does not open without a VPN and stops the page. */
-export function grokExtensionsHeadTags(_projectId = readGrokProjectId()) {
-  return [];
+/** Platform "Created with Grok" banner — injected into every HTML document. */
+export function grokExtensionsHeadTags(projectId = readGrokProjectId()) {
+  const id = escapeHtml(projectId);
+  const tags = [];
+  if (projectId) {
+    tags.push(`<meta name="grok-project-id" content="${id}">`);
+  }
+  if (!readGrokExtensionsEnabled()) return tags;
+  tags.push(
+    `<script src="${GROK_EXTENSIONS_SCRIPT_SRC}"${
+      projectId ? ` data-project-id="${id}"` : ""
+    } defer></script>`,
+  );
+  return tags;
 }
 
 export function readOgSite(cwd = process.cwd()) {
@@ -358,12 +363,16 @@ export function grokOgHeadTags({
   }
   if (publicHost) {
     const asset = resolveOgCardAsset(site, cwd);
-    if (asset) {
-      const image = `https://${publicHost}${asset.startsWith("/") ? asset : `/${asset}`}`;
-      tags.push(`<meta property="og:image" content="${escapeHtml(image)}">`);
-      tags.push(`<meta property="og:image:width" content="1200">`);
-      tags.push(`<meta property="og:image:height" content="630">`);
-    }
+    const custom = Boolean(asset);
+    const published = String(process.env?.VERCEL ?? "") === "1";
+    let image = custom || published
+      ? `https://${publicHost}${custom ? (asset.startsWith("/") ? asset : `/${asset}`) : "/og.jpg"}`
+      : `${ogServiceUrl()}/v1/card.png?host=${encodeURIComponent(publicHost)}&title=${encodeURIComponent(title)}`;
+    const color = !custom ? placeholderCardColor(site) : "";
+    if (color) image += `&color=${encodeURIComponent(color)}`;
+    tags.push(`<meta property="og:image" content="${escapeHtml(image)}">`);
+    tags.push(`<meta property="og:image:width" content="1200">`);
+    tags.push(`<meta property="og:image:height" content="630">`);
     const banner = String(site.banner ?? "").trim();
     if (banner) {
       const bannerUrl = `https://${publicHost}${banner.startsWith("/") ? banner : `/${banner}`}`;
@@ -376,10 +385,10 @@ export function grokOgHeadTags({
 }
 
 function stripGrokExtensionsScript(html) {
-  return String(html)
-    .replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok\.me|extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "")
-    .replace(/<link\b[^>]*\bhref\s*=\s*["'][^"']*(?:grok\.com|grok\.me|\/__grok\/)[^"']*["'][^>]*>/gi, "")
-    .replace(/<meta\b[^>]*(?:grok-project-id|grok:app_id|property=["']grok:)[^>]*>/gi, "");
+  return String(html).replace(
+    /<script\b[^>]*\bsrc\s*=\s*["'][^"']*\/grok-app-builder\/extensions\.js[^"']*["'][^>]*>\s*<\/script>/gi,
+    "",
+  );
 }
 
 export function stripShareMetaTags(html) {
@@ -431,7 +440,7 @@ export function normalizeHeadContext(ctx = {}) {
 
 export function injectGrokPwaHead(html, ctx = {}) {
   if (typeof html !== "string") return html;
-  const { site, creator, creatorId, host, cwd } = normalizeHeadContext(ctx);
+  const { site, projectId, creator, creatorId, host, cwd } = normalizeHeadContext(ctx);
   const documentTitle = titleFromDocument(html);
   const appName = resolveOgTitle(
     site,
@@ -439,12 +448,13 @@ export function injectGrokPwaHead(html, ctx = {}) {
     host,
     documentTitle,
   );
-  let next = stripGrokExtensionsScript(stripShareMetaTags(html));
+  let next = stripShareMetaTags(html);
+  if (!readGrokExtensionsEnabled()) next = stripGrokExtensionsScript(next);
 
   const missing = grokPwaHeadTags(appName)
     .filter(([key]) => {
-      if (key === "manifest") return !/rel=["']manifest["']/i.test(next);
-      if (key === "apple-touch-icon") return !/rel=["']apple-touch-icon["']/i.test(next);
+      if (key === "manifest") return !next.includes('href="/__grok/manifest.webmanifest"');
+      if (key === "apple-touch-icon") return !next.includes('href="/__grok/icon-180.png"');
       return !next.includes(`name="${key}"`);
     })
     .map(([, tag]) => tag);
@@ -454,7 +464,21 @@ export function injectGrokPwaHead(html, ctx = {}) {
     grokOgHeadTags({ host, appName, site, documentTitle, cwd }).join(""),
   );
 
-  const creatorTags = grokXCreatorHeadTags(creator, creatorId);
+  const published = String(process.env?.VERCEL ?? "") === "1";
+  if (!published && readGrokExtensionsEnabled() && !next.includes("/grok-app-builder/extensions.js")) {
+    missing.push(...grokExtensionsHeadTags(projectId));
+  } else if (!published && projectId && !next.includes('name="grok-project-id"')) {
+    missing.push(`<meta name="grok-project-id" content="${escapeHtml(projectId)}">`);
+  }
+  if (
+    !published &&
+    projectId &&
+    !next.includes('property="grok:app_id"') &&
+    !next.includes("property='grok:app_id'")
+  ) {
+    missing.push(`<meta property="grok:app_id" content="${escapeHtml(projectId)}">`);
+  }
+  const creatorTags = published ? [] : grokXCreatorHeadTags(creator, creatorId);
   if (creatorTags.length > 0) {
     const hasCreator =
       next.includes('property="x:creator" content=') ||
@@ -463,8 +487,8 @@ export function injectGrokPwaHead(html, ctx = {}) {
     if (!next.includes('property="x:creator:id"')) missing.push(creatorTags[1]);
   }
 
-  if (missing.length === 0) return stripGrokExtensionsScript(next);
-  return stripGrokExtensionsScript(insertBeforeHeadClose(next, missing.join("")));
+  if (missing.length === 0) return next;
+  return insertBeforeHeadClose(next, missing.join(""));
 }
 
 function findHeadClose(buf) {

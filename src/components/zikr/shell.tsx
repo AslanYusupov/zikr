@@ -181,12 +181,12 @@ export function Shell() {
           } catch {
             last = 0;
           }
-          if (Date.now() - last >= 12 * 60 * 60 * 1000) {
+          if (Date.now() - last >= 60 * 1000) {
             try {
               const signal = typeof AbortSignal !== "undefined" && "timeout" in AbortSignal ? AbortSignal.timeout(8000) : undefined;
               const page = await fetch(`/?warm=${Date.now()}`, { cache: "no-store", signal });
               if (page.ok) {
-                const html = await page.text();
+                const html = (await page.text()).replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
                 const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
                 if (needed.length && html.includes("<html")) {
                   const absent = [];
