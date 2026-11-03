@@ -198,13 +198,14 @@ export function Shell() {
                     localStorage.setItem("zikr-shell-check", String(Date.now()));
                     if (publishedIsNewer(html)) {
                       const sig = needed.join("|");
+                      let seen = false;
                       try {
-                        if (sessionStorage.getItem("zikr-reloaded") === sig) return;
-                        sessionStorage.setItem("zikr-reloaded", sig);
+                        seen = sessionStorage.getItem("zikr-reloaded") === sig;
+                        if (!seen) sessionStorage.setItem("zikr-reloaded", sig);
                       } catch {
                         /* private mode still reloads once */
                       }
-                      window.location.reload();
+                      if (!seen) window.location.reload();
                     }
                   }
                 }

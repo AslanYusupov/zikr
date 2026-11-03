@@ -59,7 +59,9 @@ async function storeFresh(cache) {
   const cleaned = await pageFrom(fresh);
   const html = await cleaned.clone().text();
   await saveShell(cache, cleaned);
-  const next = pathsIn(html).join("|");
+  const saved = await cache.match("/");
+  const now = saved ? await saved.text() : "";
+  const next = pathsIn(now).join("|");
   const prev = pathsIn(previous).join("|");
   if (!next || next === prev) return;
   const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
