@@ -261,7 +261,7 @@ export const TAJWEED: TajLesson[] = [
     rows: [
       { ar: "قَدْ أَفْلَحَ", read: "къад афляхьа — отскок на д", lat: "qad aflaha — echo on the d" },
       { ar: "اللَّهُ", read: "Аллах1у — лям твёрдый", lat: "Allahu — lam is heavy" },
-      { ar: "بِاللَّهِ", read: "биллах1и — лям мягкий", lat: "billahi — lam is light" },
+      { ar: "بِاللَّهِ", read: "биЛлах1и — лям мягкий", lat: "billahi — lam is light" },
       { ar: "رَبِّ", read: "рабби — ра твёрдая", lat: "rabbi — ra is heavy" },
     ],
   },
@@ -434,7 +434,7 @@ export const TAJWEED: TajLesson[] = [
     rows: [
       {
         ar: "قُلْ هُوَ اللَّهُ أَحَدٌ",
-        read: "Къуль х1уваллах1у ахьад",
+        read: "Къуль х1уваЛлах1у ахьад",
         lat: "Qul huwallahu ahad",
         gloss: L("Скажи: Он — Аллах1 Единый.", "Say: He is Allah, One.", "قل هو الله أحد.", "Katakanlah: Dialah Allah Yang Maha Esa.", "De ki: O, Allah birdir.", "کہہ دو: وہ اللہ ایک ہے۔"),
       },
@@ -485,7 +485,7 @@ export const TAJWEED: TajLesson[] = [
       },
       {
         ar: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-        read: "Альхьамду лиллях1и Раббиль-1алямин",
+        read: "Альхьамду лиЛлях1и Раббиль-1алямин",
         lat: "Alhamdu lillahi Rabbil-alamin",
         gloss: L(
           "Хвала Аллах1у, Господу миров,",

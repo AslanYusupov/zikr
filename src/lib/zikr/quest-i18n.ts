@@ -4,7 +4,7 @@ import type { LangId } from "./types";
 const LABELS: Record<string, Record<LangId, string>> = {
   "Утром": { ru: "Утром", en: "Morning", ar: "صباحًا", id: "Pagi", tr: "Sabah", ur: "صبح" },
   "Вечером": { ru: "Вечером", en: "Evening", ar: "مساءً", id: "Petang", tr: "Akşam", ur: "شام" },
-  "Астаг1фируллах1": { ru: "Астаг1фируллах1", en: "Astaghfirullah", ar: "أستغفر الله", id: "Astaghfirullah", tr: "Estağfirullah", ur: "أستغفر الله" },
+  "Астаг1фируЛлах1": { ru: "Астаг1фируЛлах1", en: "Astaghfirullah", ar: "أستغفر الله", id: "Astaghfirullah", tr: "Estağfirullah", ur: "أستغفر الله" },
   "Антас-салям": { ru: "Антас-салям", en: "Antas-salam", ar: "أنت السلام", id: "Antas-salam", tr: "Entes-selam", ur: "أنت السلام" },
   "Сотый раз": { ru: "Сотый раз", en: "The hundredth", ar: "المرة المتممة للمئة", id: "Yang keseratus", tr: "Yüzüncü", ur: "سوواں" },
   "После намаза": { ru: "После намаза", en: "After the prayer", ar: "بعد الصلاة", id: "Setelah salat", tr: "Namazdan sonra", ur: "نماز کے بعد" },

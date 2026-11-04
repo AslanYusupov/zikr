@@ -384,7 +384,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
           { ar: "قِرْطَاسٍ", read: "къиртасин — ра твёрдая", lat: "qirtasin — ra is heavy", where: "6:7" },
           { ar: "فِرْقٍ", read: "фиркъ — можно толсто и тонко", lat: "firq — heavy or light", where: "26:63" },
           { ar: "اللَّهُ", read: "Аллах1у — лям твёрдый", lat: "Allahu — the lam is heavy", where: "1:1" },
-          { ar: "بِاللَّهِ", read: "биллах1и — лям мягкий", lat: "billahi — the lam is light", where: "2:8" },
+          { ar: "بِاللَّهِ", read: "биЛлах1и — лям мягкий", lat: "billahi — the lam is light", where: "2:8" },
         ],
         mistakes: L(
           "Не делай лям в «Аллах1» всегда толстым. После и он тонкий.",
@@ -396,7 +396,7 @@ export const TAJWEED_COURSE: CourseModule[] = [
         ),
         quiz: [
           {
-            q: L("Какая лям в «биллах1и»?", "How is the lam in billahi?", "كيف لام «بالله»؟", "Bagaimana lam pada billahi?", "Billahi'deki lam nasıl?", "باللہ میں لام کیسی ہے؟"),
+            q: L("Какая лям в «биЛлах1и»?", "How is the lam in billahi?", "كيف لام «بالله»؟", "Bagaimana lam pada billahi?", "Billahi'deki lam nasıl?", "باللہ میں لام کیسی ہے؟"),
             choices: [
               L("Её нет", "It is silent", "لا تُنطق", "Tidak disebut", "Okunmaz", "پڑھی نہیں جاتی"),
               L("Тонкая", "Light", "مرققة", "Nipis", "İnce", "پتلی"),

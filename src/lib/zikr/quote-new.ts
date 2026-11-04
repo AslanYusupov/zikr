@@ -232,7 +232,7 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "Mümin mümine, birbirini tutan bina gibidir.",
     ur: "مومن دوسرے مومن کے لیے عمارت کی طرح ہے: اس کا ایک حصہ دوسرے کو مضبوط کرتا ہے۔",
   },
-  "Два слова легки для языка, тяжелы на Весах и любимы Милостивым: «Субхьаналлах1и ва бихьамдих1и, Субхьаналлах1иль-1азыйм».": {
+  "Два слова легки для языка, тяжелы на Весах и любимы Милостивым: «СубхьанаЛлах1и ва бихьамдих1и, СубхьанаЛлах1иль-1азыйм».": {
     en: "Two words are light on the tongue, heavy on the Scale, and beloved to the Most Merciful: Subhanallahi wa bihamdihi, Subhanallahil-Azim.",
     ar: "كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ حَبِيبَتَانِ إِلَى الرَّحْمَنِ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ",
     id: "Dua kalimat ringan di lidah, berat di timbangan, dan dicintai Yang Maha Pengasih: Subhanallahi wa bihamdihi, Subhanallahil-Azhim.",
