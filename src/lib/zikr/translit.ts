@@ -302,7 +302,9 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     if (cur.ch === "\u0644" && g[i + 1]?.ch === "\u0644" && g[i + 1]?.sh && g[i + 2]?.ch === "\u0647") {
       const bridge = cur.v ? cons("\u0644", ru) + vowelSound(cur.v, ru) : "";
       const end = stretch(vowelSound(g[i + 2].v, ru), g[i + 2], ru);
-      out += `${bridge}${ru ? "ллах1" : "llah"}${end}`;
+      const lone = ru ? ["а", "и", "у"] : ["a", "i", "u"];
+      const name = bridge || (out && !lone.includes(out)) ? (ru ? "Ллах1" : "Llah") : ru ? "ллах1" : "llah";
+      out += `${bridge}${name}${end}`;
       i += 2;
       continue;
     }
@@ -393,10 +395,19 @@ function dropNoon(text: string, ru: boolean): string {
   return text.endsWith(n) ? text.slice(0, -1) : text;
 }
 
+/** The name stays one word. A fused «ллах1» takes a capital, a word of its own stays «аллах1». */
+function fuseAllah(head: string, said: string, ru: boolean): string {
+  if (ru && said.startsWith("ллах1")) return `${head}Ллах1${said.slice("ллах1".length)}`;
+  if (ru && said.startsWith("аллах1")) return `${head}Ллах1${said.slice("аллах1".length)}`;
+  if (!ru && said.startsWith("llah")) return `${head}Llah${said.slice("llah".length)}`;
+  if (!ru && said.startsWith("allah")) return `${head}Llah${said.slice("allah".length)}`;
+  return head + said;
+}
+
 export function transliterate(arabic: string, lang: "ru" | "lat"): string {
   const ru = lang === "ru";
   if (skeleton(arabic) === "بسماللهالرحمنالرحيم") {
-    return ru ? "Бисмилляах1ир-Рахьмаанир-Рахьиим" : "Bismillaahir-Rahmaanir-Rahiim";
+    return ru ? "БисмиЛляах1ир-Рахьмаанир-Рахьиим" : "BismiLlaahir-Rahmaanir-Rahiim";
   }
   const words = arabic.split(/\s+/).filter(Boolean);
   const parsed = words.map((word) => parseWord(word));
@@ -415,7 +426,7 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
     if (carry && parts.length) {
       let head = parts.pop() ?? "";
       if (prevEnd === "madd-a" || prevEnd === "madd-i" || prevEnd === "madd-u") head = shortenMadd(head, prevEnd, ru);
-      parts.push(head + said);
+      parts.push(fuseAllah(head, said, ru));
       continue;
     }
     const sound = prev?.length ? firstSound(glyphs) : "";
@@ -424,7 +435,7 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
     if ((mergeNoon || mergeMeem) && parts.length) {
       let head = parts.pop() ?? "";
       if (mergeNoon) head = dropNoon(head, ru);
-      parts.push(mergeMeem ? `${head}-${said}` : head + bridge(said, ru));
+      parts.push(mergeMeem ? `${head}-${said}` : fuseAllah(head, bridge(said, ru), ru));
       continue;
     }
     if (prevEnd === "noon" && sound === "\u0628" && parts.length && !named[index] && !wasl) {
