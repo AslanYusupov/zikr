@@ -407,7 +407,7 @@ function fuseAllah(head: string, said: string, ru: boolean): string {
 export function transliterate(arabic: string, lang: "ru" | "lat"): string {
   const ru = lang === "ru";
   if (skeleton(arabic) === "بسماللهالرحمنالرحيم") {
-    return ru ? "БисмиЛляах1ир-Рахьмаанир-Рахьиим" : "BismiLlaahir-Rahmaanir-Rahiim";
+    return ru ? "БисмиЛлаах1ир-Рахьмаанир-Рахьиим" : "BismiLlaahir-Rahmaanir-Rahiim";
   }
   const words = arabic.split(/\s+/).filter(Boolean);
   const parsed = words.map((word) => parseWord(word));
