@@ -302,11 +302,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     if (cur.ch === "\u0644" && g[i + 1]?.ch === "\u0644" && g[i + 1]?.sh && g[i + 2]?.ch === "\u0647") {
       const bridge = cur.v ? cons("\u0644", ru) + vowelSound(cur.v, ru) : "";
       const end = stretch(vowelSound(g[i + 2].v, ru), g[i + 2], ru);
-      const name = ru ? "Аллах1" : "Allah";
-      const lone = ru ? ["а", "и", "у"] : ["a", "i", "u"];
-      if (bridge) out += `${bridge}-${name}${end}`;
-      else if (!out || lone.includes(out)) out = `${name}${end}`;
-      else out += `-${name}${end}`;
+      out += `${bridge}${ru ? "ллах1" : "llah"}${end}`;
       i += 2;
       continue;
     }
@@ -400,7 +396,7 @@ function dropNoon(text: string, ru: boolean): string {
 export function transliterate(arabic: string, lang: "ru" | "lat"): string {
   const ru = lang === "ru";
   if (skeleton(arabic) === "بسماللهالرحمنالرحيم") {
-    return ru ? "Бисми-Аллах1ир-Рахьмаанир-Рахьиим" : "Bismi-Allahir-Rahmaanir-Rahiim";
+    return ru ? "Бисмилляах1ир-Рахьмаанир-Рахьиим" : "Bismillaahir-Rahmaanir-Rahiim";
   }
   const words = arabic.split(/\s+/).filter(Boolean);
   const parsed = words.map((word) => parseWord(word));
@@ -419,8 +415,7 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
     if (carry && parts.length) {
       let head = parts.pop() ?? "";
       if (prevEnd === "madd-a" || prevEnd === "madd-i" || prevEnd === "madd-u") head = shortenMadd(head, prevEnd, ru);
-      const namedAllah = /^(?:Аллах1|Allah)/.test(said);
-      parts.push(namedAllah ? `${head}-${said}` : head + said);
+      parts.push(head + said);
       continue;
     }
     const sound = prev?.length ? firstSound(glyphs) : "";
