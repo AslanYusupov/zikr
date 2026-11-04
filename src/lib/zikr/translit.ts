@@ -302,7 +302,11 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     if (cur.ch === "\u0644" && g[i + 1]?.ch === "\u0644" && g[i + 1]?.sh && g[i + 2]?.ch === "\u0647") {
       const bridge = cur.v ? cons("\u0644", ru) + vowelSound(cur.v, ru) : "";
       const end = stretch(vowelSound(g[i + 2].v, ru), g[i + 2], ru);
-      out += `${bridge}${ru ? "ллах1" : "llah"}${end}`;
+      const name = ru ? "Аллах1" : "Allah";
+      const lone = ru ? ["а", "и", "у"] : ["a", "i", "u"];
+      if (bridge) out += `${bridge}-${name}${end}`;
+      else if (!out || lone.includes(out)) out = `${name}${end}`;
+      else out += `-${name}${end}`;
       i += 2;
       continue;
     }
@@ -396,7 +400,7 @@ function dropNoon(text: string, ru: boolean): string {
 export function transliterate(arabic: string, lang: "ru" | "lat"): string {
   const ru = lang === "ru";
   if (skeleton(arabic) === "بسماللهالرحمنالرحيم") {
-    return ru ? "Бисмилляах1ир-Рахьмаанир-Рахьиим" : "Bismillaahir-Rahmaanir-Rahiim";
+    return ru ? "Бисми-Аллах1ир-Рахьмаанир-Рахьиим" : "Bismi-Allahir-Rahmaanir-Rahiim";
   }
   const words = arabic.split(/\s+/).filter(Boolean);
   const parsed = words.map((word) => parseWord(word));
@@ -415,7 +419,8 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
     if (carry && parts.length) {
       let head = parts.pop() ?? "";
       if (prevEnd === "madd-a" || prevEnd === "madd-i" || prevEnd === "madd-u") head = shortenMadd(head, prevEnd, ru);
-      parts.push(head + said);
+      const namedAllah = /^(?:Аллах1|Allah)/.test(said);
+      parts.push(namedAllah ? `${head}-${said}` : head + said);
       continue;
     }
     const sound = prev?.length ? firstSound(glyphs) : "";
@@ -439,6 +444,8 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
   const text = parts
     .join(" ")
     .replace(ru ? /(^|[\s-])аллах1/g : /(^|[\s-])allah/g, (_m, p: string) => `${p}${ru ? "Аллах1" : "Allah"}`)
+    .replace(ru ? /(^|[\s-])рахьмаан/g : /(^|[\s-])rahmaan/g, (_m, p: string) => `${p}${ru ? "Рахьмаан" : "Rahmaan"}`)
+    .replace(ru ? /(^|[\s-])рахьиим/g : /(^|[\s-])rahiim/g, (_m, p: string) => `${p}${ru ? "Рахьиим" : "Rahiim"}`)
     .replace(/а{3,}/g, "аа")
     .replace(/и{3,}/g, "ии")
     .replace(/у{3,}/g, "уу")
