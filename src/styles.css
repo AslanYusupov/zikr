@@ -4027,6 +4027,10 @@ html, body {
 .quran-hadith-text { margin-top: .35rem; color: var(--fg); font-size: .84rem; line-height: 1.55; }
 .quran-hadith-src { margin-top: .4rem; color: var(--gold); font-size: .72rem; line-height: 1.4; }
 .surah-row { display: flex; align-items: center; gap: .65rem; width: 100%; padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--fg); text-align: left; }
+.surah-hear-row { position: relative; display: grid; align-items: center; min-height: 1.9rem; margin-top: .25rem; }
+.surah-hear-row p { padding-inline: 2.3rem; }
+.surah-hear { position: absolute; left: 0; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 1.85rem; height: 1.85rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--fg); }
+.surah-hear.on { color: var(--gold); border-color: var(--gold); }
 .surah-rewards { position: relative; margin-top: .5rem; }
 .surah-rewards p { padding-inline: 2.6rem; }
 .surah-arrows { position: absolute; top: 50%; right: 0; transform: translateY(-50%); display: flex; gap: .25rem; }

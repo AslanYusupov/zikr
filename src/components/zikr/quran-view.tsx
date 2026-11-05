@@ -11,6 +11,7 @@ import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 import { loadAyahUrl } from "@/lib/zikr/ayah-audio";
+import { playListen, stopListen, useListen } from "@/lib/zikr/quran-listen";
 import { TajweedView } from "./tajweed-view";
 import { ListenView } from "./listen-view";
 
@@ -148,6 +149,9 @@ export function QuranView() {
   const blobUrl = useRef<string | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
   const [looping, setLooping] = useState<string | null>(null);
+  const listenPlaying = useListen((s) => s.playing);
+  const listenMode = useListen((s) => s.mode);
+  const listenSurah = useListen((s) => s.surah);
 
   const [attempt, setAttempt] = useState(0);
 
@@ -238,6 +242,7 @@ export function QuranView() {
   }
 
   function startAyah(el: HTMLAudioElement, key: string, surahNo: number, ayahNo: number, repeat: boolean) {
+    stopListen();
     const mine = ++playToken.current;
     el.loop = false;
     el.volume = 1;
@@ -572,7 +577,26 @@ export function QuranView() {
           <span className="surah-arrow" aria-hidden>›</span>
         </button>
       </div>
-      <p className="mt-1 text-center text-xs text-gold">{t(lang, "rewards")} {formatNum(rewardPoints(total + quranLetters))}</p>
+      <div className="surah-hear-row">
+        <button
+          type="button"
+          className={cn("surah-hear", listenPlaying && listenMode === "whole" && listenSurah === surah.n && "on")}
+          aria-label={lang === "ru" ? "Слушать суру" : "Play surah"}
+          onClick={() => {
+            const el = audio.current;
+            if (el) stopAyah(el);
+            const here = useListen.getState();
+            if (here.playing && here.mode === "whole" && here.surah === surah.n) {
+              stopListen();
+              return;
+            }
+            playListen(here.reciterId, surah.n, 1, "whole");
+          }}
+        >
+          {listenPlaying && listenMode === "whole" && listenSurah === surah.n ? <Pause size={15} /> : <Play size={15} />}
+        </button>
+        <p className="text-center text-xs text-gold">{t(lang, "rewards")} {formatNum(rewardPoints(total + quranLetters))}</p>
+      </div>
       <p className="mt-2 text-center text-sm text-gold">{note}</p>
       {surahLeft > 0 ? (
         <button type="button" className="quran-claim" onClick={() => claim(surahPieces)}>
