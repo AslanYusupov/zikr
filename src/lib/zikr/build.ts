@@ -1,5 +1,5 @@
-import { fetchShellFile, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261106-6";
+import { fetchNewest, fetchShellFile, fetchShellHtml } from "./mirror";
+export const APP_BUILD = "20261106-7";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -75,28 +75,38 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
   return "fresh";
 }
 
-export async function takeUpdate(): Promise<void> {
-  const cacheName = "zikr-shell-v2";
+export async function pullUpdate(): Promise<void> {
+  if (typeof window === "undefined" || !("caches" in window)) return;
+  const found = await fetchNewest();
+  if (!found) return;
+  const mark = buildStamp(found.html);
+  if (!buildIsNewer(mark, pageBuild()) || audioBusy()) return;
   try {
-    const html = await fetchShellHtml();
-    if (!html) return;
-    if (!buildIsNewer(buildStamp(html), pageBuild())) return;
-    const cache = await caches.open(cacheName);
-    const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-    if (assets.length === 0) return;
-    const saved = await Promise.all(
-      assets.map(async (src) => {
-        const file = await fetchShellFile(src);
-        if (!file) return false;
-        await cache.put(src, file);
-        return true;
-      }),
-    );
-    if (saved.some((ok) => !ok)) return;
-    await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+    if (sessionStorage.getItem(TRIED_KEY) === mark) return;
+  } catch {
+    /* private mode still tries once */
+  }
+  const assets = [...new Set([...found.html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+  if (!assets.length) return;
+  try {
+    const cache = await caches.open("zikr-ok-v1");
+    for (const src of assets) {
+      const url = found.base ? `${found.base}${src}?v=${Date.now()}` : `${src}?warm=${Date.now()}`;
+      const file = await fetch(url, { cache: "no-store" }).catch(() => null);
+      const good = file && file.ok ? file : await fetchShellFile(src);
+      if (!good) return;
+      await cache.put(src, good.clone());
+    }
+    await cache.put("/index.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   } catch {
     return;
   }
-  if (audioBusy()) return;
-  window.location.reload();
+  try {
+    sessionStorage.setItem(TRIED_KEY, mark);
+  } catch {
+    /* the reload still happens */
+  }
+  const next = new URL(window.location.href);
+  next.searchParams.set("v", mark);
+  window.location.replace(next.href);
 }

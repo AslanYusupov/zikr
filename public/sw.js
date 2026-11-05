@@ -84,9 +84,26 @@ async function ready(cache, html, base, alt) {
   return clean(html);
 }
 
+async function exactCopy() {
+  try {
+    const res = await fetch("https://api.github.com/repos/AslanYusupov/zikr/commits/release", {
+      headers: { Accept: "application/vnd.github.sha" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(2500),
+    });
+    const sha = (await res.text()).trim();
+    if (!res.ok || !/^[0-9a-f]{40}$/.test(sha)) return { html: "", base: "" };
+    const base = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@" + sha;
+    return { html: await textFrom(base + "/index.html?v=" + Date.now(), 4000), base };
+  } catch {
+    return { html: "", base: "" };
+  }
+}
+
 async function fresh(cache) {
   const found = await Promise.all([
-    textFrom(self.location.origin + "/?open=" + Date.now(), 2500).then((html) => ({ html, base: self.location.origin })),
+    textFrom(self.location.origin + "/?open=" + Date.now(), 4000).then((html) => ({ html, base: self.location.origin })),
+    exactCopy(),
     ...COPIES.map((base) => textFrom(base + "/index.html?v=" + Date.now(), 2500).then((html) => ({ html, base }))),
   ]);
   let best = { html: "", base: self.location.origin };
@@ -116,8 +133,15 @@ async function offer(currentHtml, pending) {
     if (!next || !mark || !newer(mark, stamp(currentHtml))) return;
     await cache.put("/index.html", page(next));
     await cache.put("/update-mark", new Response(mark));
-    if (audioOn) return;
     const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    windows.forEach((client) => {
+      try {
+        client.postMessage({ type: "zikr-reload", build: mark });
+      } catch {
+        /* the page can still be opened directly */
+      }
+    });
+    if (audioOn) return;
     const nextUrl = new URL("/", self.location.origin);
     nextUrl.searchParams.set("v", mark);
     await Promise.all(

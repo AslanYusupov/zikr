@@ -7,7 +7,7 @@ import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
-import { audioBusy } from "@/lib/zikr/build";
+import { audioBusy, pullUpdate } from "@/lib/zikr/build";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
@@ -104,6 +104,18 @@ export function Shell() {
       } catch {
         return;
       }
+      if (stop) return;
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        const data = event.data;
+        if (!data || data.type !== "zikr-reload" || audioBusy()) return;
+        const mark = String(data.build || "");
+        const here = document.querySelector('meta[name="zikr-build"]')?.getAttribute("content") || "";
+        if (!mark || here === mark || new URL(location.href).searchParams.get("v") === mark) return;
+        const next = new URL(location.href);
+        next.searchParams.set("v", mark);
+        location.replace(next.href);
+      });
+      void pullUpdate();
       if (stop) return;
       try {
         const cache = await caches.open("zikr-ok-v1");
