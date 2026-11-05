@@ -259,6 +259,15 @@ self.addEventListener("fetch", (event) => {
         const page = await pageFrom(hit);
         return page;
       }
+      if (frozen || url.pathname.startsWith("/fonts/")) {
+        const copy = await fetchAsset(url.pathname);
+        if (copy) {
+          const storedCopy = copy.clone();
+          event.waitUntil(cache.put(new Request(url.pathname), storedCopy).catch(() => {}));
+          return copy;
+        }
+        return new Response("", { status: 503 });
+      }
       if (navigation) {
         const fresh = await freshPage();
         if (fresh) {
