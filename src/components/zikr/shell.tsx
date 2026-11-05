@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BarChart3, ChevronLeft, ListChecks, Maximize2, Minimize2, Moon, Settings, Volume2, VolumeX } from "lucide-react";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
@@ -38,6 +38,34 @@ function QuranMark({ className }: { className?: string }) {
   );
 }
 
+export function Splash({ onEnter }: { onEnter: () => void }) {
+  const done = useRef(false);
+  const close = useCallback(() => {
+    if (done.current) return;
+    done.current = true;
+    onEnter();
+  }, [onEnter]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(onEnter, 500);
+    return () => window.clearTimeout(timer);
+  }, [onEnter]);
+
+  return (
+    <div className="bismillah-splash" onClick={close} suppressHydrationWarning>
+      <span className="bismillah-glow" aria-hidden />
+      <span className="bismillah-sky" aria-hidden />
+      <span className="comet comet-live splash-pass" aria-hidden>
+        <span className="comet-tail" />
+        <span className="comet-head" />
+      </span>
+      <p className="bismillah-words" dir="rtl" lang="ar">
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
+    </div>
+  );
+}
+
 export function Shell() {
   const hydrated = useHydrated();
   const cloud = useCloud(hydrated);
@@ -60,6 +88,7 @@ export function Shell() {
   const [notice, setNotice] = useState<string | null>(null);
   const [full, setFull] = useState(false);
   const [online, setOnline] = useState<number | null>(null);
+  const [entered, setEntered] = useState(false);
   const [dayStamp, setDayStamp] = useState(todayKey);
   const noticeId = useRef(0);
   const pull = useRef<number | null>(null);
@@ -292,8 +321,8 @@ export function Shell() {
             ? { ar: "ذِكْرُ اللَّهِ", title: t(lang, "zikr") }
             : { ar: "ذِكْر", title: t(lang, "zikr") };
   const showHeadAr = head.ar !== "";
-
-  useEffect(() => {
+  const enter = useCallback(() => {
+    setEntered(true);
     document.documentElement.classList.add("app-go");
   }, []);
 
@@ -450,6 +479,7 @@ export function Shell() {
         {library !== null && <Library focus={library} onClose={closeOverlays} />}
         {settings && <SettingsView onClose={closeOverlays} meta={cloud.meta} status={cloud.user ? cloud.status : "local"} />}
       </div>
+      {!entered && <Splash onEnter={enter} />}
     </div>
   );
 }
