@@ -1,5 +1,9 @@
 const SHELL = "zikr-ok-v1";
-const GITHUB = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release";
+const COPIES = [
+  "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
+];
 
 function clean(html) {
   return html.replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
@@ -81,14 +85,18 @@ async function ready(cache, html, base, alt) {
 }
 
 async function fresh(cache) {
-  const [own, copy] = await Promise.all([
-    textFrom(self.location.origin + "/?open=" + Date.now(), 2500),
-    textFrom(GITHUB + "/index.html?v=" + Date.now(), 2500),
+  const found = await Promise.all([
+    textFrom(self.location.origin + "/?open=" + Date.now(), 2500).then((html) => ({ html, base: self.location.origin })),
+    ...COPIES.map((base) => textFrom(base + "/index.html?v=" + Date.now(), 2500).then((html) => ({ html, base }))),
   ]);
-  const useCopy = Boolean(copy) && newer(stamp(copy), stamp(own));
-  const best = useCopy ? copy : own || copy;
-  if (!best) return "";
-  return ready(cache, best, useCopy ? GITHUB : self.location.origin, useCopy ? self.location.origin : GITHUB);
+  let best = { html: "", base: self.location.origin };
+  for (const item of found) {
+    if (!item.html) continue;
+    if (!best.html || newer(stamp(item.html), stamp(best.html))) best = item;
+  }
+  if (!best.html) return "";
+  const alt = best.base === self.location.origin ? COPIES[1] : self.location.origin;
+  return ready(cache, best.html, best.base, alt);
 }
 
 let busy = false;
@@ -236,7 +244,7 @@ self.addEventListener("fetch", (event) => {
       const hit = await cache.match(url.pathname);
       if (hit) return hit;
       const own = await fileFrom(url.pathname, 4000);
-      const file = own || (await fileFrom(GITHUB + url.pathname, 6000));
+      const file = own || (await fileFrom(COPIES[1] + url.pathname, 6000)) || (await fileFrom(COPIES[0] + url.pathname, 6000));
       if (!file) return new Response("", { status: 504 });
       await cache.put(url.pathname, file.clone());
       return file;
