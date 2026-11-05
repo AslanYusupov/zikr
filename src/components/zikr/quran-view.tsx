@@ -477,8 +477,8 @@ export function QuranView() {
           {lang !== "ar" ? <p className="quran-hadith-text">{copy.hadith}</p> : null}
           <p className="quran-hadith-src">{copy.source}</p>
         </article>
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <p className="text-xs text-muted">
+        <div className="surah-rewards">
+          <p className="text-center text-xs text-muted">
             {t(lang, "rewards")}: {formatNum(rewardPoints(total + quranLetters))}
           </p>
           <div className="surah-arrows">
