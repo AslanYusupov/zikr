@@ -102,7 +102,9 @@ export function Shell() {
     let stop = false;
     const keep = async () => {
       try {
-        await navigator.serviceWorker.register("/sw.js");
+        await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) void reg.update();
       } catch {
         return;
       }

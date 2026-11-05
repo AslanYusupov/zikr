@@ -64,15 +64,16 @@ async function fileFrom(url, ms) {
   }
 }
 
-async function ready(cache, html, base) {
+async function ready(cache, html, base, alt) {
   const needed = paths(html);
   if (!needed.length) return "";
-  for (const src of needed) {
-    if (await cache.match(src)) continue;
-    const file = await fileFrom(base + src, 6000);
-    if (!file) return "";
-    await cache.put(src, file);
-  }
+  await Promise.all(
+    needed.map(async (src) => {
+      if (await cache.match(src)) return;
+      const file = (await fileFrom(base + src, 8000)) || (alt ? await fileFrom(alt + src, 8000) : null);
+      if (file) await cache.put(src, file);
+    }),
+  );
   for (const src of needed) {
     if (!(await cache.match(src))) return "";
   }
@@ -80,14 +81,14 @@ async function ready(cache, html, base) {
 }
 
 async function fresh(cache) {
-  const own = await textFrom(self.location.origin + "/?open=" + Date.now(), 3500);
-  if (own) {
-    const html = await ready(cache, own, self.location.origin);
-    if (html) return html;
-  }
-  const copy = await textFrom(GITHUB + "/index.html?v=" + Math.floor(Date.now() / 3600000), 6000);
-  if (!copy) return "";
-  return ready(cache, copy, GITHUB);
+  const [own, copy] = await Promise.all([
+    textFrom(self.location.origin + "/?open=" + Date.now(), 2500),
+    textFrom(GITHUB + "/index.html?v=" + Date.now(), 2500),
+  ]);
+  const useCopy = Boolean(copy) && newer(stamp(copy), stamp(own));
+  const best = useCopy ? copy : own || copy;
+  if (!best) return "";
+  return ready(cache, best, useCopy ? GITHUB : self.location.origin, useCopy ? self.location.origin : GITHUB);
 }
 
 let busy = false;
@@ -97,20 +98,21 @@ self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "zikr-audio") audioOn = Boolean(event.data.on);
 });
 
-async function offer(currentHtml) {
+async function offer(currentHtml, pending) {
   if (busy || !currentHtml) return;
   busy = true;
   try {
     const cache = await caches.open(SHELL);
-    const next = await fresh(cache);
+    const next = pending || (await fresh(cache));
     const mark = stamp(next);
     if (!next || !mark || !newer(mark, stamp(currentHtml))) return;
-    const seen = await cache.match("/update-mark");
-    const seenStamp = seen ? await seen.text() : "";
-    if (seenStamp === mark) return;
     await cache.put("/index.html", page(next));
     await cache.put("/update-mark", new Response(mark));
     if (audioOn) return;
+    const seen = await cache.match("/update-shown");
+    const shown = seen ? await seen.text() : "";
+    if (shown === mark) return;
+    await cache.put("/update-shown", new Response(mark));
     const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     await Promise.all(windows.map((client) => client.navigate(client.url).catch(() => undefined)));
   } catch {
@@ -195,7 +197,22 @@ self.addEventListener("fetch", (event) => {
             if (!(await cache.match(src))) ok = false;
           }
           if (ok) {
-            event.waitUntil(offer(html));
+            const pending = fresh(cache);
+            let quick = "";
+            try {
+              quick = await Promise.race([
+                pending,
+                new Promise((resolve) => setTimeout(() => resolve(""), 700)),
+              ]);
+            } catch {
+              quick = "";
+            }
+            if (quick && newer(stamp(quick), stamp(html))) {
+              await cache.put("/index.html", page(quick));
+              await cache.put("/update-shown", new Response(stamp(quick)));
+              return page(quick);
+            }
+            event.waitUntil(offer(html, pending));
             return page(html);
           }
         }
