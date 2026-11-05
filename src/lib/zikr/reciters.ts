@@ -40,6 +40,10 @@ function dosariArchive(surah: number) {
   return `https://github.com/AslanYusupov/zikr-quran-audio/releases/download/quran-dosari/${pad(surah)}.mp3`;
 }
 
+function ownArchive(id: string, surah: number) {
+  return `https://github.com/AslanYusupov/zikr-quran-${id}/releases/download/quran-${id}/${pad(surah)}.mp3`;
+}
+
 function every(folder: string, surah: number, ayah: number) {
   return `https://everyayah.com/data/${folder}/${ayahFile(surah, ayah)}.mp3`;
 }
@@ -92,7 +96,7 @@ export const RECITERS: Reciter[] = [
       "Murattal. Hafs rivayeti.",
       "مرتل۔ روایت حفص عن عاصم۔",
     ),
-    files: (n) => [cdn("mishary-alafasy/r1", n), mirror("server8", "afs", n), qari("mishaari_raashid_al_3afaasee", n), cloudSurah("ar.alafasy", n), qdc("mishari_al_afasy/murattal", n)],
+    files: (n) => [cdn("mishary-alafasy/r1", n), mirror("server8", "afs", n), qari("mishaari_raashid_al_3afaasee", n), cloudSurah("ar.alafasy", n), qdc("mishari_al_afasy/murattal", n), ownArchive("afasy", n)],
     ayahs: (s, a) => [every("Alafasy_128kbps", s, a), islamic("ar.alafasy", 128, s, a), ...quranCom(s, a)],
   },
   {
@@ -107,7 +111,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("abdulrahman-sudais/r1", n), mirror("server11", "sds", n), qari("abdurrahmaan_as-sudays", n), qdc("abdurrahmaan_as_sudais/murattal", n)],
+    files: (n) => [cdn("abdulrahman-sudais/r1", n), mirror("server11", "sds", n), qari("abdurrahmaan_as-sudays", n), qdc("abdurrahmaan_as_sudais/murattal", n), ownArchive("sudais", n)],
     ayahs: (s, a) => [every("Abdurrahmaan_As-Sudais_192kbps", s, a), islamic("ar.abdurrahmaansudais", 64, s, a)],
   },
   {
@@ -122,7 +126,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("saud-shuraim/r1", n), mirror("server7", "shur", n), qari("sa3ood_al-shuraym", n)],
+    files: (n) => [cdn("saud-shuraim/r1", n), mirror("server7", "shur", n), qari("sa3ood_al-shuraym", n), ownArchive("shuraim", n)],
     ayahs: (s, a) => [every("Saood_ash-Shuraym_128kbps", s, a), islamic("ar.saoodshuraym", 64, s, a)],
   },
   {
@@ -137,7 +141,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("maher-muaiqly/r1", n), mirror("server12", "maher", n), qari("maher_256", n)],
+    files: (n) => [cdn("maher-muaiqly/r1", n), mirror("server12", "maher", n), qari("maher_256", n), ownArchive("muaiqly", n)],
     ayahs: (s, a) => [every("MaherAlMuaiqly128kbps", s, a), islamic("ar.mahermuaiqly", 128, s, a)],
   },
   {
@@ -152,7 +156,7 @@ export const RECITERS: Reciter[] = [
       "Öğretici murattal. Hafs rivayeti. Yavaş, duraklar açık.",
       "تعلیمی مرتل۔ روایت حفص۔ آہستہ، واضح وقفوں کے ساتھ۔",
     ),
-    files: (n) => [cdn("mahmoud-husary/r1", n), mirror("server13", "husr", n), qari("mahmood_khaleel_al-husaree", n)],
+    files: (n) => [cdn("mahmoud-husary/r1", n), mirror("server13", "husr", n), qari("mahmood_khaleel_al-husaree", n), ownArchive("husary", n)],
     ayahs: (s, a) => [every("Husary_128kbps", s, a), islamic("ar.husary", 128, s, a)],
   },
   {
@@ -167,7 +171,7 @@ export const RECITERS: Reciter[] = [
       "Mücevved. Hafs rivayeti. Makamlı kıraat.",
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
-    files: (n) => [cdn("muhammad-minshawi/r2", n), qari("minshawi_mujawwad", n), cloudSurah("ar.muhammadsiddiqalminshawimujawwad", n), qdc("siddiq_al-minshawi/mujawwad", n, true)],
+    files: (n) => [cdn("muhammad-minshawi/r2", n), qari("minshawi_mujawwad", n), cloudSurah("ar.muhammadsiddiqalminshawimujawwad", n), qdc("siddiq_al-minshawi/mujawwad", n, true), ownArchive("minshawi", n)],
     ayahs: (s, a) => [islamic("ar.minshawimujawwad", 64, s, a)],
   },
   {
@@ -182,7 +186,7 @@ export const RECITERS: Reciter[] = [
       "Mücevved. Hafs rivayeti. Makamlı kıraat.",
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
-    files: (n) => [cdn("abdulbasit-abdulsamad/r1", n), qari("abdulbaset_mujawwad", n), cloudSurah("ar.abdulbasitmujawwad", n)],
+    files: (n) => [cdn("abdulbasit-abdulsamad/r1", n), qari("abdulbaset_mujawwad", n), cloudSurah("ar.abdulbasitmujawwad", n), ownArchive("basit", n)],
     ayahs: (s, a) => [every("Abdul_Basit_Mujawwad_128kbps", s, a)],
   },
   {
@@ -197,7 +201,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Nebevî imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n), qari("huthayfi", n)],
+    files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n), qari("huthayfi", n), ownArchive("hudhaify", n)],
     ayahs: (s, a) => [every("Hudhaify_128kbps", s, a), islamic("ar.hudhaify", 128, s, a)],
   },
   {
@@ -212,7 +216,7 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Nebevî imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n), qari("muhammad_ayyoob", n), cloudSurah("ar.muhammadayyub", n)],
+    files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n), qari("muhammad_ayyoob", n), cloudSurah("ar.muhammadayyub", n), ownArchive("ayyub", n)],
     ayahs: (s, a) => [every("Muhammad_Ayyoub_128kbps", s, a), islamic("ar.muhammadayyoub", 128, s, a)],
   },
 ];
