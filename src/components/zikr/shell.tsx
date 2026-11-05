@@ -7,7 +7,7 @@ import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
-import { audioBusy, buildIsNewer, buildStamp, checkUpdate, pageBuild, publishedIsNewer, takeUpdate } from "@/lib/zikr/build";
+import { buildIsNewer, buildStamp, checkUpdate, pageBuild, takeUpdate } from "@/lib/zikr/build";
 import { fetchShellFile, fetchShellHtml } from "@/lib/zikr/mirror";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
@@ -188,17 +188,6 @@ export function Shell() {
                     if (ready) {
                       await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
                       localStorage.setItem("zikr-shell-check", String(Date.now()));
-                      if (publishedIsNewer(html) && !audioBusy()) {
-                        const sig = needed.join("|");
-                        let seen = false;
-                        try {
-                          seen = sessionStorage.getItem("zikr-reloaded") === sig;
-                          if (!seen) sessionStorage.setItem("zikr-reloaded", sig);
-                        } catch {
-                          /* private mode still reloads once */
-                        }
-                        if (!seen) window.location.reload();
-                      }
                     }
                   }
                 }
@@ -232,17 +221,8 @@ export function Shell() {
     };
     window.addEventListener("online", again);
     document.addEventListener("visibilitychange", again);
-    const onShell = (event: MessageEvent) => {
-      const data = event.data as { type?: string; sig?: string } | null;
-      if (!data || data.type !== "zikr-reload" || !data.sig) return;
-      if (audioBusy()) return;
-      try {
-        if (sessionStorage.getItem("zikr-reloaded") === data.sig) return;
-        sessionStorage.setItem("zikr-reloaded", data.sig);
-      } catch {
-        /* reload anyway */
-      }
-      window.location.reload();
+    const onShell = () => {
+      /* an update must not reload the open screen */
     };
     navigator.serviceWorker?.addEventListener("message", onShell);
     const link = (navigator as Navigator & { connection?: EventTarget }).connection;

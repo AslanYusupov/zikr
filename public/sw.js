@@ -32,8 +32,6 @@ function pathsIn(html) {
 const MIRRORS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://raw.githubusercontent.com/AslanYusupov/zikr/release",
 ];
 
 async function fetchAsset(src) {
@@ -56,7 +54,7 @@ async function fetchAsset(src) {
       }
     };
     for (const url of urls) {
-      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(12000) })
+      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(4000) })
         .then((file) => finish(file.ok ? file : null))
         .catch(() => finish(null));
     }
@@ -86,7 +84,7 @@ async function freshPage() {
       return res.ok ? res : null;
     }),
     ...MIRRORS.map((base) =>
-      within(8000, async () => {
+      within(4000, async () => {
         const res = await fetch(base + "/index.html?v=" + hour, { cache: "no-store" });
         return res.ok ? res : null;
       }),
@@ -110,36 +108,6 @@ async function freshPage() {
     }
   }
   return best;
-}
-
-async function storeFresh(cache) {
-  const fresh = await freshPage();
-  if (!fresh) return false;
-  const before = await cache.match("/");
-  const previous = before ? await before.text() : "";
-  const cleaned = await pageFrom(fresh);
-  const html = await cleaned.clone().text();
-  const prevBuild = buildStamp(previous);
-  const nextBuild = buildStamp(html);
-  if (!html.includes("/assets/") || !nextBuild) return false;
-  if (prevBuild && !newerBuild(nextBuild, prevBuild)) return false;
-  await saveShell(cache, new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-  const saved = await cache.match("/");
-  const now = saved ? buildStamp(await saved.text()) : "";
-  return newerBuild(now, prevBuild);
-}
-
-async function openSaved(cache) {
-  const changed = await storeFresh(cache);
-  if (!changed) return;
-  const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-  for (const client of windows) {
-    try {
-      await client.navigate(client.url);
-    } catch {
-      /* the next open still has the new page */
-    }
-  }
 }
 
 async function saveShell(cache, res) {
@@ -199,9 +167,7 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zikr-shell-") && key !== SHELL).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim())
-      .then(() => caches.open(SHELL))
-      .then((cache) => openSaved(cache)),
+      .then(() => self.clients.claim()),
   );
 });
 
@@ -274,7 +240,6 @@ self.addEventListener("fetch", (event) => {
           }
         }
         const page = await pageFrom(hit);
-        event.waitUntil(storeFresh(cache));
         return page;
       }
       if (frozen || url.pathname.startsWith("/fonts/")) {

@@ -2,8 +2,6 @@
 export const SHELL_HOSTS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://raw.githubusercontent.com/AslanYusupov/zikr/release",
 ];
 
 function clean(html: string): string {
@@ -85,7 +83,7 @@ export async function fetchShellFile(path: string): Promise<Response | null> {
       }
     };
     for (const url of urls) {
-      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(12000) })
+      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(4000) })
         .then((res) => finish(res.ok ? res : null))
         .catch(() => finish(null));
     }
