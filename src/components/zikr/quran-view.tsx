@@ -11,7 +11,7 @@ import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 import { loadAyahUrl } from "@/lib/zikr/ayah-audio";
-import { playListen, stopListen, useListen } from "@/lib/zikr/quran-listen";
+import { playListen, setListenLoop, stopListen, useListen } from "@/lib/zikr/quran-listen";
 import { TajweedView } from "./tajweed-view";
 import { ListenView } from "./listen-view";
 
@@ -152,6 +152,7 @@ export function QuranView() {
   const listenPlaying = useListen((s) => s.playing);
   const listenMode = useListen((s) => s.mode);
   const listenSurah = useListen((s) => s.surah);
+  const listenLoop = useListen((s) => s.loop);
 
   const [attempt, setAttempt] = useState(0);
 
@@ -594,6 +595,23 @@ export function QuranView() {
           }}
         >
           {listenPlaying && listenMode === "whole" && listenSurah === surah.n ? <Pause size={15} /> : <Play size={15} />}
+        </button>
+        <button
+          type="button"
+          className={cn("surah-hear", listenLoop && "on")}
+          aria-label={lang === "ru" ? "Повторять суру" : "Repeat surah"}
+          onClick={() => {
+            const el = audio.current;
+            if (el) stopAyah(el);
+            const here = useListen.getState();
+            const next = !here.loop;
+            setListenLoop(next);
+            if (next && !(here.playing && here.mode === "whole" && here.surah === surah.n)) {
+              playListen(here.reciterId, surah.n, 1, "whole");
+            }
+          }}
+        >
+          <Repeat1 size={15} />
         </button>
         <p className="text-center text-xs text-gold">{t(lang, "rewards")} {formatNum(rewardPoints(total + quranLetters))}</p>
       </div>
