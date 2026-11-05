@@ -97,8 +97,8 @@ export function Shell() {
   const pull = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
-    void navigator.serviceWorker.register("/sw.js").catch(() => {});
+    if (!("serviceWorker" in navigator)) return;
+    void navigator.serviceWorker.getRegistrations().then((regs) => Promise.all(regs.map((reg) => reg.unregister()))).catch(() => {});
   }, []);
 
   useEffect(() => {
