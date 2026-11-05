@@ -77,58 +77,56 @@ function within(ms, run) {
   });
 }
 
-async function freshPage() {
+function firstPage() {
   const hour = Math.floor(Date.now() / 3600000);
-  const jobs = [
-    within(4000, async () => {
-      const res = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
-      return res.ok ? res : null;
-    }),
-    within(8000, async () => {
-      const res = await fetch(MIRRORS[0] + "/index.html?v=" + hour, { cache: "no-store" });
-      return res.ok ? res : null;
-    }),
-    within(8000, async () => {
-      const res = await fetch(MIRRORS[1] + "/index.html?v=" + hour, { cache: "no-store" });
-      return res.ok ? res : null;
-    }),
-    within(8000, async () => {
-      const res = await fetch(MIRRORS[2] + "/index.html?v=" + hour, { cache: "no-store" });
-      return res.ok ? res : null;
-    }),
-  ];
-  const pages = (await Promise.all(jobs)).filter(Boolean);
-  let best = null;
-  let bestStamp = "";
-  for (const res of pages) {
-    let html = "";
-    try {
-      html = await res.clone().text();
-    } catch {
-      html = "";
+  const urls = ["/?warm=" + Date.now(), ...MIRRORS.map((base) => base + "/index.html?v=" + hour)];
+  return new Promise((resolve) => {
+    let pending = urls.length;
+    let settled = false;
+    const finish = (page) => {
+      if (settled) return;
+      if (page) {
+        settled = true;
+        resolve(page);
+        return;
+      }
+      pending -= 1;
+      if (pending <= 0) {
+        settled = true;
+        resolve(null);
+      }
+    };
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      resolve(null);
+    }, 5000);
+    for (const url of urls) {
+      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(5000) })
+        .then(async (res) => {
+          if (!res.ok) return finish(null);
+          const html = cleanPage(await res.text());
+          if (!html.includes("<html") || !html.includes("/assets/") || !buildStamp(html)) return finish(null);
+          clearTimeout(timer);
+          finish(new Response(html, { status: 200, headers: { "content-type": "text/html; charset=utf-8" } }));
+        })
+        .catch(() => finish(null));
     }
-    const mark = buildStamp(html);
-    if (!html.includes("/assets/")) continue;
-    if (!best || newerBuild(mark, bestStamp)) {
-      best = res;
-      bestStamp = mark;
-    }
-  }
-  return best;
+  });
 }
 
 async function storeFresh(cache) {
-  const fresh = await freshPage();
+  const fresh = await firstPage();
   if (!fresh) return;
   const before = await cache.match("/");
   const previous = before ? await before.text() : "";
-  const cleaned = await pageFrom(fresh);
-  const html = await cleaned.clone().text();
+  const html = await fresh.text();
   const prevBuild = buildStamp(previous);
   const nextBuild = buildStamp(html);
   const broken = !previous.includes("/assets/") || !prevBuild;
   const sound = html.includes("/assets/") && !!nextBuild;
   if (!newerBuild(nextBuild, prevBuild) && !(broken && sound)) return;
+  await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   await saveShell(cache, new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   const saved = await cache.match("/");
   const now = saved ? await saved.text() : "";
@@ -148,6 +146,7 @@ async function saveShell(cache, res) {
   }
   if (!html.includes("<html")) return;
   const needed = pathsIn(html);
+  await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   if (!needed.length) return;
   await Promise.all(
     needed.map(async (src) => {
@@ -221,6 +220,12 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
+  if (url.pathname === "/sw.js") {
+    event.respondWith(
+      fetchAsset("/sw.js").then((file) => file || fetch(req)).catch(() => fetch(req)),
+    );
+    return;
+  }
   if (url.searchParams.has("probe") || url.searchParams.has("warm")) return;
   if (!keep(url) && req.mode !== "navigate" && req.destination !== "document") return;
 
@@ -239,18 +244,17 @@ self.addEventListener("fetch", (event) => {
         }
         if (hit) return hit;
         if (navigation) {
-          const fresh = await freshPage();
+          const fresh = await firstPage();
           if (fresh) {
-            const page = await pageFrom(fresh);
-            event.waitUntil(saveShell(cache, page.clone()));
-            return page;
+            const html = await fresh.text();
+            const headers = { "content-type": "text/html; charset=utf-8" };
+            await cache.put("/", new Response(html, { headers }));
+            event.waitUntil(saveShell(cache, new Response(html, { headers })));
+            return new Response(html, { status: 200, headers });
           }
           const saved = await cache.match("/", { ignoreSearch: true });
           if (saved) return saved;
-          return new Response(
-            "<!doctype html><meta charset=utf-8><title>Зикр</title><body style=\"margin:0;background:#000;color:#f7f3ea;font:18px/1.5 sans-serif;padding:28px\">Зикр откроется из сохранённой копии. Закройте страницу и откройте ещё раз.</body>",
-            { status: 200, headers: { "content-type": "text/html; charset=utf-8" } },
-          );
+          return fetch(req);
         }
         const copy = await fetchAsset(url.pathname);
         if (copy) {
