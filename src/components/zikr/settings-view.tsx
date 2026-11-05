@@ -72,6 +72,7 @@ export function SettingsView({
   const [sessionReady, setSessionReady] = useState(false);
   const waiting = isPending && !sessionReady;
   const [copied, setCopied] = useState(false);
+  const [ownGoal, setOwnGoal] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [nextPassword, setNextPassword] = useState("");
   const [accountNote, setAccountNote] = useState("");
@@ -316,6 +317,27 @@ export function SettingsView({
               {formatNum(goal)}
             </button>
           ))}
+        </div>
+        <div className="mt-2 flex gap-2">
+          <input
+            inputMode="numeric"
+            value={ownGoal}
+            placeholder={t(s.lang, "goalOwn")}
+            onChange={(event) => setOwnGoal(event.target.value.replace(/\D/g, "").slice(0, 7))}
+            className="h-10 min-w-0 flex-1 rounded-full border border-line bg-chip px-3 text-sm text-fg"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              const n = Number(ownGoal);
+              if (!n) return;
+              s.setGoal(n);
+              setOwnGoal("");
+            }}
+            className="h-10 rounded-full bg-gold px-3 text-sm text-ink"
+          >
+            {t(s.lang, "goalSet")}
+          </button>
         </div>
         </details>
 

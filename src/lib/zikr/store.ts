@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { DHIKR, GOALS, MILESTONES, dhikrById } from "./content";
+import { DHIKR, MILESTONES, dhikrById } from "./content";
 import { todayKey } from "./format";
 import { levelFromXp } from "./levels";
 import { ALLAH_NAMES } from "./names";
@@ -244,7 +244,10 @@ export function normalize(raw: unknown): ZikrState {
     xp,
     byDhikr,
     days: trimDays(days),
-    goal: (GOALS as readonly number[]).includes(Number(r.goal)) ? Number(r.goal) : base.goal,
+    goal: (() => {
+      const n = Math.round(Number(r.goal));
+      return Number.isFinite(n) && n >= 1 && n <= 1_000_000 ? n : base.goal;
+    })(),
     mode,
     pool: pool.length ? pool : base.pool,
     sound: asSound(r.sound),
@@ -775,7 +778,9 @@ export const useZikr = create<ZikrState & Actions>()(
         } else set({ pool: [...pool, id] });
       },
       setGoal: (n) => {
-        if ((GOALS as readonly number[]).includes(n)) set({ goal: n });
+        const v = Math.round(Number(n));
+        if (!Number.isFinite(v) || v < 1 || v > 1_000_000) return;
+        set({ goal: v });
       },
       setTheme: (t) => {
         if (THEMES.includes(t)) set({ theme: t, themeChosen: true });

@@ -307,7 +307,7 @@ export function dhikrById(id: string): Dhikr {
   return DHIKR[0]!;
 }
 
-export const GOALS = [33, 100, 333, 1000, 3333, 10000, 25000, 50000, 100000] as const;
+export const GOALS = [33, 100, 333, 1000, 3333, 5000, 10000, 25000, 50000, 100000] as const;
 
 export const MILESTONES = [
   { at: 33, title: "Первые 33", text: "МашаАллах1. Тридцать три поминания. Пусть язык привыкает к лучшему." },
