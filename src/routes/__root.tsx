@@ -37,12 +37,13 @@ export const Route = createRootRoute({
       <head>
         <style
           dangerouslySetInnerHTML={{
-            __html: "html{background:#000!important;color-scheme:dark;-webkit-text-size-adjust:100%;text-size-adjust:100%;position:fixed;inset:0;width:100%;overflow:hidden}html,body{margin:0;padding:0;background:#000!important;color:#f7f3ea;overflow:hidden;overscroll-behavior:none;width:100%;height:var(--app-h,100dvh);min-height:0;max-height:var(--app-h,100dvh);position:fixed;inset:0}body:before{content:'';position:absolute;z-index:0;inset:0;background:#000;pointer-events:none}.bismillah-splash{position:absolute;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;width:100%;height:100%;margin:0;padding:0;overflow:hidden;background:#000;color:#f7f3ea}.bismillah-words{position:relative;z-index:2;margin:0;max-width:18rem;text-align:center;font:700 2rem/1.85 'Geeza Pro','Times New Roman',serif;color:#f7f3ea}.app-frame{position:relative;z-index:1;height:100%;max-height:100%;overflow:hidden}.app-column{visibility:visible}html.app-go .bismillah-splash{display:none;pointer-events:none}",
+            __html: "html{background:#000!important;color-scheme:dark;-webkit-text-size-adjust:100%;text-size-adjust:100%;position:fixed;inset:0;width:100%;overflow:hidden}html,body{margin:0;padding:0;background:#000!important;color:#f7f3ea;overflow:hidden;overscroll-behavior:none;width:100%;height:var(--app-h,100dvh);min-height:0;max-height:var(--app-h,100dvh);position:fixed;inset:0}body:before{content:'';position:absolute;z-index:0;inset:0;background:#000;pointer-events:none}.boot-mark{position:fixed;z-index:4;left:50%;top:50%;width:8.5rem;height:8.5rem;transform:translate(-50%,-50%);border-radius:1.7rem;pointer-events:none;object-fit:cover}body:has(.app-frame) .boot-mark{display:none}.bismillah-splash{position:absolute;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;width:100%;height:100%;margin:0;padding:0;overflow:hidden;background:#000;color:#f7f3ea}.bismillah-words{position:relative;z-index:2;margin:0;max-width:18rem;text-align:center;font:700 2rem/1.85 'Geeza Pro','Times New Roman',serif;color:#f7f3ea}.app-frame{position:relative;z-index:1;height:100%;max-height:100%;overflow:hidden}.app-column{visibility:visible}html.app-go .bismillah-splash{display:none;pointer-events:none}",
           }}
         />
         <HeadContent />
       </head>
       <body>
+        <img className="boot-mark" src="/icon-180.png" alt="" width={136} height={136} />
         <script
           dangerouslySetInnerHTML={{
             __html:
