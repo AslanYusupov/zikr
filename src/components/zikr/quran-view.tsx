@@ -15,6 +15,26 @@ import { TajweedView } from "./tajweed-view";
 import { ListenView } from "./listen-view";
 
 const DONE_KEY = "zikr-quran-done";
+type SurahLayout = "down" | "up" | "ltr" | "rtl";
+
+function readLayout(): SurahLayout {
+  if (typeof window === "undefined") return "up";
+  const saved = localStorage.getItem("zikr-surah-layout");
+  if (saved === "down" || saved === "up" || saved === "ltr" || saved === "rtl") return saved;
+  return "up";
+}
+
+function layoutWord(lang: string, id: SurahLayout) {
+  const ru: Record<SurahLayout, string> = { down: "Сверху", up: "Снизу", ltr: "Вправо", rtl: "Влево" };
+  const ar: Record<SurahLayout, string> = { down: "أسفل", up: "أعلى", ltr: "يمين", rtl: "يسار" };
+  const en: Record<SurahLayout, string> = { down: "Down", up: "Up", ltr: "Right", rtl: "Left" };
+  if (lang === "ru") return ru[id];
+  if (lang === "ar") return ar[id];
+  if (lang === "tr") return { down: "Aşağı", up: "Yukarı", ltr: "Sağa", rtl: "Sola" }[id];
+  if (lang === "id") return { down: "Bawah", up: "Atas", ltr: "Kanan", rtl: "Kiri" }[id];
+  if (lang === "ur") return { down: "نیچے", up: "اوپر", ltr: "دائیں", rtl: "بائیں" }[id];
+  return en[id];
+}
 
 function hearWord(lang: string, stop: boolean) {
   const play = {
@@ -131,6 +151,7 @@ export function QuranView() {
   const [done, setDone] = useState(readDone);
   const [note, setNote] = useState("");
   const [part, setPart] = useState<"surahs" | "tajweed" | "listen" | "hadiths">("surahs");
+  const [layout, setLayout] = useState<SurahLayout>("up");
   const [glossSurah, setGlossSurah] = useState<number | null>(null);
   const [mean, setMean] = useState<QuranMeaning | null>(null);
   const lastClaim = useRef(0);
@@ -143,6 +164,10 @@ export function QuranView() {
   const [looping, setLooping] = useState<string | null>(null);
 
   const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    setLayout(readLayout());
+  }, []);
 
   useEffect(() => {
     let stop = false;
@@ -469,14 +494,24 @@ export function QuranView() {
         <p className="mt-2 text-xs text-muted">
           {t(lang, "rewards")}: {formatNum(rewardPoints(total + quranLetters))}
         </p>
-        <div className="mt-2 grid gap-1.5">
-          {book.surahs.map((item) => {
+        <div className="surah-layouts" role="group">
+          {(["down", "up", "ltr", "rtl"] as SurahLayout[]).map((id) => (
+            <button key={id} type="button" className={layout === id ? "on" : ""} onClick={() => {
+              setLayout(id);
+              try { localStorage.setItem("zikr-surah-layout", id); } catch { /* the choice still applies now */ }
+            }}>
+              {layoutWord(lang, id)}
+            </button>
+          ))}
+        </div>
+        <div className={cn("surah-board", (layout === "ltr" || layout === "rtl") && "is-row")} dir={layout === "rtl" ? "rtl" : "ltr"}>
+          {(layout === "down" ? book.surahs : [...book.surahs].reverse()).map((item) => {
             const pieces: Piece[] = item.ayahs.map((ayah) => ({ key: `${item.n}:${ayah.n}`, letters: ayah.l }));
             if (item.n !== 1 && item.n !== 9) pieces.unshift({ key: `${item.n}:b`, letters: book.bismillahLetters });
             const letters = sumLetters(pieces);
             const reward = letterReward(letters) + (item.n === 112 ? letterReward(ikhlasShare(book)) : 0);
             return (
-              <button key={item.n} type="button" className="surah-row" onClick={() => { clearGloss(); setOpen(item.n); }}>
+              <button key={item.n} type="button" className="surah-row" dir="ltr" onClick={() => { clearGloss(); setOpen(item.n); }}>
                 <span className="surah-no">{item.n}</span>
                 <span className="min-w-0 flex-1 text-start">
                   <span className="ar-name block font-arabic text-lg text-fg" dir="rtl" lang="ar">
