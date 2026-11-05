@@ -4027,12 +4027,9 @@ html, body {
 .quran-hadith-text { margin-top: .35rem; color: var(--fg); font-size: .84rem; line-height: 1.55; }
 .quran-hadith-src { margin-top: .4rem; color: var(--gold); font-size: .72rem; line-height: 1.4; }
 .surah-row { display: flex; align-items: center; gap: .65rem; width: 100%; padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); color: var(--fg); text-align: left; }
-.surah-layouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; margin-top: .7rem; }
-.surah-layouts button { min-height: 2rem; border: 1px solid var(--line); border-radius: .8rem; background: var(--surface); color: var(--muted); font-size: .68rem; font-weight: 800; }
-.surah-layouts button.on { color: var(--fg); border-color: var(--gold); }
-.surah-board { display: grid; gap: .4rem; margin-top: .55rem; }
-.surah-board.is-row { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: .35rem; }
-.surah-board.is-row .surah-row { flex: 0 0 min(78vw, 20rem); width: auto; max-width: none; margin-inline: 0; scroll-snap-align: start; }
+.surah-arrows { display: flex; gap: .25rem; flex: none; }
+.surah-arrows button { display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); }
+.surah-arrows button.on { color: var(--fg); border-color: var(--gold); }
 .surah-nav { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: .35rem; direction: ltr; }
 .surah-side { display: flex; align-items: center; gap: .28rem; min-width: 0; min-height: 2.6rem; border: 0; background: transparent; color: var(--muted); font-size: .72rem; font-weight: 700; text-align: left; }
 .surah-side:disabled { opacity: .25; }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import { Pause, Play, Repeat1 } from "lucide-react";
+import { ChevronDown, ChevronUp, Pause, Play, Repeat1 } from "lucide-react";
 import { rewardPoints } from "@/lib/zikr/content";
 import { formatNum, plural } from "@/lib/zikr/format";
 import { t } from "@/lib/zikr/i18n";
@@ -15,25 +15,11 @@ import { TajweedView } from "./tajweed-view";
 import { ListenView } from "./listen-view";
 
 const DONE_KEY = "zikr-quran-done";
-type SurahLayout = "down" | "up" | "ltr" | "rtl";
+type SurahOrder = "down" | "up";
 
-function readLayout(): SurahLayout {
-  if (typeof window === "undefined") return "up";
-  const saved = localStorage.getItem("zikr-surah-layout");
-  if (saved === "down" || saved === "up" || saved === "ltr" || saved === "rtl") return saved;
-  return "up";
-}
-
-function layoutWord(lang: string, id: SurahLayout) {
-  const ru: Record<SurahLayout, string> = { down: "Сверху", up: "Снизу", ltr: "Вправо", rtl: "Влево" };
-  const ar: Record<SurahLayout, string> = { down: "أسفل", up: "أعلى", ltr: "يمين", rtl: "يسار" };
-  const en: Record<SurahLayout, string> = { down: "Down", up: "Up", ltr: "Right", rtl: "Left" };
-  if (lang === "ru") return ru[id];
-  if (lang === "ar") return ar[id];
-  if (lang === "tr") return { down: "Aşağı", up: "Yukarı", ltr: "Sağa", rtl: "Sola" }[id];
-  if (lang === "id") return { down: "Bawah", up: "Atas", ltr: "Kanan", rtl: "Kiri" }[id];
-  if (lang === "ur") return { down: "نیچے", up: "اوپر", ltr: "دائیں", rtl: "بائیں" }[id];
-  return en[id];
+function readOrder(): SurahOrder {
+  if (typeof window === "undefined") return "down";
+  return localStorage.getItem("zikr-surah-layout") === "up" ? "up" : "down";
 }
 
 function hearWord(lang: string, stop: boolean) {
@@ -151,7 +137,7 @@ export function QuranView() {
   const [done, setDone] = useState(readDone);
   const [note, setNote] = useState("");
   const [part, setPart] = useState<"surahs" | "tajweed" | "listen" | "hadiths">("surahs");
-  const [layout, setLayout] = useState<SurahLayout>("up");
+  const [layout, setLayout] = useState<SurahOrder>("down");
   const [glossSurah, setGlossSurah] = useState<number | null>(null);
   const [mean, setMean] = useState<QuranMeaning | null>(null);
   const lastClaim = useRef(0);
@@ -166,7 +152,7 @@ export function QuranView() {
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    setLayout(readLayout());
+    setLayout(readOrder());
   }, []);
 
   useEffect(() => {
@@ -491,21 +477,27 @@ export function QuranView() {
           {lang !== "ar" ? <p className="quran-hadith-text">{copy.hadith}</p> : null}
           <p className="quran-hadith-src">{copy.source}</p>
         </article>
-        <p className="mt-2 text-xs text-muted">
-          {t(lang, "rewards")}: {formatNum(rewardPoints(total + quranLetters))}
-        </p>
-        <div className="surah-layouts" role="group">
-          {(["down", "up", "ltr", "rtl"] as SurahLayout[]).map((id) => (
-            <button key={id} type="button" className={layout === id ? "on" : ""} onClick={() => {
-              setLayout(id);
-              try { localStorage.setItem("zikr-surah-layout", id); } catch { /* the choice still applies now */ }
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <p className="text-xs text-muted">
+            {t(lang, "rewards")}: {formatNum(rewardPoints(total + quranLetters))}
+          </p>
+          <div className="surah-arrows">
+            <button type="button" className={layout === "down" ? "on" : ""} aria-label="down" onClick={() => {
+              setLayout("down");
+              try { localStorage.setItem("zikr-surah-layout", "down"); } catch { /* the choice still applies now */ }
             }}>
-              {layoutWord(lang, id)}
+              <ChevronDown size={16} />
             </button>
-          ))}
+            <button type="button" className={layout === "up" ? "on" : ""} aria-label="up" onClick={() => {
+              setLayout("up");
+              try { localStorage.setItem("zikr-surah-layout", "up"); } catch { /* the choice still applies now */ }
+            }}>
+              <ChevronUp size={16} />
+            </button>
+          </div>
         </div>
-        <div className={cn("surah-board", (layout === "ltr" || layout === "rtl") && "is-row")} dir={layout === "rtl" ? "rtl" : "ltr"}>
-          {(layout === "down" ? book.surahs : [...book.surahs].reverse()).map((item) => {
+        <div className="mt-2 grid gap-1.5">
+          {(layout === "up" ? [...book.surahs].reverse() : book.surahs).map((item) => {
             const pieces: Piece[] = item.ayahs.map((ayah) => ({ key: `${item.n}:${ayah.n}`, letters: ayah.l }));
             if (item.n !== 1 && item.n !== 9) pieces.unshift({ key: `${item.n}:b`, letters: book.bismillahLetters });
             const letters = sumLetters(pieces);
