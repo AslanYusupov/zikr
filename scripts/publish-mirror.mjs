@@ -5,7 +5,7 @@
  *
  * Usage: node scripts/publish-mirror.mjs /tmp/zikr-mirror
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, copyFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { readFileSync } from "node:fs";
 
@@ -57,5 +57,20 @@ for (const path of [...new Set(files)]) {
   await mkdir(dirname(dest), { recursive: true });
   await writeFile(dest, Buffer.from(await res.arrayBuffer()));
   console.log("[mirror] saved", path);
+}
+
+const publicDir = new URL("../public/", import.meta.url);
+const photos = ["roses.jpg", "shore.jpg", "desert.jpg", "cosmos.jpg", "peaks.jpg", "lake.jpg", "jungle.jpg", "favicon.svg", "icon-180.png", "orbit-sun.webp", "orbit-moon.webp"];
+for (const name of photos) {
+  const dest = join(out, name);
+  await copyFile(new URL(name, publicDir), dest);
+  console.log("[mirror] saved", name);
+}
+const fontDir = join(out, "fonts");
+await mkdir(fontDir, { recursive: true });
+for (const name of await readdir(new URL("fonts/", publicDir))) {
+  if (!name.endsWith(".woff2")) continue;
+  await copyFile(new URL(`fonts/${name}`, publicDir), join(fontDir, name));
+  console.log("[mirror] saved", `fonts/${name}`);
 }
 console.log("[mirror] ready", build);

@@ -37,7 +37,7 @@ const MIRRORS = [
 
 async function fetchAsset(src) {
   const hour = Math.floor(Date.now() / 3600000);
-  const urls = [src, ...MIRRORS.map((base) => base + src + "?v=" + hour)];
+  const urls = [src, ...MIRRORS.map((base) => base + src + "?v=" + hour + "-f")];
   return new Promise((resolve) => {
     let left = urls.length;
     let settled = false;
