@@ -114,17 +114,32 @@ async function freshPage() {
 
 async function storeFresh(cache) {
   const fresh = await freshPage();
-  if (!fresh) return;
+  if (!fresh) return false;
   const before = await cache.match("/");
   const previous = before ? await before.text() : "";
   const cleaned = await pageFrom(fresh);
   const html = await cleaned.clone().text();
   const prevBuild = buildStamp(previous);
   const nextBuild = buildStamp(html);
-  if (previous.includes("/assets/") && prevBuild) return;
-  const sound = html.includes("/assets/") && !!nextBuild;
-  if (!sound) return;
+  if (!html.includes("/assets/") || !nextBuild) return false;
+  if (prevBuild && !newerBuild(nextBuild, prevBuild)) return false;
   await saveShell(cache, new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+  const saved = await cache.match("/");
+  const now = saved ? buildStamp(await saved.text()) : "";
+  return newerBuild(now, prevBuild);
+}
+
+async function openSaved(cache) {
+  const changed = await storeFresh(cache);
+  if (!changed) return;
+  const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  for (const client of windows) {
+    try {
+      await client.navigate(client.url);
+    } catch {
+      /* the next open still has the new page */
+    }
+  }
 }
 
 async function saveShell(cache, res) {
@@ -184,7 +199,9 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zikr-shell-") && key !== SHELL).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim()),
+      .then(() => self.clients.claim())
+      .then(() => caches.open(SHELL))
+      .then((cache) => openSaved(cache)),
   );
 });
 
@@ -257,6 +274,7 @@ self.addEventListener("fetch", (event) => {
           }
         }
         const page = await pageFrom(hit);
+        event.waitUntil(storeFresh(cache));
         return page;
       }
       if (frozen || url.pathname.startsWith("/fonts/")) {

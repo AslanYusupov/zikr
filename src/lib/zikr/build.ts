@@ -1,4 +1,5 @@
-export const APP_BUILD = "20261105-8";
+import { fetchShellFile, fetchShellHtml } from "./mirror";
+export const APP_BUILD = "20261105-9";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -58,11 +59,44 @@ export function publishedIsNewer(html: string): boolean {
   return here.some((src) => !live.includes(src));
 }
 
-/** The open page stays. A newer copy must not replace it and break the app. */
+/** `fresh` means a newer publish is on the server and its files can be saved. */
 export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unknown"> {
-  return "same";
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return "unknown";
+  const html = await fetchShellHtml();
+  if (!html) return "unknown";
+  if (!buildIsNewer(buildStamp(html), pageBuild())) return "same";
+  if (!publishedIsNewer(html)) return "same";
+  const marker = assetScriptsIn(html).sort().join(",");
+  try {
+    if (sessionStorage.getItem(TRIED_KEY) === marker) return "stuck";
+  } catch {
+    /* private mode */
+  }
+  return "fresh";
 }
 
 export async function takeUpdate(): Promise<void> {
-  return;
+  const cacheName = "zikr-shell-v2";
+  try {
+    const html = await fetchShellHtml();
+    if (!html) return;
+    if (!buildIsNewer(buildStamp(html), pageBuild())) return;
+    const cache = await caches.open(cacheName);
+    const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+    if (assets.length === 0) return;
+    const saved = await Promise.all(
+      assets.map(async (src) => {
+        const file = await fetchShellFile(src);
+        if (!file) return false;
+        await cache.put(src, file);
+        return true;
+      }),
+    );
+    if (saved.some((ok) => !ok)) return;
+    await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+  } catch {
+    return;
+  }
+  if (audioBusy()) return;
+  window.location.reload();
 }
