@@ -33,7 +33,7 @@ const MIRRORS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://cdn.statically.io/gh/AslanYusupov/zikr/release",
+  "https://raw.githubusercontent.com/AslanYusupov/zikr/release",
 ];
 
 async function fetchAsset(src) {
@@ -85,18 +85,12 @@ async function freshPage() {
       const res = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
       return res.ok ? res : null;
     }),
-    within(8000, async () => {
-      const res = await fetch(MIRRORS[0] + "/index.html?v=" + hour, { cache: "no-store" });
-      return res.ok ? res : null;
-    }),
-    within(8000, async () => {
-      const res = await fetch(MIRRORS[1] + "/index.html?v=" + hour, { cache: "no-store" });
-      return res.ok ? res : null;
-    }),
-    within(8000, async () => {
-      const res = await fetch(MIRRORS[3] + "/index.html?v=" + hour, { cache: "no-store" });
-      return res.ok ? res : null;
-    }),
+    ...MIRRORS.map((base) =>
+      within(8000, async () => {
+        const res = await fetch(base + "/index.html?v=" + hour, { cache: "no-store" });
+        return res.ok ? res : null;
+      }),
+    ),
   ];
   const pages = (await Promise.all(jobs)).filter(Boolean);
   let best = null;
@@ -127,17 +121,10 @@ async function storeFresh(cache) {
   const html = await cleaned.clone().text();
   const prevBuild = buildStamp(previous);
   const nextBuild = buildStamp(html);
-  const broken = !previous.includes("/assets/") || !prevBuild;
+  if (previous.includes("/assets/") && prevBuild) return;
   const sound = html.includes("/assets/") && !!nextBuild;
-  if (!newerBuild(nextBuild, prevBuild) && !(broken && sound)) return;
+  if (!sound) return;
   await saveShell(cache, new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-  const saved = await cache.match("/");
-  const now = saved ? await saved.text() : "";
-  const next = pathsIn(now).join("|");
-  const prev = pathsIn(previous).join("|");
-  if (!next || next === prev) return;
-  const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-  for (const client of windows) client.postMessage({ type: "zikr-reload", sig: next });
 }
 
 async function saveShell(cache, res) {
@@ -222,6 +209,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
+  if (url.pathname === "/sw.js") return;
   if (url.searchParams.has("probe") || url.searchParams.has("warm")) return;
   if (!keep(url) && req.mode !== "navigate" && req.destination !== "document") return;
 
@@ -269,19 +257,14 @@ self.addEventListener("fetch", (event) => {
           }
         }
         const page = await pageFrom(hit);
-        event.waitUntil(storeFresh(cache));
         return page;
       }
       if (navigation) {
-        try {
-          const fresh = await fetch(req);
-          if (fresh && fresh.ok) {
-            const page = await pageFrom(fresh.clone());
-            event.waitUntil(saveShell(cache, page.clone()));
-            return page;
-          }
-        } catch {
-          /* open the saved page */
+        const fresh = await freshPage();
+        if (fresh) {
+          const page = await pageFrom(fresh);
+          event.waitUntil(saveShell(cache, page.clone()));
+          return page;
         }
         const page = await cache.match("/", { ignoreSearch: true });
         if (page) return page;

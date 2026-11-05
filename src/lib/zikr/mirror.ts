@@ -3,7 +3,7 @@ export const SHELL_HOSTS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://cdn.statically.io/gh/AslanYusupov/zikr/release",
+  "https://raw.githubusercontent.com/AslanYusupov/zikr/release",
 ];
 
 function clean(html: string): string {
