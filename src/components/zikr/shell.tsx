@@ -98,50 +98,7 @@ export function Shell() {
 
   useEffect(() => {
     if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
-    let stop = false;
     void navigator.serviceWorker.register("/sw.js").catch(() => {});
-    const warm = async (urls: string[]) => {
-      if (stop || !("caches" in window)) return;
-      const cache = await caches.open("zikr-shell-v3");
-      for (const url of urls) {
-        if (stop) return;
-        if (await cache.match(url)) continue;
-        try {
-          const res = await fetch(url);
-          if (res.ok) await cache.put(url, res.clone());
-        } catch {
-          /* what is already saved still opens */
-        }
-      }
-    };
-    const keepPage = async () => {
-      if (stop || !("caches" in window)) return;
-      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-      if (!html.includes("/assets/") || !html.includes("zikr-build")) return;
-      const cache = await caches.open("zikr-shell-v3");
-      if (await cache.match("/")) return;
-      await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-    };
-    const files = ["/favicon.svg", "/orbit-sun.webp", "/orbit-moon.webp", "/manifest.webmanifest", "/icon-180.png", "/quran.json"];
-    document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
-      const src = node.getAttribute("src") || node.getAttribute("href") || "";
-      const path = src.startsWith("/") ? src.split("?")[0] : "";
-      if (path) files.push(path);
-    });
-    const rest = ["/fonts/amiri-400.woff2", "/fonts/amiri-700.woff2", "/fonts/amiri-400i.woff2"];
-    for (const face of ["inter-cyr", "inter-latin", "inter-latinext"]) {
-      for (const weight of [500, 600, 700, 800]) rest.push(`/fonts/${face}-${weight}.woff2`);
-    }
-    for (const photo of ["shore", "desert", "roses", "cosmos", "peaks", "lake", "jungle", "andromeda", "maldives", "mecca"]) {
-      rest.push(`/${photo}.jpg`);
-    }
-    const soon = window.setTimeout(() => void keepPage().then(() => warm(files)), 1200);
-    const later = window.setTimeout(() => void warm(rest), 6000);
-    return () => {
-      stop = true;
-      window.clearTimeout(soon);
-      window.clearTimeout(later);
-    };
   }, []);
 
   useEffect(() => {
