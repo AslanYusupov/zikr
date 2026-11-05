@@ -90,6 +90,36 @@ async function fresh(cache) {
   return ready(cache, copy, GITHUB);
 }
 
+let busy = false;
+let audioOn = false;
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "zikr-audio") audioOn = Boolean(event.data.on);
+});
+
+async function offer(currentHtml) {
+  if (busy || !currentHtml) return;
+  busy = true;
+  try {
+    const cache = await caches.open(SHELL);
+    const next = await fresh(cache);
+    const mark = stamp(next);
+    if (!next || !mark || !newer(mark, stamp(currentHtml))) return;
+    const seen = await cache.match("/update-mark");
+    const seenStamp = seen ? await seen.text() : "";
+    if (seenStamp === mark) return;
+    await cache.put("/index.html", page(next));
+    await cache.put("/update-mark", new Response(mark));
+    if (audioOn) return;
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    await Promise.all(windows.map((client) => client.navigate(client.url).catch(() => undefined)));
+  } catch {
+    /* the open page stays */
+  } finally {
+    busy = false;
+  }
+}
+
 function offline() {
   const html =
     "<!doctype html><html lang=\"ru\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Зикр</title><body style=\"margin:0;background:#000;color:#f7f3ea;font:600 1rem/1.45 sans-serif;display:grid;min-height:100vh;place-items:center;text-align:center;padding:1.5rem\"><p>Откройте Зикр один раз, когда интернет есть. После этого он откроется и без VPN, и без сети.</p></body></html>";
@@ -105,7 +135,19 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zikr-shell-")).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim()),
+      .then(() => self.clients.claim())
+      .then(async () => {
+        const cache = await caches.open(SHELL);
+        const saved = await cache.match("/index.html");
+        if (!saved) return;
+        let html = "";
+        try {
+          html = await saved.text();
+        } catch {
+          html = "";
+        }
+        if (html) await offer(html);
+      }),
   );
 });
 
@@ -153,19 +195,8 @@ self.addEventListener("fetch", (event) => {
             if (!(await cache.match(src))) ok = false;
           }
           if (ok) {
-            const current = html;
-            event.waitUntil(
-              (async () => {
-                try {
-                  const next = await fresh(cache);
-                  if (!next || !newer(stamp(next), stamp(current))) return;
-                  await cache.put("/index.html", page(next));
-                } catch {
-                  /* the saved page stays */
-                }
-              })(),
-            );
-            return page(current);
+            event.waitUntil(offer(html));
+            return page(html);
           }
         }
         const html = await fresh(cache);

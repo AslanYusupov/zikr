@@ -7,6 +7,7 @@ import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
+import { audioBusy } from "@/lib/zikr/build";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
@@ -128,9 +129,14 @@ export function Shell() {
       }
     };
     const timer = window.setTimeout(() => void keep(), 1200);
+    const tell = () => {
+      navigator.serviceWorker.controller?.postMessage({ type: "zikr-audio", on: audioBusy() });
+    };
+    const beat = window.setInterval(tell, 2000);
     return () => {
       stop = true;
       window.clearTimeout(timer);
+      window.clearInterval(beat);
     };
   }, []);
 
