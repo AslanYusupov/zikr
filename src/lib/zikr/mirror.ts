@@ -1,6 +1,8 @@
-/** Same files as the site, served from networks that open without a VPN. */
-const MIRRORS = [
+/** Same files as the site. Several networks, so one closed road is not the only road. */
+export const SHELL_HOSTS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://cdn.statically.io/gh/AslanYusupov/zikr/release",
 ];
 
@@ -47,7 +49,7 @@ export async function fetchShellHtml(): Promise<string | null> {
   const hour = Math.floor(Date.now() / 3_600_000);
   const pages = await Promise.all([
     pull(`/?warm=${Date.now()}`, 4000),
-    ...MIRRORS.map((base) => pull(`${base}/index.html?v=${hour}`, 8000)),
+    ...SHELL_HOSTS.map((base) => pull(`${base}/index.html?v=${hour}`, 8000)),
   ]);
   let best = "";
   let bestStamp = "";
@@ -65,14 +67,27 @@ export async function fetchShellHtml(): Promise<string | null> {
 /** One published file, from the site or from a GitHub copy. */
 export async function fetchShellFile(path: string): Promise<Response | null> {
   const hour = Math.floor(Date.now() / 3_600_000);
-  const urls = [`${path}?warm=${Date.now()}`, ...MIRRORS.map((base) => `${base}${path}?v=${hour}`)];
-  for (const url of urls) {
-    try {
-      const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(12000) });
-      if (res.ok) return res;
-    } catch {
-      /* the next copy */
+  const urls = [`${path}?warm=${Date.now()}`, ...SHELL_HOSTS.map((base) => `${base}${path}?v=${hour}`)];
+  let left = urls.length;
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (res: Response | null) => {
+      if (settled) return;
+      if (res) {
+        settled = true;
+        resolve(res);
+        return;
+      }
+      left -= 1;
+      if (left <= 0) {
+        settled = true;
+        resolve(null);
+      }
+    };
+    for (const url of urls) {
+      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(12000) })
+        .then((res) => finish(res.ok ? res : null))
+        .catch(() => finish(null));
     }
-  }
-  return null;
+  });
 }

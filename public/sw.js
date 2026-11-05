@@ -29,19 +29,38 @@ function pathsIn(html) {
   return out;
 }
 
-const MIRROR = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release";
-const MIRROR_TWO = "https://cdn.statically.io/gh/AslanYusupov/zikr/release";
+const MIRRORS = [
+  "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://cdn.statically.io/gh/AslanYusupov/zikr/release",
+];
 
 async function fetchAsset(src) {
-  const grab = async (url, ms) => {
-    try {
-      const file = await fetch(url, { signal: AbortSignal.timeout(ms) });
-      return file.ok ? file : null;
-    } catch {
-      return null;
+  const hour = Math.floor(Date.now() / 3600000);
+  const urls = [src, ...MIRRORS.map((base) => base + src + "?v=" + hour)];
+  return new Promise((resolve) => {
+    let left = urls.length;
+    let settled = false;
+    const finish = (file) => {
+      if (settled) return;
+      if (file) {
+        settled = true;
+        resolve(file);
+        return;
+      }
+      left -= 1;
+      if (left <= 0) {
+        settled = true;
+        resolve(null);
+      }
+    };
+    for (const url of urls) {
+      fetch(url, { cache: "no-store", signal: AbortSignal.timeout(12000) })
+        .then((file) => finish(file.ok ? file : null))
+        .catch(() => finish(null));
     }
-  };
-  return (await grab(src, 8000)) || (await grab(MIRROR + src, 12000)) || (await grab(MIRROR_TWO + src, 12000));
+  });
 }
 
 function within(ms, run) {
@@ -67,11 +86,15 @@ async function freshPage() {
       return res.ok ? res : null;
     }),
     within(8000, async () => {
-      const res = await fetch(MIRROR + "/index.html?v=" + hour, { cache: "no-store" });
+      const res = await fetch(MIRRORS[0] + "/index.html?v=" + hour, { cache: "no-store" });
       return res.ok ? res : null;
     }),
     within(8000, async () => {
-      const res = await fetch(MIRROR_TWO + "/index.html?v=" + hour, { cache: "no-store" });
+      const res = await fetch(MIRRORS[1] + "/index.html?v=" + hour, { cache: "no-store" });
+      return res.ok ? res : null;
+    }),
+    within(8000, async () => {
+      const res = await fetch(MIRRORS[3] + "/index.html?v=" + hour, { cache: "no-store" });
       return res.ok ? res : null;
     }),
   ];
@@ -266,9 +289,11 @@ self.addEventListener("fetch", (event) => {
       }
       const fresh = await update();
       if (fresh) return fresh;
-      if (navigation) {
-        const page = await cache.match("/", { ignoreSearch: true });
-        if (page) return page;
+      const copy = await fetchAsset(url.pathname);
+      if (copy) {
+        const storedCopy = copy.clone();
+        event.waitUntil(cache.put(new Request(url.pathname), storedCopy).catch(() => {}));
+        return copy;
       }
       return new Response("", { status: 503 });
     })(),

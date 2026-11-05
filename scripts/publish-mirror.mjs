@@ -39,13 +39,14 @@ for (let i = 0; i < 20; i += 1) {
 
 if (!html) {
   console.log("[mirror] the new page is not public yet");
-  process.exit(0);
+  process.exit(1);
 }
 
 await mkdir(out, { recursive: true });
 await writeFile(join(out, "index.html"), html);
 const files = [...new Set([...html.matchAll(/\/(?:assets\/[A-Za-z0-9._-]+\.(?:js|css)|sw\.js)/g)].map((match) => match[0]))];
-files.push("/sw.js");
+files.push("/sw.js", "/quran.json", "/manifest.webmanifest");
+for (const lang of ["ru", "en", "id", "tr", "ur"]) files.push(`/quran-mean/${lang}.json`);
 for (const path of [...new Set(files)]) {
   const res = await fetch(`${origin}${path}?warm=${Date.now()}`, { cache: "no-store" });
   if (!res.ok) {

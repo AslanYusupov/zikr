@@ -1,4 +1,5 @@
 import type { LangId } from "./types";
+import { fetchShellFile } from "./mirror";
 
 export type QuranAyah = { n: number; t: string; p: number; l: number };
 export type QuranSurah = { n: number; name: string; ru: string; en: string; ayahs: QuranAyah[] };
@@ -194,8 +195,8 @@ export async function loadQuran(): Promise<QuranBook> {
   } catch {
     /* cache is optional */
   }
-  const res = await fetch("/quran.json");
-  if (!res.ok) throw new Error("quran");
+  const res = await fetchShellFile("/quran.json");
+  if (!res) throw new Error("quran");
   const data = (await res.json()) as QuranBook;
   if (!data?.surahs || data.surahs.length !== 114 || !data.bismillah) throw new Error("quran");
   memory = applyRasm(data);
@@ -233,8 +234,8 @@ export async function loadMeaning(lang: string): Promise<QuranMeaning | null> {
     /* cache is optional */
   }
   try {
-    const res = await fetch(path);
-    if (!res.ok) return null;
+    const res = await fetchShellFile(path);
+    if (!res) return null;
     const data = (await res.json()) as QuranMeaning;
     if (!data?.surahs || data.surahs.length !== 114) return null;
     meanings.set(lang, data);

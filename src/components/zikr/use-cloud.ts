@@ -356,38 +356,64 @@ export function useWorldSync(hydrated: boolean) {
         return;
       }
       const beatOnly = !changed;
+      const jobs: Promise<unknown>[] = [];
       if (!listed) {
-        if (!beatOnly) void publishWorld({ data: { publicId, total: state.total, listed: false } }).catch(() => {});
-        void beatPresence({
-          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0, listed: false },
-        }).catch(() => {});
+        if (!beatOnly) jobs.push(publishWorld({ data: { publicId, total: state.total, listed: false } }));
+        jobs.push(
+          beatPresence({
+            data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0, listed: false },
+          }),
+        );
       } else if (beatOnly) {
-        void beatPresence({
-          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0 },
-        }).catch(() => {});
+        jobs.push(
+          beatPresence({
+            data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0 },
+          }),
+        );
       } else {
-        void publishWorld({ data: { publicId, total: state.total, ...(invitedBy && state.total > 0 ? { invitedBy } : {}) } }).catch(() => {});
-        void beatPresence({
-          data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: currentTapSince(), ...(replaceDay ? { replaceDay: true } : {}) },
-        })
-          .then(() => {
+        jobs.push(publishWorld({ data: { publicId, total: state.total, ...(invitedBy && state.total > 0 ? { invitedBy } : {}) } }));
+        jobs.push(
+          beatPresence({
+            data: {
+              publicId,
+              country: state.country,
+              dayKey: day,
+              dayTotal,
+              xp: state.xp,
+              total: state.total,
+              tapSince: currentTapSince(),
+              ...(replaceDay ? { replaceDay: true } : {}),
+            },
+          }).then(() => {
             if (replaceDay) useZikr.getState().clearDayCut();
             window.dispatchEvent(new Event("zikr-live"));
-          })
-          .catch(() => {});
+          }),
+        );
       }
       lastBeat = now;
-      if (changed) {
-        sentSig = sig;
-        lastNumbers = now;
-        if (key && (hiding || now - lastSnap >= 120_000)) {
-          const snap = snapshot(state);
-          lastSnap = now;
-          void pushDevice({
-            data: { key, publicId, total: snap.total, payload: JSON.stringify(snap), ...(tgId ? { tgId } : {}) },
-          }).catch(() => {});
-        }
-      }
+      if (changed) lastNumbers = now;
+      void Promise.all(jobs)
+        .then(() => {
+          if (!changed) return;
+          sentSig = sig;
+          if (key && (hiding || now - lastSnap >= 120_000)) {
+            const snap = snapshot(state);
+            lastSnap = now;
+            void pushDevice({
+              data: { key, publicId, total: snap.total, payload: JSON.stringify(snap), ...(tgId ? { tgId } : {}) },
+            }).catch(() => {});
+          }
+        })
+        .catch(() => {
+          if (changed) lastNumbers = 0;
+          lastBeat = 0;
+          if (wait == null) {
+            wait = window.setTimeout(() => {
+              wait = null;
+              send();
+            }, 8_000);
+          }
+        });
     };
     const unbind = bindTapPulse(() => {
       if (!document.hidden) send();
