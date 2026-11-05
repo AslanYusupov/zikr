@@ -153,9 +153,15 @@ export function ModeStrip({
   );
 }
 
-function quoteSlot(step: number, at: number): number {
-  const raw = Math.floor(step / 360) + at;
-  return ((raw % QUOTES.length) + QUOTES.length) % QUOTES.length;
+function quoteIndexOf(at: number): number {
+  return ((at % QUOTES.length) + QUOTES.length) % QUOTES.length;
+}
+
+function randomQuote(from: number): number {
+  if (QUOTES.length < 2) return 0;
+  let next = Math.floor(Math.random() * (QUOTES.length - 1));
+  if (next >= from) next += 1;
+  return next;
 }
 
 function quoteHold(text: string): number {
@@ -224,13 +230,13 @@ export function Counter({
 
   useEffect(() => {
     if (!s.showWisdom || !quoteLive.current) return;
-    const current = QUOTES[quoteSlot(s.wisdomStep, quoteAt)];
+    const current = QUOTES[quoteIndexOf(quoteAt)];
     const wait = quoteHold(current?.text ?? "");
     const timer = window.setTimeout(() => {
-      setQuoteAt((value) => value + 1);
+      setQuoteAt((value) => randomQuote(quoteIndexOf(value)));
     }, wait);
     return () => window.clearTimeout(timer);
-  }, [s.showWisdom, quoteAt, s.wisdomStep]);
+  }, [s.showWisdom, quoteAt]);
 
   function press(event?: { type?: string }) {
     triggerHaptic(event?.type === "click" ? "click" : "down");
@@ -305,7 +311,7 @@ export function Counter({
   const compact = showPhrase && (hasArabic ? arabic.length > 90 : name.length > 90);
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
-  const quoteIndex = quoteSlot(s.wisdomStep, quoteAt);
+  const quoteIndex = quoteIndexOf(quoteAt);
   const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
   const rewardRing = totalReward <= 0 ? 0 : 1 - 1 / (1 + totalReward / 800);
