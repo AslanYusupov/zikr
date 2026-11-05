@@ -243,13 +243,24 @@ export function RatingView() {
     if (total < 10_000) return;
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
-    const load = () => {
-      if (document.hidden) return;
+    let flying = false;
+    const load = (retry = false) => {
+      if (document.hidden || flying) return;
+      flying = true;
+      let pending = 2;
+      const finish = () => {
+        pending -= 1;
+        if (pending > 0) return;
+        flying = false;
+        const down = miss.current.world || miss.current.live;
+        setVpn(down);
+        setHeld(miss.current.world && Boolean(bag.current));
+        if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2500);
+      };
       const mark = (part: "world" | "live", ok: boolean) => {
         miss.current[part] = !ok;
-        setVpn(miss.current.world || miss.current.live);
       };
-      until(worldBoard({ data: { publicId, dayKey: day } }))
+      until(worldBoard({ data: { publicId, dayKey: day } }), 7000)
         .then((res) => {
           if (stop) return;
           const rows = shown(res.rows);
@@ -261,11 +272,11 @@ export function RatingView() {
         })
         .catch(() => {
           if (stop) return;
-          if (bag.current) setHeld(true);
-          else setWorldError(true);
+          if (!bag.current) setWorldError(true);
           mark("world", false);
-        });
-      until(presenceBoard({ data: { publicId, dayKey: day } }))
+        })
+        .finally(finish);
+      until(presenceBoard({ data: { publicId, dayKey: day } }), 7000)
         .then((res) => {
           if (stop) return;
           const liveRows = shown(res.live);
@@ -281,16 +292,16 @@ export function RatingView() {
         })
         .catch(() => {
           if (stop) return;
-          if (bag.current) setHeld(true);
           mark("live", false);
-        });
+        })
+        .finally(finish);
     };
     load();
     const onLive = () => load();
     const onWake = () => {
       if (document.visibilityState === "visible") load();
     };
-    const id = window.setInterval(load, 20_000);
+    const id = window.setInterval(() => load(), 15_000);
     window.addEventListener("zikr-live", onLive);
     window.addEventListener("online", onWake);
     document.addEventListener("visibilitychange", onWake);

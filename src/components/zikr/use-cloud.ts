@@ -346,12 +346,12 @@ export function useWorldSync(hydrated: boolean) {
       const changed = sig !== sentSig;
       const hiding = document.hidden;
       if (!changed && !hiding && now - lastBeat < 60_000) return;
-      if (changed && !hiding && now - lastNumbers < 15_000) {
+      if (changed && !hiding && now - lastNumbers < 6_000) {
         if (wait == null) {
           wait = window.setTimeout(() => {
             wait = null;
             send();
-          }, 15_000);
+          }, 6_000);
         }
         return;
       }

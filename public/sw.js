@@ -30,6 +30,7 @@ function pathsIn(html) {
 }
 
 const MIRROR = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release";
+const MIRROR_TWO = "https://cdn.statically.io/gh/AslanYusupov/zikr/release";
 
 async function fetchAsset(src) {
   const grab = async (url, ms) => {
@@ -40,7 +41,7 @@ async function fetchAsset(src) {
       return null;
     }
   };
-  return (await grab(src, 8000)) || (await grab(MIRROR + src, 12000));
+  return (await grab(src, 8000)) || (await grab(MIRROR + src, 12000)) || (await grab(MIRROR_TWO + src, 12000));
 }
 
 function within(ms, run) {
@@ -59,15 +60,39 @@ function within(ms, run) {
 }
 
 async function freshPage() {
-  const local = await within(5000, async () => {
-    const res = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
-    return res.ok ? res : null;
-  });
-  if (local) return local;
-  return within(8000, async () => {
-    const res = await fetch(MIRROR + "/index.html", { cache: "no-store" });
-    return res.ok ? res : null;
-  });
+  const hour = Math.floor(Date.now() / 3600000);
+  const jobs = [
+    within(4000, async () => {
+      const res = await fetch(new Request("/?warm=" + Date.now(), { cache: "no-store" }));
+      return res.ok ? res : null;
+    }),
+    within(8000, async () => {
+      const res = await fetch(MIRROR + "/index.html?v=" + hour, { cache: "no-store" });
+      return res.ok ? res : null;
+    }),
+    within(8000, async () => {
+      const res = await fetch(MIRROR_TWO + "/index.html?v=" + hour, { cache: "no-store" });
+      return res.ok ? res : null;
+    }),
+  ];
+  const pages = (await Promise.all(jobs)).filter(Boolean);
+  let best = null;
+  let bestStamp = "";
+  for (const res of pages) {
+    let html = "";
+    try {
+      html = await res.clone().text();
+    } catch {
+      html = "";
+    }
+    const mark = buildStamp(html);
+    if (!html.includes("/assets/")) continue;
+    if (!best || newerBuild(mark, bestStamp)) {
+      best = res;
+      bestStamp = mark;
+    }
+  }
+  return best;
 }
 
 async function storeFresh(cache) {
