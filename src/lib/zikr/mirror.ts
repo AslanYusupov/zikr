@@ -3,6 +3,7 @@ export const SHELL_HOSTS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
+  "https://cdn.statically.io/gh/AslanYusupov/zikr/release",
 ];
 
 function clean(html: string): string {
@@ -66,7 +67,7 @@ export async function fetchShellHtml(): Promise<string | null> {
 /** One published file, from the site or from a GitHub copy. */
 export async function fetchShellFile(path: string): Promise<Response | null> {
   const hour = Math.floor(Date.now() / 3_600_000);
-  const urls = [`${path}?warm=${Date.now()}`, ...SHELL_HOSTS.map((base) => `${base}${path}?v=${hour}-f`)];
+  const urls = [`${path}?warm=${Date.now()}`, ...SHELL_HOSTS.map((base) => `${base}${path}?v=${hour}`)];
   let left = urls.length;
   return new Promise((resolve) => {
     let settled = false;

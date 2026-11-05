@@ -116,10 +116,6 @@ export function Shell() {
         }
         if (stop) return;
         const cache = await caches.open("zikr-shell-v2");
-        if (!(await cache.match("/"))) {
-          const html = await fetchShellHtml();
-          if (html) await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-        }
         const essential = new Set([
           "/favicon.svg",
           "/orbit-sun.webp",
