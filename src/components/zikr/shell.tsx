@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 import { Celebrate } from "./celebrate";
 import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
-import { Backdrop } from "./pattern";
+import { Backdrop, randomStarPass } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
 import { audioBusy, pullUpdate } from "@/lib/zikr/build";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
@@ -46,7 +46,10 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
     onEnter();
   }, [onEnter]);
 
+  const [star, setStar] = useState<ReturnType<typeof randomStarPass> | null>(null);
+
   useEffect(() => {
+    setStar(randomStarPass());
     const timer = window.setTimeout(onEnter, 500);
     return () => window.clearTimeout(timer);
   }, [onEnter]);
@@ -55,10 +58,25 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
     <div className="bismillah-splash" onClick={close} suppressHydrationWarning>
       <span className="bismillah-glow" aria-hidden />
       <span className="bismillah-sky" aria-hidden />
-      <span className="comet comet-live splash-pass" aria-hidden>
-        <span className="comet-tail" />
-        <span className="comet-head" />
-      </span>
+      {star ? (
+        <span
+          className="comet comet-live tap-star"
+          style={{
+            ["--x" as string]: star.pass.x,
+            ["--y" as string]: star.pass.y,
+            ["--x2" as string]: star.pass.x2,
+            ["--y2" as string]: star.pass.y2,
+            ["--rot" as string]: star.rot,
+            ["--dur" as string]: star.pass.dur,
+            ["--len" as string]: "11rem",
+            ["--bright" as string]: "0.9",
+          }}
+          aria-hidden
+        >
+          <span className="comet-tail" />
+          <span className="comet-head" />
+        </span>
+      ) : null}
       <p className="bismillah-words" dir="rtl" lang="ar">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
       </p>

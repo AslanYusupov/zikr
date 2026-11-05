@@ -112,6 +112,23 @@ function flightAim(x: string, y: string, x2: string, y2: string): string {
   return `${(heading - 180).toFixed(1)}deg`;
 }
 
+/** Тот же выбор пути, что у звезды на экране тапа. */
+export function randomStarPass() {
+  const base = PASSES[Math.floor(Math.random() * PASSES.length)]!;
+  const nudge = (value: string, spread: number) => {
+    const unit = value.endsWith("vw") ? "vw" : "vh";
+    return `${(parseFloat(value) + (Math.random() * 2 - 1) * spread).toFixed(1)}${unit}`;
+  };
+  const pass = {
+    x: nudge(base.x, 7),
+    y: nudge(base.y, 5),
+    x2: nudge(base.x2, 7),
+    y2: nudge(base.y2, 5),
+    dur: "0.78s",
+  };
+  return { pass, rot: flightAim(pass.x, pass.y, pass.x2, pass.y2) };
+}
+
 function TapStar() {
   const [shot, setShot] = useState<{ id: number; pass: { x: string; y: string; x2: string; y2: string; dur: string }; rot: string } | null>(null);
   const nextAt = useRef(0);
