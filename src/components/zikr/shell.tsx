@@ -7,8 +7,6 @@ import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
-import { buildIsNewer, buildStamp, checkUpdate, pageBuild, takeUpdate } from "@/lib/zikr/build";
-import { fetchShellFile, fetchShellHtml } from "@/lib/zikr/mirror";
 import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
@@ -92,7 +90,6 @@ export function Shell() {
   const [library, setLibrary] = useState<number | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [full, setFull] = useState(false);
-  const [updateReady, setUpdateReady] = useState(false);
   const [online, setOnline] = useState<number | null>(null);
   const [entered, setEntered] = useState(false);
   const [dayStamp, setDayStamp] = useState(todayKey);
@@ -100,142 +97,13 @@ export function Shell() {
   const pull = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !("caches" in window)) return;
-    let stop = false;
-    const keep = async () => {
-      try {
-        await navigator.storage?.persist?.();
-      } catch {
-        /* the phone may refuse until the first tap */
-      }
-      try {
-        try {
-          await navigator.serviceWorker.register("/sw.js");
-        } catch {
-          /* the saved copy still opens */
-        }
-        if (stop) return;
-        const cache = await caches.open("zikr-shell-v2");
-        const essential = new Set([
-          "/favicon.svg",
-          "/orbit-sun.webp",
-          "/orbit-moon.webp",
-          "/manifest.webmanifest",
-          "/icon-180.png",
-        ]);
-        document.querySelectorAll("script[src], link[rel='stylesheet']").forEach((node) => {
-          const src = node.getAttribute("src") || node.getAttribute("href") || "";
-          const path = src.startsWith("/") ? src.split("?")[0] : "";
-          if (path.startsWith("/assets/") || path.endsWith(".css")) essential.add(path);
-        });
-        const later = new Set<string>(["/quran.json"]);
-        for (const face of ["inter-cyr", "inter-latin", "inter-latinext"]) {
-          for (const weight of [500, 600, 700, 800]) later.add(`/fonts/${face}-${weight}.woff2`);
-        }
-        for (const weight of [400, 700]) later.add(`/fonts/amiri-${weight}.woff2`);
-        later.add("/fonts/amiri-400i.woff2");
-        for (const photo of ["shore", "desert", "roses", "cosmos", "peaks", "lake", "jungle", "andromeda", "maldives", "mecca"]) {
-          later.add(`/${photo}.jpg`);
-        }
-        const put = async (url: string, res: Response) => {
-          const headers = new Headers();
-          const type = res.headers.get("content-type");
-          if (type) headers.set("content-type", type);
-          await cache.put(url, new Response(await res.blob(), { status: 200, headers }));
-        };
-        const missing = async (urls: Set<string>) => {
-          const absent: string[] = [];
-          for (const url of urls) {
-            if (!(await cache.match(url))) absent.push(url);
-          }
-          return absent;
-        };
-        const fill = async (urls: string[]) => {
-          await Promise.all(
-            urls.map(async (url) => {
-              try {
-                const res = await fetchShellFile(url);
-                if (res) await put(url, res);
-              } catch {
-                /* keep the copy already stored */
-              }
-            }),
-          );
-        };
-        const quiet = async () => {
-          if (stop || document.visibilityState !== "visible") return;
-          let last = 0;
-          try {
-            last = Number(localStorage.getItem("zikr-shell-check") || 0);
-          } catch {
-            last = 0;
-          }
-          if (Date.now() - last >= 60 * 1000) {
-            try {
-              const html = await fetchShellHtml();
-              if (html) {
-                const remote = buildStamp(html);
-                if (!buildIsNewer(remote, pageBuild())) {
-                  localStorage.setItem("zikr-shell-check", String(Date.now()));
-                } else {
-                  const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-                  if (needed.length) {
-                    const absent = [];
-                    for (const src of needed) if (!(await cache.match(src))) absent.push(src);
-                    if (absent.length) await fill(absent);
-                    let ready = true;
-                    for (const src of needed) if (!(await cache.match(src))) ready = false;
-                    if (ready) {
-                      await cache.put("/", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-                      localStorage.setItem("zikr-shell-check", String(Date.now()));
-                    }
-                  }
-                }
-              }
-              void navigator.serviceWorker.getRegistration().then((reg) => reg?.update()).catch(() => {});
-            } catch {
-              /* the phone keeps the page it already stored */
-            }
-          }
-          const rest = await missing(new Set([...essential, ...later]));
-          if (rest.length) await fill(rest);
-        };
-        window.setTimeout(() => void quiet(), 8000);
-      } catch {
-        /* opening must not wait on this */
-      }
-    };
-    void keep();
-    const ask = () => {
-      void navigator.storage?.persist?.();
-    };
-    window.addEventListener("pointerdown", ask, { once: true, passive: true });
-    window.addEventListener("touchstart", ask, { once: true, passive: true });
-    let warmed = Date.now();
-    const again = () => {
-      if (document.visibilityState !== "visible") return;
-      const now = Date.now();
-      if (now - warmed < 10 * 60_000) return;
-      warmed = now;
-      void keep();
-    };
-    window.addEventListener("online", again);
-    document.addEventListener("visibilitychange", again);
-    const onShell = () => {
-      /* an update must not reload the open screen */
-    };
-    navigator.serviceWorker?.addEventListener("message", onShell);
-    const link = (navigator as Navigator & { connection?: EventTarget }).connection;
-    link?.addEventListener?.("change", again);
-    return () => {
-      stop = true;
-      window.removeEventListener("pointerdown", ask);
-      window.removeEventListener("touchstart", ask);
-      window.removeEventListener("online", again);
-      document.removeEventListener("visibilitychange", again);
-      navigator.serviceWorker?.removeEventListener("message", onShell);
-      link?.removeEventListener?.("change", again);
-    };
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
+    void navigator.serviceWorker.register("/sw.js").catch(() => {});
+    if (!("caches" in window)) return;
+    void caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zikr-shell")).map((key) => caches.delete(key))))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -342,32 +210,6 @@ export function Shell() {
     };
   }, [hydrated, publicId]);
 
-  useEffect(() => {
-    let stop = false;
-    const probe = async () => {
-      if (document.hidden) return;
-      try {
-        const state = await checkUpdate();
-        if (stop || state === "same" || state === "unknown") return;
-        setUpdateReady(true);
-      } catch {
-        /* offline */
-      }
-    };
-    const start = window.setTimeout(() => void probe(), 1500);
-    const onVis = () => {
-      if (document.visibilityState === "visible") void probe();
-    };
-    document.addEventListener("visibilitychange", onVis);
-    const id = window.setInterval(() => void probe(), 120_000);
-    return () => {
-      stop = true;
-      window.clearTimeout(start);
-      document.removeEventListener("visibilitychange", onVis);
-      window.clearInterval(id);
-    };
-  }, []);
-
   function closeOverlays() {
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     setSettings(false);
@@ -407,7 +249,7 @@ export function Shell() {
   }
 
   function refreshApp() {
-    void takeUpdate();
+    window.location.reload();
   }
 
   async function toggleFullscreen() {
@@ -514,16 +356,6 @@ export function Shell() {
             <Settings className="size-5" strokeWidth={1.5} />
           </button>
         </header>
-
-        {updateReady ? (
-          <button
-            type="button"
-            onClick={refreshApp}
-            className="relative z-20 mx-3 mb-1 rounded-2xl border border-line bg-surface px-3 py-2 text-start"
-          >
-            <span className="block text-sm font-bold text-fg">{tx(lang, "updateHere")}</span>
-          </button>
-        ) : null}
 
         <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
           {tab === "zikr" && (
