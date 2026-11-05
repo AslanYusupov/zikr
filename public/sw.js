@@ -109,12 +109,20 @@ async function offer(currentHtml, pending) {
     await cache.put("/index.html", page(next));
     await cache.put("/update-mark", new Response(mark));
     if (audioOn) return;
-    const seen = await cache.match("/update-shown");
-    const shown = seen ? await seen.text() : "";
-    if (shown === mark) return;
-    await cache.put("/update-shown", new Response(mark));
     const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    await Promise.all(windows.map((client) => client.navigate(client.url).catch(() => undefined)));
+    const nextUrl = new URL("/", self.location.origin);
+    nextUrl.searchParams.set("v", mark);
+    await Promise.all(
+      windows.map((client) => {
+        try {
+          const here = new URL(client.url);
+          if (here.searchParams.get("v") === mark) return Promise.resolve();
+          return client.navigate(nextUrl.href).catch(() => undefined);
+        } catch {
+          return Promise.resolve();
+        }
+      }),
+    );
   } catch {
     /* the open page stays */
   } finally {
