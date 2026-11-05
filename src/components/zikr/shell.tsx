@@ -47,21 +47,8 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
   }, [onEnter]);
 
   useEffect(() => {
-    let stop = false;
-    let timer = 0;
-    const arm = () => {
-      if (stop) return;
-      if (!document.documentElement.classList.contains("boot-done")) {
-        timer = window.setTimeout(arm, 80);
-        return;
-      }
-      timer = window.setTimeout(onEnter, 1500);
-    };
-    arm();
-    return () => {
-      stop = true;
-      window.clearTimeout(timer);
-    };
+    const timer = window.setTimeout(onEnter, 1700);
+    return () => window.clearTimeout(timer);
   }, [onEnter]);
 
   return (
