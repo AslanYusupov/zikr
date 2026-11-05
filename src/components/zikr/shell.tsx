@@ -47,7 +47,7 @@ export function Splash({ onEnter }: { onEnter: () => void }) {
   }, [onEnter]);
 
   useEffect(() => {
-    const timer = window.setTimeout(onEnter, 1700);
+    const timer = window.setTimeout(onEnter, 1000);
     return () => window.clearTimeout(timer);
   }, [onEnter]);
 

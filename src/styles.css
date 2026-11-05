@@ -3909,9 +3909,15 @@ html, body {
   --x2: var(--pass-x2, -36vw);
   --y2: var(--pass-y2, 40vh);
   --rot: var(--pass-rot, -16deg);
-  --dur: 1.35s;
+  --dur: .82s;
   --len: 11rem;
   --bright: 0.95;
+}
+@keyframes splash-star {
+  0% { opacity: 0; transform: translate3d(var(--x, 100vw), var(--y, 8vh), 0) rotate(var(--rot, -16deg)); }
+  6% { opacity: var(--bright, .95); }
+  90% { opacity: var(--bright, .95); }
+  100% { opacity: 0; transform: translate3d(var(--x2, -36vw), var(--y2, 40vh), 0) rotate(var(--rot, -16deg)); }
 }
 .comet-live {
   width: var(--len, 11rem);
@@ -3919,6 +3925,7 @@ html, body {
   opacity: 0;
   animation: comet-live var(--dur, 1.35s) linear 1;
 }
+.splash-pass.comet-live { animation: splash-star var(--dur, .82s) linear 1; }
 .tap-star { z-index: 3; }
 .reward-peak {
   position: relative;
