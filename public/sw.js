@@ -33,7 +33,6 @@ const MIRRORS = [
   "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://fastly.jsdelivr.net/gh/AslanYusupov/zikr@release",
   "https://gcore.jsdelivr.net/gh/AslanYusupov/zikr@release",
-  "https://cdn.statically.io/gh/AslanYusupov/zikr/release",
 ];
 
 async function fetchAsset(src) {
@@ -94,7 +93,7 @@ async function freshPage() {
       return res.ok ? res : null;
     }),
     within(8000, async () => {
-      const res = await fetch(MIRRORS[3] + "/index.html?v=" + hour, { cache: "no-store" });
+      const res = await fetch(MIRRORS[2] + "/index.html?v=" + hour, { cache: "no-store" });
       return res.ok ? res : null;
     }),
   ];
@@ -228,74 +227,44 @@ self.addEventListener("fetch", (event) => {
   const navigation = req.mode === "navigate" || req.destination === "document";
   event.respondWith(
     (async () => {
-      const cache = await caches.open(SHELL);
-      const hit = navigation
-        ? (await cache.match("/", { ignoreSearch: true })) || (await cache.match(req, { ignoreSearch: true }))
-        : await cache.match(req, { ignoreSearch: true });
-      const frozen =
-        url.pathname.startsWith("/assets/") ||
-        url.pathname.startsWith("/fonts/") ||
-        /\.(?:woff2|webp|png|jpg|jpeg|svg)$/.test(url.pathname);
-      const update = () =>
-        fetch(req)
-          .then((res) => {
-            if (res.ok && !navigation && !frozen) {
-              stored(res.clone())
-                .then((copy) => cache.put(new Request(url.pathname), copy))
-                .catch(() => {});
-            }
-            return res;
-          })
-          .catch(() => null);
-      if (hit) {
-        if (!navigation) return hit;
-        let savedHtml = "";
-        try {
-          savedHtml = await hit.clone().text();
-        } catch {
-          savedHtml = "";
+      try {
+        const cache = await caches.open(SHELL);
+        const hit = navigation
+          ? (await cache.match("/", { ignoreSearch: true })) || (await cache.match(req, { ignoreSearch: true }))
+          : await cache.match(req, { ignoreSearch: true });
+        if (hit && navigation) {
+          const page = await pageFrom(hit);
+          event.waitUntil(storeFresh(cache));
+          return page;
         }
-        const healthy = savedHtml.includes("/assets/") && savedHtml.includes("zikr-build");
-        if (!healthy) {
-          try {
-            const fresh = await fetch(req);
-            if (fresh && fresh.ok) {
-              const page = await pageFrom(fresh.clone());
-              event.waitUntil(saveShell(cache, page.clone()));
-              return page;
-            }
-          } catch {
-            /* the saved page is still better than a blank screen */
-          }
-        }
-        const page = await pageFrom(hit);
-        event.waitUntil(storeFresh(cache));
-        return page;
-      }
-      if (navigation) {
-        try {
-          const fresh = await fetch(req);
-          if (fresh && fresh.ok) {
-            const page = await pageFrom(fresh.clone());
+        if (hit) return hit;
+        if (navigation) {
+          const fresh = await freshPage();
+          if (fresh) {
+            const page = await pageFrom(fresh);
             event.waitUntil(saveShell(cache, page.clone()));
             return page;
           }
-        } catch {
-          /* open the saved page */
+          const saved = await cache.match("/", { ignoreSearch: true });
+          if (saved) return saved;
+          return new Response(
+            "<!doctype html><meta charset=utf-8><title>Зикр</title><body style=\"margin:0;background:#000;color:#f7f3ea;font:18px/1.5 sans-serif;padding:28px\">Зикр откроется из сохранённой копии. Закройте страницу и откройте ещё раз.</body>",
+            { status: 200, headers: { "content-type": "text/html; charset=utf-8" } },
+          );
         }
-        const page = await cache.match("/", { ignoreSearch: true });
-        if (page) return page;
+        const copy = await fetchAsset(url.pathname);
+        if (copy) {
+          const storedCopy = copy.clone();
+          event.waitUntil(cache.put(new Request(url.pathname), storedCopy).catch(() => {}));
+          return copy;
+        }
+        return new Response("", { status: 503 });
+      } catch {
+        const cache = await caches.open(SHELL);
+        const saved = await cache.match("/", { ignoreSearch: true });
+        if (saved) return saved;
         return new Response("", { status: 503 });
       }
-      const fresh = await update();
-      if (fresh) return fresh;
-      const copy = await fetchAsset(url.pathname);
-      if (copy) {
-        const storedCopy = copy.clone();
-        event.waitUntil(cache.put(new Request(url.pathname), storedCopy).catch(() => {}));
-        return copy;
-      }
-      return new Response("", { status: 503 });
     })(),
   );
 });
