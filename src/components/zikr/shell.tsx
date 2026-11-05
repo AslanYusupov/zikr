@@ -97,8 +97,41 @@ export function Shell() {
   const pull = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!("serviceWorker" in navigator)) return;
-    void navigator.serviceWorker.getRegistrations().then((regs) => Promise.all(regs.map((reg) => reg.unregister()))).catch(() => {});
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !("caches" in window)) return;
+    let stop = false;
+    const keep = async () => {
+      try {
+        await navigator.serviceWorker.register("/sw.js");
+      } catch {
+        return;
+      }
+      if (stop) return;
+      try {
+        const cache = await caches.open("zikr-ok-v1");
+        if (await cache.match("/index.html")) return;
+        const res = await fetch("/?open=" + Date.now(), { cache: "no-store" });
+        const html = await res.text();
+        if (!res.ok || !html.includes("/assets/") || !html.includes("zikr-build")) return;
+        const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+        if (!needed.length) return;
+        for (const src of needed) {
+          if (stop) return;
+          if (await cache.match(src)) continue;
+          const file = await fetch(src, { cache: "no-store" });
+          if (!file.ok) return;
+          await cache.put(src, file.clone());
+        }
+        if (stop) return;
+        await cache.put("/index.html", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+      } catch {
+        /* the next open can still take the GitHub copy */
+      }
+    };
+    const timer = window.setTimeout(() => void keep(), 1200);
+    return () => {
+      stop = true;
+      window.clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {

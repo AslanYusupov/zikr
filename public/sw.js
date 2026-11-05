@@ -1,3 +1,101 @@
+const SHELL = "zikr-ok-v1";
+const GITHUB = "https://cdn.jsdelivr.net/gh/AslanYusupov/zikr@release";
+
+function clean(html) {
+  return html.replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
+}
+
+function page(html) {
+  return new Response(clean(html), { status: 200, headers: { "content-type": "text/html; charset=utf-8" } });
+}
+
+function stamp(html) {
+  const named = html.match(/name="zikr-build"[^>]*content="([^"]+)"/);
+  if (named) return named[1];
+  const flipped = html.match(/content="([^"]+)"[^>]*name="zikr-build"/);
+  return flipped ? flipped[1] : "";
+}
+
+function newer(next, prev) {
+  if (!next) return false;
+  if (!prev) return true;
+  const [ad, an = "0"] = next.split("-");
+  const [bd, bn = "0"] = prev.split("-");
+  if (ad !== bd) return ad > bd;
+  const ai = Number(an);
+  const bi = Number(bn);
+  if (Number.isFinite(ai) && Number.isFinite(bi)) return ai > bi;
+  return next > prev;
+}
+
+function paths(html) {
+  const out = [];
+  const re = /\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g;
+  let match;
+  while ((match = re.exec(html))) {
+    if (!out.includes(match[0])) out.push(match[0]);
+  }
+  return out;
+}
+
+async function textFrom(url, ms) {
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(ms) });
+    if (!res.ok) return "";
+    const html = await res.text();
+    return html.includes("<html") && html.includes("/assets/") && html.includes("zikr-build") ? html : "";
+  } catch {
+    return "";
+  }
+}
+
+async function fileFrom(url, ms) {
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(ms) });
+    if (!res.ok) return null;
+    const body = await res.arrayBuffer();
+    if (body.byteLength < 50) return null;
+    const headers = new Headers();
+    const type = res.headers.get("content-type");
+    if (type) headers.set("content-type", type);
+    return new Response(body, { status: 200, headers });
+  } catch {
+    return null;
+  }
+}
+
+async function ready(cache, html, base) {
+  const needed = paths(html);
+  if (!needed.length) return "";
+  for (const src of needed) {
+    if (await cache.match(src)) continue;
+    const file = await fileFrom(base + src, 6000);
+    if (!file) return "";
+    await cache.put(src, file);
+  }
+  for (const src of needed) {
+    if (!(await cache.match(src))) return "";
+  }
+  return clean(html);
+}
+
+async function fresh(cache) {
+  const own = await textFrom(self.location.origin + "/?open=" + Date.now(), 3500);
+  if (own) {
+    const html = await ready(cache, own, self.location.origin);
+    if (html) return html;
+  }
+  const copy = await textFrom(GITHUB + "/index.html?v=" + Math.floor(Date.now() / 3600000), 6000);
+  if (!copy) return "";
+  return ready(cache, copy, GITHUB);
+}
+
+function offline() {
+  const html =
+    "<!doctype html><html lang=\"ru\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Зикр</title><body style=\"margin:0;background:#000;color:#f7f3ea;font:600 1rem/1.45 sans-serif;display:grid;min-height:100vh;place-items:center;text-align:center;padding:1.5rem\"><p>Откройте Зикр один раз, когда интернет есть. После этого он откроется и без VPN, и без сети.</p></body></html>";
+  return page(html);
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting());
 });
@@ -6,9 +104,86 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
-      .then(() => self.registration.unregister())
-      .then(() => self.clients.matchAll({ type: "window", includeUncontrolled: true }))
-      .then((windows) => Promise.all(windows.map((client) => client.navigate(client.url).catch(() => undefined)))),
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zikr-shell-")).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim()),
+  );
+});
+
+function keep(url) {
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/")) return false;
+  return (
+    url.pathname === "/" ||
+    url.pathname.startsWith("/assets/") ||
+    url.pathname.startsWith("/fonts/") ||
+    url.pathname.startsWith("/quran-mean/") ||
+    /\.(?:js|css|woff2|webp|svg|png|jpg|jpeg|json|webmanifest|mp3)$/.test(url.pathname)
+  );
+}
+
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.method !== "GET") return;
+  let url;
+  try {
+    url = new URL(req.url);
+  } catch {
+    return;
+  }
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname === "/sw.js") return;
+  if (url.searchParams.has("open") || url.searchParams.has("warm") || url.searchParams.has("probe")) return;
+  const navigation = req.mode === "navigate" || req.destination === "document";
+  if (!keep(url) && !navigation) return;
+
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(SHELL);
+      if (navigation) {
+        const saved = await cache.match("/index.html");
+        if (saved) {
+          let html = "";
+          try {
+            html = await saved.clone().text();
+          } catch {
+            html = "";
+          }
+          const needed = paths(html);
+          let ok = needed.length > 0 && html.includes("zikr-build");
+          for (const src of needed) {
+            if (!(await cache.match(src))) ok = false;
+          }
+          if (ok) {
+            const current = html;
+            event.waitUntil(
+              (async () => {
+                try {
+                  const next = await fresh(cache);
+                  if (!next || !newer(stamp(next), stamp(current))) return;
+                  await cache.put("/index.html", page(next));
+                } catch {
+                  /* the saved page stays */
+                }
+              })(),
+            );
+            return page(current);
+          }
+        }
+        const html = await fresh(cache);
+        if (html) {
+          const res = page(html);
+          await cache.put("/index.html", res.clone());
+          return res;
+        }
+        if (saved) return saved;
+        return offline();
+      }
+      const hit = await cache.match(url.pathname);
+      if (hit) return hit;
+      const own = await fileFrom(url.pathname, 4000);
+      const file = own || (await fileFrom(GITHUB + url.pathname, 6000));
+      if (!file) return new Response("", { status: 504 });
+      await cache.put(url.pathname, file.clone());
+      return file;
+    })(),
   );
 });
