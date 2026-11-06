@@ -93,9 +93,9 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 }
 
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
-const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262"];
+const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262", "79475757"];
 /** A second number made on the same account. Counts stay on the first number. */
-const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946" };
+const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946" };
 
 function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;
@@ -363,7 +363,101 @@ export const savedScore = createServerFn({ method: "POST" })
     }
   });
 
+/** Father's extra number from 6 Nov 2026. Add that day's 1000 once, then forget the extra number. */
+async function creditFatherToday(sql: Awaited<ReturnType<typeof getSql>>) {
+  const real = "52812946";
+  const clone = "79475757";
+  const day = "2026-11-06";
+  const add = 1000;
+  try {
+    await sql.query(`create table if not exists zikr_fix (id text primary key, done_at timestamptz not null default now())`);
+    const claimed = await sql.query<{ id: string }>(
+      `with claim as (
+         insert into zikr_fix (id) values ($1) on conflict do nothing returning id
+       ), world as (
+         update zikr_world set total = total + $2, updated_at = now()
+         where public_id = $3 and exists (select 1 from claim)
+         returning public_id
+       ), presence as (
+         update zikr_presence set
+           total = total + $2,
+           xp = greatest(xp, (total + $2) * 10),
+           day_total = case when day_key = $4 then day_total + $2 else $2 end,
+           day_key = $4
+         where public_id = $3 and exists (select 1 from claim)
+         returning public_id
+       )
+       select id from claim`,
+      ["father-2026-11-06-1000", add, real, day],
+    );
+    if (!claimed.length) return;
+    await sql.query(
+      `insert into zikr_world (public_id, total) values ($1, $2) on conflict (public_id) do nothing`,
+      [real, add],
+    );
+    await sql.query(
+      `insert into zikr_presence (public_id, country, day_key, day_total, xp, total)
+       values ($1, '', $2, $3, $4, $3) on conflict (public_id) do nothing`,
+      [real, day, add, add * 10],
+    );
+    await sql.query(`delete from zikr_world where public_id = $1`, [clone]);
+    await sql.query(`delete from zikr_presence where public_id = $1`, [clone]);
+    await sql.query(`delete from zikr_invites where guest_id = $1`, [clone]);
+    await sql.query(`delete from zikr_reach where public_id = $1`, [clone]);
+    await aliasTable(sql);
+    await sql.query(
+      `insert into zikr_alias (alias, public_id) values ($1, $2)
+       on conflict (alias) do update set public_id = excluded.public_id`,
+      [clone, real],
+    );
+    const bump = (payload: string) => {
+      try {
+        const parsed = JSON.parse(payload) as {
+          state?: { total?: unknown; xp?: unknown; bestDay?: unknown; days?: Record<string, { total?: unknown; by?: Record<string, number> }> };
+          total?: unknown;
+          xp?: unknown;
+          bestDay?: unknown;
+          days?: Record<string, { total?: unknown; by?: Record<string, number> }>;
+        };
+        const state = parsed.state && typeof parsed.state === "object" ? parsed.state : parsed;
+        const total = Math.floor(Number(state.total) || 0) + add;
+        state.total = total;
+        if (typeof state.xp === "number") state.xp = Math.max(state.xp, total * 10);
+        if (!state.days || typeof state.days !== "object") state.days = {};
+        const prev = state.days[day];
+        const dayTotal = Math.floor(Number(prev?.total) || 0) + add;
+        state.days[day] = { total: dayTotal, by: prev?.by && typeof prev.by === "object" ? prev.by : {} };
+        if (typeof state.bestDay === "number") state.bestDay = Math.max(state.bestDay, dayTotal);
+        return JSON.stringify(parsed);
+      } catch {
+        return "";
+      }
+    };
+    const devices = await sql.query<{ sync_key: string; payload: string; total: number }>(
+      `select sync_key, payload, total from zikr_device where public_id = $1 or payload like $2`,
+      [real, `%"publicId":"${real}"%`],
+    );
+    for (const row of devices) {
+      const next = bump(row.payload);
+      if (!next) continue;
+      await sql.query(`update zikr_device set payload = $2, total = total + $3, updated_at = now() where sync_key = $1`, [row.sync_key, next, add]);
+    }
+    const saves = await sql.query<{ user_id: string; payload: string }>(
+      `select user_id, payload from zikr_saves where payload like $1 or display_name = $2`,
+      [`%"publicId":"${real}"%`, real],
+    );
+    for (const row of saves) {
+      const next = bump(row.payload);
+      if (!next) continue;
+      await sql.query(`update zikr_saves set payload = $2, total = total + $3, updated_at = now() where user_id = $1`, [row.user_id, next, add]);
+    }
+  } catch (err) {
+    console.error("[zikr] father today", err);
+  }
+}
+
 async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
+  await creditFatherToday(sql);
   await foldCloneNumbers(sql);
   await keepFatherScore(sql);
   const steps = [
@@ -957,7 +1051,7 @@ export const pushDevice = createServerFn({ method: "POST" })
       const incoming = await aliasOf(sql, data.publicId ?? "");
       let publicId = incoming;
       let payload = (data.payload ?? "").replaceAll(`"publicId":"${data.publicId ?? ""}"`, `"publicId":"${publicId}"`);
-      payload = payload.replaceAll('"publicId":"88880455"', '"publicId":"96995742"').replaceAll('"publicId":"62012303"', '"publicId":"87278839"').replaceAll('"publicId":"25574036"', '"publicId":"52812946"').replaceAll('"publicId":"50170262"', '"publicId":"52812946"');
+      payload = payload.replaceAll('"publicId":"88880455"', '"publicId":"96995742"').replaceAll('"publicId":"62012303"', '"publicId":"87278839"').replaceAll('"publicId":"25574036"', '"publicId":"52812946"').replaceAll('"publicId":"50170262"', '"publicId":"52812946"').replaceAll('"publicId":"79475757"', '"publicId":"52812946"');
       if (data.tgId) {
         const prior = await sql<DeviceSave>`
           select sync_key as "syncKey", public_id as "publicId", payload, total
