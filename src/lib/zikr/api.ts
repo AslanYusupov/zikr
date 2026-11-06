@@ -287,6 +287,7 @@ export const savedScore = createServerFn({ method: "POST" })
     const empty: SavedScore = { total: 0, quranLetters: 0, today: 0, days: {} };
     try {
       const sql = await getSql();
+      await creditFatherToday(sql);
       const id = await aliasOf(sql, data.publicId);
       if (id !== "52812946") return empty;
       await keepFatherScore(sql);
