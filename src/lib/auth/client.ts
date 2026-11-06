@@ -92,8 +92,51 @@ export function setStayToken(token: string | null) {
     /* private mode */
   }
   const secure = window.location.protocol === "https:" ? "; Secure" : "";
-  if (token) document.cookie = `${STAY_COOKIE}=${encodeURIComponent(token)}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
+  const expires = new Date(Date.now() + 400 * 24 * 60 * 60 * 1000).toUTCString();
+  if (token) document.cookie = `${STAY_COOKIE}=${encodeURIComponent(token)}; Expires=${expires}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
   else document.cookie = `${STAY_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax${secure}`;
+  void rememberStay(token);
+}
+
+function rememberStay(token: string | null) {
+  if (typeof indexedDB === "undefined") return;
+  const req = indexedDB.open("nur-zikr", 1);
+  req.onupgradeneeded = () => {
+    if (!req.result.objectStoreNames.contains("kv")) req.result.createObjectStore("kv");
+  };
+  req.onsuccess = () => {
+    const db = req.result;
+    const tx = db.transaction("kv", "readwrite");
+    const store = tx.objectStore("kv");
+    if (token) store.put(token, STAY_KEY);
+    else store.delete(STAY_KEY);
+  };
+}
+
+if (typeof window !== "undefined") {
+  const saved = getStayToken();
+  if (saved) rememberStay(saved);
+  if (typeof indexedDB !== "undefined") {
+    const req = indexedDB.open("nur-zikr", 1);
+    req.onsuccess = () => {
+      const q = req.result.transaction("kv", "readonly").objectStore("kv").get(STAY_KEY);
+      q.onsuccess = () => {
+        const token = typeof q.result === "string" ? q.result : "";
+        if (token.length > 10 && !getStayToken()) setStayToken(token);
+        const user = req.result.transaction("kv", "readonly").objectStore("kv").get("zikr-auth-user");
+        user.onsuccess = () => {
+          if (typeof user.result === "string") {
+            try {
+              if (!window.localStorage.getItem("zikr-auth-user")) window.localStorage.setItem("zikr-auth-user", user.result);
+            } catch {
+              /* private mode */
+            }
+          }
+          if ((token.length > 10 && !saved) || (typeof user.result === "string" && !saved)) window.dispatchEvent(new Event("zikr-stay"));
+        };
+      };
+    };
+  }
 }
 
 function setBearerToken(token: string | null): void {

@@ -80,6 +80,16 @@ function writeStoredUser(user: AppUser | null) {
   } catch {
     /* private mode */
   }
+  if (typeof indexedDB === "undefined") return;
+  const req = indexedDB.open("nur-zikr", 1);
+  req.onupgradeneeded = () => {
+    if (!req.result.objectStoreNames.contains("kv")) req.result.createObjectStore("kv");
+  };
+  req.onsuccess = () => {
+    const store = req.result.transaction("kv", "readwrite").objectStore("kv");
+    if (user) store.put(JSON.stringify(user), HELD_KEY);
+    else store.delete(HELD_KEY);
+  };
 }
 
 export function clearHeldUser() {
@@ -114,10 +124,19 @@ export function useCurrentUserState(): CurrentUserState {
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   useEffect(() => {
     const retry = () => {
+      const stored = readStoredUser();
+      if (stored) {
+        heldUser = stored;
+        setKept(stored);
+      }
       void authClient.getSession().catch(() => {});
     };
     window.addEventListener("online", retry);
-    return () => window.removeEventListener("online", retry);
+    window.addEventListener("zikr-stay", retry);
+    return () => {
+      window.removeEventListener("online", retry);
+      window.removeEventListener("zikr-stay", retry);
+    };
   }, []);
   const user = data?.user;
   const next: AppUser | null = user

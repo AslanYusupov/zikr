@@ -334,6 +334,9 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
         dayCut: winner.dayCut,
         dayArchive: winner.dayArchive,
         rewardArchive: winner.rewardArchive,
+        publicId: /^\d{8}$/.test(canonicalPublicId(winner.publicId))
+          ? canonicalPublicId(winner.publicId)
+          : canonicalPublicId(other.publicId),
       });
     }
   }
@@ -642,7 +645,7 @@ const durableStorage = {
     if (!local || savedDetail(local) === 0) {
       const disk = await Promise.race<string | null>([
         idbGet(name),
-        new Promise((resolve) => setTimeout(() => resolve(null), 700)),
+        new Promise((resolve) => setTimeout(() => resolve(null), 8000)),
       ]);
       if (disk && (savedScore(disk) > savedScore(local) || savedDetail(disk) > savedDetail(local))) {
         local = withSnap(disk);
@@ -680,16 +683,18 @@ const durableStorage = {
     return local;
   },
   setItem: (name: string, value: string) => {
+    const forced = allowLowerSave;
+    allowLowerSave = false;
     const next = savedScore(value);
     const kept = readLocal(name);
-    if (!allowLowerSave && next < savedScore(kept)) return Promise.resolve();
+    if (!forced && next < savedScore(kept)) return Promise.resolve();
     writeLocal(name, value);
     writeSnap(value);
     idbQueue = idbQueue
       .then(async () => {
         const disk = await idbGet(name);
         const latest = readLocal(name) || value;
-        if (!allowLowerSave && savedScore(disk) > savedScore(latest)) {
+        if (!forced && savedScore(disk) > savedScore(latest)) {
           if (disk) writeLocal(name, disk);
           return;
         }
@@ -862,6 +867,7 @@ export const useZikr = create<ZikrState & Actions>()(
         const prev = s.rewardArchive;
         const days = { ...(prev?.days ?? {}) };
         for (const [key, log] of Object.entries(s.days)) days[key] = addLog(days[key], log);
+        allowLowerSave = true;
         set({
           rewardArchive: {
             at: Date.now(),
@@ -1083,16 +1089,19 @@ if (typeof window !== "undefined") {
   };
   if (useZikr.persist.hasHydrated()) {
     armed = true;
-    allowLowerSave = true;
     releaseStuck();
   }
   useZikr.persist.onFinishHydration(() => {
     armed = true;
-    allowLowerSave = true;
     releaseStuck();
   });
   window.addEventListener("pagehide", flush);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") flush();
   });
+  try {
+    void navigator.storage?.persist?.();
+  } catch {
+    /* the browser decides */
+  }
 }
