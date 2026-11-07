@@ -2,7 +2,10 @@ const SHELL = "zikr-ok-v1";
 let audioOn = false;
 
 function clean(html) {
-  return html.replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
+  return html
+    .replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "")
+    .replace(/<link\b[^>]*href=["']\/__grok\/manifest\.webmanifest["'][^>]*>/gi, "")
+    .replace(/<link\b[^>]*href=["']\/__grok\/icon-180\.png["'][^>]*>/gi, "");
 }
 
 function page(html) {
@@ -141,7 +144,10 @@ self.addEventListener("fetch", (event) => {
         } catch {
           /* the saved page still opens */
         }
-        if (saved) return saved;
+        if (saved) {
+          const text = await saved.text();
+          return text.includes("/__grok/") ? page(text) : saved;
+        }
         const html = await siteHtml();
         if (html) {
           await cache.put("/index.html", page(html));

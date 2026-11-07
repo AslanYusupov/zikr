@@ -14,7 +14,7 @@ export const Route = createRootRoute({
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content",
       },
-      { title: "Зикр" },
+      { title: "Zikr" },
       { name: "description", content: "Спокойное поминание Аллах1а. Онлайн счетчик зикра с рейтингом." },
       { property: "og:description", content: "Спокойное поминание Аллах1а. Онлайн счетчик зикра с рейтингом." },
       { name: "zikr-build", content: APP_BUILD },
@@ -23,6 +23,7 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-status-bar-style", content: "black" },
       { name: "apple-mobile-web-app-title", content: "Zikr" },
       { name: "application-name", content: "Zikr" },
+      { property: "og:site_name", content: "Zikr" },
       { name: "format-detection", content: "telephone=no" },
     ],
     links: [
