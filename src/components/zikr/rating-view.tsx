@@ -237,7 +237,7 @@ export function RatingView() {
       stop = true;
       window.clearInterval(id);
     };
-  }, [publicId, total]);
+  }, [publicId]);
 
   useEffect(() => {
     if (total < 10_000) return;
@@ -252,7 +252,7 @@ export function RatingView() {
         pending -= 1;
         if (pending > 0) return;
         flying = false;
-        const down = miss.current.world || miss.current.live;
+        const down = miss.current.world && miss.current.live;
         setVpn(down);
         setHeld(miss.current.world && Boolean(bag.current));
         if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2500);
@@ -260,7 +260,7 @@ export function RatingView() {
       const mark = (part: "world" | "live", ok: boolean) => {
         miss.current[part] = !ok;
       };
-      until(worldBoard({ data: { publicId, dayKey: day } }), 7000)
+      until(worldBoard({ data: { publicId, dayKey: day } }), 12000)
         .then((res) => {
           if (stop) return;
           const rows = shown(res.rows);
@@ -276,7 +276,7 @@ export function RatingView() {
           mark("world", false);
         })
         .finally(finish);
-      until(presenceBoard({ data: { publicId, dayKey: day } }), 7000)
+      until(presenceBoard({ data: { publicId, dayKey: day } }), 12000)
         .then((res) => {
           if (stop) return;
           const liveRows = shown(res.live);
@@ -301,7 +301,7 @@ export function RatingView() {
     const onWake = () => {
       if (document.visibilityState === "visible") load();
     };
-    const id = window.setInterval(() => load(), 15_000);
+    const id = window.setInterval(() => load(), 8_000);
     window.addEventListener("zikr-live", onLive);
     window.addEventListener("online", onWake);
     document.addEventListener("visibilitychange", onWake);
@@ -315,7 +315,7 @@ export function RatingView() {
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onWake);
     };
-  }, [publicId, day, total]);
+  }, [publicId, day, total >= 10_000]);
 
   const selfLine =
     record > today

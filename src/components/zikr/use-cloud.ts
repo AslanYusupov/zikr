@@ -346,12 +346,12 @@ export function useWorldSync(hydrated: boolean) {
       const changed = sig !== sentSig;
       const hiding = document.hidden;
       if (!changed && !hiding && now - lastBeat < 60_000) return;
-      if (changed && !hiding && now - lastNumbers < 6_000) {
+      if (changed && !hiding && now - lastNumbers < 1_500) {
         if (wait == null) {
           wait = window.setTimeout(() => {
             wait = null;
             send();
-          }, 6_000);
+          }, 1_500);
         }
         return;
       }
@@ -386,7 +386,6 @@ export function useWorldSync(hydrated: boolean) {
             },
           }).then(() => {
             if (replaceDay) useZikr.getState().clearDayCut();
-            window.dispatchEvent(new Event("zikr-live"));
           }),
         );
       }
@@ -396,6 +395,7 @@ export function useWorldSync(hydrated: boolean) {
         .then(() => {
           if (!changed) return;
           sentSig = sig;
+          window.dispatchEvent(new Event("zikr-live"));
           if (key && (hiding || now - lastSnap >= 120_000)) {
             const snap = snapshot(state);
             lastSnap = now;

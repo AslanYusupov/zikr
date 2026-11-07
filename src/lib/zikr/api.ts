@@ -630,7 +630,6 @@ async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: strin
 
 export async function rememberingNow(publicId?: string) {
   const sql = await getSql();
-  await keepOldRating(sql);
   return openNow(sql, publicId);
 }
 
@@ -754,7 +753,6 @@ export const publishWorld = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const stored = data.total;
@@ -789,6 +787,8 @@ export const publishWorld = createServerFn({ method: "POST" })
     } catch (err) {
       console.error("[zikr] world", err);
       return { ok: false as const };
+    } finally {
+      void getSql().then((sql) => keepOldRating(sql)).catch(() => undefined);
     }
   });
 
@@ -799,7 +799,6 @@ export const invitees = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       const host = realPublicId(data.publicId);
       const rows = await sql<{ guest_id: string; total: number }>`
         select guest_id, total from zikr_invites
@@ -818,7 +817,6 @@ export const worldBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const day = data.dayKey ?? "";
       const rows = await sql<{ public_id: string; total: number; concealed: boolean; day_key: string; day_total: number }>`
@@ -873,7 +871,6 @@ export const beatPresence = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const tapping = data.tapSince > 0 ? 1 : 0;
@@ -915,6 +912,8 @@ export const beatPresence = createServerFn({ method: "POST" })
     } catch (err) {
       console.error("[zikr] presence", err);
       return { ok: false as const };
+    } finally {
+      void getSql().then((sql) => keepOldRating(sql)).catch(() => undefined);
     }
   });
 
@@ -923,7 +922,6 @@ export const presenceBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await keepOldRating(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const n = await openNow(sql, publicId);
     const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`
