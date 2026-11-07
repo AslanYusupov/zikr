@@ -119,6 +119,13 @@ export function Shell() {
         await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
         const reg = await navigator.serviceWorker.getRegistration();
         if (reg) void reg.update();
+        const kick = () => {
+          void navigator.serviceWorker.getRegistration().then((next) => next?.update());
+        };
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") kick();
+        });
+        window.addEventListener("online", kick);
       } catch {
         return;
       }

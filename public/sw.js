@@ -1,4 +1,5 @@
 const SHELL = "zikr-ok-v1";
+let audioOn = false;
 
 function clean(html) {
   return html.replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "");
@@ -8,11 +9,15 @@ function page(html) {
   return new Response(clean(html), { status: 200, headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
+function stampOf(html) {
+  return (html.match(/name="zikr-build"[^>]*content="([^"]+)"/) || html.match(/content="([^"]+)"[^>]*name="zikr-build"/) || [])[1] || "";
+}
+
 async function siteHtml() {
   try {
     const res = await fetch(self.location.origin + "/?open=" + Date.now(), {
       cache: "no-store",
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) return "";
     const html = await res.text();
@@ -22,18 +27,76 @@ async function siteHtml() {
   }
 }
 
+async function savedStamp(cache) {
+  const saved = await cache.match("/index.html");
+  if (!saved) return "";
+  try {
+    return stampOf(await saved.text());
+  } catch {
+    return "";
+  }
+}
+
+/** Save the new page only after its scripts are stored, so Android does not open a blank screen. */
+async function storeFresh(html) {
+  const next = stampOf(html);
+  if (!next) return "";
+  const cache = await caches.open(SHELL);
+  if ((await savedStamp(cache)) === next) return "";
+  const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+  for (const src of assets) {
+    if (await cache.match(src)) continue;
+    const res = await fetch(self.location.origin + src + "?open=" + Date.now(), {
+      cache: "no-store",
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return "";
+    await cache.put(src, res.clone());
+  }
+  await cache.put("/index.html", page(html));
+  return next;
+}
+
+async function openFresh(mark) {
+  if (!mark || audioOn) return;
+  const open = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  for (const client of open) {
+    if (typeof client.navigate !== "function") {
+      client.postMessage({ type: "zikr-reload", build: mark });
+      continue;
+    }
+    try {
+      const url = new URL(client.url);
+      if (url.searchParams.get("v") === mark) continue;
+      url.searchParams.set("v", mark);
+      await client.navigate(url.href);
+    } catch {
+      client.postMessage({ type: "zikr-reload", build: mark });
+    }
+  }
+}
+
 function offline() {
   const html =
     "<!doctype html><html lang=\"ru\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Зикр</title><body style=\"margin:0;background:#000;color:#f7f3ea;font:600 1rem/1.45 sans-serif;display:grid;min-height:100vh;place-items:center;text-align:center;padding:1.5rem\"><p>Откройте Зикр один раз, когда интернет есть. После этого он откроется и без VPN, и без сети.</p></body></html>";
   return page(html);
 }
 
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "zikr-audio") audioOn = !!event.data.on;
+});
+
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async () => {
+    await self.clients.claim();
+    const html = await siteHtml();
+    const mark = html ? await storeFresh(html) : "";
+    if (mark) await openFresh(mark);
+  })());
 });
 
 function keep(url) {
@@ -67,15 +130,12 @@ self.addEventListener("fetch", (event) => {
       const cache = await caches.open(SHELL);
       if (navigation) {
         const saved = await cache.match("/index.html");
-        const refresh = siteHtml().then(async (html) => {
-          if (!html) return;
-          const next = (html.match(/name="zikr-build"[^>]*content="([^"]+)"/) || html.match(/content="([^"]+)"[^>]*name="zikr-build"/) || [])[1] || "";
-          const prev = saved ? ((await saved.clone().text()).match(/name="zikr-build"[^>]*content="([^"]+)"/) || [])[1] || "" : "";
-          if (!next || next === prev) return;
-          await cache.put("/index.html", page(html));
-          const open = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-          for (const client of open) client.postMessage({ type: "zikr-reload", build: next });
-        }).catch(() => undefined);
+        const refresh = siteHtml()
+          .then(async (html) => {
+            const mark = html ? await storeFresh(html) : "";
+            if (mark) await openFresh(mark);
+          })
+          .catch(() => undefined);
         try {
           event.waitUntil(refresh);
         } catch {
@@ -92,7 +152,7 @@ self.addEventListener("fetch", (event) => {
       const hit = await cache.match(url.pathname);
       if (hit) return hit;
       try {
-        const res = await fetch(url.pathname, { cache: "no-store", signal: AbortSignal.timeout(8000) });
+        const res = await fetch(url.pathname, { cache: "no-store", signal: AbortSignal.timeout(20000) });
         if (!res.ok) return hit || new Response("", { status: 504 });
         await cache.put(url.pathname, res.clone());
         return res;
