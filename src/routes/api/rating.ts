@@ -16,6 +16,8 @@ function realId(id: string) {
   return FOLDED[id] ?? id;
 }
 
+const GONE = "39309698";
+
 export const Route = createFileRoute("/api/rating")({
   server: {
     handlers: {
@@ -29,6 +31,8 @@ export const Route = createFileRoute("/api/rating")({
         try {
           const sql = await getSql();
           await addCloneTapsOnce(sql);
+          await sql`delete from zikr_world where public_id = ${GONE}`;
+          await sql`delete from zikr_presence where public_id = ${GONE}`;
           const publicId = realId(rawId);
           const [rows, self, live, daily, together, online, dailyAhead, worldAhead] = await Promise.all([
             sql<{ public_id: string; total: number; concealed: boolean | null; day_key: string | null; day_total: number | null }>`
@@ -36,7 +40,7 @@ export const Route = createFileRoute("/api/rating")({
                 p.concealed, p.day_key, p.day_total
               from zikr_world w
               left join zikr_presence p on p.public_id = w.public_id
-              where w.total > 0
+              where w.total > 0 and w.public_id <> ${GONE}
               order by w.total desc, w.public_id asc
               limit 100`,
             sql<{ total: number; concealed: boolean | null; day_key: string | null; day_total: number | null }>`
@@ -111,6 +115,7 @@ export const Route = createFileRoute("/api/rating")({
         const dayTotal = typeof body.dayTotal === "number" ? Math.floor(body.dayTotal) : -1;
         const xp = typeof body.xp === "number" ? Math.floor(body.xp) : -1;
         const country = typeof body.country === "string" ? body.country.slice(0, 4) : "";
+        if (publicId === GONE) return Response.json({ ok: true }, { headers: noStore });
         if (!/^\d{8}$/.test(publicId) || !/^\d{4}-\d{2}-\d{2}$/.test(dayKey) || total < 0 || dayTotal < 0 || xp < 0) {
           return Response.json({ ok: false }, { status: 400, headers: noStore });
         }
