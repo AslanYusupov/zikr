@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { beatPresence, loadSave, publishWorld, pullDevice, pushDevice, pushSave, savedScore, type CloudMeta, type DeviceSave } from "@/lib/zikr/api";
+import { loadSave, pullDevice, pushDevice, pushSave, savedScore, type CloudMeta, type DeviceSave } from "@/lib/zikr/api";
 import { todayKey } from "@/lib/zikr/format";
 import { bindTapPulse, currentTapSince } from "@/lib/zikr/live";
 import { mergeState, snapshot, useZikr } from "@/lib/zikr/store";
@@ -356,45 +356,31 @@ export function useWorldSync(hydrated: boolean) {
         return;
       }
       const beatOnly = !changed;
-      const jobs: Promise<unknown>[] = [];
-      if (!listed) {
-        if (!beatOnly) jobs.push(publishWorld({ data: { publicId, total: state.total, listed: false } }));
-        jobs.push(
-          beatPresence({
-            data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0, listed: false },
-          }),
-        );
-      } else if (beatOnly) {
-        jobs.push(
-          beatPresence({
-            data: { publicId, country: state.country, dayKey: day, dayTotal, xp: state.xp, total: state.total, tapSince: 0 },
-          }),
-        );
-      } else {
-        jobs.push(publishWorld({ data: { publicId, total: state.total, ...(invitedBy && state.total > 0 ? { invitedBy } : {}) } }));
-        jobs.push(
-          beatPresence({
-            data: {
-              publicId,
-              country: state.country,
-              dayKey: day,
-              dayTotal,
-              xp: state.xp,
-              total: state.total,
-              tapSince: currentTapSince(),
-              ...(replaceDay ? { replaceDay: true } : {}),
-            },
-          }).then(() => {
-            if (replaceDay) useZikr.getState().clearDayCut();
-          }),
-        );
-      }
+      const job = fetch("/api/rating", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify({
+          publicId,
+          total: state.total,
+          dayKey: day,
+          dayTotal,
+          xp: state.xp,
+          country: state.country,
+          listed,
+          replaceDay: Boolean(replaceDay && !beatOnly),
+          tapSince: listed && !beatOnly ? currentTapSince() : 0,
+          ...(invitedBy && listed && state.total > 0 && !beatOnly ? { invitedBy } : {}),
+        }),
+      }).then(async (res) => {
+        const body = (await res.json().catch(() => null)) as { ok?: boolean } | null;
+        if (!res.ok || !body?.ok) throw new Error("rating");
+        if (replaceDay && !beatOnly) useZikr.getState().clearDayCut();
+      });
       lastBeat = now;
       if (changed) lastNumbers = now;
-      void Promise.all(jobs)
-        .then((results) => {
-          const saved = results.every((item) => !item || typeof item !== "object" || !("ok" in item) || (item as { ok?: boolean }).ok !== false);
-          if (!saved) throw new Error("rating");
+      void job
+        .then(() => {
           if (!changed) return;
           sentSig = sig;
           window.dispatchEvent(new Event("zikr-live"));

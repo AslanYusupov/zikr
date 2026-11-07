@@ -122,6 +122,16 @@ async function aliasOf(sql: Awaited<ReturnType<typeof getSql>>, id: string): Pro
   return first;
 }
 
+let ratingColumnsReady = false;
+
+async function ensureRatingColumns(sql: Awaited<ReturnType<typeof getSql>>) {
+  if (ratingColumnsReady) return;
+  await sql.query(`alter table zikr_presence add column if not exists concealed boolean not null default false`);
+  await sql.query(`alter table zikr_presence add column if not exists tap_since timestamptz`);
+  await sql.query(`alter table zikr_presence add column if not exists last_tap_at timestamptz`);
+  ratingColumnsReady = true;
+}
+
 /** The same phone or account keeps its first number. The extra number is not a second person. */
 async function absorbAlias(sql: Awaited<ReturnType<typeof getSql>>, keepRaw: string, dropRaw: string) {
   const keep = await aliasOf(sql, keepRaw);
@@ -753,6 +763,7 @@ export const publishWorld = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const stored = data.total;
@@ -815,6 +826,7 @@ export const worldBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const day = data.dayKey ?? "";
       const rows = await sql<{ public_id: string; total: number; concealed: boolean; day_key: string; day_total: number }>`
@@ -869,6 +881,7 @@ export const beatPresence = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const tapping = data.tapSince > 0 ? 1 : 0;
@@ -898,14 +911,7 @@ export const beatPresence = createServerFn({ method: "POST" })
         seen_at = now(),
         tap_since = case when ${tapping} = 1 then to_timestamp(${tapSec}) else zikr_presence.tap_since end,
         last_tap_at = case when ${tapping} = 1 then now() else zikr_presence.last_tap_at end,
-        concealed = excluded.concealed
-      where zikr_presence.total < excluded.total
-         or zikr_presence.xp < excluded.xp
-         or zikr_presence.day_key is distinct from excluded.day_key
-         or zikr_presence.day_total < excluded.day_total
-         or zikr_presence.seen_at < now() - interval '45 seconds'
-         or zikr_presence.concealed is distinct from excluded.concealed
-         or ${replaceDay} = 1`;
+        concealed = excluded.concealed`;
       return { ok: true as const };
     } catch (err) {
       console.error("[zikr] presence", err);
@@ -918,6 +924,7 @@ export const presenceBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
+      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const n = await openNow(sql, publicId);
     const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`

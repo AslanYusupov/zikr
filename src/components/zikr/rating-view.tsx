@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, Moon } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
-import { invitees, presenceBoard, worldBoard, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
+import { invitees, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
 import { saveOnline } from "@/lib/zikr/online-count";
 import { InviteButtons } from "./settings-view";
@@ -252,14 +252,10 @@ export function RatingView() {
         return;
       }
       flying = true;
-      let pending = 2;
-      const finish = () => {
-        pending -= 1;
-        if (pending > 0) return;
+      const finish = (down: boolean) => {
         flying = false;
-        const down = miss.current.world && miss.current.live;
         setVpn(down);
-        setHeld(miss.current.world && Boolean(bag.current));
+        setHeld(down && Boolean(bag.current));
         if (again && !stop) {
           again = false;
           window.setTimeout(() => { if (!stop) load(); }, 400);
@@ -267,44 +263,60 @@ export function RatingView() {
         }
         if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2000);
       };
-      const mark = (part: "world" | "live", ok: boolean) => {
-        miss.current[part] = !ok;
-      };
-      until(worldBoard({ data: { publicId, dayKey: day } }), 12000)
+      until(
+        fetch(`/api/rating?id=${publicId}&day=${day}`, { cache: "no-store" }).then(async (res) => {
+          const body = (await res.json().catch(() => null)) as {
+            ok?: boolean;
+            rows?: WorldRow[];
+            mine?: { rank?: number | null } | null;
+            live?: PresenceRow[];
+            daily?: PresenceRow[];
+            remembering?: number;
+            allTaps?: number;
+            dailyRank?: number | null;
+          } | null;
+          if (!res.ok || !body?.ok) throw new Error("rating");
+          return body;
+        }),
+        12000,
+      )
         .then((res) => {
           if (stop) return;
           const rows = shown(res.rows);
           const rank = HIDDEN_RATING_IDS.has(publicId) ? null : (res.mine?.rank ?? null);
+          const liveRows = shown(res.live);
+          const dailyRows = shown(res.daily);
           setWorld(rows);
           setWorldRank(rank);
-          remember({ world: rows, worldRank: rank }, true);
-          mark("world", true);
+          setOnline(typeof res.remembering === "number" ? res.remembering : null);
+          if (typeof res.remembering === "number") saveOnline(res.remembering);
+          setAllTaps(typeof res.allTaps === "number" ? res.allTaps : null);
+          setLive(liveRows);
+          setDaily(dailyRows);
+          setDailyRank(typeof res.dailyRank === "number" ? res.dailyRank : null);
+          remember(
+            {
+              world: rows,
+              worldRank: rank,
+              online: typeof res.remembering === "number" ? res.remembering : null,
+              allTaps: typeof res.allTaps === "number" ? res.allTaps : null,
+              live: liveRows,
+              daily: dailyRows,
+              dailyRank: typeof res.dailyRank === "number" ? res.dailyRank : null,
+            },
+            true,
+          );
+          miss.current.world = false;
+          miss.current.live = false;
+          finish(false);
         })
         .catch(() => {
           if (stop) return;
           if (!bag.current) setWorldError(true);
-          mark("world", false);
-        })
-        .finally(finish);
-      until(presenceBoard({ data: { publicId, dayKey: day } }), 12000)
-        .then((res) => {
-          if (stop) return;
-          const liveRows = shown(res.live);
-          const dailyRows = shown(res.daily);
-          setOnline(res.remembering);
-          saveOnline(res.remembering);
-          setAllTaps(res.allTaps);
-          setLive(liveRows);
-          setDaily(dailyRows);
-          setDailyRank(res.dailyRank);
-          remember({ online: res.remembering, allTaps: res.allTaps, live: liveRows, daily: dailyRows, dailyRank: res.dailyRank }, true);
-          mark("live", true);
-        })
-        .catch(() => {
-          if (stop) return;
-          mark("live", false);
-        })
-        .finally(finish);
+          miss.current.world = true;
+          miss.current.live = true;
+          finish(true);
+        });
     };
     load();
     const onLive = () => load();
