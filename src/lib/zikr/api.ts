@@ -95,7 +95,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
 const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262", "79475757"];
 /** A second number made on the same account. Counts stay on the first number. */
-const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946" };
+const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946", "82261249": "52812946" };
 
 function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;
@@ -457,8 +457,70 @@ async function creditFatherToday(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+/** The extra number's taps are added once to the father's number, then the copy is removed. */
+export async function addCloneTapsOnce(sql: Awaited<ReturnType<typeof getSql>>) {
+  const clone = "82261249";
+  const real = "52812946";
+  try {
+    await sql.query(`create table if not exists zikr_fix (id text primary key, done_at timestamptz not null default now())`);
+    await aliasTable(sql);
+    await sql.query(
+      `with claim as (
+         insert into zikr_fix (id) values ($1) on conflict do nothing returning id
+       ), world_add as (
+         update zikr_world w
+         set total = w.total + coalesce((select c.total from zikr_world c where c.public_id = $2), 0),
+             updated_at = now()
+         where w.public_id = $3 and exists (select 1 from claim)
+         returning w.public_id
+       ), presence_add as (
+         update zikr_presence p
+         set total = p.total + coalesce((select c.total from zikr_presence c where c.public_id = $2), 0),
+             xp = greatest(p.xp, coalesce((select c.xp from zikr_presence c where c.public_id = $2), 0)),
+             day_total = case
+               when p.day_key = (select c.day_key from zikr_presence c where c.public_id = $2)
+                 then p.day_total + coalesce((select c.day_total from zikr_presence c where c.public_id = $2), 0)
+               when coalesce((select c.day_key from zikr_presence c where c.public_id = $2), '') <> ''
+                 and (p.day_key is null or p.day_key < (select c.day_key from zikr_presence c where c.public_id = $2))
+                 then coalesce((select c.day_total from zikr_presence c where c.public_id = $2), 0)
+               else p.day_total
+             end,
+             day_key = case
+               when coalesce((select c.day_key from zikr_presence c where c.public_id = $2), '') <> ''
+                 and (p.day_key is null or p.day_key < (select c.day_key from zikr_presence c where c.public_id = $2))
+                 then (select c.day_key from zikr_presence c where c.public_id = $2)
+               else p.day_key
+             end,
+             seen_at = now()
+         where p.public_id = $3 and exists (select 1 from claim)
+         returning p.public_id
+       ), presence_insert as (
+         insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at, concealed)
+         select $3, country, day_key, day_total, xp, total, now(), false
+         from zikr_presence
+         where public_id = $2
+           and exists (select 1 from claim)
+           and not exists (select 1 from zikr_presence where public_id = $3)
+         returning public_id
+       ), drop_world as (
+         delete from zikr_world where public_id = $2 and exists (select 1 from claim) returning public_id
+       )
+       delete from zikr_presence where public_id = $2 and exists (select 1 from claim)`,
+      ["add-82261249-to-52812946", clone, real],
+    );
+    await sql.query(
+      `insert into zikr_alias (alias, public_id) values ($1, $2)
+       on conflict (alias) do update set public_id = excluded.public_id`,
+      [clone, real],
+    );
+  } catch (err) {
+    console.error("[zikr] add clone taps", err);
+  }
+}
+
 async function dropRemovedRating(sql: Awaited<ReturnType<typeof getSql>>) {
   await creditFatherToday(sql);
+  await addCloneTapsOnce(sql);
   await foldCloneNumbers(sql);
   await keepFatherScore(sql);
   const steps = [

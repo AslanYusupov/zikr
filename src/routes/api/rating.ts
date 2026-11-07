@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getSql } from "@/lib/db";
+import { addCloneTapsOnce } from "@/lib/zikr/api";
 
 const noStore = { "cache-control": "no-store" };
 const FOLDED: Record<string, string> = {
@@ -8,6 +9,7 @@ const FOLDED: Record<string, string> = {
   "25574036": "52812946",
   "50170262": "52812946",
   "79475757": "52812946",
+  "82261249": "52812946",
 };
 
 function realId(id: string) {
@@ -26,6 +28,7 @@ export const Route = createFileRoute("/api/rating")({
         }
         try {
           const sql = await getSql();
+          await addCloneTapsOnce(sql);
           const publicId = realId(rawId);
           const [rows, self, live, daily, together, online, dailyAhead, worldAhead] = await Promise.all([
             sql<{ public_id: string; total: number; concealed: boolean | null; day_key: string | null; day_total: number | null }>`
