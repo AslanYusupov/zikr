@@ -128,9 +128,9 @@ export function Shell() {
         if (!data || data.type !== "zikr-reload" || audioBusy()) return;
         const mark = String(data.build || "");
         const here = document.querySelector('meta[name="zikr-build"]')?.getAttribute("content") || "";
-        if (!mark || here === mark || new URL(location.href).searchParams.get("v") === mark) return;
+        if (!mark || here === mark || new URL(location.href).searchParams.get("open") === mark) return;
         const next = new URL(location.href);
-        next.searchParams.set("v", mark);
+        next.searchParams.set("open", mark);
         location.replace(next.href);
       });
       void pullUpdate();

@@ -1,5 +1,5 @@
-import { fetchNewest, fetchShellFile, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261107-1";
+import { fetchNewest, fetchShellHtml } from "./mirror";
+export const APP_BUILD = "20261107-2";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -76,37 +76,19 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
 }
 
 export async function pullUpdate(): Promise<void> {
-  if (typeof window === "undefined" || !("caches" in window)) return;
+  if (typeof window === "undefined") return;
   const found = await fetchNewest();
   if (!found) return;
   const mark = buildStamp(found.html);
-  if (!buildIsNewer(mark, pageBuild()) || audioBusy()) return;
-  try {
-    if (sessionStorage.getItem(TRIED_KEY) === mark) return;
-  } catch {
-    /* private mode still tries once */
-  }
-  const assets = [...new Set([...found.html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-  if (!assets.length) return;
+  if (!mark || !buildIsNewer(mark, pageBuild()) || audioBusy()) return;
+  if (new URL(window.location.href).searchParams.get("open") === mark) return;
   try {
     const cache = await caches.open("zikr-ok-v1");
-    for (const src of assets) {
-      const url = found.base ? `${found.base}${src}?v=${Date.now()}` : `${src}?warm=${Date.now()}`;
-      const file = await fetch(url, { cache: "no-store" }).catch(() => null);
-      const good = file && file.ok ? file : await fetchShellFile(src);
-      if (!good) return;
-      await cache.put(src, good.clone());
-    }
     await cache.put("/index.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   } catch {
-    return;
-  }
-  try {
-    sessionStorage.setItem(TRIED_KEY, mark);
-  } catch {
-    /* the reload still happens */
+    /* opening the site directly is enough */
   }
   const next = new URL(window.location.href);
-  next.searchParams.set("v", mark);
+  next.searchParams.set("open", mark);
   window.location.replace(next.href);
 }
