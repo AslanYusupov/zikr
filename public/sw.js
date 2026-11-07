@@ -57,7 +57,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
-  if (url.pathname === "/sw.js") return;
+  if (url.pathname === "/sw.js" || url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/")) return;
   if (url.searchParams.has("open") || url.searchParams.has("warm") || url.searchParams.has("probe")) return;
   const navigation = req.mode === "navigate" || req.destination === "document";
   if (!keep(url) && !navigation) return;
@@ -67,6 +67,20 @@ self.addEventListener("fetch", (event) => {
       const cache = await caches.open(SHELL);
       if (navigation) {
         const saved = await cache.match("/index.html");
+        const refresh = siteHtml().then(async (html) => {
+          if (!html) return;
+          const next = (html.match(/name="zikr-build"[^>]*content="([^"]+)"/) || html.match(/content="([^"]+)"[^>]*name="zikr-build"/) || [])[1] || "";
+          const prev = saved ? ((await saved.clone().text()).match(/name="zikr-build"[^>]*content="([^"]+)"/) || [])[1] || "" : "";
+          if (!next || next === prev) return;
+          await cache.put("/index.html", page(html));
+          const open = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+          for (const client of open) client.postMessage({ type: "zikr-reload", build: next });
+        }).catch(() => undefined);
+        try {
+          event.waitUntil(refresh);
+        } catch {
+          /* the saved page still opens */
+        }
         if (saved) return saved;
         const html = await siteHtml();
         if (html) {

@@ -109,22 +109,6 @@ function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
   return next.map((row) => (row.hidden ? row : open[openAt++]));
 }
 
-function until<T>(work: Promise<T>, ms = 8000): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timer = window.setTimeout(() => reject(new Error("slow")), ms);
-    work.then(
-      (value) => {
-        window.clearTimeout(timer);
-        resolve(value);
-      },
-      (err) => {
-        window.clearTimeout(timer);
-        reject(err);
-      },
-    );
-  });
-}
-
 function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean }>(rows: T[] | null | undefined): T[] {
   return (rows ?? []).filter((row) => {
     if (HIDDEN_RATING_IDS.has(row.id)) return false;
@@ -252,7 +236,10 @@ export function RatingView() {
         return;
       }
       flying = true;
+      let settled = false;
       const finish = (down: boolean) => {
+        if (settled) return;
+        settled = true;
         flying = false;
         setVpn(down);
         setHeld(down && Boolean(bag.current));
@@ -263,8 +250,13 @@ export function RatingView() {
         }
         if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2000);
       };
-      until(
-        fetch(`/api/rating?id=${publicId}&day=${day}`, { cache: "no-store" }).then(async (res) => {
+      const slow = window.setTimeout(() => {
+        if (settled || stop) return;
+        flying = false;
+        load();
+      }, 8000);
+      fetch(`/api/rating?id=${publicId}&day=${day}&open=${Date.now()}`, { cache: "no-store" })
+        .then(async (res) => {
           const body = (await res.json().catch(() => null)) as {
             ok?: boolean;
             rows?: WorldRow[];
@@ -275,12 +267,11 @@ export function RatingView() {
             allTaps?: number;
             dailyRank?: number | null;
           } | null;
-          if (!res.ok || !body?.ok) throw new Error("rating");
+          if (!res.ok || !body?.ok || !Array.isArray(body.rows)) throw new Error("rating");
           return body;
-        }),
-        12000,
-      )
+        })
         .then((res) => {
+          window.clearTimeout(slow);
           if (stop) return;
           const rows = shown(res.rows);
           const rank = HIDDEN_RATING_IDS.has(publicId) ? null : (res.mine?.rank ?? null);
@@ -294,6 +285,7 @@ export function RatingView() {
           setLive(liveRows);
           setDaily(dailyRows);
           setDailyRank(typeof res.dailyRank === "number" ? res.dailyRank : null);
+          setWorldError(false);
           remember(
             {
               world: rows,
@@ -311,6 +303,7 @@ export function RatingView() {
           finish(false);
         })
         .catch(() => {
+          window.clearTimeout(slow);
           if (stop) return;
           if (!bag.current) setWorldError(true);
           miss.current.world = true;

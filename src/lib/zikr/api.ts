@@ -122,16 +122,6 @@ async function aliasOf(sql: Awaited<ReturnType<typeof getSql>>, id: string): Pro
   return first;
 }
 
-let ratingColumnsReady = false;
-
-async function ensureRatingColumns(sql: Awaited<ReturnType<typeof getSql>>) {
-  if (ratingColumnsReady) return;
-  await sql.query(`alter table zikr_presence add column if not exists concealed boolean not null default false`);
-  await sql.query(`alter table zikr_presence add column if not exists tap_since timestamptz`);
-  await sql.query(`alter table zikr_presence add column if not exists last_tap_at timestamptz`);
-  ratingColumnsReady = true;
-}
-
 /** The same phone or account keeps its first number. The extra number is not a second person. */
 async function absorbAlias(sql: Awaited<ReturnType<typeof getSql>>, keepRaw: string, dropRaw: string) {
   const keep = await aliasOf(sql, keepRaw);
@@ -763,7 +753,6 @@ export const publishWorld = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const stored = data.total;
@@ -826,7 +815,6 @@ export const worldBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const day = data.dayKey ?? "";
       const rows = await sql<{ public_id: string; total: number; concealed: boolean; day_key: string; day_total: number }>`
@@ -881,7 +869,6 @@ export const beatPresence = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       if (DROPPED_RATING_IDS.includes(publicId)) return { ok: true as const };
       const tapping = data.tapSince > 0 ? 1 : 0;
@@ -924,7 +911,6 @@ export const presenceBoard = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const sql = await getSql();
-      await ensureRatingColumns(sql);
       const publicId = await aliasOf(sql, data.publicId);
       const n = await openNow(sql, publicId);
     const live = await sql<{ public_id: string; country: string; day_total: number; concealed: boolean }>`

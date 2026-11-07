@@ -356,10 +356,11 @@ export function useWorldSync(hydrated: boolean) {
         return;
       }
       const beatOnly = !changed;
-      const job = fetch("/api/rating", {
+      const job = fetch(`/api/rating?open=${Date.now()}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         cache: "no-store",
+        signal: AbortSignal.timeout(20000),
         body: JSON.stringify({
           publicId,
           total: state.total,
