@@ -145,8 +145,11 @@ self.addEventListener("fetch", (event) => {
           /* the saved page still opens */
         }
         if (saved) {
-          const text = await saved.text();
-          return text.includes("/__grok/") ? page(text) : saved;
+          try {
+            return page(await saved.clone().text());
+          } catch {
+            return saved;
+          }
         }
         const html = await siteHtml();
         if (html) {
