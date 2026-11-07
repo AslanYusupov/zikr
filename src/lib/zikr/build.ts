@@ -1,5 +1,5 @@
 import { fetchNewest, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261107-2";
+export const APP_BUILD = "20261107-3";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -76,19 +76,26 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
 }
 
 export async function pullUpdate(): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !("caches" in window)) return;
   const found = await fetchNewest();
   if (!found) return;
   const mark = buildStamp(found.html);
   if (!mark || !buildIsNewer(mark, pageBuild()) || audioBusy()) return;
-  if (new URL(window.location.href).searchParams.get("open") === mark) return;
+  const assets = [...new Set([...found.html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+  if (!assets.length) return;
   try {
     const cache = await caches.open("zikr-ok-v1");
+    for (const src of assets) {
+      if (await cache.match(src)) continue;
+      const file = await fetch(`${src}?open=${Date.now()}`, { cache: "no-store" });
+      if (!file.ok) return;
+      await cache.put(src, file.clone());
+    }
     await cache.put("/index.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
   } catch {
-    /* opening the site directly is enough */
+    return;
   }
   const next = new URL(window.location.href);
-  next.searchParams.set("open", mark);
+  next.searchParams.set("v", mark);
   window.location.replace(next.href);
 }

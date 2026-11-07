@@ -31,6 +31,9 @@ export function deployPoolConfig(connectionString) {
     password: parsed.password,
     database,
     ssl: { rejectUnauthorized: false },
-    connectionTimeoutMillis: 15000,
+    max: 1,
+    idleTimeoutMillis: 8000,
+    connectionTimeoutMillis: 8000,
+    allowExitOnIdle: true,
   };
 }
