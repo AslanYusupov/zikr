@@ -244,8 +244,13 @@ export function RatingView() {
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
     let flying = false;
+    let again = false;
     const load = (retry = false) => {
-      if (document.hidden || flying) return;
+      if (document.hidden) return;
+      if (flying) {
+        again = true;
+        return;
+      }
       flying = true;
       let pending = 2;
       const finish = () => {
@@ -255,7 +260,12 @@ export function RatingView() {
         const down = miss.current.world && miss.current.live;
         setVpn(down);
         setHeld(miss.current.world && Boolean(bag.current));
-        if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2500);
+        if (again && !stop) {
+          again = false;
+          window.setTimeout(() => { if (!stop) load(); }, 400);
+          return;
+        }
+        if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2000);
       };
       const mark = (part: "world" | "live", ok: boolean) => {
         miss.current[part] = !ok;
@@ -301,7 +311,7 @@ export function RatingView() {
     const onWake = () => {
       if (document.visibilityState === "visible") load();
     };
-    const id = window.setInterval(() => load(), 8_000);
+    const id = window.setInterval(() => load(), 5_000);
     window.addEventListener("zikr-live", onLive);
     window.addEventListener("online", onWake);
     document.addEventListener("visibilitychange", onWake);

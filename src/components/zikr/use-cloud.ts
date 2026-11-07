@@ -392,7 +392,9 @@ export function useWorldSync(hydrated: boolean) {
       lastBeat = now;
       if (changed) lastNumbers = now;
       void Promise.all(jobs)
-        .then(() => {
+        .then((results) => {
+          const saved = results.every((item) => !item || typeof item !== "object" || !("ok" in item) || (item as { ok?: boolean }).ok !== false);
+          if (!saved) throw new Error("rating");
           if (!changed) return;
           sentSig = sig;
           window.dispatchEvent(new Event("zikr-live"));

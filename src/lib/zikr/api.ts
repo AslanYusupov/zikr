@@ -787,8 +787,6 @@ export const publishWorld = createServerFn({ method: "POST" })
     } catch (err) {
       console.error("[zikr] world", err);
       return { ok: false as const };
-    } finally {
-      void getSql().then((sql) => keepOldRating(sql)).catch(() => undefined);
     }
   });
 
@@ -912,8 +910,6 @@ export const beatPresence = createServerFn({ method: "POST" })
     } catch (err) {
       console.error("[zikr] presence", err);
       return { ok: false as const };
-    } finally {
-      void getSql().then((sql) => keepOldRating(sql)).catch(() => undefined);
     }
   });
 
