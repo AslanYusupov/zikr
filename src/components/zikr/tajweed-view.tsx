@@ -90,8 +90,10 @@ function Measure({ say }: { say: (ru: string, en: string, ar: string, id: string
 function speak(ar: string) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
   const line = new SpeechSynthesisUtterance(ar);
-  line.lang = "ar-SA";
-  line.rate = 0.75;
+  const voice = window.speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith("ar"));
+  if (voice) line.voice = voice;
+  line.lang = voice?.lang || "ar-SA";
+  line.rate = 0.65;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(line);
 }
