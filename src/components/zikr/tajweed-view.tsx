@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { TAJWEED_COURSE, TAJWEED_FLAT, type CourseLesson } from "@/lib/zikr/tajweed-course";
+import { TAJWEED_PATH, TAJWEED_PATH_FLAT } from "@/lib/zikr/tajweed-path";
+import { type CourseLesson } from "@/lib/zikr/tajweed-course";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 
@@ -86,6 +87,15 @@ function Measure({ say }: { say: (ru: string, en: string, ar: string, id: string
   );
 }
 
+function speak(ar: string) {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  const line = new SpeechSynthesisUtterance(ar);
+  line.lang = "ar-SA";
+  line.rate = 0.75;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(line);
+}
+
 const TONE: Record<CourseLesson["tone"], string> = {
   madd: "taj-madd",
   ghunnah: "taj-ghunnah",
@@ -97,8 +107,8 @@ const TONE: Record<CourseLesson["tone"], string> = {
 export function TajweedView() {
   const lang = useZikr((s) => s.lang);
   const [passed, setPassed] = useState<string[]>(readPassed);
-  const [mod, setMod] = useState(TAJWEED_COURSE[0].id);
-  const [open, setOpen] = useState<string | null>(TAJWEED_COURSE[0].lessons[0].id);
+  const [mod, setMod] = useState(TAJWEED_PATH[0].id);
+  const [open, setOpen] = useState<string | null>(TAJWEED_PATH[0].lessons[0].id);
   const [picks, setPicks] = useState<Record<string, number>>({});
   const [result, setResult] = useState<Record<string, "ok" | "bad">>({});
   const [hint, setHint] = useState("");
@@ -108,9 +118,12 @@ export function TajweedView() {
   const say = (ru: string, en: string, ar: string, id: string, tr: string, ur: string) =>
     lang === "ru" ? ru : lang === "ar" ? ar : lang === "id" ? id : lang === "tr" ? tr : lang === "ur" ? ur : en;
 
-  const current = TAJWEED_COURSE.find((item) => item.id === mod) ?? TAJWEED_COURSE[0];
-  const done = passed.length;
-  const total = TAJWEED_FLAT.length;
+  const current = TAJWEED_PATH.find((item) => item.id === mod) ?? TAJWEED_PATH[0];
+  const pathIds = TAJWEED_PATH_FLAT.map((lesson) => lesson.id);
+  const done = pathIds.filter((id) => passed.includes(id)).length;
+  const total = pathIds.length;
+  const percent = total ? Math.round((done / total) * 100) : 0;
+  const unlocked = (index: number) => index === 0 || TAJWEED_PATH[index - 1].lessons.every((lesson) => passed.includes(lesson.id));
 
   useEffect(() => {
     if (skipScroll.current) {
@@ -142,10 +155,10 @@ export function TajweedView() {
   }
 
   function goNext(lesson: CourseLesson) {
-    const index = TAJWEED_FLAT.findIndex((item) => item.id === lesson.id);
-    const next = TAJWEED_FLAT[index + 1];
+    const index = TAJWEED_PATH_FLAT.findIndex((item) => item.id === lesson.id);
+    const next = TAJWEED_PATH_FLAT[index + 1];
     if (!next) return;
-    const host = TAJWEED_COURSE.find((item) => item.lessons.some((row) => row.id === next.id));
+    const host = TAJWEED_PATH.find((item) => item.lessons.some((row) => row.id === next.id));
     if (host) setMod(host.id);
     setOpen(next.id);
   }
@@ -154,35 +167,66 @@ export function TajweedView() {
     <div className="quran-scroll">
       <p className="text-xs leading-relaxed text-muted">
         {say(
-          "Хафс от Асыма, Мусхаф Медины. Любой урок можно открыть. Пример скажи вслух.",
-          "Hafs from Asim, the Madinah mushaf. Any lesson can be opened. Say the example aloud.",
-          "حفص عن عاصم، مصحف المدينة. أي درس يُفتح. انطق المثال.",
-          "Hafs dari Asim, mushaf Madinah. Semua pelajaran boleh dibuka. Ucapkan contohnya.",
-          "Hafs, Asım'dan, Medine mushafı. Her ders açılır. Örneği sesli söyle.",
-          "حفص عن عاصم، مصحف مدینہ۔ کوئی بھی سبق کھل سکتا ہے۔ مثال زبان سے کہیں۔",
+          "Хафс от Асыма, Мусхаф Медины. С нуля до чтения. Следующий модуль открывается, когда пройден тест предыдущего.",
+          "Hafs from Asim, the Madinah mushaf. From the start to reading. The next module opens when the previous test is passed.",
+          "حفص عن عاصم، مصحف المدينة. من البداية إلى القراءة. يُفتح الباب التالي بعد اختبار السابق.",
+          "Hafs dari Asim, mushaf Madinah. Dari awal hingga membaca. Modul berikutnya terbuka selepas ujian sebelumnya lulus.",
+          "Hafs, Asım'dan, Medine mushafı. Sıfırdan okumaya. Sonraki bölüm, öncekinin testi geçilince açılır.",
+          "حفص عن عاصم، مصحف مدینہ۔ شروع سے پڑھنے تک۔ اگلا باب پچھلے امتحان کے بعد کھلتا ہے۔",
         )}
       </p>
       <div className="taj-bar" aria-hidden>
-        <span style={{ width: `${Math.round((done / total) * 100)}%` }} />
+        <span style={{ width: `${percent}%` }} />
       </div>
-      <p className="mt-1 text-xs font-bold tabular-nums text-gold">{done} / {total}</p>
+      <p className="mt-1 text-sm font-extrabold tabular-nums text-gold">{percent}% · {done}/{total}</p>
+      <div className="taj-badges">
+        {TAJWEED_PATH.map((item, index) => {
+          const earned = item.lessons.every((lesson) => passed.includes(lesson.id));
+          return (
+            <span key={item.id} className={cn("taj-badge", earned && "on")}>
+              {earned ? item.badge[lang] : `${index + 1}`}
+            </span>
+          );
+        })}
+      </div>
       <Measure say={say} />
       <div className="taj-mods">
-        {TAJWEED_COURSE.map((item, index) => {
+        {TAJWEED_PATH.map((item, index) => {
           const got = item.lessons.filter((lesson) => passed.includes(lesson.id)).length;
+          const openMod = unlocked(index);
           return (
             <button
               key={item.id}
               type="button"
-              className={cn("taj-mod", mod === item.id && "on")}
-              onClick={() => { setMod(item.id); setOpen(item.lessons[0]?.id ?? null); setHint(""); }}
+              className={cn("taj-mod", mod === item.id && "on", !openMod && "lock")}
+              onClick={() => {
+                if (!openMod) {
+                  setHint("lock");
+                  return;
+                }
+                setMod(item.id);
+                setOpen(item.lessons[0]?.id ?? null);
+                setHint("");
+              }}
             >
-              {index + 1}
+              {openMod ? index + 1 : "·"}
               <span>{got}/{item.lessons.length}</span>
             </button>
           );
         })}
       </div>
+      {hint === "lock" ? (
+        <p className="mt-2 text-sm text-muted">
+          {say(
+            "Сначала пройди тест предыдущего модуля.",
+            "Pass the previous module first.",
+            "أتمّ اختبار الباب السابق أولًا.",
+            "Luluskan modul sebelumnya dahulu.",
+            "Önce önceki bölümün testini geç.",
+            "پہلے پچھلے باب کا امتحان پاس کریں۔",
+          )}
+        </p>
+      ) : null}
       <h2 className="mt-3 text-sm font-extrabold text-fg">{current.title[lang]}</h2>
       <div className="mt-2 grid gap-1.5">
         {current.lessons.map((lesson) => {
@@ -191,7 +235,7 @@ export function TajweedView() {
           return (
             <article key={lesson.id} className="taj-lesson" ref={on ? card : undefined}>
               <button type="button" className="surah-row" onClick={() => setOpen(on ? null : lesson.id)}>
-                <span className={cn("surah-no", TONE[lesson.tone])}>{passed.includes(lesson.id) ? "✓" : TAJWEED_FLAT.findIndex((item) => item.id === lesson.id) + 1}</span>
+                <span className={cn("surah-no", TONE[lesson.tone])}>{passed.includes(lesson.id) ? "✓" : TAJWEED_PATH_FLAT.findIndex((item) => item.id === lesson.id) + 1}</span>
                 <span className="min-w-0 flex-1 text-start text-sm leading-snug font-bold text-fg">{lesson.title[lang]}</span>
               </button>
               {on ? (
@@ -207,6 +251,9 @@ export function TajweedView() {
                   {lesson.examples.map((row) => (
                     <div key={row.ar + row.where} className="taj-row">
                       <p className={cn("taj-ar", TONE[lesson.tone])} dir="rtl" lang="ar">{row.ar}</p>
+                      <button type="button" className="taj-play" onClick={() => speak(row.ar)}>
+                        {say("Слушать", "Listen", "استمع", "Dengar", "Dinle", "سنیں")}
+                      </button>
                       {lang === "ru" ? <p className="taj-read">{row.read}</p> : null}
                       {lang !== "ru" && lang !== "ar" ? <p className="taj-read">{row.lat}</p> : null}
                       <p className="taj-gloss">{/^\d+:\d+/.test(row.where) ? `${say("сура", "surah", "سورة", "surah", "sure", "سورہ")} ${row.where.replace(":", ", " + say("аят", "ayah", "آية", "ayat", "ayet", "آیت") + " ")}` : say(row.where === "мера" ? "мера" : "знак", row.where === "мера" ? "a count" : "a sign", row.where === "мера" ? "مقدار" : "علامة", row.where === "мера" ? "kadar" : "tanda", row.where === "мера" ? "miktar" : "işaret", row.where === "мера" ? "مقدار" : "نشان")}</p>
@@ -256,7 +303,7 @@ export function TajweedView() {
                   {state === "bad" ? (
                     <p className="mt-2 text-sm text-muted">{say("Не то. Верный ответ отмечен.", "Not that. The right answer is marked.", "ليس هذا. الصواب موضَّح.", "Bukan itu. Jawapan betul ditanda.", "O değil. Doğru cevap işaretli.", "یہ نہیں۔ درست جواب نشان زد ہے۔")}</p>
                   ) : null}
-                  {state === "ok" && TAJWEED_FLAT.findIndex((item) => item.id === lesson.id) < TAJWEED_FLAT.length - 1 ? (
+                  {state === "ok" && TAJWEED_PATH_FLAT.findIndex((item) => item.id === lesson.id) < TAJWEED_PATH_FLAT.length - 1 ? (
                     <button type="button" className="quran-claim" onClick={() => goNext(lesson)}>
                       {say("Дальше", "Next", "التالي", "Seterusnya", "Sonraki", "آگے")}
                     </button>

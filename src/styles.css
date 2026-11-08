@@ -4097,6 +4097,11 @@ html, body {
 .taj-mod { display: grid; flex: none; place-items: center; width: 2.7rem; height: 2.7rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); color: var(--fg); font-size: .85rem; font-weight: 800; line-height: 1; }
 .taj-mod span { color: var(--muted); font-size: .58rem; font-weight: 700; }
 .taj-mod.on { border-color: var(--gold); color: var(--gold); }
+.taj-mod.lock { opacity: .45; }
+.taj-badges { display: flex; gap: .35rem; margin-top: .45rem; overflow-x: auto; }
+.taj-badge { flex: none; border: 1px solid var(--line); border-radius: 999px; padding: .15rem .45rem; color: var(--muted); font-size: .68rem; font-weight: 800; }
+.taj-badge.on { border-color: var(--gold); color: var(--gold); }
+.taj-play { margin-top: .25rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--gold); font-size: .72rem; font-weight: 800; padding: .15rem .6rem; }
 .taj-lab { margin: .75rem 0 .2rem; color: var(--gold); font-size: .68rem; font-weight: 800; }
 .taj-lines { white-space: pre-line; }
 @media (orientation: landscape) and (max-height: 520px) {
