@@ -6,7 +6,7 @@ function L(ru: string, en: string, ar: string, id: string, tr: string, ur: strin
   return { ru, en, ar, id, tr, ur };
 }
 
-export type TajExample = { ar: string; read: string; lat: string; where: string };
+export type TajExample = { ar: string; read: string; lat: string; where: string; note?: L };
 export type TajQuiz = { q: L; choices: [L, L, L]; answer: 0 | 1 | 2 };
 
 export type CourseLesson = {

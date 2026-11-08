@@ -4102,6 +4102,7 @@ html, body {
 .taj-badge { flex: none; border: 1px solid var(--line); border-radius: 999px; padding: .15rem .45rem; color: var(--muted); font-size: .68rem; font-weight: 800; }
 .taj-badge.on { border-color: var(--gold); color: var(--gold); }
 .taj-play { margin-top: .25rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--gold); font-size: .72rem; font-weight: 800; padding: .15rem .6rem; }
+.taj-note { margin-top: .2rem; color: var(--muted); font-size: .8rem; line-height: 1.45; }
 .taj-lab { margin: .75rem 0 .2rem; color: var(--gold); font-size: .68rem; font-weight: 800; }
 .taj-lines { white-space: pre-line; }
 @media (orientation: landscape) and (max-height: 520px) {

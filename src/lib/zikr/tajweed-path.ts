@@ -1,4 +1,4 @@
-import { TAJWEED_COURSE, type CourseLesson, type TajQuiz } from "./tajweed-course";
+import { TAJWEED_COURSE, type CourseLesson, type TajExample, type TajQuiz } from "./tajweed-course";
 import type { LangId } from "./types";
 
 type L = Record<LangId, string>;
@@ -24,62 +24,232 @@ function withQuiz(id: string, extra: TajQuiz[]): CourseLesson {
   return { ...lesson, quiz: [...lesson.quiz, ...extra] };
 }
 
+function card(ar: string, read: string, lat: string, ru: string, en: string, arN: string, id: string, tr: string, ur: string): TajExample {
+  return { ar, read, lat, where: "знак", note: L(ru, en, arN, id, tr, ur) };
+}
+
+const soundKey: CourseLesson = {
+  id: "sound-key",
+  tone: "plain",
+  title: L("Как записан звук", "How the sound is written", "كيف كُتب الصوت", "Bagaimana bunyi ditulis", "Ses nasıl yazılır", "آواز کیسے لکھی ہے"),
+  definition: L(
+    "Транскрипция здесь та же, что в Коране приложения. Обычные б, т, д пишутся как слышатся. Восемь звуков помечены особо, чтобы их не спутать.",
+    "The transcription here is the same as in the Quran of this app. Ordinary b, t and d are written as they sound. Eight sounds are marked, so they are not mixed up.",
+    "الرسم هنا هو نفسه في قرآن التطبيق. ثمانية أصوات مميزة حتى لا تختلط.",
+    "Tulisan di sini sama seperti dalam Al-Qur'an aplikasi. Lapan bunyi ditanda supaya tidak tertukar.",
+    "Yazılış, uygulamadaki Kur'an ile aynıdır. Sekiz ses karışmasın diye işaretlidir.",
+    "یہ لکھائی اسی ایپ کے قرآن جیسی ہے۔ آٹھ آوازیں الگ نشان سے ہیں تاکہ گڈمڈ نہ ہوں۔",
+  ),
+  letters: "хь · х · х1 · 1 · г1 · къ · д1 · т1",
+  mechanism: L(
+    "хь — ح, тихий звук из середины горла. Не х.\nх — خ, хриплый звук выше, ближе ко рту.\nх1 — ه, лёгкий выдох из низа горла. В «Аллах1» палочка входит в знак «х1»: это ه, не цифра и не ع.\n1 — ع, только когда палочка стоит сама: «1а», «1айн». Это сжатие в середине горла.\nг1 — غ. къ — ق, глубже, чем к. д1 — ض, край языка. т1 — ط, полный рот, не обычное т.",
+    "h with a soft mark is ha from the middle of the throat, not kh. kh is the rough sound higher up. The light breath of ha at the bottom of the throat is the h in Allah. Ayn is a squeeze in the middle of the throat. Ghayn, qaf, dad and the heavy ta each have their own mark.",
+    "ح من وسط الحلق، خ من أعلاه، ه من أسفله. ع عصر في الوسط. غ أغن. ق أعمق من ك. ض من الحافة. ط مفخمة.",
+    "Ha dari tengah halkum, kha lebih ke atas, ha ringan dari pangkal. Ain ialah himpitan. Ghain, qaf, dad dan ta tebal ada tanda sendiri.",
+    "Ha boğazın ortası, hı daha yukarı, he en altta. Ayn ortada sıkışmadır. Ğayn, qaf, dad ve kalın tı ayrı işaretlidir.",
+    "ح حلق کے بیچ، خ اوپر، ہ نیچے ہلکی پھونک۔ ع بیچ میں دباؤ۔ غ، ق، ض اور بھاری ط الگ نشان۔",
+  ),
+  examples: [
+    card("ح", "хь", "h", "Середина горла. Мягко, без хрипа.", "Middle of the throat. Soft, not rough.", "وسط الحلق، بلا خشونة.", "Tengah halkum, lembut.", "Boğazın ortası, hırıltısız.", "حلق کا بیچ، بغیر کھردراہٹ۔"),
+    card("خ", "х", "kh", "Верх горла. Хриплый х.", "Top of the throat. A rough kh.", "أعلى الحلق، خاء خشنة.", "Hujung halkum, kasar.", "Boğazın üstü, hırıltılı.", "حلق کا اوپر، کھردری خ۔"),
+    card("ه", "х1", "h", "Низ горла. Лёгкий выдох, как в «Аллах1».", "Bottom of the throat. A light breath, as in Allah.", "أسفل الحلق، نفس خفيف، كما في لفظ الجلالة.", "Pangkal halkum, hembusan ringan.", "Boğazın altı, hafif nefes.", "حلق کا نیچے، ہلکی پھونک۔"),
+    card("ع", "1", "ayn", "Середина горла. Сжатие. Палочка — это буква, не цифра.", "Middle of the throat. A squeeze. The mark is the letter, not a number.", "وسط الحلق، عصر. العلامة حرف لا رقم.", "Tengah halkum, himpitan. Tanda ini huruf, bukan nombor.", "Boğazın ortası, sıkışma. İşaret harftir, rakam değil.", "حلق کا بیچ، دباؤ۔ نشان حرف ہے، نمبر نہیں۔"),
+    card("ق", "къ", "q", "Самый глубокий язык. Не опускай на место к.", "The deepest part of the tongue. Do not drop it to kaf.", "أقصى اللسان. لا تنزلها إلى الكاف.", "Pangkal lidah. Jangan turun ke kaf.", "Dilin en gerisi. Kaf'a indirme.", "زبان کی گہرائی۔ ک پر مت لاؤ۔"),
+    card("ض", "д1", "dad", "Край языка. Это не обычное д.", "The side of the tongue. Not an ordinary d.", "حافة اللسان، ليست دالًا.", "Tepi lidah, bukan d biasa.", "Dil kenarı, sıradan d değil.", "زبان کا کنارہ، عام د نہیں۔"),
+  ],
+  mistakes: L(
+    "Не читай ح как خ и ه как ح. Не пропускай палочку ع: без неё слово другое.",
+    "Do not read ha as kha, or the light ha as the middle ha. Do not skip ayn: without it the word is another word.",
+    "لا تقرأ الحاء خاءً ولا الهاء حاءً. لا تسقط العين.",
+    "Jangan baca ha sebagai kha, atau ha ringan sebagai ha tengah. Jangan gugurkan ain.",
+    "Ha'yı hı, he'yi ha yapma. Ayn'ı düşürme.",
+    "ح کو خ اور ہ کو ح نہ پڑھیں۔ ع کو نہ چھوڑیں۔",
+  ),
+  quiz: [
+    Q(L("Как пишется ح?", "How is ha written?", "كيف تُكتب الحاء؟", "Bagaimana ha ditulis?", "Ha nasıl yazılır?", "ح کیسے لکھی جاتی ہے؟"), L("хь", "a soft h", "حاء", "ha lembut", "yumuşak ha", "نرم ح"), L("х", "kh", "خاء", "kha", "hı", "خ"), L("х1", "a light breath", "هاء", "ha ringan", "he", "ہ"), 0),
+    Q(L("Что значит палочка в «Аллах1»?", "What does the mark in Allah stand for?", "ماذا تعني العلامة في «Аллах1»؟", "Apa tanda pada Allah?", "Allah yazısındaki işaret neyi gösterir?", "اللہ کی لکھی میں نشان کیا ہے؟"), L("Это х1: буква ه. Не цифра и не ع", "It is the light h. Not a number and not ayn", "هي الهاء. ليست رقمًا ولا عينًا", "Ia ha ringan. Bukan nombor dan bukan ain", "Hafif he'dir. Rakam değil, ayn değil", "یہ ہ ہے۔ نمبر نہیں اور ع نہیں"), L("Это буква ع", "It is ayn", "هي العين", "Ia ain", "Ayn'dır", "یہ ع ہے"), L("Это номер один", "It is the number one", "هي الرقم واحد", "Ia nombor satu", "Bir rakamıdır", "یہ نمبر ایک ہے"), 0),
+    Q(L("къ — это какая буква?", "Which letter is q?", "ما حرف «къ»؟", "Huruf manakah q?", "Q hangi harftir?", "къ کون سا حرف ہے؟"), L("ق", "Qaf", "ق", "Qaf", "Qaf", "ق"), L("ك", "Kaf", "ك", "Kaf", "Kaf", "ک"), L("غ", "Ghayn", "غ", "Ghain", "Ğayn", "غ"), 0),
+  ],
+};
+
 const letters: CourseLesson = {
   id: "letters",
   tone: "plain",
-  title: L("28 букв", "The 28 letters", "الحروف الثمانية والعشرون", "28 huruf", "28 harf", "۲۸ حروف"),
+  title: L("ا ب ت ث ج ح خ", "Alif to kha", "من الألف إلى الخاء", "Alif hingga kha", "Eliften ha'ya", "الف سے خ تک"),
   definition: L(
-    "В арабском 28 букв. Сначала узнай форму, потом звук. Буква сама по себе не имеет гласного: «б», не «ба».",
-    "Arabic has 28 letters. Learn the shape first, then the sound. A letter by itself has no vowel: b, not ba.",
-    "في العربية ثمانية وعشرون حرفًا. تُعرف الصورة أولًا ثم الصوت. والحرف وحده بلا حركة.",
-    "Bahasa Arab ada 28 huruf. Kenali bentuk dahulu, kemudian bunyi. Huruf sendiri tiada vokal.",
-    "Arapçada 28 harf vardır. Önce şekil, sonra ses. Harfin kendisinde sesli yoktur.",
-    "عربی میں ۲۸ حروف ہیں۔ پہلے شکل، پھر آواز۔ حرف خود بغیر حرکت کے ہوتا ہے۔",
+    "Семь первых букв и хамза. Сверху — буква со звуком «а». Под ней — как её писать в этом приложении и чем она отличается от соседней.",
+    "The first letters, and hamza. Above is the letter with a. Under it is how this app writes it, and how it differs from the one beside it.",
+    "الحروف الأولى مع الهمزة. فوق الحرف بفتح، وتحته كيف يُكتب وبم يتميز.",
+    "Huruf pertama dan hamzah. Di atas huruf dengan a. Di bawah, bagaimana ia ditulis dan bezanya.",
+    "İlk harfler ve hemze. Üstte a'lı harf. Altında yazılışı ve komşusundan farkı.",
+    "پہلے حروف اور ہمزہ۔ اوپر الف کے ساتھ حرف۔ نیچے لکھائی اور پڑوسی سے فرق۔",
   ),
-  letters: "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي",
+  letters: "ا أ ب ت ث ج ح خ",
   mechanism: L(
-    "Читай ряд слева направо только чтобы узнать порядок. В слове читают справа налево.\nПохожие формы: ب ت ث отличаются точками. ج ح خ тоже. د ذ, ر ز, س ش, ص ض, ط ظ, ع غ.",
-    "Read the row from left to right only to learn the order. In a word, reading goes from right to left.\nSimilar shapes: ba, ta and tha differ by the dots. So do jim, ha and kha. Also dal and dhal, ra and zay, sin and shin, sad and dad, ta and za, ayn and ghayn.",
-    "يُقرأ ترتيب الحروف للمعرفة. وفي الكلمة القراءة من اليمين.\nب ت ث تختلف بالنقط، وكذلك ج ح خ، ود ذ، ور ز، وس ش، وص ض، وط ظ، وع غ.",
-    "Baris itu untuk hafal urutan. Dalam kata, bacaan dari kanan ke kiri.\nBa, ta dan tsa bezanya titik. Begitu juga jim ha kha, dal dzal, ra zay, sin syin, sad dad, ta za, ain ghain.",
-    "Sıra, harfleri tanımak içindir. Kelimede okuyuş sağdan sola gider.\nBe, te ve se noktalarıyla ayrılır. Cim ha hı, dal zel, ra ze, sin şin, sad dad, tı zı, ayn ğayn da öyle.",
-    "قطار ترتیب یاد کرنے کے لیے ہے۔ لفظ میں پڑھائی دائیں سے بائیں۔\nب ت ث نقطوں سے الگ ہیں۔ اسی طرح ج ح خ، د ذ، ر ز، س ش، ص ض، ط ظ، ع غ۔",
+    "Точки меняют букву. ب одна снизу, ت две сверху, ث три сверху. ج одна снизу, ح без точек, خ точка сверху.\nا не соединяется со следующей. Хамза — обрыв голоса, её ставят на алиф, вав или йа.",
+    "The dots change the letter. One below is ba, two above is ta, three above is tha. One below is jim, none is ha, one above is kha.\nAlif does not join to the next letter. Hamza is a stop in the voice. It sits on alif, waw or ya.",
+    "النقط تغيّر الحرف. الألف لا تتصل بما بعدها. الهمزة قطع للصوت على الألف أو الواو أو الياء.",
+    "Titik menukar huruf. Alif tidak bersambung ke berikut. Hamzah ialah hentian suara.",
+    "Noktalar harfi değiştirir. Elif sonrakine bağlanmaz. Hemze seste bir kesiktir.",
+    "نقطے حرف بدلتے ہیں۔ الف اگلے سے نہیں جڑتی۔ ہمزہ آواز کا کٹاؤ ہے۔",
   ),
   examples: [
-    { ar: "ب", read: "б — точка снизу", lat: "b — a dot below", where: "знак" },
-    { ar: "ت", read: "т — две точки сверху", lat: "t — two dots above", where: "знак" },
-    { ar: "ث", read: "с между зубами — три точки", lat: "th — three dots", where: "знак" },
+    card("ا", "алиф", "alif", "Долгая палочка «аа», не короткий звук. Со следующей не соединяется: ا ـا. Середины нет.", "A long aa stroke, not a short vowel. It does not join forward. There is no middle shape.", "ألف المد، لا تتصل بما بعدها.", "Batang aa yang panjang. Tidak bersambung ke depan.", "Uzun aa çizgisi. İleriye bağlanmaz.", "لمبی ا کی لکیر۔ آگے نہیں جڑتی۔"),
+    card("أَ", "а", "a", "Хамза: короткий обрыв внизу горла, потом гласный. إِ = и, أُ = у. Это не отдельная 29-я буква алфавита.", "Hamza: a short stop at the bottom of the throat, then the vowel. It is not a 29th letter of the alphabet.", "همزة: قطع قصير ثم الحركة. ليست حرفًا زائدًا على الثمانية والعشرين.", "Hamzah: hentian singkat, kemudian vokal.", "Hemze: kısa kesik, sonra hareke.", "ہمزہ: مختصر کٹاؤ، پھر حرکت۔"),
+    card("بَ", "ба", "ba", "Губы смыкаются. Одна точка снизу. Формы: ب بـ ـبـ ـب.", "The lips meet. One dot below. Four shapes.", "الشفتان. نقطة تحت. أربعة أشكال.", "Bibir rapat. Satu titik di bawah. Empat bentuk.", "Dudaklar kapanır. Altta bir nokta. Dört şekil.", "ہونٹ ملتے ہیں۔ نیچے ایک نقطہ۔ چار شکلیں۔"),
+    card("تَ", "та", "ta", "Кончик языка у верхних зубов. Две точки сверху. Формы: ت تـ ـتـ ـت.", "Tongue tip at the upper teeth. Two dots above.", "طرف اللسان عند الأسنان. نقطتان فوق.", "Hujung lidah di gigi atas. Dua titik di atas.", "Dil ucu üst dişlerde. Üstte iki nokta.", "زبان کی نوک اوپر کے دانتوں پر۔ اوپر دو نقطے۔"),
+    card("ثَ", "са", "tha", "Язык между зубами, не обычная с. Три точки сверху. Формы: ث ثـ ـثـ ـث.", "The tongue between the teeth, not an ordinary s. Three dots above.", "اللسان بين الأسنان، ليست سينًا. ثلاث نقط.", "Lidah di antara gigi, bukan sin biasa. Tiga titik.", "Dil dişlerin arasında, sıradan se değil. Üç nokta.", "زبان دانتوں کے بیچ، عام س نہیں۔ تین نقطے۔"),
+    card("جَ", "джа", "ja", "Середина языка. Одна точка снизу. Формы: ج جـ ـجـ ـج.", "The middle of the tongue. One dot below.", "وسط اللسان. نقطة تحت.", "Tengah lidah. Satu titik di bawah.", "Dilin ortası. Altta bir nokta.", "زبان کا بیچ۔ نیچے ایک نقطہ۔"),
+    card("حَ", "хьа", "ha", "Середина горла, тихо, без хрипа и без точки. Не читай как خ. Формы: ح حـ ـحـ ـح.", "Middle of the throat, quiet, no dot. Do not read it as kha.", "وسط الحلق، بلا نقطة. ليست خاء.", "Tengah halkum, tanpa titik. Bukan kha.", "Boğazın ortası, noktasız. Hı değil.", "حلق کا بیچ، بغیر نقطہ۔ خ نہیں۔"),
+    card("خَ", "ха", "kha", "Верх горла, хриплый х. Одна точка сверху. Формы: خ خـ ـخـ ـخ.", "Top of the throat, a rough kh. One dot above.", "أعلى الحلق. نقطة فوق.", "Hujung halkum. Satu titik di atas.", "Boğazın üstü. Üstte bir nokta.", "حلق کا اوپر۔ اوپر ایک نقطہ۔"),
   ],
   mistakes: L(
-    "Не читай букву сразу со звуком а. Сначала голая буква. Точки — часть буквы, не украшение.",
-    "Do not read the letter with a at once. First the bare letter. The dots are part of the letter, not decoration.",
-    "لا تقرأ الحرف بالفتح فورًا. النقط جزء من الحرف.",
-    "Jangan baca huruf terus dengan a. Titik adalah sebahagian huruf.",
-    "Harfi hemen a ile okuma. Noktalar harfin parçasıdır.",
-    "حرف کو فوراً الف کے ساتھ نہ پڑھیں۔ نقطے حرف کا حصہ ہیں۔",
+    "Не читай голую букву сразу как «ба». Сначала согласный, гласный даёт знак. Не путай число точек.",
+    "Do not read a bare letter as ba at once. The vowel comes from the sign. Do not mix up the number of dots.",
+    "لا تقرأ الحرف الساكن مفتوحًا. لا تخلط عدد النقط.",
+    "Jangan baca huruf terus sebagai ba. Jangan tertukar bilangan titik.",
+    "Çıplak harfi hemen ba diye okuma. Nokta sayısını karıştırma.",
+    "خالی حرف کو فوراً با نہ پڑھیں۔ نقطوں کی گنتی نہ بھولیں۔",
   ),
   quiz: [
-    Q(
-      L("Сколько букв в арабском?", "How many Arabic letters are there?", "كم حرفًا في العربية؟", "Berapa huruf Arab?", "Arapçada kaç harf vardır?", "عربی میں کتنے حروف ہیں؟"),
-      L("28", "28", "٢٨", "28", "28", "۲۸"),
-      L("26", "26", "٢٦", "26", "26", "۲۶"),
-      L("30", "30", "٣٠", "30", "30", "۳۰"),
-      0,
-    ),
-    Q(
-      L("Чем отличаются ب и ت?", "What separates ba and ta?", "بم تختلف الباء والتاء؟", "Apa bezanya ba dan ta?", "Be ile te nasıl ayrılır?", "ب اور ت میں کیا فرق ہے؟"),
-      L("Точками", "The dots", "بالنقط", "Titik", "Noktalarla", "نقطوں سے"),
-      L("Длиной", "The length", "بالمد", "Panjang", "Uzunlukla", "لمبائی سے"),
-      L("Ничем", "Nothing", "لا شيء", "Tiada apa", "Hiçbir şeyle", "کچھ نہیں"),
-      0,
-    ),
-    Q(
-      L("Буква без знака — это?", "A letter with no sign is?", "الحرف بلا علامة هو؟", "Huruf tanpa tanda ialah?", "İşaretsiz harf nedir?", "بغیر نشان کا حرف کیا ہے؟"),
-      L("Голый согласный", "A bare consonant", "حرف بلا حركة", "Konsonan tanpa vokal", "Yalın ünsüz", "بغیر حرکت کا حرف"),
-      L("Обязательно «ба»", "Always ba", "دائمًا بَ", "Sentiasa ba", "Hep ba", "ہمیشہ بَ"),
-      L("Долгий а", "A long a", "ألف مد", "A panjang", "Uzun a", "لمبی ا"),
-      0,
-    ),
+    Q(L("Сколько точек у ث?", "How many dots does tha have?", "كم نقطة للثاء؟", "Berapa titik tsa?", "Se'nin kaç noktası var?", "ث کے کتنے نقطے ہیں؟"), L("Три сверху", "Three above", "ثلاث فوق", "Tiga di atas", "Üstte üç", "اوپر تین"), L("Одна снизу", "One below", "واحدة تحت", "Satu di bawah", "Altta bir", "نیچے ایک"), L("Нет точек", "None", "لا نقط", "Tiada", "Yok", "کوئی نہیں"), 0),
+    Q(L("Чем ح отличается от خ?", "How does ha differ from kha?", "بم تختلف الحاء عن الخاء؟", "Apa bezanya ha dan kha?", "Ha ile hı nasıl ayrılır?", "ح اور خ میں کیا فرق ہے؟"), L("хь тихая и без точки, х хриплая и с точкой", "Ha is quiet and has no dot. Kha is rough and has a dot", "الحاء بلا نقطة والخاء بنقطة", "Ha tanpa titik, kha bertitik", "Ha noktasız, hı noktalı", "ح بغیر نقطہ، خ نقطے کے ساتھ"), L("Ничем", "Nothing", "لا شيء", "Tiada", "Hiç", "کچھ نہیں"), L("Только длиной", "Only the length", "بالمد فقط", "Hanya panjang", "Yalnızca uzunluk", "صرف لمبائی"), 0),
+    Q(L("ا соединяется со следующей буквой?", "Does alif join to the next letter?", "هل تتصل الألف بما بعدها؟", "Adakah alif bersambung ke huruf berikut?", "Elif sonrakine bağlanır mı?", "کیا الف اگلے حرف سے جڑتی ہے؟"), L("Нет", "No", "لا", "Tidak", "Hayır", "نہیں"), L("Да, всегда", "Yes, always", "نعم دائمًا", "Ya, sentiasa", "Evet, hep", "ہاں، ہمیشہ"), L("Только в середине", "Only in the middle", "في الوسط فقط", "Hanya di tengah", "Yalnızca ortada", "صرف بیچ میں"), 0),
+  ],
+};
+
+const letters2: CourseLesson = {
+  id: "letters-2",
+  tone: "plain",
+  title: L("د ذ ر ز س ش ص", "Dal to sad", "من الدال إلى الصاد", "Dal hingga sad", "Dalden sad'a", "د سے ص تک"),
+  definition: L(
+    "Дальше зубные и свистящие. د ذ ر ز не тянут черту к следующей букве. س Ш ص отличаются полнотой рта и точками.",
+    "Next are the dental letters and the whistling ones. Dal, dhal, ra and zay do not join forward. Sin, shin and sad differ by the fullness of the mouth and by the dots.",
+    "ثم الحروف النطعية والصفيرية. د ذ ر ز لا تتصل بما بعدها.",
+    "Kemudian huruf gigi dan yang bersiul. Dal, dzal, ra dan zay tidak bersambung ke depan.",
+    "Sonra diş ve ıslık harfleri. Dal, zel, ra ve ze ileriye bağlanmaz.",
+    "پھر دانت اور سیٹی والے حروف۔ د ذ ر ز آگے نہیں جڑتے۔",
+  ),
+  letters: "د ذ ر ز س ش ص",
+  mechanism: L(
+    "ذ — язык между зубами. ز — свист, кончик языка за зубами, точка сверху. Не одно и то же, хотя в записи обе дают «з».\nص — полный рот, тяжелее س. Ш — три точки, середина языка.",
+    "Dhal is the tongue between the teeth. Zay is a whistle, the tip behind the teeth, with a dot. They are not the same, even though both are written with z.\nSad is a full mouth, heavier than sin. Shin has three dots and comes from the middle of the tongue.",
+    "الذال بين الأسنان، والزاي صفير. الصاد مفخمة والسين مرققة. الشين ثلاث نقط.",
+    "Dzal di antara gigi, zay bersiul. Sad tebal, sin nipis. Syin tiga titik.",
+    "Zel dişler arasında, ze ıslıklı. Sad kalın, sin ince. Şin üç noktalı.",
+    "ذ دانتوں کے بیچ، ز سیٹی۔ ص موٹی، س پتلی۔ ش تین نقطے۔",
+  ),
+  examples: [
+    card("دَ", "да", "da", "Кончик языка у верхних зубов. Со следующей не соединяется: د ـد.", "Tongue tip at the upper teeth. It does not join forward.", "طرف اللسان. لا تتصل بما بعدها.", "Hujung lidah. Tidak bersambung ke depan.", "Dil ucu. İleriye bağlanmaz.", "زبان کی نوک۔ آگے نہیں جڑتی۔"),
+    card("ذَ", "за", "dha", "Язык между зубами. Точка сверху. Это не з свистящая.", "The tongue between the teeth. A dot above. Not the whistling z.", "بين الأسنان. نقطة فوق. ليست زايًا.", "Antara gigi. Titik di atas. Bukan zay.", "Dişler arasında. Üstte nokta. Islık değil.", "دانتوں کے بیچ۔ اوپر نقطہ۔ سیٹی نہیں۔"),
+    card("رَ", "ра", "ra", "Кончик языка, один удар, без дрожи. Со следующей не соединяется: ر ـر.", "The tongue tip, one tap, no trill. It does not join forward.", "طرف اللسان، ضربة واحدة بلا تكرار.", "Hujung lidah, satu ketukan, tanpa getaran.", "Dil ucu, bir vuruş, titremesiz.", "زبان کی نوک، ایک ضرب، بغیر کانپ۔"),
+    card("زَ", "за", "za", "Свист. Кончик языка за нижними зубами, точка сверху. Не межзубная ذ.", "A whistle. The tip behind the teeth, a dot above. Not the interdental dhal.", "صفير. ليست ذالًا.", "Siu. Bukan dzal.", "Islık. Zel değil.", "سیٹی۔ ذ نہیں۔"),
+    card("سَ", "са", "sa", "Свист, тонкий рот, без точек. Формы: س سـ ـسـ ـس.", "A whistle, a light mouth, no dots.", "صفير مرقق، بلا نقط.", "Siu, mulut nipis, tanpa titik.", "Islık, ince ağız, noktasız.", "سیٹی، پتلا منہ، بغیر نقطہ۔"),
+    card("شَ", "ша", "sha", "Середина языка. Три точки сверху. Формы: ش شـ ـشـ ـش.", "The middle of the tongue. Three dots above.", "وسط اللسان. ثلاث نقط.", "Tengah lidah. Tiga titik.", "Dilin ortası. Üç nokta.", "زبان کا بیچ۔ تین نقطے۔"),
+    card("صَ", "са", "sad", "Как س, но полный рот, тяжелее. Без точек. Формы: ص صـ ـصـ ـص.", "Like sin, but a full, heavier mouth. No dots.", "كالسين لكنها مفخمة. بلا نقط.", "Seperti sin, tetapi tebal. Tanpa titik.", "Sin gibi, ama kalın. Noktasız.", "س کی طرح، مگر موٹی۔ بغیر نقطہ۔"),
+  ],
+  mistakes: L(
+    "Не дрожи ра. Не делай ذ и ز одним звуком: у ذ язык между зубами, у ز свист.",
+    "Do not trill the ra. Do not make dhal and zay one sound: dhal is between the teeth, zay is a whistle.",
+    "لا تكرر الراء. لا تجعل الذال والزاي صوتًا واحدًا.",
+    "Jangan getarkan ra. Jangan jadikan dzal dan zay satu bunyi.",
+    "Ra'yı titretme. Zel ile ze'yi bir ses yapma.",
+    "ر کو مت کانپائیں۔ ذ اور ز کو ایک آواز نہ بنائیں۔",
+  ),
+  quiz: [
+    Q(L("Какие из этих букв не соединяются со следующей?", "Which of these do not join forward?", "أيها لا تتصل بما بعدها؟", "Yang mana tidak bersambung ke depan?", "Hangileri ileriye bağlanmaz?", "ان میں سے کون آگے نہیں جڑتے؟"), L("د ذ ر ز", "Dal, dhal, ra and zay", "د ذ ر ز", "Dal dzal ra zay", "Dal zel ra ze", "د ذ ر ز"), L("س ش ص", "Sin, shin and sad", "س ش ص", "Sin syin sad", "Sin şin sad", "س ش ص"), L("Только س", "Only sin", "السين فقط", "Sin sahaja", "Yalnızca sin", "صرف س"), 0),
+    Q(L("Где язык у ذ?", "Where is the tongue for dhal?", "أين اللسان في الذال؟", "Di mana lidah pada dzal?", "Zel'de dil nerededir?", "ذ میں زبان کہاں ہے؟"), L("Между зубами", "Between the teeth", "بين الأسنان", "Di antara gigi", "Dişlerin arasında", "دانتوں کے بیچ"), L("В горле", "In the throat", "في الحلق", "Di halkum", "Boğazda", "حلق میں"), L("На губах", "On the lips", "على الشفتين", "Pada bibir", "Dudaklarda", "ہونٹوں پر"), 0),
+    Q(L("Чем ص тяжелее س?", "How is sad heavier than sin?", "بم الصاد أغلظ من السين؟", "Mengapa sad lebih tebal daripada sin?", "Sad neden sin'den kalındır?", "ص س سے کیسے موٹی ہے؟"), L("Полным ртом", "By a full mouth", "بتفخيم الفم", "Dengan mulut penuh", "Ağız dolu olarak", "بھرے منہ سے"), L("Тремя точками", "By three dots", "بثلاث نقط", "Dengan tiga titik", "Üç noktayla", "تین نقطوں سے"), L("Ничем", "By nothing", "بلا فرق", "Tiada beza", "Hiç", "کچھ نہیں"), 0),
+  ],
+};
+
+const letters3: CourseLesson = {
+  id: "letters-3",
+  tone: "plain",
+  title: L("ض ط ظ ع غ ف ق", "Dad to qaf", "من الضاد إلى القاف", "Dad hingga qaf", "Dadden qaf'a", "ض سے ق تک"),
+  definition: L(
+    "Здесь самые частые подмены. д1 — не д. т1 — не т. 1 — не хамза. къ — не к. Читай место, не похожую букву.",
+    "These are the letters most often swapped. Dad is not dal. The heavy ta is not ta. Ayn is not hamza. Qaf is not kaf. Read the place, not the letter that looks easier.",
+    "هنا أكثر الحروف خلطًا. الضاد ليست دالًا، والطاء ليست تاءً، والعين ليست همزة، والقاف ليست كافًا.",
+    "Di sinilah huruf paling mudah tertukar. Dad bukan dal. Ta tebal bukan ta. Ain bukan hamzah. Qaf bukan kaf.",
+    "En çok karışanlar burada. Dad dal değildir. Kalın tı te değildir. Ayn hemze değildir. Qaf kaf değildir.",
+    "یہاں سب سے زیادہ الجھن ہے۔ ض د نہیں۔ ط ت نہیں۔ ع ہمزہ نہیں۔ ق ک نہیں۔",
+  ),
+  letters: "ض ط ظ ع غ ف ق",
+  mechanism: L(
+    "ض — край языка у коренных зубов, буква полная.\nط — полный рот, тот же участок, что у ت, но тяжелее.\nظ — как ذ, но полный рот.\nع — сжатие в середине горла. غ — выше, с точкой, ближе к х.",
+    "Dad is the side of the tongue by the back teeth, and the letter is full.\nThe heavy ta is a full mouth, the same area as ta, but heavier.\nZa is like dhal, but with a full mouth.\nAyn is a squeeze in the middle of the throat. Ghayn is higher, with a dot, nearer to kh.",
+    "الضاد من الحافة. الطاء مفخمة. الظاء كالذال مفخمة. العين من وسط الحلق والغين من أعلاه.",
+    "Dad dari tepi lidah. Ta tebal. Za seperti dzal tetapi tebal. Ain di tengah halkum, ghain di hujung.",
+    "Dad dil kenarı. Kalın tı. Zı, kalın zel gibidir. Ayn boğazın ortası, ğayn üstü.",
+    "ض زبان کے کنارے سے۔ ط بھاری۔ ظ بھاری ذ کی طرح۔ ع حلق کے بیچ، غ اوپر۔",
+  ),
+  examples: [
+    card("ضَ", "д1а", "da", "Край языка. Полный рот. Не обычное д. Формы: ض ضـ ـضـ ـض.", "The side of the tongue. A full mouth. Not an ordinary d.", "حافة اللسان. ليست دالًا.", "Tepi lidah. Bukan d biasa.", "Dil kenarı. Sıradan d değil.", "زبان کا کنارہ۔ عام د نہیں۔"),
+    card("طَ", "т1а", "ta", "Полный рот. Без точек. Не обычное т. Формы: ط طـ ـطـ ـط.", "A full mouth. No dots. Not an ordinary t.", "مفخمة بلا نقط. ليست تاءً.", "Tebal, tanpa titik. Bukan ta biasa.", "Kalın, noktasız. Sıradan te değil.", "بھری۔ بغیر نقطہ۔ عام ت نہیں۔"),
+    card("ظَ", "за", "za", "Как ذ между зубами, но полный рот. Точка сверху. Формы: ظ ظـ ـظـ ـظ.", "Like dhal between the teeth, but a full mouth. A dot above.", "كالذال لكنها مفخمة.", "Seperti dzal, tetapi tebal.", "Zel gibi, ama kalın.", "ذ کی طرح، مگر موٹی۔"),
+    card("عَ", "1а", "a", "Середина горла, сжатие. Без точек. Не хамза и не алиф. Формы: ع عـ ـعـ ـع.", "Middle of the throat, a squeeze. No dots. Not hamza and not alif.", "وسط الحلق. ليست همزة ولا ألفًا.", "Tengah halkum. Bukan hamzah dan bukan alif.", "Boğazın ortası. Hemze değil, elif değil.", "حلق کا بیچ۔ ہمزہ نہیں، الف نہیں۔"),
+    card("غَ", "г1а", "gha", "Верх горла, точка сверху. Не х и не к. Формы: غ غـ ـغـ ـغ.", "Top of the throat, a dot above. Not kh and not k.", "أعلى الحلق. نقطة فوق.", "Hujung halkum. Titik di atas.", "Boğazın üstü. Üstte nokta.", "حلق کا اوپر۔ اوپر نقطہ۔"),
+    card("فَ", "фа", "fa", "Нижняя губа у верхних зубов. Одна точка сверху. Формы: ف فـ ـفـ ـف.", "The lower lip at the upper teeth. One dot above.", "باطن الشفة السفلى مع الأسنان. نقطة فوق.", "Bibir bawah di gigi atas. Titik di atas.", "Alt dudak üst dişlerde. Üstte nokta.", "نیچے کا ہونٹ اوپر کے دانتوں پر۔ اوپر نقطہ۔"),
+    card("قَ", "къа", "qa", "Глубже всех на языке. Две точки сверху. Не к. Формы: ق قـ ـقـ ـق.", "The deepest letter on the tongue. Two dots above. Not kaf.", "أقصى اللسان. نقطتان. ليست كافًا.", "Pangkal lidah. Dua titik. Bukan kaf.", "Dilin en gerisi. İki nokta. Kaf değil.", "زبان کی گہرائی۔ دو نقطے۔ ک نہیں۔"),
+  ],
+  mistakes: L(
+    "Не заменяй д1 на д, т1 на т, 1 на хамзу и къ на к. Место звука другое, слово тоже становится другим.",
+    "Do not swap dad for dal, the heavy ta for ta, ayn for hamza, or qaf for kaf. The place is different, and the word becomes another word.",
+    "لا تبدل الضاد دالًا ولا الطاء تاءً ولا العين همزة ولا القاف كافًا.",
+    "Jangan tukar dad dengan dal, ta tebal dengan ta, ain dengan hamzah, atau qaf dengan kaf.",
+    "Dad'ı dal, kalın tı'yı te, ayn'ı hemze, qaf'ı kaf yapma.",
+    "ض کو د، ط کو ت، ع کو ہمزہ اور ق کو ک نہ بنائیں۔",
+  ),
+  quiz: [
+    Q(L("д1 — какая буква?", "Which letter is dad?", "ما حرف «д1»؟", "Huruf manakah dad?", "Dad hangi harftir?", "د1 کون سا حرف ہے؟"), L("ض", "Dad", "ض", "Dad", "Dad", "ض"), L("د", "Dal", "د", "Dal", "Dal", "د"), L("ظ", "Za", "ظ", "Za", "Zı", "ظ"), 0),
+    Q(L("Откуда ع?", "Where does ayn come from?", "من أين العين؟", "Dari mana ain?", "Ayn nereden?", "ع کہاں سے؟"), L("Из середины горла", "From the middle of the throat", "من وسط الحلق", "Dari tengah halkum", "Boğazın ortasından", "حلق کے بیچ سے"), L("Из губ", "From the lips", "من الشفتين", "Dari bibir", "Dudaklardan", "ہونٹوں سے"), L("Из кончика языка", "From the tongue tip", "من طرف اللسان", "Dari hujung lidah", "Dil ucundan", "زبان کی نوک سے"), 0),
+    Q(L("Сколько точек у ق?", "How many dots does qaf have?", "كم نقطة للقاف؟", "Berapa titik qaf?", "Qaf'ın kaç noktası var?", "ق کے کتنے نقطے ہیں؟"), L("Две сверху", "Two above", "نقطتان فوق", "Dua di atas", "Üstte iki", "اوپر دو"), L("Одна снизу", "One below", "واحدة تحت", "Satu di bawah", "Altta bir", "نیچے ایک"), L("Нет", "None", "لا نقط", "Tiada", "Yok", "کوئی نہیں"), 0),
+  ],
+};
+
+const letters4: CourseLesson = {
+  id: "letters-4",
+  tone: "plain",
+  title: L("ك ل م ن ه و ي", "Kaf to ya", "من الكاف إلى الياء", "Kaf hingga ya", "Kaftan ya'ya", "ک سے ی تک"),
+  definition: L(
+    "Последние семь. ك легче и выше, чем къ. ه — выдох х1, не хь и не х. و и ي бывают согласными и долгими гласными.",
+    "The last seven. Kaf is lighter and further forward than qaf. Ha is the breath, not the middle ha and not kh. Waw and ya can be consonants or long vowels.",
+    "السبعة الأخيرة. الكاف أيسر من القاف. الهاء نفس، والواو والياء تكونان حرف مد.",
+    "Tujuh terakhir. Kaf lebih ke depan daripada qaf. Ha ialah hembusan. Waw dan ya boleh jadi konsonan atau vokal panjang.",
+    "Son yedi. Kaf, qaftan daha öndedir. He bir nefestir. Vav ve ya ünsüz de olur, uzun ünlü de.",
+    "آخری سات۔ ک ق سے آگے ہے۔ ہ پھونک ہے۔ و اور ی حرف بھی بنتے ہیں اور لمبی حرکت بھی۔",
+  ),
+  letters: "ك ل م ن ه و ي",
+  mechanism: L(
+    "Если после و дамма — это долгий «уу»: قُو = къуу. Если و с гласным или без него как согласный — «в».\nЕсли после ي кясра — долгий «ии». Если ي с гласным — «й».\nو не соединяется со следующей: و ـو.",
+    "If waw follows a damma, it is the long uu. If waw itself has a vowel, or stands as a consonant, it is w.\nIf ya follows a kasra, it is the long ii. If ya itself has a vowel, it is y.\nWaw does not join forward.",
+    "الواو بعد الضمة مد. والياء بعد الكسرة مد. والواو لا تتصل بما بعدها.",
+    "Waw selepas damma ialah mad. Ya selepas kasrah ialah mad. Waw tidak bersambung ke depan.",
+    "Dammeden sonra vav meddir. Kesreden sonra ya meddir. Vav ileriye bağlanmaz.",
+    "ضمہ کے بعد و مد ہے۔ کسرہ کے بعد ی مد ہے۔ و آگے نہیں جڑتی۔",
+  ),
+  examples: [
+    card("كَ", "ка", "ka", "Язык чуть выше, чем у къ, легче. Формы: ك كـ ـكـ ـك.", "The tongue is a little further forward than for qaf, and lighter.", "أقرب إلى الفم من القاف وأخف.", "Lebih ke mulut daripada qaf, dan lebih ringan.", "Qaftan daha önde ve daha hafif.", "ق سے آگے اور ہلکی۔"),
+    card("لَ", "ла", "la", "Кончик языка у дёсен. Формы: ل لـ ـلـ ـل. В «Аллах1» после а или у лям твёрдая.", "The tongue tip at the gums. In Allah, after a or u, the lam is heavy.", "طرف اللسان. وفي لفظ الجلالة بعد الفتح أو الضم تُفخم.", "Hujung lidah. Pada Allah, selepas a atau u, lam tebal.", "Dil ucu. Allah lafzında a veya u'dan sonra lam kalındır.", "زبان کی نوک۔ اللہ میں ا یا اُ کے بعد لام موٹی۔"),
+    card("مَ", "ма", "ma", "Губы смыкаются, звук может идти в нос. Формы: م مـ ـمـ ـم.", "The lips meet. The sound can go through the nose.", "الشفتان، وقد تجري في الأنف.", "Bibir rapat. Bunyi boleh ke hidung.", "Dudaklar kapanır. Ses buruna gidebilir.", "ہونٹ ملتے ہیں۔ آواز ناک میں جا سکتی ہے۔"),
+    card("نَ", "на", "na", "Кончик языка. Точка сверху. Носовой звук — гунна, когда правило её просит. Формы: ن نـ ـنـ ـن.", "The tongue tip. A dot above. The nasal sound comes when the rule asks for it.", "طرف اللسان. نقطة فوق.", "Hujung lidah. Titik di atas.", "Dil ucu. Üstte nokta.", "زبان کی نوک۔ اوپر نقطہ۔"),
+    card("هَ", "х1а", "ha", "Низ горла, лёгкий выдох. Это х1 в «Аллах1». Не хь и не х. Формы: ه هـ ـهـ ـه.", "Bottom of the throat, a light breath. This is the h in Allah. Not the middle ha and not kh.", "أسفل الحلق. ليست حاء ولا خاء.", "Pangkal halkum. Bukan ha tengah dan bukan kha.", "Boğazın altı. Ha değil, hı değil.", "حلق کا نیچے، ہلکی پھونک۔ ح نہیں، خ نہیں۔"),
+    card("وَ", "ва", "wa", "Губы кружком. Со следующей не соединяется: و ـو. После даммы это долгий «уу».", "The lips in a circle. It does not join forward. After damma it is the long uu.", "الشفتان. لا تتصل بما بعدها. وبعد الضمة مد.", "Bibir bulat. Tidak bersambung. Selepas damma ialah mad.", "Dudaklar yuvarlak. Bağlanmaz. Dammeden sonra med.", "ہونٹ گول۔ آگے نہیں جڑتی۔ ضمہ کے بعد مد۔"),
+    card("يَ", "йа", "ya", "Середина языка. Две точки снизу. После кясры это долгий «ии». Формы: ي يـ ـيـ ـي.", "The middle of the tongue. Two dots below. After kasra it is the long ii.", "وسط اللسان. نقطتان تحت. وبعد الكسرة مد.", "Tengah lidah. Dua titik di bawah. Selepas kasrah ialah mad.", "Dilin ortası. Altta iki nokta. Kesreden sonra med.", "زبان کا بیچ۔ نیچے دو نقطے۔ کسرہ کے بعد مد۔"),
+  ],
+  mistakes: L(
+    "Не читай ه как ح. Не делай و всегда долгим «у»: долгий он только после даммы, без своего гласного.",
+    "Do not read ha as the middle ha. Do not make waw always a long u: it is long only after damma, with no vowel of its own.",
+    "لا تقرأ الهاء حاءً. لا تجعل الواو مدًّا إلا بعد الضمة.",
+    "Jangan baca ha sebagai ha tengah. Waw hanya panjang selepas damma.",
+    "He'yi ha yapma. Vav yalnızca dammeden sonra uzundur.",
+    "ہ کو ح نہ پڑھیں۔ و صرف ضمہ کے بعد لمبی ہے۔",
+  ),
+  quiz: [
+    Q(L("Как пишется ه?", "How is ha written here?", "كيف تُكتب الهاء هنا؟", "Bagaimana ha ditulis di sini?", "He burada nasıl yazılır?", "ہ یہاں کیسے لکھی ہے؟"), L("х1", "a light breath", "هاء خفيفة", "hembusan ringan", "hafif nefes", "ہلکی پھونک"), L("хь", "the middle ha", "حاء", "ha tengah", "boğaz ha'sı", "ح"), L("х", "kh", "خاء", "kha", "hı", "خ"), 0),
+    Q(L("Когда و читается долго?", "When is waw read long?", "متى تُمد الواو؟", "Bilakah waw dibaca panjang?", "Vav ne zaman uzun okunur?", "و کب لمبی پڑھی جاتی ہے؟"), L("После даммы, без своего гласного", "After damma, with no vowel of its own", "بعد الضمة بلا حركة عليها", "Selepas damma, tanpa vokal sendiri", "Dammeden sonra, kendi harekesi olmadan", "ضمہ کے بعد، اپنی حرکت کے بغیر"), L("Всегда", "Always", "دائمًا", "Sentiasa", "Hep", "ہمیشہ"), L("Только в начале", "Only at the start", "في الأول فقط", "Hanya di awal", "Yalnızca başta", "صرف شروع میں"), 0),
+    Q(L("К легче и ближе ко рту, чем?", "Kaf is lighter and nearer the mouth than?", "الكاف أخف وأقرب من؟", "Kaf lebih ringan dan lebih dekat daripada?", "Kaf hangisinden daha hafif ve daha öndedir?", "ک کس سے ہلکی اور منہ کے قریب ہے؟"), L("ق", "Qaf", "القاف", "Qaf", "Qaf", "ق"), L("ب", "Ba", "الباء", "Ba", "Be", "ب"), L("م", "Mim", "الميم", "Mim", "Mim", "م"), 0),
   ],
 };
 
@@ -295,6 +465,7 @@ const extra: Record<string, TajQuiz[]> = {
 export type PathModule = {
   id: string;
   title: L;
+  lead: L;
   badge: L;
   lessons: CourseLesson[];
 };
@@ -303,36 +474,84 @@ export const TAJWEED_PATH: PathModule[] = [
   {
     id: "alpha",
     title: L("1. Буквы", "1. The letters", "١. الحروف", "1. Huruf", "1. Harfler", "١. حروف"),
+    lead: L(
+      "Сначала все 28 букв: форма, точки и транскрипция. Потом четыре написания. Без этого правило таджвида не к чему приложить.",
+      "First all 28 letters: the shape, the dots and the transcription. Then the four written forms. A tajweed rule has nothing to hold if the letter is not known.",
+      "أولًا الحروف الثمانية والعشرون: الصورة والنقط والرسم. ثم الأشكال الأربعة.",
+      "Mula 28 huruf: bentuk, titik dan tulisan. Kemudian empat bentuk tulis.",
+      "Önce 28 harf: şekil, nokta ve yazılış. Sonra dört biçim.",
+      "پہلے ۲۸ حروف: شکل، نقطے اور لکھائی۔ پھر چار صورتیں۔",
+    ),
     badge: L("Мастер букв", "Master of the letters", "متقن الحروف", "Penguasa huruf", "Harflerin ustası", "حروف کا ماہر"),
-    lessons: [letters, forms, withQuiz("what", extra.what)],
+    lessons: [soundKey, letters, letters2, letters3, letters4, forms, withQuiz("what", extra.what)],
   },
   {
     id: "vowels",
     title: L("2. Огласовки", "2. The vowels", "٢. الحركات", "2. Vokal", "2. Harekeler", "٢. حرکات"),
+    lead: L(
+      "Черта сверху — а, снизу — и, петелька — у. Кружок — гласного нет. Шадда — буква дважды. Танвин — н на конце. Долгий гласный — две меры.",
+      "A stroke above is a, below is i, a loop is u. A circle means no vowel. Shadda is the letter twice. Tanwin is an n at the end. A long vowel is two counts.",
+      "الفتحة أ، والكسرة إ، والضمة أُ. السكون بلا حركة. الشدة مرتان. التنوين نون. والمد حركتان.",
+      "Garis atas a, bawah i, lengkung u. Bulatan: tiada vokal. Syaddah dua kali. Tanwin ialah n. Mad dua harakat.",
+      "Üst çizgi a, alt i, kıvrım u. Yuvarlak: ses yok. Şedde iki kez. Tenvin sonda n. Med iki miktar.",
+      "اوپر لکیر ا، نیچے اِ، گول اُ۔ دائرہ: حرکت نہیں۔ شدہ دو بار۔ تنوین آخر میں ن۔ مد دو حرکت۔",
+    ),
     badge: L("Знаток огласовок", "Master of the vowels", "متقن الحركات", "Penguasa vokal", "Harekelerin ustası", "حرکات کا ماہر"),
     lessons: [withQuiz("marks", extra.marks), withQuiz("ms-madd", extra["ms-madd"]), withQuiz("ms-shadda", extra["ms-shadda"]), withQuiz("ms-tanwin", extra["ms-tanwin"])],
   },
   {
     id: "makhraj",
     title: L("3. Место звука", "3. Where the sound is made", "٣. المخارج", "3. Makhraj", "3. Mahreç", "٣. مخارج"),
+    lead: L(
+      "Каждая буква выходит из своего места: горло, язык или губы. Похожие по виду не читаются одинаково.",
+      "Each letter comes from its own place: the throat, the tongue or the lips. Letters that look alike are not read the same.",
+      "لكل حرف مخرجه: الحلق أو اللسان أو الشفتان.",
+      "Setiap huruf ada tempatnya: halkum, lidah atau bibir.",
+      "Her harfin yeri vardır: boğaz, dil veya dudak.",
+      "ہر حرف کی اپنی جگہ ہے: حلق، زبان یا ہونٹ۔",
+    ),
     badge: L("Мастер махариджа", "Master of the makhraj", "متقن المخارج", "Penguasa makhraj", "Mahreç ustası", "مخارج کا ماہر"),
     lessons: [withQuiz("throat", extra.throat), withQuiz("tongue", extra.tongue), withQuiz("lips", extra.lips), withQuiz("pairs", extra.pairs)],
   },
   {
     id: "nun",
     title: L("4. Нун, танвин и мим", "4. Nun, tanwin and meem", "٤. النون والتنوين والميم", "4. Nun, tanwin dan mim", "4. Nun, tenvin ve mim", "٤. نون، تنوین اور میم"),
+    lead: L(
+      "Нун без гласного и танвин: ясно, вошёл в следующую, стал м перед ب, или скрыт. Мим без гласного: ясно, скрыт перед ب, или слился с мимом. Гунна — две меры через нос.",
+      "Nun with no vowel, and tanwin: clear, merged into the next letter, turned into m before ba, or hidden. Meem with no vowel: clear, hidden before ba, or merged into meem. Ghunnah is two counts through the nose.",
+      "النون الساكنة والتنوين: إظهار أو إدغام أو إقلاب أو إخفاء. والميم الساكنة ثلاثة أحكام. والغنة حركتان.",
+      "Nun sukun dan tanwin: jelas, lebur, menjadi m, atau tersembunyi. Mim sukun ada tiga. Ghunnah dua harakat.",
+      "Sükûnlu nun ve tenvin: açık, idgam, m oluşu veya gizlenme. Sükûnlu mimde üç hüküm. Gunne iki miktar.",
+      "ساکن نون اور تنوین: واضح، ادغام، ب سے پہلے م، یا چھپی۔ ساکن میم کے تین حکم۔ غنہ دو حرکت۔",
+    ),
     badge: L("Хранитель таджвида", "Keeper of tajweed", "حافظ التجويد", "Penjaga tajwid", "Tecvidin bekçisi", "تجوید کا محافظ"),
     lessons: [withQuiz("izhar", extra.izhar), withQuiz("idgham-nun", extra["idgham-nun"]), withQuiz("iqlab", extra.iqlab), withQuiz("ikhfa", extra.ikhfa), withQuiz("meem", extra.meem), withQuiz("ghunnah", extra.ghunnah)],
   },
   {
     id: "madd",
     title: L("5. Протяжка, ра и лям", "5. Lengthening, ra and lam", "٥. المد والراء واللام", "5. Mad, ra dan lam", "5. Med, ra ve lam", "٥. مد، را اور لام"),
+    lead: L(
+      "Обычная протяжка — две меры. Из-за хамзы — четыре или пять, в одном чтении держи одно. Обязательная — шесть. Ра и лям в «Аллах1» бывают твёрдыми и мягкими по правилу, не по желанию.",
+      "The ordinary lengthening is two counts. Because of hamza it is four or five: keep one choice in one sitting. The required lengthening is six. Ra, and the lam in Allah, are heavy or light by the rule, not by choice.",
+      "المد الطبيعي حركتان. وبسبب الهمزة أربع أو خمس. واللازم ست. والراء ولام لفظ الجلالة بالقاعدة.",
+      "Mad biasa dua. Kerana hamzah empat atau lima. Yang wajib enam. Ra dan lam Allah mengikut hukum.",
+      "Tabii med iki. Hemze yüzünden dört veya beş. Lazım olan altı. Ra ve Allah'ın lamı kurala göredir.",
+      "عام مد دو۔ ہمزے کی وجہ سے چار یا پانچ۔ لازمی چھ۔ را اور اللہ کی لام قاعدے سے۔",
+    ),
     badge: L("Мастер протяжки", "Master of the lengthening", "متقن المد", "Penguasa mad", "Med ustası", "مد کا ماہر"),
     lessons: [withQuiz("madd-short", extra["madd-short"]), withQuiz("madd-long", extra["madd-long"]), withQuiz("heavy", extra.heavy)],
   },
   {
     id: "waqf",
     title: L("6. Остановка и короткие суры", "6. The stop, and the short surahs", "٦. الوقف والسور القصار", "6. Waqaf dan surah pendek", "6. Vakıf ve kısa sureler", "٦. وقف اور چھوٹی سورتیں"),
+    lead: L(
+      "Знаки мусхафа говорят, где остановиться. На остановке последнее слово закрывается, у пяти букв лёгкий отскок. В конце — «Аль-Фатиха» и «Аль-Ихлас» медленно, вслух.",
+      "The marks of the mushaf say where to stop. At a stop the last word is closed, and five letters give a light bounce. At the end, Al-Fatiha and Al-Ikhlas, slowly, aloud.",
+      "علامات المصحف تبين الوقف. وعند الوقف يُسكن الآخر، وفي خمسة أحرف قلقلة. ثم الفاتحة والإخلاص.",
+      "Tanda mushaf memberitahu waqaf. Pada waqaf kata ditutup, lima huruf ada pantulan. Kemudian Al-Fatihah dan Al-Ikhlas.",
+      "Mushaf işaretleri vakfı gösterir. Durunca son harf kapanır, beş harfte kalkale vardır. Sonra Fatiha ve İhlas.",
+      "مصحف کے نشان وقف بتاتے ہیں۔ وقف پر آخر بند، پانچ حروف میں قلقلہ۔ پھر فاتحہ اور اخلاص۔",
+    ),
     badge: L("Читает Коран", "Reads the Quran", "قارئ", "Membaca Al-Qur'an", "Kur'an okur", "قرآن پڑھتا ہے"),
     lessons: [withQuiz("signs", extra.signs), withQuiz("stop-start", extra["stop-start"]), withQuiz("ms-qalqala", extra["ms-qalqala"]), withQuiz("hafs", extra.hafs), readShort],
   },

@@ -228,6 +228,7 @@ export function TajweedView() {
         </p>
       ) : null}
       <h2 className="mt-3 text-sm font-extrabold text-fg">{current.title[lang]}</h2>
+      <p className="mt-1 text-sm leading-relaxed text-muted">{current.lead[lang]}</p>
       <div className="mt-2 grid gap-1.5">
         {current.lessons.map((lesson) => {
           const on = open === lesson.id;
@@ -254,9 +255,10 @@ export function TajweedView() {
                       <button type="button" className="taj-play" onClick={() => speak(row.ar)}>
                         {say("Слушать", "Listen", "استمع", "Dengar", "Dinle", "سنیں")}
                       </button>
-                      {lang === "ru" ? <p className="taj-read">{row.read}</p> : null}
-                      {lang !== "ru" && lang !== "ar" ? <p className="taj-read">{row.lat}</p> : null}
-                      <p className="taj-gloss">{/^\d+:\d+/.test(row.where) ? `${say("сура", "surah", "سورة", "surah", "sure", "سورہ")} ${row.where.replace(":", ", " + say("аят", "ayah", "آية", "ayat", "ayet", "آیت") + " ")}` : say(row.where === "мера" ? "мера" : "знак", row.where === "мера" ? "a count" : "a sign", row.where === "мера" ? "مقدار" : "علامة", row.where === "мера" ? "kadar" : "tanda", row.where === "мера" ? "miktar" : "işaret", row.where === "мера" ? "مقدار" : "نشان")}</p>
+                      {lang === "ru" ? <p className="taj-read">{row.read}</p> : lang !== "ar" ? <p className="taj-read">{row.lat}</p> : null}
+                      {row.note ? <p className="taj-note">{row.note[lang]}</p> : (
+                        <p className="taj-gloss">{/^\d+:\d+/.test(row.where) ? `${say("сура", "surah", "سورة", "surah", "sure", "سورہ")} ${row.where.replace(":", ", " + say("аят", "ayah", "آية", "ayat", "ayet", "آیت") + " ")}` : say(row.where === "мера" ? "мера" : "знак", row.where === "мера" ? "a count" : "a sign", row.where === "мера" ? "مقدار" : "علامة", row.where === "мера" ? "kadar" : "tanda", row.where === "мера" ? "miktar" : "işaret", row.where === "мера" ? "مقدار" : "نشان")}</p>
+                      )}
                     </div>
                   ))}
                   <p className="taj-lab">{say("Чего избегать", "What to avoid", "ما يُجتنب", "Yang dielakkan", "Kaçınılacak", "جس سے بچیں")}</p>
