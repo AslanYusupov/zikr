@@ -32,7 +32,7 @@ function Measure({ say }: { say: (ru: string, en: string, ar: string, id: string
   const note =
     count === 2
       ? say(
-          "Две меры — обычная протяжка: «баа», как «къаля».",
+          "Две меры — обычная протяжка: «баа», как «къаала».",
           "Two counts is the ordinary lengthening: baa, as in qala.",
           "حركتان: المد الطبيعي، كـ«قَالَ».",
           "Dua harakat: mad biasa, seperti qala.",
@@ -41,12 +41,12 @@ function Measure({ say }: { say: (ru: string, en: string, ar: string, id: string
         )
       : count === 4
         ? say(
-            "Четыре — если хамза в том же слове. В Хафсе это четыре или пять. Если хамза в следующем слове, можно и две, но в одном чтении держи одно.",
-            "Four is when the hamza is in the same word. In Hafs that is four or five. If the hamza is in the next word, two is also allowed, but keep one choice in one sitting.",
-            "أربع: إذا كانت الهمزة في الكلمة نفسها، وفي حفص أربع أو خمس. وإن كانت في الكلمة التالية جازت حركتان، مع لزوم وجه واحد في المجلس.",
-            "Empat: jika hamzah dalam kata yang sama. Dalam Hafs empat atau lima. Jika hamzah di kata berikutnya, dua juga boleh, tetapi satu pilihan dalam satu bacaan.",
-            "Dört: hemze aynı kelimedeyse. Hafs'ta bu dört veya beştir. Hemze sonraki kelimedeyse iki de olur, ama bir oturuşta birini seç.",
-            "چار: اگر ہمزہ اسی لفظ میں ہو۔ حفص میں چار یا پانچ۔ اگر اگلے لفظ میں ہو تو دو بھی ہو سکتی ہیں، مگر ایک نشست میں ایک ہی رکھیں۔",
+            "Четыре — хамза в том же слове или в следующем. В мусхафе Медины это четыре или пять: одну меру на всё чтение. Две — только обычная протяжка, без хамзы.",
+            "Four is a hamza in the same word or in the next one. In the Madinah mushaf that is four or five: keep one length for the whole reading. Two is only the ordinary lengthening, with no hamza.",
+            "أربع: همزة في الكلمة نفسها أو في التالية. في مصحف المدينة أربع أو خمس، ووجه واحد في القراءة كلها. والحركتان للطبيعي فقط.",
+            "Empat: hamzah dalam kata yang sama atau kata berikutnya. Dalam mushaf Madinah empat atau lima, satu kadar untuk seluruh bacaan. Dua hanya untuk mad biasa.",
+            "Dört: hemze aynı kelimede ya da sonrakinde. Medine mushafında bu dört veya beştir, bütün okuyuşta bir ölçü. İki yalnız normal meddir.",
+            "چار: ہمزہ اسی لفظ میں یا اگلے میں۔ مصحف مدینہ میں چار یا پانچ، پوری قراءت میں ایک ہی مقدار۔ دو صرف عام مد کے لیے۔",
           )
         : say(
             "Шесть — протяжка, которую нельзя укоротить. В «алиф лам мим» так тянутся лам и мим, не алиф.",
@@ -246,7 +246,7 @@ export function TajweedView() {
                   <p className="taj-lab">{say("Правило", "The rule", "الحكم", "Hukum", "Hüküm", "حکم")}</p>
                   <p className="text-sm leading-relaxed text-fg">{lesson.definition[lang]}</p>
                   {lesson.letters !== "—" ? (
-                    <p className={cn("taj-letters", TONE[lesson.tone])} dir="rtl" lang="ar">{lesson.letters}</p>
+                    <p className={cn("taj-letters", TONE[lesson.tone])} dir={/[\u0600-\u06FF]/.test(lesson.letters) ? "rtl" : "ltr"} lang={/[\u0600-\u06FF]/.test(lesson.letters) ? "ar" : undefined}>{lesson.letters}</p>
                   ) : null}
                   <p className="taj-lab">{say("Как звучит", "How it sounds", "كيف يُنطق", "Bagaimana bunyinya", "Nasıl duyulur", "کیسے سنائی دیتا ہے")}</p>
                   <p className="taj-lines text-sm leading-relaxed text-fg">{lesson.mechanism[lang]}</p>

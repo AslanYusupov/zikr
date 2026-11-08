@@ -79,7 +79,7 @@ const letters: CourseLesson = {
   tone: "plain",
   title: L("ا ب ت ث ج ح خ", "Alif to kha", "من الألف إلى الخاء", "Alif hingga kha", "Eliften ha'ya", "الف سے خ تک"),
   definition: L(
-    "Семь первых букв и хамза. Сверху — буква со звуком «а». Под ней — как её писать в этом приложении и чем она отличается от соседней.",
+    "Семь первых букв и хамза. Черта сверху на карточке — короткое «а». Без черты буква этого «а» не даёт. Знаки разберём в следующем разделе. Под буквой — как её писать здесь и чем она отличается от соседней.",
     "The first letters, and hamza. Above is the letter with a. Under it is how this app writes it, and how it differs from the one beside it.",
     "الحروف الأولى مع الهمزة. فوق الحرف بفتح، وتحته كيف يُكتب وبم يتميز.",
     "Huruf pertama dan hamzah. Di atas huruf dengan a. Di bawah, bagaimana ia ditulis dan bezanya.",
@@ -472,12 +472,23 @@ export type PathModule = {
   lessons: CourseLesson[];
 };
 
-export const TAJWEED_PATH: PathModule[] = [
+function mixLesson(lesson: CourseLesson, salt: number): CourseLesson {
+  const quiz = lesson.quiz.map((item, index) => {
+    const shift = (salt + index) % 3;
+    if (shift === 0) return item;
+    const choices = [0, 1, 2].map((n) => item.choices[(n + shift) % 3]) as [typeof item.choices[0], typeof item.choices[1], typeof item.choices[2]];
+    const answer = ((item.answer - shift + 3) % 3) as 0 | 1 | 2;
+    return { ...item, choices, answer };
+  });
+  return { ...lesson, quiz };
+}
+
+const RAW_PATH: PathModule[] = [
   {
     id: "alpha",
     title: L("1. Буквы", "1. The letters", "١. الحروف", "1. Huruf", "1. Harfler", "١. حروف"),
     lead: L(
-      "Сначала все 28 букв: форма, точки и транскрипция. Потом четыре написания. Без этого правило таджвида не к чему приложить.",
+      "Сначала, что такое таджвид и одна мера. Потом все 28 букв: форма, точки и транскрипция. Потом четыре написания.",
       "First all 28 letters: the shape, the dots and the transcription. Then the four written forms. A tajweed rule has nothing to hold if the letter is not known.",
       "أولًا الحروف الثمانية والعشرون: الصورة والنقط والرسم. ثم الأشكال الأربعة.",
       "Mula 28 huruf: bentuk, titik dan tulisan. Kemudian empat bentuk tulis.",
@@ -485,7 +496,7 @@ export const TAJWEED_PATH: PathModule[] = [
       "پہلے ۲۸ حروف: شکل، نقطے اور لکھائی۔ پھر چار صورتیں۔",
     ),
     badge: L("Мастер букв", "Master of the letters", "متقن الحروف", "Penguasa huruf", "Harflerin ustası", "حروف کا ماہر"),
-    lessons: [soundKey, letters, letters2, letters3, letters4, forms, withQuiz("what", extra.what)],
+    lessons: [withQuiz("what", extra.what), soundKey, letters, letters2, letters3, letters4, forms],
   },
   {
     id: "vowels",
@@ -558,5 +569,10 @@ export const TAJWEED_PATH: PathModule[] = [
     lessons: [withQuiz("signs", extra.signs), withQuiz("stop-start", extra["stop-start"]), withQuiz("ms-qalqala", extra["ms-qalqala"]), withQuiz("hafs", extra.hafs), readShort],
   },
 ];
+
+export const TAJWEED_PATH: PathModule[] = RAW_PATH.map((mod, modIndex) => ({
+  ...mod,
+  lessons: mod.lessons.map((lesson, lessonIndex) => mixLesson(lesson, modIndex * 10 + lessonIndex + 1)),
+}));
 
 export const TAJWEED_PATH_FLAT: CourseLesson[] = TAJWEED_PATH.flatMap((mod) => mod.lessons);

@@ -187,10 +187,17 @@ function waslaVowel(glyphs: Glyph[]): Vowel {
   const rest = glyphs.slice(1);
   if (!rest.length) return "i";
   if (rest[0].ch === "\u0644") return "a";
-  const consonants = rest.filter((g) => g.ch !== "\u0627" && g.ch !== "\u0649" && g.ch !== "\u0621");
-  if (consonants.length <= 2) return "i";
-  const third = consonants[2];
-  if (third && (third.v === "u" || third.v === "un")) return "u";
+  // Third letter of the word, counting the wasl alif. A verb starts with u only
+  // when that letter has an original damma. امرؤ is a noun and stays i.
+  // A damma that exists only for the plural waw, as in امشوا and اقضوا, also stays i.
+  const third = rest[1];
+  if (!third) return "i";
+  if (rest[0].ch === "\u0645" && third.ch === "\u0631") return "i";
+  // اسمُهُ: the damma is the case ending, not the verb pattern. It stays i.
+  if (rest[0].ch === "\u0633" && third.ch === "\u0645") return "i";
+  const next = rest[2];
+  const pluralWaw = !!next && (next.ch === "\u0648" || next.ch === "\u0624");
+  if ((third.v === "u" || third.v === "un") && !pluralWaw) return "u";
   return "i";
 }
 
@@ -438,11 +445,20 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
       parts.push(mergeMeem ? `${head}-${said}` : fuseAllah(head, bridge(said, ru), ru));
       continue;
     }
-    if (prevEnd === "noon" && sound === "\u0628" && parts.length && !named[index] && !wasl) {
-      const head = parts.pop() ?? "";
-      const n = ru ? "н" : "n";
-      const m = ru ? "м" : "m";
-      parts.push(`${head.endsWith(n) ? head.slice(0, -1) + m : head} ${said}`);
+    if ((prevEnd === "noon" || prevEnd === "tanwin") && sound === "\u0628" && parts.length && !named[index] && !wasl) {
+      let head = parts.pop() ?? "";
+      if (prevEnd === "noon") {
+        const n = ru ? "н" : "n";
+        const m = ru ? "м" : "m";
+        if (head.endsWith(n)) head = head.slice(0, -1) + m;
+      } else {
+        const swapped: Record<string, string> = ru
+          ? { ан: "ам", ин: "им", ун: "ум" }
+          : { an: "am", in: "im", un: "um" };
+        const tail = ru ? /(ан|ин|ун)$/ : /(an|in|un)$/;
+        head = head.replace(tail, (end) => swapped[end] ?? end);
+      }
+      parts.push(`${head} ${said}`);
       continue;
     }
     parts.push(said);
