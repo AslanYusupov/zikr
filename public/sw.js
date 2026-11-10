@@ -138,7 +138,6 @@ function keep(url) {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  if (req.method !== "GET") return;
   let url;
   try {
     url = new URL(req.url);
@@ -146,6 +145,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
+  const api = url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/");
+  if (req.method !== "GET") {
+    if (api) {
+      event.respondWith(
+        fetch(req).catch(() => new Response("", { status: 503, headers: { "cache-control": "no-store" } })),
+      );
+    }
+    return;
+  }
   // Safari leaves the page waiting forever if the worker sees a request and does not answer.
   if (
     url.pathname === "/sw.js" ||

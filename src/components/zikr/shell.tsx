@@ -433,20 +433,18 @@ export function Shell() {
             {showHeadAr ? <p className="truncate font-arabic text-xl leading-none text-gold" dir="rtl" lang="ar">{head.ar}</p> : null}
             <p className="flex items-center justify-center gap-1.5 text-sm text-fg">
               <span className="truncate">{head.title}</span>
-              {tab === "zikr" ? (
-                <span
-                  className="inline-flex shrink-0 items-center gap-1 text-muted"
-                  aria-label={online === null ? tx(lang, "onlineAria") : `${tx(lang, "onlineAria")} ${formatNum(online)}`}
-                >
-                  <svg className="live-moon" viewBox="0 0 24 24" aria-hidden>
-                    <path
-                      fill="currentColor"
-                      d="M14.6 2.1A9.4 9.4 0 1 0 22 16.4 7.5 7.5 0 1 1 14.6 2.1z"
-                    />
-                  </svg>
-                  <span className="text-xs tabular-nums">{online === null ? "…" : formatNum(online)}</span>
-                </span>
-              ) : null}
+              <span
+                className="inline-flex shrink-0 items-center gap-1 text-muted"
+                aria-label={online === null ? tx(lang, "onlineAria") : `${tx(lang, "onlineAria")} ${formatNum(online)}`}
+              >
+                <svg className="live-moon" viewBox="0 0 24 24" aria-hidden>
+                  <path
+                    fill="currentColor"
+                    d="M14.6 2.1A9.4 9.4 0 1 0 22 16.4 7.5 7.5 0 1 1 14.6 2.1z"
+                  />
+                </svg>
+                <span className="text-xs tabular-nums">{online === null ? "…" : formatNum(online)}</span>
+              </span>
             </p>
           </div>
           <button

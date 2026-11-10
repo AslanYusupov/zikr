@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getSql, type Sql } from "@/lib/db";
-import { RATING_FOLDS, RATING_SKIP_IDS, countRemembering, ratingWriteId } from "@/lib/zikr/api";
+import { RATING_FOLDS, RATING_SKIP_IDS, countRemembering, noteSeen, ratingWriteId } from "@/lib/zikr/api";
 
 const noStore = { "cache-control": "no-store" };
 
@@ -41,6 +41,7 @@ export const Route = createFileRoute("/api/rating")({
             console.error("[zikr] hide copies", err);
           }
           const publicId = ratingWriteId(rawId) ?? "";
+          if (publicId) await noteSeen(sql, publicId);
           const skip = RATING_SKIP_IDS;
           const [rows, self, live, daily, together, remembering, dailyAhead, worldAhead] = await Promise.all([
             sql<{ public_id: string; total: number; concealed: boolean | null; day_key: string | null; day_total: number | null }>`

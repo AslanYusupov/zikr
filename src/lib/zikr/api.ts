@@ -682,6 +682,24 @@ async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
+export async function noteSeen(sql: Awaited<ReturnType<typeof getSql>>, publicId?: string) {
+  const id = ratingWriteId(publicId ?? "");
+  if (!id) return;
+  try {
+    await sql`
+      insert into zikr_presence (public_id, country, day_key, day_total, xp, total, seen_at, last_tap_at, concealed)
+      values (${id}, '', '1970-01-01', 0, 0, 0, now(), timestamptz '1970-01-01', false)
+      on conflict (public_id) do update set seen_at = now()`;
+  } catch (err) {
+    console.error("[zikr] seen", err);
+    try {
+      await sql`update zikr_presence set seen_at = now() where public_id = ${id}`;
+    } catch {
+      /* the count still uses whoever was already marked */
+    }
+  }
+}
+
 async function openNow(sql: Awaited<ReturnType<typeof getSql>>, _publicId?: string) {
   return countRemembering(sql);
 }
@@ -710,6 +728,7 @@ export async function countRemembering(sql: Awaited<ReturnType<typeof getSql>>):
 
 export async function rememberingNow(publicId?: string) {
   const sql = await getSql();
+  await noteSeen(sql, publicId);
   return openNow(sql, publicId);
 }
 
