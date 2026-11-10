@@ -125,6 +125,23 @@ function keep(url) {
   );
 }
 
+function pass(req) {
+  const fail = () => new Response("", { status: 503, headers: { "cache-control": "no-store" } });
+  if (req.method === "GET" || req.method === "HEAD") return fetch(req).catch(fail);
+  return req
+    .text()
+    .then((body) =>
+      fetch(req.url, {
+        method: req.method,
+        headers: req.headers,
+        body,
+        credentials: "same-origin",
+        cache: "no-store",
+      }),
+    )
+    .catch(fail);
+}
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   let url;
@@ -136,11 +153,7 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   const api = url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/");
   if (req.method !== "GET") {
-    if (api) {
-      event.respondWith(
-        fetch(req).catch(() => new Response("", { status: 503, headers: { "cache-control": "no-store" } })),
-      );
-    }
+    if (api) event.respondWith(pass(req));
     return;
   }
   // Safari leaves the page waiting forever if the worker sees a request and does not answer.
@@ -153,11 +166,7 @@ self.addEventListener("fetch", (event) => {
     url.searchParams.has("warm") ||
     url.searchParams.has("probe")
   ) {
-    if (url.pathname !== "/sw.js") {
-      event.respondWith(
-        fetch(req).catch(() => new Response("", { status: 503, headers: { "cache-control": "no-store" } })),
-      );
-    }
+    if (url.pathname !== "/sw.js") event.respondWith(pass(req));
     return;
   }
   const navigation = req.mode === "navigate" || req.destination === "document";

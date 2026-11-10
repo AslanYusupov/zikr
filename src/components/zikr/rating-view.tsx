@@ -93,6 +93,24 @@ function clockOf(at: number, lang: LangId) {
   }
 }
 
+function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
+  rows: T[] | null,
+  id: string,
+  read: (row: T) => number,
+  write: (row: T, value: number) => T,
+  local: number,
+  listed: boolean,
+): T[] | null {
+  if (!rows || !listed || local <= 0 || !/^\d{8}$/.test(id)) return rows;
+  const me = rows.find((row) => row.id === id && !row.hidden);
+  if (!me || read(me) >= local) return rows;
+  const bumped = rows.map((row) => (row.id === id && !row.hidden ? write(row, local) : row));
+  const open = bumped.filter((row) => !row.hidden).sort((a, b) => read(b) - read(a) || a.id.localeCompare(b.id));
+  let openAt = 0;
+  const placed = bumped.map((row) => (row.hidden ? row : open[openAt++]));
+  return placed.map((row, index) => ({ ...row, rank: index + 1 }));
+}
+
 function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean; rank?: number }>(rows: T[] | null | undefined): T[] {
   const kept = (rows ?? []).filter((row) => {
     if (HIDDEN_RATING_IDS.has(row.id)) return false;
@@ -126,6 +144,7 @@ export function RatingView() {
   const [worldError, setWorldError] = useState(false);
   const [held, setHeld] = useState(Boolean(saved));
   const [updatedAt, setUpdatedAt] = useState<number | null>(saved?.at ?? null);
+  const [baseTotal, setBaseTotal] = useState(saved?.ownTotal ?? 0);
   const [online, setOnline] = useState<number | null>(saved?.online ?? null);
   const [allTaps, setAllTaps] = useState<number | null>(saved?.allTaps ?? null);
   const [live, setLive] = useState<PresenceRow[] | null>(saved ? shown(saved.live) : null);
@@ -177,6 +196,7 @@ export function RatingView() {
     bag.current = next;
     writeRatingCache(next);
     if (!fresh) return;
+    setBaseTotal(next.ownTotal);
     setUpdatedAt(next.at);
     setHeld(false);
     setWorldError(false);
@@ -235,13 +255,11 @@ export function RatingView() {
         }
         if (!retry && down) window.setTimeout(() => { if (!stop && document.visibilityState === "visible") load(true); }, 2000);
       };
+      const ctrl = new AbortController();
       const slow = window.setTimeout(() => {
         if (settled || stop || mine !== ticket) return;
-        flying = false;
-        load();
-      }, 8000);
-      const ctrl = new AbortController();
-      const kill = window.setTimeout(() => ctrl.abort(), 8000);
+        ctrl.abort();
+      }, 20000);
       fetch(`/api/rating?id=${publicId}&day=${day}&open=${Date.now()}`, { cache: "no-store", signal: ctrl.signal })
         .then(async (res) => {
           const body = (await res.json().catch(() => null)) as {
@@ -259,7 +277,6 @@ export function RatingView() {
         })
         .then((res) => {
           window.clearTimeout(slow);
-          window.clearTimeout(kill);
           if (stop || mine !== ticket) return;
           const rows = shown(res.rows);
           const rank = HIDDEN_RATING_IDS.has(publicId) ? null : (res.mine?.rank ?? null);
@@ -295,7 +312,6 @@ export function RatingView() {
         })
         .catch(() => {
           window.clearTimeout(slow);
-          window.clearTimeout(kill);
           if (stop || mine !== ticket) return;
           if (!bag.current) setWorldError(true);
           miss.current.world = true;
@@ -345,11 +361,11 @@ export function RatingView() {
           ? `${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfAhead")}`
           : `${t(lang, "selfRecord")} — ${mine(record)}. ${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfNote")}`;
 
-  const tapsShown = allTaps;
+  const tapsShown = allTaps == null ? null : allTaps + Math.max(0, total - baseTotal);
   const reveal = listed || today >= 10_000;
-  const worldShown = world;
-  const dailyShown = daily;
-  const liveShown = live;
+  const worldShown = liftRows(world, publicId, (row) => row.total, (row, value) => ({ ...row, total: value }), total, reveal);
+  const dailyShown = liftRows(daily, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
+  const liveShown = liftRows(live, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
   const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
   const clock = updatedAt ? clockOf(updatedAt, lang) : "";

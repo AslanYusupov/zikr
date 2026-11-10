@@ -1,5 +1,5 @@
 import { fetchNewest, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261110-5";
+export const APP_BUILD = "20261110-6";
 
 const TRIED_KEY = "zikr-update-tried";
 
