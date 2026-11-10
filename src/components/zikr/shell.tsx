@@ -8,7 +8,7 @@ import { QuranView } from "./quran-view";
 import { Backdrop, randomStarPass } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
 import { audioBusy, pullUpdate } from "@/lib/zikr/build";
-import { fetchOnline, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
+import { fetchOnline, msUntilLiveTick, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
 import { DuaView } from "./dua-view";
@@ -114,18 +114,22 @@ export function Shell() {
   useEffect(() => {
     if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !("caches" in window)) return;
     let stop = false;
+    const look = () => {
+      if (stop || document.hidden) return;
+      void pullUpdate();
+    };
+    const kick = () => {
+      void navigator.serviceWorker.getRegistration().then((next) => next?.update());
+    };
+    const onShow = () => {
+      if (document.visibilityState !== "visible") return;
+      kick();
+      look();
+    };
     const keep = async () => {
       try {
         await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
-        const reg = await navigator.serviceWorker.getRegistration();
-        if (reg) void reg.update();
-        const kick = () => {
-          void navigator.serviceWorker.getRegistration().then((next) => next?.update());
-        };
-        document.addEventListener("visibilitychange", () => {
-          if (document.visibilityState === "visible") kick();
-        });
-        window.addEventListener("online", kick);
+        kick();
       } catch {
         return;
       }
@@ -140,7 +144,7 @@ export function Shell() {
         next.searchParams.set("v", mark);
         location.replace(next.href);
       });
-      void pullUpdate();
+      look();
       if (stop) return;
       try {
         const cache = await caches.open("zikr-ok-v1");
@@ -150,20 +154,25 @@ export function Shell() {
         if (!res.ok || !html.includes("/assets/") || !html.includes("zikr-build")) return;
         const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
         if (!needed.length) return;
-        for (const src of needed) {
-          if (stop) return;
-          if (await cache.match(src)) continue;
-          const file = await fetch(src, { cache: "no-store" });
-          if (!file.ok) return;
-          await cache.put(src, file.clone());
-        }
+        await Promise.all(
+          needed.map(async (src) => {
+            if (stop || (await cache.match(src))) return;
+            const file = await fetch(src, { cache: "no-store" });
+            if (!file.ok) throw new Error("asset");
+            await cache.put(src, file.clone());
+          }),
+        );
         if (stop) return;
         await cache.put("/index.html", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
       } catch {
-        /* the next open can still take the GitHub copy */
+        /* the next open can still take the saved copy */
       }
     };
-    const timer = window.setTimeout(() => void keep(), 1200);
+    const timer = window.setTimeout(() => void keep(), 200);
+    const poll = window.setInterval(look, 15000);
+    document.addEventListener("visibilitychange", onShow);
+    window.addEventListener("online", look);
+    window.addEventListener("focus", look);
     const tell = () => {
       navigator.serviceWorker.controller?.postMessage({ type: "zikr-audio", on: audioBusy() });
     };
@@ -171,7 +180,11 @@ export function Shell() {
     return () => {
       stop = true;
       window.clearTimeout(timer);
+      window.clearInterval(poll);
       window.clearInterval(beat);
+      document.removeEventListener("visibilitychange", onShow);
+      window.removeEventListener("online", look);
+      window.removeEventListener("focus", look);
     };
   }, []);
 
@@ -259,21 +272,41 @@ export function Shell() {
       });
     };
     load();
-    const id = window.setInterval(load, 30_000);
+    let timer = 0;
+    const arm = () => {
+      timer = window.setTimeout(() => {
+        if (stop) return;
+        load();
+        arm();
+      }, msUntilLiveTick());
+    };
+    arm();
     const onLive = () => load();
+    const onNum = (event: Event) => {
+      const n = (event as CustomEvent<number>).detail;
+      if (stop || typeof n !== "number" || !Number.isFinite(n)) return;
+      setOnline(n);
+      saveOnline(n);
+    };
     const onWake = () => {
       if (document.visibilityState === "visible") load();
     };
     window.addEventListener("zikr-live", onLive);
+    window.addEventListener("zikr-online", onNum);
     window.addEventListener("online", onWake);
+    window.addEventListener("focus", onWake);
+    window.addEventListener("pageshow", onWake);
     document.addEventListener("visibilitychange", onWake);
     const link = (navigator as Navigator & { connection?: EventTarget }).connection;
     link?.addEventListener?.("change", onWake);
     return () => {
       stop = true;
-      window.clearInterval(id);
+      window.clearTimeout(timer);
       window.removeEventListener("zikr-live", onLive);
+      window.removeEventListener("zikr-online", onNum);
       window.removeEventListener("online", onWake);
+      window.removeEventListener("focus", onWake);
+      window.removeEventListener("pageshow", onWake);
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onWake);
     };

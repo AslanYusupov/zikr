@@ -101,7 +101,7 @@ export const TAJWEED: TajLesson[] = [
       { ar: "ض", read: "край языка", lat: "the side of the tongue" },
       { ar: "ل ن ر", read: "кончик языка, у каждой своё", lat: "the tip of the tongue, each one different" },
       { ar: "ط د ت", read: "кончик языка и верхние зубы", lat: "the tip of the tongue and the upper teeth" },
-      { ar: "ص س ز", read: "кончик языка, с щелью", lat: "the tip of the tongue, with a gap" },
+      { ar: "ص س ز", read: "кончик языка, со щелью", lat: "the tip of the tongue, with a gap" },
       { ar: "ظ ذ ث", read: "кончик языка между зубами", lat: "the tip of the tongue between the teeth" },
       { ar: "ف", read: "нижняя губа и верхние зубы", lat: "the lower lip and the upper teeth" },
       { ar: "ب م و", read: "губы", lat: "the lips" },

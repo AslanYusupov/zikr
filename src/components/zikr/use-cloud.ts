@@ -345,13 +345,13 @@ export function useWorldSync(hydrated: boolean) {
       const now = Date.now();
       const changed = sig !== sentSig;
       const hiding = document.hidden;
-      if (!changed && !hiding && now - lastBeat < 60_000) return;
-      if (changed && !hiding && now - lastNumbers < 1_500) {
+      if (!changed && !hiding && now - lastBeat < 20_000) return;
+      if (changed && !hiding && now - lastNumbers < 600) {
         if (wait == null) {
           wait = window.setTimeout(() => {
             wait = null;
             send();
-          }, 1_500);
+          }, 600);
         }
         return;
       }
@@ -410,12 +410,14 @@ export function useWorldSync(hydrated: boolean) {
     const first = window.setTimeout(send, 800);
     const timer = window.setInterval(() => {
       if (!document.hidden) send();
-    }, 60_000);
+    }, 20_000);
     const onOnline = () => send();
     const onWake = () => {
-      send();
+      if (document.visibilityState === "visible") send();
     };
     window.addEventListener("online", onOnline);
+    window.addEventListener("focus", onWake);
+    window.addEventListener("pageshow", onWake);
     document.addEventListener("visibilitychange", onWake);
     const link = (navigator as Navigator & { connection?: EventTarget }).connection;
     link?.addEventListener?.("change", onOnline);
@@ -425,6 +427,8 @@ export function useWorldSync(hydrated: boolean) {
       window.clearTimeout(first);
       window.clearInterval(timer);
       window.removeEventListener("online", onOnline);
+      window.removeEventListener("focus", onWake);
+      window.removeEventListener("pageshow", onWake);
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onOnline);
     };

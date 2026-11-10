@@ -1,5 +1,5 @@
 import { fetchNewest, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261108-4";
+export const APP_BUILD = "20261110-3";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -75,27 +75,38 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
   return "fresh";
 }
 
+let pulling = false;
+
 export async function pullUpdate(): Promise<void> {
-  if (typeof window === "undefined" || !("caches" in window)) return;
-  const found = await fetchNewest();
-  if (!found) return;
-  const mark = buildStamp(found.html);
-  if (!mark || !buildIsNewer(mark, pageBuild()) || audioBusy()) return;
-  const assets = [...new Set([...found.html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-  if (!assets.length) return;
+  if (pulling || typeof window === "undefined" || !("caches" in window)) return;
+  pulling = true;
   try {
+    const found = await fetchNewest();
+    if (!found) return;
+    const mark = buildStamp(found.html);
+    if (!mark || !buildIsNewer(mark, pageBuild())) return;
+    const assets = [...new Set([...found.html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+    if (!assets.length) return;
     const cache = await caches.open("zikr-ok-v1");
+    const missing: string[] = [];
     for (const src of assets) {
-      if (await cache.match(src)) continue;
-      const file = await fetch(`${src}?open=${Date.now()}`, { cache: "no-store" });
-      if (!file.ok) return;
-      await cache.put(src, file.clone());
+      if (!(await cache.match(src))) missing.push(src);
     }
+    await Promise.all(
+      missing.map(async (src) => {
+        const file = await fetch(`${src}?open=${Date.now()}`, { cache: "no-store" });
+        if (!file.ok) throw new Error("asset");
+        await cache.put(src, file.clone());
+      }),
+    );
     await cache.put("/index.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+    if (audioBusy()) return;
+    const next = new URL(window.location.href);
+    next.searchParams.set("v", mark);
+    window.location.replace(next.href);
   } catch {
-    return;
+    /* the open page stays until the next check */
+  } finally {
+    pulling = false;
   }
-  const next = new URL(window.location.href);
-  next.searchParams.set("v", mark);
-  window.location.replace(next.href);
 }

@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, Moon } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { TooltipProps } from "recharts";
-import { invitees, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
+import { invitees, RATING_SKIP_IDS, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
-import { saveOnline } from "@/lib/zikr/online-count";
+import { msUntilLiveTick, saveOnline } from "@/lib/zikr/online-count";
 import { InviteButtons } from "./settings-view";
 import { RewardsView } from "./rewards-view";
 import { t, tx } from "@/lib/zikr/i18n";
@@ -12,7 +12,7 @@ import type { LangId } from "@/lib/zikr/types";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 
-const HIDDEN_RATING_IDS = new Set(["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262"]);
+const HIDDEN_RATING_IDS = new Set(RATING_SKIP_IDS);
 
 const FLAGS: Record<string, string> = {
   RU: "🇷🇺",
@@ -93,30 +93,16 @@ function clockOf(at: number, lang: LangId) {
   }
 }
 
-function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
-  rows: T[] | null,
-  id: string,
-  read: (row: T) => number,
-  write: (row: T, value: number) => T,
-  local: number,
-  listed: boolean,
-): T[] | null {
-  if (!rows || !listed || local <= 0 || !/^\d{8}$/.test(id)) return rows;
-  if (!rows.some((row) => row.id === id && !row.hidden)) return rows;
-  const next = rows.map((row) => (row.id === id && !row.hidden ? write(row, Math.max(read(row), local)) : row));
-  const open = next.filter((row) => !row.hidden).sort((a, b) => read(b) - read(a) || a.rank - b.rank);
-  let openAt = 0;
-  return next.map((row) => (row.hidden ? row : open[openAt++]));
-}
-
-function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean }>(rows: T[] | null | undefined): T[] {
-  return (rows ?? []).filter((row) => {
+function shown<T extends { id: string; total?: number; value?: number; hidden?: boolean; rank?: number }>(rows: T[] | null | undefined): T[] {
+  const kept = (rows ?? []).filter((row) => {
     if (HIDDEN_RATING_IDS.has(row.id)) return false;
     if (row.hidden) return true;
     if (typeof row.total === "number" && row.total <= 0) return false;
     if (typeof row.value === "number" && row.value <= 0) return false;
     return true;
   });
+  if (!kept.some((row) => typeof row.rank === "number")) return kept;
+  return kept.map((row, index) => ({ ...row, rank: index + 1 }));
 }
 
 function useSavedRating(): RatingCache | null {
@@ -140,7 +126,6 @@ export function RatingView() {
   const [worldError, setWorldError] = useState(false);
   const [held, setHeld] = useState(Boolean(saved));
   const [updatedAt, setUpdatedAt] = useState<number | null>(saved?.at ?? null);
-  const [baseTotal, setBaseTotal] = useState(saved?.ownTotal ?? 0);
   const [online, setOnline] = useState<number | null>(saved?.online ?? null);
   const [allTaps, setAllTaps] = useState<number | null>(saved?.allTaps ?? null);
   const [live, setLive] = useState<PresenceRow[] | null>(saved ? shown(saved.live) : null);
@@ -192,7 +177,6 @@ export function RatingView() {
     bag.current = next;
     writeRatingCache(next);
     if (!fresh) return;
-    setBaseTotal(next.ownTotal);
     setUpdatedAt(next.at);
     setHeld(false);
     setWorldError(false);
@@ -229,16 +213,17 @@ export function RatingView() {
     let stop = false;
     let flying = false;
     let again = false;
+    let ticket = 0;
     const load = (retry = false) => {
-      if (document.hidden) return;
       if (flying) {
         again = true;
         return;
       }
       flying = true;
+      const mine = ++ticket;
       let settled = false;
       const finish = (down: boolean) => {
-        if (settled) return;
+        if (settled || mine !== ticket) return;
         settled = true;
         flying = false;
         setVpn(down);
@@ -248,14 +233,16 @@ export function RatingView() {
           window.setTimeout(() => { if (!stop) load(); }, 400);
           return;
         }
-        if (!retry && down) window.setTimeout(() => { if (!stop) load(true); }, 2000);
+        if (!retry && down) window.setTimeout(() => { if (!stop && document.visibilityState === "visible") load(true); }, 2000);
       };
       const slow = window.setTimeout(() => {
-        if (settled || stop) return;
+        if (settled || stop || mine !== ticket) return;
         flying = false;
         load();
       }, 8000);
-      fetch(`/api/rating?id=${publicId}&day=${day}&open=${Date.now()}`, { cache: "no-store" })
+      const ctrl = new AbortController();
+      const kill = window.setTimeout(() => ctrl.abort(), 8000);
+      fetch(`/api/rating?id=${publicId}&day=${day}&open=${Date.now()}`, { cache: "no-store", signal: ctrl.signal })
         .then(async (res) => {
           const body = (await res.json().catch(() => null)) as {
             ok?: boolean;
@@ -272,7 +259,8 @@ export function RatingView() {
         })
         .then((res) => {
           window.clearTimeout(slow);
-          if (stop) return;
+          window.clearTimeout(kill);
+          if (stop || mine !== ticket) return;
           const rows = shown(res.rows);
           const rank = HIDDEN_RATING_IDS.has(publicId) ? null : (res.mine?.rank ?? null);
           const liveRows = shown(res.live);
@@ -280,7 +268,10 @@ export function RatingView() {
           setWorld(rows);
           setWorldRank(rank);
           setOnline(typeof res.remembering === "number" ? res.remembering : null);
-          if (typeof res.remembering === "number") saveOnline(res.remembering);
+          if (typeof res.remembering === "number") {
+            saveOnline(res.remembering);
+            window.dispatchEvent(new CustomEvent("zikr-online", { detail: res.remembering }));
+          }
           setAllTaps(typeof res.allTaps === "number" ? res.allTaps : null);
           setLive(liveRows);
           setDaily(dailyRows);
@@ -304,7 +295,8 @@ export function RatingView() {
         })
         .catch(() => {
           window.clearTimeout(slow);
-          if (stop) return;
+          window.clearTimeout(kill);
+          if (stop || mine !== ticket) return;
           if (!bag.current) setWorldError(true);
           miss.current.world = true;
           miss.current.live = true;
@@ -312,21 +304,33 @@ export function RatingView() {
         });
     };
     load();
+    let timer = 0;
+    const arm = () => {
+      timer = window.setTimeout(() => {
+        if (stop) return;
+        load();
+        arm();
+      }, msUntilLiveTick());
+    };
+    arm();
     const onLive = () => load();
     const onWake = () => {
       if (document.visibilityState === "visible") load();
     };
-    const id = window.setInterval(() => load(), 5_000);
     window.addEventListener("zikr-live", onLive);
     window.addEventListener("online", onWake);
+    window.addEventListener("focus", onWake);
+    window.addEventListener("pageshow", onWake);
     document.addEventListener("visibilitychange", onWake);
     const link = (navigator as Navigator & { connection?: EventTarget }).connection;
     link?.addEventListener?.("change", onWake);
     return () => {
       stop = true;
-      window.clearInterval(id);
+      window.clearTimeout(timer);
       window.removeEventListener("zikr-live", onLive);
       window.removeEventListener("online", onWake);
+      window.removeEventListener("focus", onWake);
+      window.removeEventListener("pageshow", onWake);
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onWake);
     };
@@ -341,11 +345,11 @@ export function RatingView() {
           ? `${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfAhead")}`
           : `${t(lang, "selfRecord")} — ${mine(record)}. ${t(lang, "selfToday")} ${mine(today)}. ${t(lang, "selfNote")}`;
 
-  const tapsShown = allTaps == null ? null : allTaps + Math.max(0, total - baseTotal);
+  const tapsShown = allTaps;
   const reveal = listed || today >= 10_000;
-  const worldShown = liftRows(world, publicId, (row) => row.total, (row, value) => ({ ...row, total: value }), total, reveal);
-  const dailyShown = liftRows(daily, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
-  const liveShown = liftRows(live, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
+  const worldShown = world;
+  const dailyShown = daily;
+  const liveShown = live;
   const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
   const clock = updatedAt ? clockOf(updatedAt, lang) : "";
@@ -406,9 +410,9 @@ export function RatingView() {
       {onlineOpen ? (
       <>
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
-      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? "…" : formatNum(tapsShown)}</p>
+      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? (worldError ? "—" : "…") : formatNum(tapsShown)}</p>
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
-      <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? "…" : formatNum(online)}</p>
+      <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? (worldError ? "—" : "…") : formatNum(online)}</p>
       {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} mask={maskMine} onMine={toggleMine} /> : null}
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>

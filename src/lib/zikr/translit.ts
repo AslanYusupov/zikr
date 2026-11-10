@@ -315,10 +315,22 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       i += 2;
       continue;
     }
-    const article = !!prev && (prev.ch === "\u0627" || prev.ch === "\u0671") && !prev.v && !prev.hz && !cur.v;
-    if (cur.ch === "\u0644" && article && g[i + 1] && SUN.has(g[i + 1].ch)) {
-      out += `${cons(g[i + 1].ch, ru)}-`;
-      g[i + 1].sh = false;
+    const prev2 = i >= 2 ? g[i - 2] : null;
+    const maddAlif = prev?.ch === "\u0627" && !!prev2 && (prev2.v === "a" || prev2.v === "an");
+    const articleBase = !!prev && (prev.ch === "\u0627" || prev.ch === "\u0671") && !prev.v && !prev.hz && !maddAlif;
+    const next = g[i + 1];
+    // The Madinah text stores shadda and a fatha on the lam of الذين and التي.
+    // That fatha is not pronounced. The shadda belongs to the sun letter.
+    // اللاتي is different: the fatha and the dagger alif are real, so the lam stays.
+    if (cur.ch === "\u0644" && articleBase && next && SUN.has(next.ch) && cur.sh && cur.v === "a" && !cur.long) {
+      cur.v = "";
+      cur.sh = false;
+      next.sh = true;
+    }
+    const article = articleBase && !cur.v;
+    if (cur.ch === "\u0644" && article && next && SUN.has(next.ch)) {
+      out += `${cons(next.ch, ru)}-`;
+      next.sh = false;
       continue;
     }
     if (cur.ch === "\u0644" && article) {
@@ -369,11 +381,6 @@ function wordEnding(glyphs: Glyph[]): "madd-a" | "madd-i" | "madd-u" | "vowel" |
   if (last.ch === "\u0646" && !last.v) return "noon";
   if (last.ch === "\u0645" && !last.v) return "meem";
   return "suk";
-}
-
-function shortenMadd(text: string, kind: "madd-a" | "madd-i" | "madd-u", ru: boolean): string {
-  const long = ru ? (kind === "madd-a" ? "аа" : kind === "madd-i" ? "ии" : "уу") : kind === "madd-a" ? "aa" : kind === "madd-i" ? "ii" : "uu";
-  return text.endsWith(long) ? text.slice(0, -1) : text;
 }
 
 const IDGHAM_GHUNNA = new Set(["ي", "ى", "ن", "م", "و"]);
@@ -432,7 +439,6 @@ export function transliterate(arabic: string, lang: "ru" | "lat"): string {
     if (!said) continue;
     if (carry && parts.length) {
       let head = parts.pop() ?? "";
-      if (prevEnd === "madd-a" || prevEnd === "madd-i" || prevEnd === "madd-u") head = shortenMadd(head, prevEnd, ru);
       parts.push(fuseAllah(head, said, ru));
       continue;
     }

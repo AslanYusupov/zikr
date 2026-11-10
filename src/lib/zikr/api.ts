@@ -97,8 +97,21 @@ const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62
 /** A second number made on the same account. Counts stay on the first number. */
 const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946", "82261249": "52812946" };
 
+/** Copies and removed numbers. They are not a second person on the board. */
+export const RATING_SKIP_IDS = [...new Set([...DROPPED_RATING_IDS, ...Object.keys(FOLDED_IDS)])];
+export const RATING_FOLDS: Readonly<Record<string, string>> = FOLDED_IDS;
+
 function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;
+}
+
+/** Where a tap is stored. Null means the number is removed and must not be written. */
+export function ratingWriteId(raw: string): string | null {
+  const id = realPublicId(raw);
+  if (!/^\d{8}$/.test(id)) return null;
+  if (DROPPED_RATING_IDS.includes(id)) return null;
+  if (Object.prototype.hasOwnProperty.call(FOLDED_IDS, id)) return null;
+  return id;
 }
 
 async function aliasTable(sql: Awaited<ReturnType<typeof getSql>>) {
@@ -669,25 +682,30 @@ async function keepKnownInvites(sql: Awaited<ReturnType<typeof getSql>>) {
   }
 }
 
-async function openNow(sql: Awaited<ReturnType<typeof getSql>>, publicId?: string) {
-  await aliasTable(sql);
-  const id = (publicId ?? "").trim();
-  const real = /^\d{8}$/.test(id) ? realPublicId(id) : "";
-  const online = /^\d{8}$/.test(real)
-    ? await sql<{ n: number }>`
-        select count(distinct id)::int as n from (
-          select coalesce(a.public_id, p.public_id) as id
-          from zikr_presence p
-          left join zikr_alias a on a.alias = p.public_id
-          where p.seen_at > now() - interval '2 minutes'
-          union select ${real}
-        ) people`
-    : await sql<{ n: number }>`
-        select count(distinct coalesce(a.public_id, p.public_id))::int as n
-        from zikr_presence p
-        left join zikr_alias a on a.alias = p.public_id
-        where p.seen_at > now() - interval '2 minutes'`;
-  return online[0]?.n ?? 0;
+async function openNow(sql: Awaited<ReturnType<typeof getSql>>, _publicId?: string) {
+  return countRemembering(sql);
+}
+
+/** Same number on every phone: people seen in the last two minutes, copies counted once. */
+export async function countRemembering(sql: Awaited<ReturnType<typeof getSql>>): Promise<number> {
+  const skip = RATING_SKIP_IDS;
+  try {
+    await aliasTable(sql);
+    const rows = await sql<{ n: number }>`
+      select count(distinct coalesce(a.public_id, p.public_id))::int as n
+      from zikr_presence p
+      left join zikr_alias a on a.alias = p.public_id
+      where p.seen_at > now() - interval '2 minutes'
+        and not (coalesce(a.public_id, p.public_id) = any(${skip}::text[]))`;
+    return rows[0]?.n ?? 0;
+  } catch (err) {
+    console.error("[zikr] online", err);
+    const rows = await sql<{ n: number }>`
+      select count(*)::int as n from zikr_presence
+      where seen_at > now() - interval '2 minutes'
+        and not (public_id = any(${skip}::text[]))`;
+    return rows[0]?.n ?? 0;
+  }
 }
 
 export async function rememberingNow(publicId?: string) {

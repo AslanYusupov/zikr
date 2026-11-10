@@ -145,19 +145,58 @@ function QuestCard({
   );
 }
 
+const TEXT_SIZES = [1, 1.28, 1.6, 1.95, 2.35];
+
 function DhikrSunnah({ id, lang, label }: { id: string; lang: LangId; label?: string }) {
   const d = dhikrById(id);
   const line = phraseOf(d, lang);
+  const [size, setSize] = useState(0);
+  const scale = TEXT_SIZES[size];
+  const read = d.id === "sayyid" && line.full ? line.full : line.name;
+  const smaller = lang === "ru" ? "Меньше" : lang === "ar" ? "أصغر" : lang === "id" ? "Lebih kecil" : lang === "tr" ? "Daha küçük" : lang === "ur" ? "چھوٹا" : "Smaller";
+  const larger = lang === "ru" ? "Больше" : lang === "ar" ? "أكبر" : lang === "id" ? "Lebih besar" : lang === "tr" ? "Daha büyük" : lang === "ur" ? "بڑا" : "Larger";
   return (
     <div className="mt-3 border-t border-line pt-3">
-      {label ? <p className="text-xs text-gold">{label}</p> : null}
-      <p className="text-center font-arabic text-xl leading-loose text-fg" dir="rtl" lang="ar">
+      <div className="flex items-center justify-between gap-2">
+        {label ? <p className="text-xs text-gold">{label}</p> : <span />}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            aria-label={smaller}
+            disabled={size === 0}
+            onClick={() => setSize((current) => Math.max(0, current - 1))}
+            className="h-11 min-w-11 rounded-full border border-line px-3 text-base font-extrabold text-fg disabled:opacity-30"
+          >
+            A−
+          </button>
+          <button
+            type="button"
+            aria-label={larger}
+            disabled={size === TEXT_SIZES.length - 1}
+            onClick={() => setSize((current) => Math.min(TEXT_SIZES.length - 1, current + 1))}
+            className="h-11 min-w-11 rounded-full border border-gold px-3 text-lg font-extrabold text-gold disabled:opacity-30"
+          >
+            A+
+          </button>
+        </div>
+      </div>
+      <p className="mt-2 text-center font-arabic leading-loose text-fg" dir="rtl" lang="ar" style={{ fontSize: `${1.25 * scale}rem` }}>
         {d.arabic}
       </p>
-      <p className="mt-2 text-center text-sm font-extrabold leading-snug text-fg">{line.name}</p>
-      {line.translation ? <p className="mt-2 text-center text-sm leading-relaxed text-fg">{line.translation}</p> : null}
-      <p className="mt-1 text-center text-sm leading-snug text-muted">{line.meaning}</p>
-      <p className="mt-2 text-sm leading-relaxed text-fg">{line.reward}</p>
+      <p className="mt-2 text-center font-extrabold leading-snug text-fg" style={{ fontSize: `${0.95 * scale}rem` }}>
+        {read}
+      </p>
+      {line.translation ? (
+        <p className="mt-2 text-center leading-relaxed text-fg" style={{ fontSize: `${0.9 * scale}rem` }}>
+          {line.translation}
+        </p>
+      ) : null}
+      <p className="mt-1 text-center leading-snug text-muted" style={{ fontSize: `${0.875 * scale}rem` }}>
+        {line.meaning}
+      </p>
+      <p className="mt-2 leading-relaxed text-fg" style={{ fontSize: `${0.9 * scale}rem` }}>
+        {line.reward}
+      </p>
       <p className="mt-1 text-xs text-gold">{cite(d.source, lang)}</p>
     </div>
   );

@@ -303,11 +303,11 @@ export function Counter({
   const spoken = phraseOf(phrase, s.lang);
   const nameIndex = ALLAH_NAMES.findIndex((item) => item.id === s.mode);
   const showPhrase = !(s.mode === "random" && pulse === 0);
-  const sayyidScript = showPhrase && phrase.id === "sayyid" ? spoken.full || "" : "";
   const arabic = showPhrase ? phrase.arabic : "ذِكْر";
-  const hasArabic = !sayyidScript && /[\u0600-\u06FF]/.test(arabic);
+  const hasArabic = /[\u0600-\u06FF]/.test(arabic);
   const arabicShown = arabic;
   const name = showPhrase ? spoken.name : t(s.lang, "random");
+  const read = showPhrase && phrase.id === "sayyid" && spoken.full ? spoken.full : name;
   const compact = showPhrase && (hasArabic ? arabic.length > 90 : name.length > 90);
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
@@ -415,11 +415,7 @@ export function Counter({
             }}
           >
             <div className="phrase-scroll">
-            {sayyidScript ? (
-            <p className="phrase-arabic mx-auto max-w-sm text-sm font-bold leading-snug text-fg">
-              {sayyidScript}
-            </p>
-            ) : hasArabic ? (
+            {hasArabic ? (
             <p
               className={cn(
                 "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
@@ -431,7 +427,7 @@ export function Counter({
               {arabicShown}
             </p>
             ) : null}
-            <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", !hasArabic ? "text-sm" : name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{name}</p>
+            <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", phrase.id === "sayyid" ? "text-sm" : !hasArabic ? "text-sm" : name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{read}</p>
             {nameIndex >= 0 ? (
               virtue && showPhrase ? (
                 <div className="mt-1 text-xs leading-snug text-fg">

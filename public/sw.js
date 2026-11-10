@@ -47,14 +47,23 @@ async function storeFresh(html) {
   const cache = await caches.open(SHELL);
   if ((await savedStamp(cache)) === next) return "";
   const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+  const missing = [];
   for (const src of assets) {
-    if (await cache.match(src)) continue;
-    const res = await fetch(self.location.origin + src + "?open=" + Date.now(), {
-      cache: "no-store",
-      signal: AbortSignal.timeout(20000),
-    });
-    if (!res.ok) return "";
-    await cache.put(src, res.clone());
+    if (!(await cache.match(src))) missing.push(src);
+  }
+  try {
+    await Promise.all(
+      missing.map(async (src) => {
+        const res = await fetch(self.location.origin + src + "?open=" + Date.now(), {
+          cache: "no-store",
+          signal: AbortSignal.timeout(20000),
+        });
+        if (!res.ok) throw new Error("miss");
+        await cache.put(src, res.clone());
+      }),
+    );
+  } catch {
+    return "";
   }
   await cache.put("/index.html", page(html));
   return next;
@@ -85,8 +94,22 @@ function offline() {
   return page(html);
 }
 
+let lastLook = 0;
+
+async function watch() {
+  const now = Date.now();
+  if (now - lastLook < 15000) return;
+  lastLook = now;
+  const html = await siteHtml();
+  const mark = html ? await storeFresh(html) : "";
+  if (mark) await openFresh(mark);
+}
+
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "zikr-audio") audioOn = !!event.data.on;
+  if (event.data && event.data.type === "zikr-audio") {
+    audioOn = !!event.data.on;
+    event.waitUntil(watch());
+  }
 });
 
 self.addEventListener("install", (event) => {
@@ -123,8 +146,23 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
-  if (url.pathname === "/sw.js" || url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/")) return;
-  if (url.searchParams.has("open") || url.searchParams.has("warm") || url.searchParams.has("probe")) return;
+  // Safari leaves the page waiting forever if the worker sees a request and does not answer.
+  if (
+    url.pathname === "/sw.js" ||
+    url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/_server") ||
+    url.pathname.startsWith("/auth/") ||
+    url.searchParams.has("open") ||
+    url.searchParams.has("warm") ||
+    url.searchParams.has("probe")
+  ) {
+    if (url.pathname !== "/sw.js") {
+      event.respondWith(
+        fetch(req).catch(() => new Response("", { status: 503, headers: { "cache-control": "no-store" } })),
+      );
+    }
+    return;
+  }
   const navigation = req.mode === "navigate" || req.destination === "document";
   if (!keep(url) && !navigation) return;
 

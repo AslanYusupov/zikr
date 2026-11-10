@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { TAJWEED_PATH, TAJWEED_PATH_FLAT } from "@/lib/zikr/tajweed-path";
+import { TAJWEED_PATH, TAJWEED_PATH_FLAT, TAJWEED_QUIZ, topicQuiz } from "@/lib/zikr/tajweed-path";
 import { type CourseLesson } from "@/lib/zikr/tajweed-course";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
 
 const PASS_KEY = "zikr-tajweed-pass";
+const TOPIC_KEY = "zikr-tajweed-topics";
 
-function readPassed(): string[] {
+function readIds(key: string): string[] {
   try {
-    const raw = localStorage.getItem(PASS_KEY);
+    const raw = localStorage.getItem(key);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
     return Array.isArray(parsed) ? parsed.filter((id) => typeof id === "string") : [];
   } catch {
@@ -108,12 +109,16 @@ const TONE: Record<CourseLesson["tone"], string> = {
 
 export function TajweedView() {
   const lang = useZikr((s) => s.lang);
-  const [passed, setPassed] = useState<string[]>(readPassed);
+  const [passed, setPassed] = useState<string[]>(() => readIds(PASS_KEY));
+  const [topicPassed, setTopicPassed] = useState<string[]>(() => readIds(TOPIC_KEY));
+  const [pane, setPane] = useState<"lessons" | "questions">("lessons");
+  const [topicOpen, setTopicOpen] = useState<string | null>(TAJWEED_QUIZ[0].id);
   const [mod, setMod] = useState(TAJWEED_PATH[0].id);
   const [open, setOpen] = useState<string | null>(TAJWEED_PATH[0].lessons[0].id);
   const [picks, setPicks] = useState<Record<string, number>>({});
   const [result, setResult] = useState<Record<string, "ok" | "bad">>({});
   const [hint, setHint] = useState("");
+  const [shown, setShown] = useState<Record<string, boolean>>({});
   const card = useRef<HTMLElement | null>(null);
   const skipScroll = useRef(true);
 
@@ -144,6 +149,30 @@ export function TajweedView() {
     }
   }
 
+  function saveTopics(next: string[]) {
+    setTopicPassed(next);
+    try {
+      localStorage.setItem(TOPIC_KEY, JSON.stringify(next));
+    } catch {
+      /* private mode */
+    }
+  }
+
+  function checkTopic(id: string) {
+    const topic = TAJWEED_QUIZ.find((item) => item.id === id);
+    if (!topic) return;
+    const items = topicQuiz(topic);
+    const missing = items.some((_, index) => picks[`t:${id}:${index}`] == null);
+    if (missing) {
+      setHint(`t:${id}`);
+      return;
+    }
+    setHint("");
+    const ok = items.every((item, index) => picks[`t:${id}:${index}`] === item.answer);
+    setResult((current) => ({ ...current, [`t:${id}`]: ok ? "ok" : "bad" }));
+    if (ok && !topicPassed.includes(id)) saveTopics([...topicPassed, id]);
+  }
+
   function check(lesson: CourseLesson) {
     const missing = lesson.quiz.some((_, index) => picks[`${lesson.id}:${index}`] == null);
     if (missing) {
@@ -169,12 +198,12 @@ export function TajweedView() {
     <div className="quran-scroll">
       <p className="text-xs leading-relaxed text-muted">
         {say(
-          "Хафс от Асыма, Мусхаф Медины. С нуля до чтения. Следующий модуль открывается, когда пройден тест предыдущего.",
-          "Hafs from Asim, the Madinah mushaf. From the start to reading. The next module opens when the previous test is passed.",
-          "حفص عن عاصم، مصحف المدينة. من البداية إلى القراءة. يُفتح الباب التالي بعد اختبار السابق.",
-          "Hafs dari Asim, mushaf Madinah. Dari awal hingga membaca. Modul berikutnya terbuka selepas ujian sebelumnya lulus.",
-          "Hafs, Asım'dan, Medine mushafı. Sıfırdan okumaya. Sonraki bölüm, öncekinin testi geçilince açılır.",
-          "حفص عن عاصم، مصحف مدینہ۔ شروع سے پڑھنے تک۔ اگلا باب پچھلے امتحان کے بعد کھلتا ہے۔",
+          "Хафс от Асыма, Мусхаф Медины. С нуля до чтения самому. Следующий модуль открывается, когда пройден тест предыдущего. В последних уроках строка скрыта: сначала арабский вслух, потом «Сверить». Кнопка «слушать» — голос телефона, таджвид он не держит. Образец — чтец в разделе Корана.",
+          "Hafs from Asim, the Madinah mushaf. From the start to reading on your own. The next module opens when the previous test is passed. In the last lessons the line is hidden: read the Arabic aloud first, then check. The listen button is the phone's voice, and it does not keep tajweed. The model is the reciter in the Quran.",
+          "حفص عن عاصم، مصحف المدينة. من البداية إلى القراءة وحدك. يُفتح الباب التالي بعد اختبار السابق. في الدروس الأخيرة السطر مخفي: اقرأ العربي أولًا ثم أظهر السطر. زر الاستماع صوت الهاتف ولا يضبط التجويد. القدوة قارئ قسم القرآن.",
+          "Hafs dari Asim, mushaf Madinah. Dari awal hingga membaca sendiri. Modul berikutnya terbuka selepas ujian sebelumnya lulus. Pada pelajaran akhir baris disembunyikan: baca Arab dahulu, kemudian semak. Butang dengar ialah suara telefon, ia tidak menjaga tajwid. Contoh ialah qari di bahagian Al-Qur'an.",
+          "Hafs, Asım'dan, Medine mushafı. Sıfırdan kendi başına okumaya. Sonraki bölüm, öncekinin testi geçilince açılır. Son derslerde satır gizlidir: önce Arapçayı sesli oku, sonra satırı aç. Dinle düğmesi telefonun sesidir, tecvidi tutmaz. Örnek, Kur'an bölümündeki karidir.",
+          "حفص عن عاصم، مصحف مدینہ۔ شروع سے خود پڑھنے تک۔ اگلا باب پچھلے امتحان کے بعد کھلتا ہے۔ آخری سبقوں میں سطر چھپی ہے: پہلے عربی آواز سے پڑھیں، پھر سطر دیکھیں۔ سنیں کا بٹن فون کی آواز ہے، تجوید نہیں رکھتا۔ نمونہ قرآن والے حصے کا قاری ہے۔",
         )}
       </p>
       <div className="taj-bar" aria-hidden>
@@ -191,6 +220,107 @@ export function TajweedView() {
           );
         })}
       </div>
+      <div className="taj-pane">
+        <button type="button" className={pane === "lessons" ? "on" : ""} onClick={() => setPane("lessons")}>
+          {say("Уроки", "Lessons", "الدروس", "Pelajaran", "Dersler", "اسباق")}
+        </button>
+        <button type="button" className={pane === "questions" ? "on" : ""} onClick={() => setPane("questions")}>
+          {say("Вопросы по темам", "Questions by topic", "أسئلة حسب الموضوع", "Soalan mengikut topik", "Konuya göre sorular", "موضوع کے سوال")}
+        </button>
+      </div>
+      {pane === "questions" ? (
+        <>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            {say(
+              "Один тест — одна тема таджвида. Тема открывается вместе со своим модулем. Повторные вопросы из уроков сюда не брались.",
+              "One test is one tajweed topic. A topic opens with its module. Repeated lesson questions are not included.",
+              "اختبار واحد لموضوع واحد. يُفتح الموضوع مع بابه. لم تُكرر أسئلة الدروس.",
+              "Satu ujian, satu topik. Topik terbuka bersama modulnya. Soalan yang berulang tidak dimasukkan.",
+              "Bir test, bir tecvid konusu. Konu, bölümüyle birlikte açılır. Tekrarlanan sorular alınmadı.",
+              "ایک امتحان، ایک موضوع۔ موضوع اپنے باب کے ساتھ کھلتا ہے۔ دہرائے سوال نہیں لیے گئے۔",
+            )}
+          </p>
+          <div className="mt-2 grid gap-1.5">
+            {TAJWEED_QUIZ.map((topic) => {
+              const modIndex = TAJWEED_PATH.findIndex((item) => item.id === topic.mod);
+              const openMod = unlocked(modIndex < 0 ? 0 : modIndex);
+              const on = topicOpen === topic.id;
+              const items = topicQuiz(topic);
+              const state = result[`t:${topic.id}`];
+              return (
+                <article key={topic.id} className="taj-lesson">
+                  <button
+                    type="button"
+                    className="surah-row"
+                    onClick={() => {
+                      if (!openMod) {
+                        setHint("lock");
+                        return;
+                      }
+                      setTopicOpen(on ? null : topic.id);
+                      setHint("");
+                    }}
+                  >
+                    <span className={cn("surah-no", topicPassed.includes(topic.id) && "taj-madd")}>{topicPassed.includes(topic.id) ? "✓" : openMod ? items.length : "·"}</span>
+                    <span className="min-w-0 flex-1 text-start text-sm leading-snug font-bold text-fg">{topic.title[lang]}</span>
+                  </button>
+                  {on && openMod ? (
+                    <div className="taj-body">
+                      <p className="text-sm leading-relaxed text-muted">{topic.lead[lang]}</p>
+                      {items.map((item, index) => (
+                        <fieldset key={`${topic.id}:${index}`} className="mt-3 grid gap-1">
+                          <legend className="text-sm font-bold text-fg">{item.q[lang]}</legend>
+                          {item.choices.map((choice, choiceIndex) => {
+                            const key = `t:${topic.id}:${index}`;
+                            const picked = picks[key] === choiceIndex;
+                            const show = state === "ok" || state === "bad";
+                            return (
+                              <button
+                                key={choiceIndex}
+                                type="button"
+                                className={cn(
+                                  "taj-choice",
+                                  picked && !show && "on",
+                                  show && choiceIndex === item.answer && "good",
+                                  show && picked && choiceIndex !== item.answer && "bad",
+                                )}
+                                onClick={() => {
+                                  setPicks((current) => ({ ...current, [key]: choiceIndex }));
+                                  setHint("");
+                                  setResult((current) => {
+                                    const next = { ...current };
+                                    delete next[`t:${topic.id}`];
+                                    return next;
+                                  });
+                                }}
+                              >
+                                {choice[lang]}
+                              </button>
+                            );
+                          })}
+                        </fieldset>
+                      ))}
+                      <button type="button" className="quran-claim mt-3" onClick={() => checkTopic(topic.id)}>
+                        {say("Проверить", "Check", "تحقق", "Semak", "Kontrol et", "دیکھیں")}
+                      </button>
+                      {hint === `t:${topic.id}` ? (
+                        <p className="mt-2 text-sm text-muted">{say("Сначала выбери ответ.", "Choose an answer first.", "اختر جوابًا أولًا.", "Pilih jawapan dahulu.", "Önce bir cevap seç.", "پہلے جواب چنیں۔")}</p>
+                      ) : null}
+                      {state === "bad" ? (
+                        <p className="mt-2 text-sm text-muted">{say("Не то. Верный ответ отмечен.", "Not that. The right answer is marked.", "ليس هذا. الصواب موضَّح.", "Bukan itu. Jawapan betul ditanda.", "O değil. Doğru cevap işaretli.", "یہ نہیں۔ درست جواب نشان زد ہے۔")}</p>
+                      ) : null}
+                      {state === "ok" ? (
+                        <p className="mt-2 text-sm text-muted">{say("Тема сдана.", "Topic passed.", "تمّ الموضوع.", "Topik lulus.", "Konu geçildi.", "موضوع ہو گیا۔")}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <>
       <Measure say={say} />
       <div className="taj-mods">
         {TAJWEED_PATH.map((item, index) => {
@@ -251,18 +381,40 @@ export function TajweedView() {
                   <p className="taj-lab">{say("Как звучит", "How it sounds", "كيف يُنطق", "Bagaimana bunyinya", "Nasıl duyulur", "کیسے سنائی دیتا ہے")}</p>
                   <p className="taj-lines text-sm leading-relaxed text-fg">{lesson.mechanism[lang]}</p>
                   <p className="taj-lab">{say("Примеры", "Examples", "أمثلة", "Contoh", "Örnekler", "مثالیں")}</p>
-                  {lesson.examples.map((row) => (
-                    <div key={row.ar + row.where} className="taj-row">
+                  {lesson.examples.map((row, index) => {
+                    const lineKey = `${lesson.id}:${index}`;
+                    const hidden = !!lesson.cover && lang !== "ar" && !shown[lineKey];
+                    return (
+                    <div key={lineKey} className="taj-row">
                       <p className={cn("taj-ar", TONE[lesson.tone])} dir="rtl" lang="ar">{row.ar}</p>
-                      <button type="button" className="taj-play" onClick={() => speak(row.ar)}>
-                        {say("Слушать", "Listen", "استمع", "Dengar", "Dinle", "سنیں")}
-                      </button>
-                      {lang === "ru" ? <p className="taj-read">{row.read}</p> : lang !== "ar" ? <p className="taj-read">{row.lat}</p> : null}
+                      {hidden ? null : (
+                        <button type="button" className="taj-play" onClick={() => speak(row.ar)}>
+                          {say("Слушать", "Listen", "استمع", "Dengar", "Dinle", "سنیں")}
+                        </button>
+                      )}
+                      {hidden ? (
+                        <>
+                          <p className="taj-note">{say("Сначала прочитай арабский вслух. Потом сверь.", "Read the Arabic aloud first. Then check.", "اقرأ العربي بصوت أولًا، ثم أظهر السطر.", "Baca Arab dengan suara dahulu. Kemudian semak.", "Önce Arapçayı sesli oku. Sonra satırı aç.", "پہلے عربی آواز سے پڑھیں۔ پھر سطر دیکھیں۔")}</p>
+                          <button type="button" className="taj-play" onClick={() => setShown((current) => ({ ...current, [lineKey]: true }))}>
+                            {say("Сверить", "Check the line", "أظهر السطر", "Semak baris", "Satırı aç", "سطر دیکھیں")}
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          {lang === "ru" ? <p className="taj-read">{row.read}</p> : lang !== "ar" ? <p className="taj-read">{row.lat}</p> : null}
+                          {lesson.cover && lang !== "ar" ? (
+                            <button type="button" className="taj-play" onClick={() => setShown((current) => ({ ...current, [lineKey]: false }))}>
+                              {say("Скрыть", "Hide", "أخف", "Sembunyi", "Gizle", "چھپائیں")}
+                            </button>
+                          ) : null}
+                        </>
+                      )}
                       {row.note ? <p className="taj-note">{row.note[lang]}</p> : (
                         <p className="taj-gloss">{/^\d+:\d+/.test(row.where) ? `${say("сура", "surah", "سورة", "surah", "sure", "سورہ")} ${row.where.replace(":", ", " + say("аят", "ayah", "آية", "ayat", "ayet", "آیت") + " ")}` : say(row.where === "мера" ? "мера" : "знак", row.where === "мера" ? "a count" : "a sign", row.where === "мера" ? "مقدار" : "علامة", row.where === "мера" ? "kadar" : "tanda", row.where === "мера" ? "miktar" : "işaret", row.where === "мера" ? "مقدار" : "نشان")}</p>
                       )}
                     </div>
-                  ))}
+                    );
+                  })}
                   <p className="taj-lab">{say("Чего избегать", "What to avoid", "ما يُجتنب", "Yang dielakkan", "Kaçınılacak", "جس سے بچیں")}</p>
                   <p className="text-sm leading-relaxed text-muted">{lesson.mistakes[lang]}</p>
                   {lesson.quiz.map((item, index) => (
@@ -318,6 +470,8 @@ export function TajweedView() {
           );
         })}
       </div>
+        </>
+      )}
     </div>
   );
 }

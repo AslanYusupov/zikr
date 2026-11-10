@@ -2,6 +2,14 @@ import { onlineNow } from "@/lib/zikr/api";
 
 const KEY = "zikr-online-n";
 
+/** Phones refresh on the same clock, so the list does not drift apart. */
+export const LIVE_STEP_MS = 3000;
+
+export function msUntilLiveTick(now = Date.now()): number {
+  const rest = LIVE_STEP_MS - (now % LIVE_STEP_MS);
+  return rest === 0 ? LIVE_STEP_MS : rest;
+}
+
 export function readSavedOnline(): number | null {
   if (typeof window === "undefined") return null;
   try {

@@ -1,22 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getSql } from "@/lib/db";
-import { addCloneTapsOnce } from "@/lib/zikr/api";
+import { getSql, type Sql } from "@/lib/db";
+import { RATING_FOLDS, RATING_SKIP_IDS, countRemembering, ratingWriteId } from "@/lib/zikr/api";
 
 const noStore = { "cache-control": "no-store" };
-const FOLDED: Record<string, string> = {
-  "88880455": "96995742",
-  "62012303": "87278839",
-  "25574036": "52812946",
-  "50170262": "52812946",
-  "79475757": "52812946",
-  "82261249": "52812946",
-};
 
-function realId(id: string) {
-  return FOLDED[id] ?? id;
+let copiesAt = 0;
+
+async function hideCopies(sql: Sql) {
+  if (Date.now() - copiesAt < 60_000) return;
+  const skip = RATING_SKIP_IDS;
+  for (const [clone, real] of Object.entries(RATING_FOLDS)) {
+    await sql`
+      insert into zikr_world (public_id, total)
+      select ${real}, total from zikr_world where public_id = ${clone}
+      on conflict (public_id) do update
+      set total = greatest(zikr_world.total, excluded.total),
+          updated_at = now()`;
+  }
+  await sql`delete from zikr_world where public_id = any(${skip}::text[])`;
+  await sql`delete from zikr_presence where public_id = any(${skip}::text[])`;
+  await sql`delete from zikr_invites where guest_id = any(${skip}::text[])`;
+  copiesAt = Date.now();
 }
-
-const GONE = "39309698";
 
 export const Route = createFileRoute("/api/rating")({
   server: {
@@ -30,44 +35,66 @@ export const Route = createFileRoute("/api/rating")({
         }
         try {
           const sql = await getSql();
-          await addCloneTapsOnce(sql);
-          await sql`delete from zikr_world where public_id = ${GONE}`;
-          await sql`delete from zikr_presence where public_id = ${GONE}`;
-          const publicId = realId(rawId);
-          const [rows, self, live, daily, together, online, dailyAhead, worldAhead] = await Promise.all([
+          try {
+            await hideCopies(sql);
+          } catch (err) {
+            console.error("[zikr] hide copies", err);
+          }
+          const publicId = ratingWriteId(rawId) ?? "";
+          const skip = RATING_SKIP_IDS;
+          const [rows, self, live, daily, together, remembering, dailyAhead, worldAhead] = await Promise.all([
             sql<{ public_id: string; total: number; concealed: boolean | null; day_key: string | null; day_total: number | null }>`
               select w.public_id, w.total,
                 p.concealed, p.day_key, p.day_total
               from zikr_world w
               left join zikr_presence p on p.public_id = w.public_id
-              where w.total > 0 and w.public_id <> ${GONE}
+              where w.total > 0 and not (w.public_id = any(${skip}::text[]))
               order by w.total desc, w.public_id asc
               limit 100`,
             sql<{ total: number; concealed: boolean | null; day_key: string | null; day_total: number | null }>`
               select w.total, p.concealed, p.day_key, p.day_total
               from zikr_world w
               left join zikr_presence p on p.public_id = w.public_id
-              where w.public_id = ${publicId}`,
-            sql<{ public_id: string; country: string; day_total: number; concealed: boolean | null }>`
-              select public_id, country, day_total, concealed
+              where w.public_id = ${publicId} and not (w.public_id = any(${skip}::text[]))`,
+            sql<{ public_id: string; country: string; day_total: number; concealed: boolean | null; day_key: string }>`
+              select public_id, country, day_total, concealed, day_key
               from zikr_presence
-              where last_tap_at > now() - interval '30 seconds' and day_total > 0
+              where last_tap_at > now() - interval '2 minutes'
+                and day_key = ${dayKey}
+                and day_total > 0
+                and not (public_id = any(${skip}::text[]))
               order by day_total desc, public_id asc
               limit 20`,
             sql<{ public_id: string; country: string; day_total: number; concealed: boolean | null }>`
               select public_id, country, day_total, concealed
               from zikr_presence
-              where day_key = ${dayKey} and day_total > 0
+              where day_key = ${dayKey} and day_total > 0 and not (public_id = any(${skip}::text[]))
               order by day_total desc, public_id asc
               limit 10`,
-            sql<{ n: string | number }>`select coalesce(sum(total), 0) as n from zikr_world`,
-            sql<{ n: number }>`select count(*)::int as n from zikr_presence where seen_at > now() - interval '2 minutes'`,
+            sql<{ n: string | number }>`
+              select coalesce(sum(total), 0) as n from zikr_world
+              where not (public_id = any(${skip}::text[]))`,
+            countRemembering(sql),
             sql<{ n: number }>`
               select count(*)::int as n from zikr_presence
-              where day_key = ${dayKey} and day_total > coalesce((select day_total from zikr_presence where public_id = ${publicId} and day_key = ${dayKey}), 0)`,
+              where day_key = ${dayKey} and day_total > 0 and not (public_id = any(${skip}::text[]))
+                and (
+                  day_total > coalesce((select day_total from zikr_presence where public_id = ${publicId} and day_key = ${dayKey}), 0)
+                  or (
+                    day_total = coalesce((select day_total from zikr_presence where public_id = ${publicId} and day_key = ${dayKey}), 0)
+                    and public_id < ${publicId}
+                  )
+                )`,
             sql<{ n: number }>`
               select count(*)::int as n from zikr_world
-              where total > coalesce((select total from zikr_world where public_id = ${publicId}), 0)`,
+              where total > 0 and not (public_id = any(${skip}::text[]))
+                and (
+                  total > coalesce((select total from zikr_world where public_id = ${publicId}), 0)
+                  or (
+                    total = coalesce((select total from zikr_world where public_id = ${publicId}), 0)
+                    and public_id < ${publicId}
+                  )
+                )`,
           ]);
           const open = (concealed: boolean | null, day: string | null, dayTotal: number | null) =>
             !concealed || (day === dayKey && (dayTotal ?? 0) >= 10000);
@@ -83,14 +110,14 @@ export const Route = createFileRoute("/api/rating")({
               }),
               mine: me ? { total: mineOpen ? me.total : 0, rank: (worldAhead[0]?.n ?? 0) + 1, ...(mineOpen ? {} : { hidden: true }) } : null,
               live: live.map((row, index) => {
-                const shown = open(row.concealed, dayKey, row.day_total);
+                const shown = open(row.concealed, row.day_key, row.day_total);
                 return { id: row.public_id, country: row.country, value: shown ? row.day_total : 0, rank: index + 1, ...(shown ? {} : { hidden: true }) };
               }),
               daily: daily.map((row, index) => {
                 const shown = open(row.concealed, dayKey, row.day_total);
                 return { id: row.public_id, country: row.country, value: shown ? row.day_total : 0, rank: index + 1, ...(shown ? {} : { hidden: true }) };
               }),
-              remembering: online[0]?.n ?? 0,
+              remembering,
               allTaps: Math.max(0, Math.floor(Number(together[0]?.n ?? 0))),
               dailyRank: meDaily && meDaily.day_total > 0 ? (dailyAhead[0]?.n ?? 0) + 1 : null,
             },
@@ -109,14 +136,14 @@ export const Route = createFileRoute("/api/rating")({
           return Response.json({ ok: false }, { status: 400, headers: noStore });
         }
         const body = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
-        const publicId = realId(typeof body.publicId === "string" ? body.publicId : "");
+        const publicId = ratingWriteId(typeof body.publicId === "string" ? body.publicId : "");
         const dayKey = typeof body.dayKey === "string" ? body.dayKey : "";
         const total = typeof body.total === "number" ? Math.floor(body.total) : -1;
         const dayTotal = typeof body.dayTotal === "number" ? Math.floor(body.dayTotal) : -1;
         const xp = typeof body.xp === "number" ? Math.floor(body.xp) : -1;
         const country = typeof body.country === "string" ? body.country.slice(0, 4) : "";
-        if (publicId === GONE) return Response.json({ ok: true }, { headers: noStore });
-        if (!/^\d{8}$/.test(publicId) || !/^\d{4}-\d{2}-\d{2}$/.test(dayKey) || total < 0 || dayTotal < 0 || xp < 0) {
+        if (!publicId) return Response.json({ ok: true }, { headers: noStore });
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dayKey) || total < 0 || dayTotal < 0 || xp < 0) {
           return Response.json({ ok: false }, { status: 400, headers: noStore });
         }
         try {
@@ -146,8 +173,8 @@ export const Route = createFileRoute("/api/rating")({
               seen_at = now(),
               last_tap_at = now(),
               concealed = excluded.concealed`;
-          const invitedBy = typeof body.invitedBy === "string" ? realId(body.invitedBy) : "";
-          if (/^\d{8}$/.test(invitedBy) && invitedBy !== publicId && total > 0) {
+          const invitedBy = ratingWriteId(typeof body.invitedBy === "string" ? body.invitedBy : "");
+          if (invitedBy && invitedBy !== publicId && total > 0) {
             await sql`
               insert into zikr_invites (guest_id, host_id, total)
               values (${publicId}, ${invitedBy}, ${total})

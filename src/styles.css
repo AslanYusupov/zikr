@@ -4094,6 +4094,9 @@ html, body {
 .taj-bar { height: .35rem; margin-top: .55rem; overflow: hidden; border-radius: 999px; background: var(--line); }
 .taj-bar span { display: block; height: 100%; background: var(--gold); }
 .taj-mods { display: flex; gap: .4rem; margin-top: .7rem; overflow-x: auto; padding-bottom: .15rem; }
+.taj-pane { display: flex; gap: .4rem; margin-top: .7rem; }
+.taj-pane button { flex: 1; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); color: var(--fg); font-weight: 800; font-size: .85rem; padding: .55rem .4rem; }
+.taj-pane button.on { border-color: var(--gold); color: var(--gold); }
 .taj-mod { display: grid; flex: none; place-items: center; width: 2.7rem; height: 2.7rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); color: var(--fg); font-size: .85rem; font-weight: 800; line-height: 1; }
 .taj-mod span { color: var(--muted); font-size: .58rem; font-weight: 700; }
 .taj-mod.on { border-color: var(--gold); color: var(--gold); }
