@@ -70,21 +70,10 @@ async function storeFresh(html) {
 }
 
 async function openFresh(mark) {
-  if (!mark || audioOn) return;
+  if (!mark) return;
   const open = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
   for (const client of open) {
-    if (typeof client.navigate !== "function") {
-      client.postMessage({ type: "zikr-reload", build: mark });
-      continue;
-    }
-    try {
-      const url = new URL(client.url);
-      if (url.searchParams.get("v") === mark) continue;
-      url.searchParams.set("v", mark);
-      await client.navigate(url.href);
-    } catch {
-      client.postMessage({ type: "zikr-reload", build: mark });
-    }
+    client.postMessage({ type: "zikr-update", build: mark });
   }
 }
 

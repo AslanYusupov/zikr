@@ -1,5 +1,5 @@
 import { fetchNewest, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261110-4";
+export const APP_BUILD = "20261110-5";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -77,16 +77,17 @@ export async function checkUpdate(): Promise<"same" | "fresh" | "stuck" | "unkno
 
 let pulling = false;
 
-export async function pullUpdate(): Promise<void> {
-  if (pulling || typeof window === "undefined" || !("caches" in window)) return;
+/** Save a newer published page and return its stamp. The open page stays until the person taps. */
+export async function pullUpdate(): Promise<string | null> {
+  if (pulling || typeof window === "undefined" || !("caches" in window)) return null;
   pulling = true;
   try {
     const found = await fetchNewest();
-    if (!found) return;
+    if (!found) return null;
     const mark = buildStamp(found.html);
-    if (!mark || !buildIsNewer(mark, pageBuild())) return;
+    if (!mark || !buildIsNewer(mark, pageBuild())) return null;
     const assets = [...new Set([...found.html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-    if (!assets.length) return;
+    if (!assets.length) return null;
     const cache = await caches.open("zikr-ok-v1");
     const missing: string[] = [];
     for (const src of assets) {
@@ -100,13 +101,17 @@ export async function pullUpdate(): Promise<void> {
       }),
     );
     await cache.put("/index.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
-    if (audioBusy()) return;
-    const next = new URL(window.location.href);
-    next.searchParams.set("v", mark);
-    window.location.replace(next.href);
+    return mark;
   } catch {
-    /* the open page stays until the next check */
+    return null;
   } finally {
     pulling = false;
   }
+}
+
+export function applyUpdate(mark: string) {
+  const next = new URL(window.location.href);
+  next.searchParams.set("v", mark);
+  next.searchParams.set("open", String(Date.now()));
+  window.location.replace(next.href);
 }

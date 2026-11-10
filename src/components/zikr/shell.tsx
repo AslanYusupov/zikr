@@ -7,7 +7,7 @@ import { Counter, ModeStrip } from "./counter";
 import { QuranView } from "./quran-view";
 import { Backdrop, randomStarPass } from "./pattern";
 import { isRtl, headLabel, t, tx } from "@/lib/zikr/i18n";
-import { audioBusy, pullUpdate } from "@/lib/zikr/build";
+import { applyUpdate, audioBusy, buildIsNewer, pageBuild, pullUpdate } from "@/lib/zikr/build";
 import { fetchOnline, msUntilLiveTick, readSavedOnline, saveOnline } from "@/lib/zikr/online-count";
 import { formatNum, todayKey } from "@/lib/zikr/format";
 import { useCloud, useHydrated, useWorldSync } from "./use-cloud";
@@ -106,6 +106,7 @@ export function Shell() {
   const [notice, setNotice] = useState<string | null>(null);
   const [full, setFull] = useState(false);
   const [online, setOnline] = useState<number | null>(null);
+  const [updateMark, setUpdateMark] = useState<string | null>(null);
   const [entered, setEntered] = useState(false);
   const [dayStamp, setDayStamp] = useState(todayKey);
   const noticeId = useRef(0);
@@ -114,9 +115,15 @@ export function Shell() {
   useEffect(() => {
     if (!import.meta.env.PROD || !("serviceWorker" in navigator) || !("caches" in window)) return;
     let stop = false;
+    const offer = (mark: string) => {
+      if (!mark || !buildIsNewer(mark, pageBuild())) return;
+      setUpdateMark(mark);
+    };
     const look = () => {
       if (stop || document.hidden) return;
-      void pullUpdate();
+      void pullUpdate().then((mark) => {
+        if (!stop && mark) offer(mark);
+      });
     };
     const kick = () => {
       void navigator.serviceWorker.getRegistration().then((next) => next?.update());
@@ -136,13 +143,8 @@ export function Shell() {
       if (stop) return;
       navigator.serviceWorker.addEventListener("message", (event) => {
         const data = event.data;
-        if (!data || data.type !== "zikr-reload" || audioBusy()) return;
-        const mark = String(data.build || "");
-        const here = document.querySelector('meta[name="zikr-build"]')?.getAttribute("content") || "";
-        if (!mark || here === mark || new URL(location.href).searchParams.get("v") === mark) return;
-        const next = new URL(location.href);
-        next.searchParams.set("v", mark);
-        location.replace(next.href);
+        if (!data || (data.type !== "zikr-update" && data.type !== "zikr-reload")) return;
+        offer(String(data.build || ""));
       });
       look();
       if (stop) return;
@@ -497,6 +499,16 @@ export function Shell() {
             <p className="notice-in rounded-2xl border border-line bg-surface px-3 py-2 text-center text-sm text-fg">{notice}</p>
           </div>
         )}
+
+        {updateMark ? (
+          <button
+            type="button"
+            onClick={() => applyUpdate(updateMark)}
+            className="z-40 mx-3 mb-2 h-12 shrink-0 rounded-full bg-gold text-sm text-ink"
+          >
+            {tx(lang, "updateHere")}
+          </button>
+        ) : null}
 
         <nav className="app-nav safe-bottom z-30 grid shrink-0 grid-cols-5 border-t border-line bg-bg">
           <span className="nav-pill" style={{ transform: `translateX(${Math.max(0, TABS.findIndex((item) => item.id === tab)) * 100}%)` }} aria-hidden>
