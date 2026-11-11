@@ -5,6 +5,8 @@ type Glyph = {
   v: Vowel;
   sh: boolean;
   long: boolean;
+  /** U+0670, the dagger alif. On waw it is «аа», as in صلاة. A maddah on waw is not this. */
+  dagger: boolean;
   suk: boolean;
   silah: "" | "u" | "i";
   hz: boolean;
@@ -120,7 +122,7 @@ const MUQ_LAT: Record<string, string> = {
 };
 
 function glyph(ch: string, v: Vowel = "", long = false, hz = false): Glyph {
-  return { ch, v, sh: false, long, suk: false, silah: "", hz };
+  return { ch, v, sh: false, long, suk: false, silah: "", hz, dagger: false };
 }
 
 function isLetter(ch: string): boolean {
@@ -138,7 +140,14 @@ function parseWord(raw: string): Glyph[] {
       if (out.length) out[out.length - 1].sh = true;
       continue;
     }
-    if (ch === "\u0670" || ch === "\u0653") {
+    if (ch === "\u0670") {
+      if (out.length) {
+        out[out.length - 1].long = true;
+        out[out.length - 1].dagger = true;
+      }
+      continue;
+    }
+    if (ch === "\u0653") {
       if (out.length) out[out.length - 1].long = true;
       continue;
     }
@@ -294,7 +303,7 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
       out = hamzaSyl(out, syl, ru);
       continue;
     }
-    if (cur.ch === "\u0648" && cur.long && !cur.v && !cur.sh) {
+    if (cur.ch === "\u0648" && cur.dagger && !cur.v && !cur.sh) {
       out += ru ? "аа" : "aa";
       continue;
     }
