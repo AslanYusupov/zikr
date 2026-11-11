@@ -148,7 +148,7 @@ export const QUOTE_NEW: Record<string, FixedQuote> = {
     tr: "Rabbinizden bir bağışlanmaya ve Allah’a ve peygamberlerine iman edenler için hazırlanmış, genişliği gökle yerin genişliği kadar olan cennete koşun. İşte Allah’ın dilediğine verdiği lütfu. Allah büyük lütuf sahibidir.",
     ur: "اپنے رب کی بخشش اور اس جنت کی طرف دوڑو جس کی چوڑائی آسمان و زمین کی چوڑائی جیسی ہے، جو ان کے لیے تیار کی گئی ہے جو اللہ اور اس کے رسولوں پر ایمان لائے۔ یہ اللہ کا فضل ہے، وہ جسے چاہے دے۔ اللہ بڑے فضل والا ہے۔",
   },
-  "Но нет! Вы отдаете предпочтение мирской жизни, хотя Последняя жизнь - лучше и дольше. Воистину, это записано в первых свитках - свитках Ибрахима (Авраама) и Мусы (Моисея).": {
+  "Но нет! Вы отдаете предпочтение мирской жизни, хотя Последняя жизнь - лучше и дольше. Воистину, это записано в первых свитках - свитках Ибрах1има (Авраама) и Мусы (Моисея).": {
     en: "But you prefer the life of this world, while the Hereafter is better and more lasting. Indeed this is in the former scriptures, the scriptures of Ibrahim and Musa.",
     ar: "بَلْ تُؤْثِرُونَ ٱلْحَيَوٰةَ ٱلدُّنْيَا وَٱلْءَاخِرَةُ خَيْرٌۭ وَأَبْقَىٰٓ إِنَّ هَٰذَا لَفِى ٱلصُّحُفِ ٱلْأُولَىٰ صُحُفِ إِبْرَٰهِيمَ وَمُوسَىٰ",
     id: "Tetapi kamu mengutamakan kehidupan dunia, padahal akhirat lebih baik dan lebih kekal. Sesungguhnya ini terdapat dalam kitab-kitab terdahulu, kitab Ibrahim dan Musa.",
