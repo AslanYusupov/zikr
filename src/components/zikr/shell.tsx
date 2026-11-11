@@ -119,6 +119,12 @@ export function Shell() {
       if (!mark || !buildIsNewer(mark, pageBuild())) return;
       setUpdateMark(mark);
     };
+    const onUpdate = (event: MessageEvent) => {
+      const data = event.data;
+      if (!data || (data.type !== "zikr-update" && data.type !== "zikr-reload")) return;
+      offer(String(data.build || ""));
+    };
+    navigator.serviceWorker.addEventListener("message", onUpdate);
     const look = () => {
       if (stop || document.hidden) return;
       void pullUpdate().then((mark) => {
@@ -141,11 +147,6 @@ export function Shell() {
         return;
       }
       if (stop) return;
-      navigator.serviceWorker.addEventListener("message", (event) => {
-        const data = event.data;
-        if (!data || (data.type !== "zikr-update" && data.type !== "zikr-reload")) return;
-        offer(String(data.build || ""));
-      });
       look();
       if (stop) return;
       try {
@@ -181,6 +182,7 @@ export function Shell() {
     const beat = window.setInterval(tell, 2000);
     return () => {
       stop = true;
+      navigator.serviceWorker.removeEventListener("message", onUpdate);
       window.clearTimeout(timer);
       window.clearInterval(poll);
       window.clearInterval(beat);

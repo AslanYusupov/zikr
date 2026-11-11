@@ -45,7 +45,8 @@ async function storeFresh(html) {
   const next = stampOf(html);
   if (!next) return "";
   const cache = await caches.open(SHELL);
-  if ((await savedStamp(cache)) === next) return "";
+  const saved = await savedStamp(cache);
+  if (saved === next) return "";
   const assets = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
   const missing = [];
   for (const src of assets) {
@@ -65,8 +66,8 @@ async function storeFresh(html) {
   } catch {
     return "";
   }
-  await cache.put("/index.html", page(html));
-  return next;
+  await cache.put(saved ? "/pending.html" : "/index.html", page(html));
+  return saved ? next : "";
 }
 
 async function openFresh(mark) {

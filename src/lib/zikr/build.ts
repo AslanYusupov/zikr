@@ -1,5 +1,5 @@
 import { fetchNewest, fetchShellHtml } from "./mirror";
-export const APP_BUILD = "20261111-6";
+export const APP_BUILD = "20261112-1";
 
 const TRIED_KEY = "zikr-update-tried";
 
@@ -100,7 +100,7 @@ export async function pullUpdate(): Promise<string | null> {
         await cache.put(src, file.clone());
       }),
     );
-    await cache.put("/index.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+    await cache.put("/pending.html", new Response(found.html, { headers: { "content-type": "text/html; charset=utf-8" } }));
     return mark;
   } catch {
     return null;
@@ -109,7 +109,21 @@ export async function pullUpdate(): Promise<string | null> {
   }
 }
 
-export function applyUpdate(mark: string) {
+/** The open page stays. The new page is kept aside until the person taps. */
+export async function applyUpdate(mark: string) {
+  try {
+    const cache = await caches.open("zikr-ok-v1");
+    const pending = await cache.match("/pending.html");
+    if (pending) {
+      const html = await pending.text();
+      const stamp = buildStamp(html);
+      if (stamp && (stamp === mark || buildIsNewer(stamp, pageBuild()))) {
+        await cache.put("/index.html", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+      }
+    }
+  } catch {
+    /* the reload below still asks the site for the new page */
+  }
   const next = new URL(window.location.href);
   next.searchParams.set("v", mark);
   next.searchParams.set("open", String(Date.now()));
