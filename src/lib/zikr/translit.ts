@@ -21,7 +21,7 @@ const VOWELS: Record<string, Vowel> = {
   "\u064D": "in",
 };
 
-const SUN = new Set(["ت", "ث", "د", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ل", "ن"]);
+const SUN = new Set(["ت", "ث", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ل", "ن"]);
 
 const RU: Record<string, string> = {
   ب: "б",
