@@ -504,7 +504,7 @@ export function Shell() {
           <button
             type="button"
             onClick={() => applyUpdate(updateMark)}
-            className="z-40 mx-3 mb-2 h-12 shrink-0 rounded-full bg-gold text-sm text-ink"
+            className="z-40 mx-3 mb-2 h-12 shrink-0 self-stretch rounded-full bg-gold text-sm text-ink"
           >
             {tx(lang, "updateHere")}
           </button>

@@ -426,7 +426,7 @@ export function RatingView() {
       {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} mask={maskMine} onMine={toggleMine} /> : null}
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
       <p className="mt-1 text-sm leading-relaxed text-muted">{t(lang, "ratingDaily")}</p>
-      <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} mask={maskMine} onMine={toggleMine} />
+      {dailyShown == null ? <p className="mt-2 text-sm text-muted">{worldError ? "—" : "…"}</p> : <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} mask={maskMine} onMine={toggleMine} />}
       {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted" onClick={toggleMine}>{t(lang, "dailyPlace")}: {maskMine ? "***" : formatNum(myDailyRank)}.</p> : null}
 
       {worldOpen ? (
@@ -497,9 +497,6 @@ export function RatingView() {
             <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
           </div>
           <p className="mt-2 text-xs break-words text-muted">{t(lang, "ratingScale")}</p>
-          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold px-3 text-sm text-ink opacity-45">
-            {t(lang, "ratingOpen")}
-          </button>
         </article>
       )}
       <article className="mt-5 rounded-3xl border border-line bg-surface px-4 py-4">
