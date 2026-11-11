@@ -203,7 +203,6 @@ export function RatingView() {
   }
 
   useEffect(() => {
-    if (total < 10_000) return;
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
     const load = () => {
@@ -228,7 +227,6 @@ export function RatingView() {
   }, [publicId]);
 
   useEffect(() => {
-    if (total < 10_000) return;
     if (!/^\d{8}$/.test(publicId)) return;
     let stop = false;
     let flying = false;
@@ -350,7 +348,7 @@ export function RatingView() {
       document.removeEventListener("visibilitychange", onWake);
       link?.removeEventListener?.("change", onWake);
     };
-  }, [publicId, day, total >= 10_000]);
+  }, [publicId, day]);
 
   const selfLine =
     record > today
@@ -369,8 +367,8 @@ export function RatingView() {
   const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
   const clock = updatedAt ? clockOf(updatedAt, lang) : "";
-  const ratingNeed = 10_000;
-  const onlineOpen = total >= ratingNeed;
+  const ratingNeed = 5_000;
+  const worldOpen = total >= ratingNeed;
   const left = Math.max(0, ratingNeed - total);
   const done = Math.max(0, Math.min(100, (total / ratingNeed) * 100));
 
@@ -423,11 +421,7 @@ export function RatingView() {
       </div>
       <InviteButtons />
 
-      {onlineOpen ? (
-      <>
-      <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
-      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? (worldError ? "—" : "…") : formatNum(tapsShown)}</p>
-      <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
+      <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</h2>
       <p className="mt-1 text-2xl tabular-nums text-fg">{online === null ? (worldError ? "—" : "…") : formatNum(online)}</p>
       {liveShown && liveShown.length > 0 ? <Board rows={liveShown} publicId={publicId} empty="" namesOnly lang={lang} mask={maskMine} onMine={toggleMine} /> : null}
       <h2 className="mt-5 text-xs tracking-wide text-gold uppercase">{t(lang, "daily")}</h2>
@@ -435,6 +429,10 @@ export function RatingView() {
       <Board rows={dailyShown} publicId={publicId} empty={t(lang, "dailyQuiet")} lang={lang} mask={maskMine} onMine={toggleMine} />
       {myDailyRank && today > 0 && !HIDDEN_RATING_IDS.has(publicId) ? <p className="mt-2 text-sm text-muted" onClick={toggleMine}>{t(lang, "dailyPlace")}: {maskMine ? "***" : formatNum(myDailyRank)}.</p> : null}
 
+      {worldOpen ? (
+      <>
+      <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
+      <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? (worldError ? "—" : "…") : formatNum(tapsShown)}</p>
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
       {vpn ? <p className="mt-1 text-sm text-gold">{t(lang, "ratingVpn")}</p> : null}
       <p className="mt-1 text-sm leading-relaxed text-muted" onClick={toggleMine}>
@@ -486,6 +484,24 @@ export function RatingView() {
         </p>
       ) : null}
 
+      </>
+      ) : (
+        <article className="mt-6 min-w-0 overflow-hidden rounded-3xl border border-line bg-surface px-4 py-5">
+          <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</p>
+          <h2 className="mt-2 text-base leading-snug break-words text-balance text-fg">{t(lang, "ratingLock")}</h2>
+          <div className="mt-5 flex min-w-0 items-baseline justify-between gap-3">
+            <p className="min-w-0 truncate text-2xl tabular-nums text-fg">{formatNum(total)}</p>
+            <p className="shrink-0 text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
+            <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
+          </div>
+          <p className="mt-2 text-xs break-words text-muted">{t(lang, "ratingScale")}</p>
+          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold px-3 text-sm text-ink opacity-45">
+            {t(lang, "ratingOpen")}
+          </button>
+        </article>
+      )}
       <article className="mt-5 rounded-3xl border border-line bg-surface px-4 py-4">
         <h2 className="text-lg text-fg">{tx(lang, "pointGood")}</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">{tx(lang, "pointLead")}</p>
@@ -507,24 +523,6 @@ export function RatingView() {
           </p>
         ) : null}
       </article>
-      </>
-      ) : (
-        <article className="mt-6 min-w-0 overflow-hidden rounded-3xl border border-line bg-surface px-4 py-5">
-          <p className="text-xs tracking-wide text-gold uppercase">{t(lang, "online")}</p>
-          <h2 className="mt-2 text-base leading-snug break-words text-balance text-fg">{t(lang, "ratingLock")}</h2>
-          <div className="mt-5 flex min-w-0 items-baseline justify-between gap-3">
-            <p className="min-w-0 truncate text-2xl tabular-nums text-fg">{formatNum(total)}</p>
-            <p className="shrink-0 text-sm tabular-nums text-muted">{t(lang, "left")} {formatNum(left)}</p>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-line" aria-hidden>
-            <div className="h-full rounded-full bg-gold" style={{ width: `${done}%` }} />
-          </div>
-          <p className="mt-2 text-xs break-words text-muted">{t(lang, "ratingScale")}</p>
-          <button type="button" disabled className="mt-5 h-11 w-full rounded-full bg-gold px-3 text-sm text-ink opacity-45">
-            {t(lang, "ratingOpen")}
-          </button>
-        </article>
-      )}
     </div>
   );
 }
