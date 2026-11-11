@@ -348,6 +348,8 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     else if (cur.sh && elideWasl) out += `${token}-`;
     out += token;
     out += stretch(vowelSound(cur.v, ru), cur, ru);
+    // A closed letter before waw or ya must not glue into one Russian syllable: «сви» is read as svi, but the mouth is s-wi.
+    if (cur.suk && next && (next.ch === "\u0648" || next.ch === "\u064A" || next.ch === "\u0649") && (next.v || next.sh)) out += "-";
   }
   if (ru && out.endsWith("л")) out += "ь";
   return out.replace(/а{3,}/g, "аа").replace(/и{3,}/g, "ии").replace(/у{3,}/g, "уу").replace(/-{2,}/g, "-");
