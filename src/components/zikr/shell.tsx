@@ -461,6 +461,16 @@ export function Shell() {
           </button>
         </header>
 
+        {updateMark ? (
+          <button
+            type="button"
+            onClick={() => applyUpdate(updateMark)}
+            className="z-40 mx-3 mb-1 mt-1 h-11 shrink-0 self-stretch rounded-full bg-gold text-sm font-semibold text-ink"
+          >
+            {tx(lang, "updateHere")}
+          </button>
+        ) : null}
+
         <div className="shell-main relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
           {tab === "zikr" && (
             <ModeStrip
@@ -501,16 +511,6 @@ export function Shell() {
             <p className="notice-in rounded-2xl border border-line bg-surface px-3 py-2 text-center text-sm text-fg">{notice}</p>
           </div>
         )}
-
-        {updateMark ? (
-          <button
-            type="button"
-            onClick={() => applyUpdate(updateMark)}
-            className="z-40 mx-3 mb-2 h-12 shrink-0 self-stretch rounded-full bg-gold text-sm text-ink"
-          >
-            {tx(lang, "updateHere")}
-          </button>
-        ) : null}
 
         <nav className="app-nav safe-bottom z-30 grid shrink-0 grid-cols-5 border-t border-line bg-bg">
           <span className="nav-pill" style={{ transform: `translateX(${Math.max(0, TABS.findIndex((item) => item.id === tab)) * 100}%)` }} aria-hidden>
