@@ -2040,19 +2040,19 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .stage {
   overscroll-behavior: none;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   min-width: 0;
   min-height: 0;
-  height: 100%;
   display: flex;
   position: relative;
   overflow: hidden;
 }
 .stage-wrap {
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 0%;
   min-width: 0;
   min-height: 0;
+  height: auto;
   display: flex;
   position: relative;
 }
@@ -2075,6 +2075,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .history-screen,.below-screen {
   box-sizing: border-box;
   touch-action: pan-y;
+  flex-shrink: 0;
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -2103,11 +2104,11 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .main-screen {
   touch-action: manipulation;
   flex-direction: column;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   width: 100%;
   min-width: 0;
   height: 100%;
-  min-height: 100%;
+  min-height: 0;
   max-height: 100%;
   display: flex;
   position: relative;
@@ -2115,7 +2116,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 }
 .orb-slot {
   pointer-events: auto;
-  flex: auto;
+  flex: 1 1 auto;
   justify-content: center;
   align-items: center;
   min-height: 0;
@@ -2180,7 +2181,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   z-index: 6;
   background: linear-gradient(to top, var(--bg) 78%, transparent);
   flex-shrink: 0;
-  margin-top: auto;
+  margin-top: 0;
   padding-bottom: .35rem;
   position: relative;
 }
@@ -4252,9 +4253,10 @@ html[data-os="android"] .reminder {
   max-height: 4.2rem;
   padding: .22rem .5rem .26rem;
 }
+html[data-os="ios"] .stats-dock,
 html[data-os="android"] .stats-dock {
   margin-top: 0;
-  padding-bottom: .05rem;
+  padding-bottom: .35rem;
 }
 html[data-os="android"] .day-line {
   font-size: 11px;
