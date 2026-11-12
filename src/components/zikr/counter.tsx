@@ -281,6 +281,11 @@ export function Counter({
   pressRef.current = press;
 
   useEffect(() => {
+    const node = document.querySelector(".stage-scroll");
+    if (node instanceof HTMLElement) node.scrollTop = 0;
+  }, []);
+
+  useEffect(() => {
     const w = window as Window & { __zikrEarly?: number; __zikrLive?: boolean; __zikrPress?: () => void };
     let done = false;
     const flush = () => {
