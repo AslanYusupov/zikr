@@ -331,7 +331,11 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     // The Madinah text stores shadda and a fatha on the lam of الذين and التي.
     // That fatha is not pronounced. The shadda belongs to the sun letter.
     // اللاتي is different: the fatha and the dagger alif are real, so the lam stays.
-    if (cur.ch === "\u0644" && articleBase && next && SUN.has(next.ch) && cur.sh && cur.v === "a" && !cur.long) {
+    // الذي / الذين keep the lam in this reading: «Аллазийу», «ал-лазиина».
+    const after = g[i + 2];
+    const relative =
+      next?.ch === "\u0630" && !!after && (after.ch === "\u064A" || after.ch === "\u0649" || after.ch === "\u06CC");
+    if (cur.ch === "\u0644" && articleBase && next && SUN.has(next.ch) && cur.sh && cur.v === "a" && !cur.long && !relative) {
       cur.v = "";
       cur.sh = false;
       next.sh = true;
@@ -361,7 +365,13 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     if (cur.suk && next && (next.ch === "\u0648" || next.ch === "\u064A" || next.ch === "\u0649") && (next.v || next.sh)) out += "-";
   }
   if (ru && out.endsWith("л")) out += "ь";
-  return out.replace(/а{3,}/g, "аа").replace(/и{3,}/g, "ии").replace(/у{3,}/g, "уу").replace(/-{2,}/g, "-");
+  out = out.replace(/а{3,}/g, "аа").replace(/и{3,}/g, "ии").replace(/у{3,}/g, "уу").replace(/-{2,}/g, "-");
+  // الذي is written with a lam. In this reading the lam is said, and the word closes on «ийу».
+  if (ru) {
+    out = out.replace(/лазии(?!н)/g, "лазийу");
+    out = out.replace(/л-лазийу/g, "ллазийу");
+  }
+  return out;
 }
 
 function capitalize(text: string): string {
