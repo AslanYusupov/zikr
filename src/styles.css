@@ -2117,10 +2117,11 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .orb-slot {
   pointer-events: auto;
   flex: 1 1 auto;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   min-height: 0;
-  padding: .2rem 1.6rem .2rem;
+  padding: 1.35rem 1.6rem .2rem;
   display: flex;
   position: relative;
   z-index: 1;
@@ -4235,7 +4236,7 @@ html[data-os="android"] .nav-dua {
   height: 18px;
 }
 html[data-os="android"] .orb-slot {
-  padding: 1% .8rem 0;
+  padding: 1.1rem .8rem 0;
 }
 html[data-os="android"] .orb-slot .orb {
   width: min(30vw, 7.2rem, 20svh);
