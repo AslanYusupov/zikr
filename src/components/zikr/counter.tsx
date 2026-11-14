@@ -471,7 +471,7 @@ export function Counter({
             <div className="relative grid place-items-center">
               <div className="halo" hidden={s.goalRing} />
               <div className="halo halo-2" hidden={s.goalRing} />
-              {s.orbit && !s.goalRing && (
+              {s.orbit && (
                 <div className="orbit" aria-hidden>
                   <span className="orbit-sun">
                     <img className="sun-body" src="/orbit-sun.webp" alt="" draggable={false} />
