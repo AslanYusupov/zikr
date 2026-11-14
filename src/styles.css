@@ -4254,10 +4254,31 @@ html[data-os="android"] .reminder {
   max-height: 4.2rem;
   padding: .22rem .5rem .26rem;
 }
-html[data-os="ios"] .stats-dock,
 html[data-os="android"] .stats-dock {
   margin-top: auto;
   padding-bottom: .35rem;
+}
+html[data-os="ios"] .mode-strip {
+  padding-top: 0;
+}
+html[data-os="ios"] .main-screen {
+  justify-content: flex-start;
+}
+html[data-os="ios"] .main-screen > div:first-child {
+  padding-top: 0;
+}
+html[data-os="ios"] .phrase-read,
+html[data-os="ios"] .phrase-scroll {
+  margin-top: 0;
+  padding-top: 0;
+}
+html[data-os="ios"] .orb-slot {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  padding: .7rem 1.2rem 0;
+}
+html[data-os="ios"] .stats-dock {
+  margin-top: auto;
 }
 html[data-os="android"] .day-line {
   font-size: 11px;
