@@ -1306,6 +1306,21 @@
   position: relative;
   overflow: hidden;
 }
+.update-bar {
+  position: relative;
+  z-index: 30;
+  flex: none;
+  align-self: stretch;
+  height: 2.75rem;
+  margin: .3rem .75rem .15rem;
+  border: 0;
+  border-radius: 999px;
+  background: #f4f1ea;
+  color: #12121a;
+  font-size: .95rem;
+  font-weight: 800;
+  box-shadow: 0 8px 22px #00000073;
+}
 .sheet {
   z-index: 40;
   background: var(--bg);
