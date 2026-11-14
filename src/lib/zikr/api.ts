@@ -95,7 +95,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
 const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262", "79475757", "39309698"];
 /** A second number made on the same account. Counts stay on the first number. */
-const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946", "82261249": "52812946" };
+const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946", "82261249": "52812946", "76760665": "52812946" };
 
 /** Copies and removed numbers. They are not a second person on the board. */
 export const RATING_SKIP_IDS = [...new Set([...DROPPED_RATING_IDS, ...Object.keys(FOLDED_IDS)])];
@@ -103,6 +103,14 @@ export const RATING_FOLDS: Readonly<Record<string, string>> = FOLDED_IDS;
 
 function realPublicId(id: string): string {
   return FOLDED_IDS[id] ?? id;
+}
+
+function rewritePublicIds(payload: string): string {
+  let next = payload;
+  for (const [from, to] of Object.entries(FOLDED_IDS)) {
+    next = next.replaceAll(`"publicId":"${from}"`, `"publicId":"${to}"`);
+  }
+  return next;
 }
 
 /** Where a tap is stored. Null means the number is removed and must not be written. */
@@ -472,8 +480,15 @@ async function creditFatherToday(sql: Awaited<ReturnType<typeof getSql>>) {
 
 /** The extra number's taps are added once to the father's number, then the copy is removed. */
 export async function addCloneTapsOnce(sql: Awaited<ReturnType<typeof getSql>>) {
-  const clone = "82261249";
-  const real = "52812946";
+  for (const [clone, claim] of [
+    ["82261249", "add-82261249-to-52812946"],
+    ["76760665", "add-76760665-to-52812946"],
+  ] as const) {
+    await addOneClone(sql, clone, "52812946", claim);
+  }
+}
+
+async function addOneClone(sql: Awaited<ReturnType<typeof getSql>>, clone: string, real: string, claimId: string) {
   try {
     await sql.query(`create table if not exists zikr_fix (id text primary key, done_at timestamptz not null default now())`);
     await aliasTable(sql);
@@ -482,7 +497,10 @@ export async function addCloneTapsOnce(sql: Awaited<ReturnType<typeof getSql>>) 
          insert into zikr_fix (id) values ($1) on conflict do nothing returning id
        ), world_add as (
          update zikr_world w
-         set total = w.total + coalesce((select c.total from zikr_world c where c.public_id = $2), 0),
+         set total = w.total + greatest(
+               coalesce((select c.total from zikr_world c where c.public_id = $2), 0),
+               coalesce((select max(d.total) from zikr_device d where d.public_id = $2), 0)
+             ),
              updated_at = now()
          where w.public_id = $3 and exists (select 1 from claim)
          returning w.public_id
@@ -519,7 +537,7 @@ export async function addCloneTapsOnce(sql: Awaited<ReturnType<typeof getSql>>) 
          delete from zikr_world where public_id = $2 and exists (select 1 from claim) returning public_id
        )
        delete from zikr_presence where public_id = $2 and exists (select 1 from claim)`,
-      ["add-82261249-to-52812946", clone, real],
+      [claimId, clone, real],
     );
     await sql.query(
       `insert into zikr_alias (alias, public_id) values ($1, $2)
@@ -1102,7 +1120,7 @@ async function deviceTable(sql: Awaited<ReturnType<typeof getSql>>) {
 
 function savedDevice(row: DeviceSave): DeviceSave {
   const publicId = realPublicId(row.publicId);
-  const payload = row.payload.replaceAll('"publicId":"88880455"', '"publicId":"96995742"').replaceAll('"publicId":"50170262"', '"publicId":"52812946"').replaceAll('"publicId":"25574036"', '"publicId":"52812946"');
+  const payload = rewritePublicIds(row.payload);
   return publicId === row.publicId && payload === row.payload ? row : { ...row, publicId, payload };
 }
 
@@ -1137,8 +1155,7 @@ export const pushDevice = createServerFn({ method: "POST" })
       const total = data.total ?? 0;
       const incoming = await aliasOf(sql, data.publicId ?? "");
       let publicId = incoming;
-      let payload = (data.payload ?? "").replaceAll(`"publicId":"${data.publicId ?? ""}"`, `"publicId":"${publicId}"`);
-      payload = payload.replaceAll('"publicId":"88880455"', '"publicId":"96995742"').replaceAll('"publicId":"62012303"', '"publicId":"87278839"').replaceAll('"publicId":"25574036"', '"publicId":"52812946"').replaceAll('"publicId":"50170262"', '"publicId":"52812946"').replaceAll('"publicId":"79475757"', '"publicId":"52812946"');
+      let payload = rewritePublicIds((data.payload ?? "").replaceAll(`"publicId":"${data.publicId ?? ""}"`, `"publicId":"${publicId}"`));
       if (data.tgId) {
         const prior = await sql<DeviceSave>`
           select sync_key as "syncKey", public_id as "publicId", payload, total

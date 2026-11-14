@@ -110,7 +110,7 @@ function Login() {
     <div className="app-frame">
       <div className="app-column">
         <Backdrop />
-        <div className="pane relative z-10 px-5 pt-[max(0.8rem,env(safe-area-inset-top))] pb-8">
+        <div className="pane relative z-10 min-h-0 flex-1 overflow-y-auto px-5 pt-[max(0.8rem,env(safe-area-inset-top))] pb-8">
           <a href="/" className="mb-4 flex h-11 items-center justify-center rounded-full border border-line bg-chip text-sm text-gold">
             {tx(lang, "home")}
           </a>
