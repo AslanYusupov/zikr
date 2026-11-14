@@ -276,6 +276,12 @@ export function SettingsView({
           onChange={s.setOrbit}
         />
         <Toggle
+          label={tx(s.lang, "bigOrb")}
+          hint={tx(s.lang, "bigOrbHint")}
+          on={!s.goalRing}
+          onChange={(on) => s.setGoalRing(!on)}
+        />
+        <Toggle
           label={tx(s.lang, "rainOn")}
           hint={tx(s.lang, "rainHint")}
           on={s.rain}
@@ -286,12 +292,6 @@ export function SettingsView({
           hint={tx(s.lang, "screenTapHint")}
           on={s.screenTap}
           onChange={s.setScreenTap}
-        />
-        <Toggle
-          label={tx(s.lang, "goalRing")}
-          hint={tx(s.lang, "goalRingHint")}
-          on={s.goalRing}
-          onChange={s.setGoalRing}
         />
         <Toggle
           label={tx(s.lang, "wisdom")}
