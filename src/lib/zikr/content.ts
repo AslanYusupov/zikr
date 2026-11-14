@@ -742,6 +742,8 @@ export const RING_COLORS: { id: RingColor; hex: string }[] = [
   { id: "amber", hex: "#f0a15a" },
   { id: "coral", hex: "#ef8b78" },
   { id: "rose", hex: "#e59ab8" },
+  { id: "ruby", hex: "#e25a6a" },
+  { id: "wine", hex: "#c4475c" },
   { id: "emerald", hex: "#63d2a4" },
   { id: "teal", hex: "#67d0d6" },
   { id: "sky", hex: "#8eb7f5" },
