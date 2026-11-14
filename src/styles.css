@@ -2117,11 +2117,10 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .orb-slot {
   pointer-events: auto;
   flex: 1 1 auto;
-  flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   min-height: 0;
-  padding: 1.35rem 1.6rem .2rem;
+  padding: 5% 1.6rem .2rem;
   display: flex;
   position: relative;
   z-index: 1;
@@ -2132,7 +2131,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   z-index: 6;
   flex-shrink: 0;
   max-height: 30svh;
-  margin-top: 0;
+  margin-top: .35rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2144,7 +2143,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding: .15rem 1rem .35rem;
+  padding: .45rem 1rem .85rem;
 }
 .phrase-slide-left { animation: phrase-from-right .22s ease; }
 .phrase-slide-right { animation: phrase-from-left .22s ease; }
@@ -3089,7 +3088,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 .phrase-arabic {
   overflow-wrap: anywhere;
   text-wrap: balance;
-  line-height: 1.55;
+  line-height: 2.15;
 }
 .stat-value {
   font-family: var(--font-display);
@@ -4236,7 +4235,7 @@ html[data-os="android"] .nav-dua {
   height: 18px;
 }
 html[data-os="android"] .orb-slot {
-  padding: 1.1rem .8rem 0;
+  padding: 1% .8rem 0;
 }
 html[data-os="android"] .orb-slot .orb {
   width: min(30vw, 7.2rem, 20svh);
@@ -4254,31 +4253,10 @@ html[data-os="android"] .reminder {
   max-height: 4.2rem;
   padding: .22rem .5rem .26rem;
 }
+html[data-os="ios"] .stats-dock,
 html[data-os="android"] .stats-dock {
   margin-top: auto;
   padding-bottom: .35rem;
-}
-html[data-os="ios"] .mode-strip {
-  padding-top: 0;
-}
-html[data-os="ios"] .main-screen {
-  justify-content: flex-start;
-}
-html[data-os="ios"] .main-screen > div:first-child {
-  padding-top: 0;
-}
-html[data-os="ios"] .phrase-read,
-html[data-os="ios"] .phrase-scroll {
-  margin-top: 0;
-  padding-top: 0;
-}
-html[data-os="ios"] .orb-slot {
-  flex: 0 0 auto;
-  justify-content: flex-start;
-  padding: .7rem 1.2rem 0;
-}
-html[data-os="ios"] .stats-dock {
-  margin-top: auto;
 }
 html[data-os="android"] .day-line {
   font-size: 11px;
