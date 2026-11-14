@@ -1321,6 +1321,16 @@
   font-weight: 800;
   box-shadow: 0 8px 22px #00000073;
 }
+.ring-swatch {
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px #ffffff40;
+}
+.ring-swatch.on {
+  box-shadow: 0 0 0 2px var(--fg), 0 0 0 4px #00000055;
+}
 .sheet {
   z-index: 40;
   background: var(--bg);

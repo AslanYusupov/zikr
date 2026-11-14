@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { DHIKR, MILESTONES, QUOTES, REMEMBRANCE, dhikrById, rewardPoints } from "@/lib/zikr/content";
+import { DHIKR, MILESTONES, QUOTES, REMEMBRANCE, RING_COLORS, dhikrById, rewardPoints } from "@/lib/zikr/content";
 import { ALLAH_NAMES } from "@/lib/zikr/names";
 import { sunnahQuestById } from "@/lib/zikr/quests";
 import { addDays, formatNum, todayKey, zikrWord } from "@/lib/zikr/format";
@@ -191,6 +191,7 @@ export function Counter({
   const level = levelFromXp(s.xp);
   const levelPct = level.need === 0 ? 1 : Math.min(1, level.into / level.need);
   const goalPct = s.goal > 0 ? Math.min(1, today / s.goal) : 0;
+  const ringStroke = RING_COLORS.find((c) => c.id === s.ringColor)?.hex || "var(--fg)";
   const quest = sunnahQuestById(s.activeQuestId);
   const step = quest?.steps[s.questStep];
   const [pulse, setPulse] = useState(0);
@@ -503,7 +504,7 @@ export function Counter({
                         cy="50"
                         r="46"
                         fill="none"
-                        stroke="var(--fg)"
+                        stroke={ringStroke}
                         strokeWidth="1.6"
                         strokeLinecap="round"
                         strokeDasharray={2 * Math.PI * 46}
@@ -534,7 +535,7 @@ export function Counter({
                     cy="50"
                     r="44"
                     fill="none"
-                    stroke="var(--fg)"
+                    stroke={ringStroke}
                     strokeWidth="2.2"
                     strokeLinecap="round"
                     strokeDasharray={C}

@@ -1,4 +1,4 @@
-import type { OrbId, TapVoice, ThemeId } from "./types";
+import type { OrbId, RingColor, TapVoice, ThemeId } from "./types";
 import { ALLAH_NAMES } from "./names";
 import { EXTRA_QUOTES } from "./quote-extra";
 
@@ -734,6 +734,19 @@ export const THEMES: { id: ThemeId; name: string; hint: string }[] = [
   { id: "amethyst", name: "Аметист", hint: "Ночной пурпур" },
   { id: "amber", name: "Янтарь", hint: "Тёплый свет" },
   { id: "jade", name: "Нефрит", hint: "Мятное свечение" },
+];
+
+export const RING_COLORS: { id: RingColor; hex: string }[] = [
+  { id: "light", hex: "" },
+  { id: "gold", hex: "#e7c56a" },
+  { id: "amber", hex: "#f0a15a" },
+  { id: "coral", hex: "#ef8b78" },
+  { id: "rose", hex: "#e59ab8" },
+  { id: "emerald", hex: "#63d2a4" },
+  { id: "teal", hex: "#67d0d6" },
+  { id: "sky", hex: "#8eb7f5" },
+  { id: "violet", hex: "#b89cf0" },
+  { id: "silver", hex: "#d7deea" },
 ];
 
 export const ORBS: { id: OrbId; name: string }[] = [

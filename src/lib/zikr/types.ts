@@ -38,6 +38,7 @@ export type TapVoice = "soft" | "wood" | "drop" | "stone" | "glass" | "bead" | "
 export type SoundId = "off" | "on";
 export type LangId = "ru" | "en" | "ar" | "id" | "tr" | "ur";
 export type OrbId = "plain" | "glow" | "pearl" | "line" | "double" | "soft" | "dot" | "crescent" | "kaaba" | "shahada";
+export type RingColor = "light" | "gold" | "amber" | "coral" | "rose" | "emerald" | "teal" | "sky" | "violet" | "silver";
 
 export type DayLog = { total: number; by: Record<string, number> };
 
@@ -81,6 +82,7 @@ export type ZikrState = {
   screenTap: boolean;
   goalRing: boolean;
   ringSet: boolean;
+  ringColor: RingColor;
   starFlow: boolean;
   orbit: boolean;
   galaxy: boolean;

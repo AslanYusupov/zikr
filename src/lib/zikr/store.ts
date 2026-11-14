@@ -1,17 +1,18 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { DHIKR, MILESTONES, dhikrById } from "./content";
+import { DHIKR, MILESTONES, RING_COLORS, dhikrById } from "./content";
 import { todayKey } from "./format";
 import { levelFromXp } from "./levels";
 import { ALLAH_NAMES } from "./names";
 import { sunnahQuestById } from "./quests";
-import type { DayArchive, DayLog, FontId, LangId, OrbId, RewardArchive, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
+import type { DayArchive, DayLog, FontId, LangId, OrbId, RewardArchive, RingColor, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
 
 const THEMES: ThemeId[] = ["firdaus", "rayyan", "salat", "sadaqa", "jihad", "kazimin", "tawba", "ayman", "black", "wine", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle", "subhah", "amethyst", "amber", "jade"];
 const FONTS: FontId[] = ["clear", "crimson", "wide", "soft", "book", "even"];
 const FONT_SCALES = [94, 97, 100, 103, 106, 109, 112];
 const LANGS: LangId[] = ["ru", "en", "ar", "id", "tr", "ur"];
 const ORBS: OrbId[] = ["plain", "glow", "pearl", "line", "double", "soft", "dot", "crescent", "kaaba", "shahada"];
+const RING_IDS: RingColor[] = RING_COLORS.map((c) => c.id);
 const COUNTRIES = new Set(["", "RU", "SA", "TR", "ID", "PK", "AE", "QA", "EG", "PS", "HL", "MA", "DZ", "MY", "GB", "US", "DE", "FR", "KZ", "UZ", "AZ", "TJ"]);
 
 const CAP = 2_000_000_000;
@@ -68,6 +69,7 @@ export function initialData(): ZikrState {
     screenTap: true,
     goalRing: true,
     ringSet: true,
+    ringColor: "light",
     starFlow: true,
     orbit: true,
     galaxy: false,
@@ -274,6 +276,7 @@ export function normalize(raw: unknown): ZikrState {
     screenTap: r.screenTap !== false,
     goalRing: r.ringSet === true ? r.goalRing === true : true,
     ringSet: true,
+    ringColor: RING_IDS.includes(r.ringColor as RingColor) ? (r.ringColor as RingColor) : "light",
     starFlow: r.starFlow !== false,
     orbit: r.ringSet === true ? r.orbit === true : true,
     galaxy: r.galaxy === true,
@@ -392,6 +395,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     screenTap: local.screenTap,
     goalRing: local.goalRing,
     ringSet: local.ringSet,
+    ringColor: local.ringColor,
     starFlow: local.starFlow,
     orbit: local.orbit,
     galaxy: local.galaxy,
@@ -745,6 +749,7 @@ type Actions = {
   setQuestUnder: (v: boolean) => void;
   setScreenTap: (v: boolean) => void;
   setGoalRing: (v: boolean) => void;
+  setRingColor: (c: RingColor) => void;
   setStarFlow: (v: boolean) => void;
   setOrbit: (v: boolean) => void;
   setGalaxy: (v: boolean) => void;
@@ -813,6 +818,9 @@ export const useZikr = create<ZikrState & Actions>()(
       setQuestUnder: (v) => set({ questUnder: v }),
       setScreenTap: (v) => set({ screenTap: v }),
       setGoalRing: (v) => set({ goalRing: v }),
+      setRingColor: (c) => {
+        if (RING_IDS.includes(c)) set({ ringColor: c });
+      },
       setStarFlow: (v) => set({ starFlow: v }),
       setOrbit: (v) => set({ orbit: v }),
       setGalaxy: (v) => set({ galaxy: v }),

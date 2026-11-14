@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { authClient, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { GOALS, REMEMBRANCE, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr/content";
+import { GOALS, REMEMBRANCE, RING_COLORS, TAP_VOICES, THEMES, rewardPoints } from "@/lib/zikr/content";
 import { formatNum, inviteBody, inviteLink, inviteText, telegramHref, todayKey, whatsappHref } from "@/lib/zikr/format";
 import { playAchievement, playTap } from "@/lib/zikr/sound";
 import { triggerHaptic } from "@/lib/zikr/haptic";
@@ -281,6 +281,23 @@ export function SettingsView({
           on={!s.goalRing}
           onChange={(on) => s.setGoalRing(!on)}
         />
+        <div className="px-1 pt-1">
+          <p className="text-sm font-semibold text-fg">{tx(s.lang, "ringColor")}</p>
+          <p className="mt-0.5 text-xs text-muted">{tx(s.lang, "ringColorHint")}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {RING_COLORS.map((color) => (
+              <button
+                key={color.id}
+                type="button"
+                className={cn("ring-swatch", s.ringColor === color.id && "on")}
+                style={{ background: color.hex || "var(--fg)" }}
+                aria-label={color.id}
+                aria-pressed={s.ringColor === color.id}
+                onClick={() => s.setRingColor(color.id)}
+              />
+            ))}
+          </div>
+        </div>
         <Toggle
           label={tx(s.lang, "rainOn")}
           hint={tx(s.lang, "rainHint")}
