@@ -2260,6 +2260,11 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   height: auto;
   box-shadow: 0 0 0 1.5px #ffffffb8, 0 0 36px var(--glow);
 }
+.orb.orb-bare {
+  background: transparent;
+  box-shadow: none;
+}
+.orb.orb-bare .ripple { display: none; }
 .swipe-zone {
   touch-action: none;
   -webkit-user-select: none;

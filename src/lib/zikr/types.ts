@@ -79,6 +79,7 @@ export type ZikrState = {
   orb: OrbId;
   questUnder: boolean;
   screenTap: boolean;
+  goalRing: boolean;
   starFlow: boolean;
   orbit: boolean;
   galaxy: boolean;

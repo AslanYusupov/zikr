@@ -469,9 +469,9 @@ export function Counter({
           <div className="orb-slot">
             <ListenDock />
             <div className="relative grid place-items-center">
-              <div className="halo" />
-              <div className="halo halo-2" />
-              {s.orbit && (
+              <div className="halo" hidden={s.goalRing} />
+              <div className="halo halo-2" hidden={s.goalRing} />
+              {s.orbit && !s.goalRing && (
                 <div className="orbit" aria-hidden>
                   <span className="orbit-sun">
                     <img className="sun-body" src="/orbit-sun.webp" alt="" draggable={false} />
@@ -484,7 +484,7 @@ export function Counter({
               <button
                 ref={orbRef}
                 type="button"
-                className={cn("orb", today >= s.goal && s.goal > 0 && "orb-met")}
+                className={cn("orb", s.goalRing && "orb-bare", today >= s.goal && s.goal > 0 && "orb-met")}
                 onTouchStart={() => triggerHaptic("down")}
                 onPointerDown={() => triggerHaptic("down")}
                 onClick={(event) => {
@@ -495,6 +495,25 @@ export function Counter({
                 aria-label={`${tx(s.lang, "rememberAria")}: ${phrase.name}. ${t(s.lang, "today")} ${today}. ${t(s.lang, "total")} ${s.total}`}
               >
                 <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" aria-hidden>
+                  {s.goalRing ? (
+                    <>
+                      <circle cx="50" cy="50" r="46" fill="none" stroke="var(--line)" strokeWidth="1.4" />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="46"
+                        fill="none"
+                        stroke="var(--fg)"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeDasharray={2 * Math.PI * 46}
+                        strokeDashoffset={2 * Math.PI * 46 * (1 - goalPct)}
+                        transform="rotate(-90 50 50)"
+                        style={{ transition: "stroke-dashoffset 700ms cubic-bezier(0.2, 0.7, 0.2, 1)" }}
+                      />
+                    </>
+                  ) : (
+                    <>
                   <circle cx="50" cy="50" r="48" fill="none" stroke="var(--line)" strokeWidth="0.6" />
                   <circle
                     cx="50"
@@ -523,6 +542,8 @@ export function Counter({
                     transform="rotate(-90 50 50)"
                     style={{ transition: "stroke-dashoffset 700ms cubic-bezier(0.2, 0.7, 0.2, 1)" }}
                   />
+                    </>
+                  )}
                 </svg>
                 {ripples.map((id) => (
                   <span key={id} className="ripple" />

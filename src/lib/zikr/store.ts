@@ -66,6 +66,7 @@ export function initialData(): ZikrState {
     orb: "plain",
     questUnder: false,
     screenTap: true,
+    goalRing: false,
     starFlow: true,
     orbit: true,
     galaxy: false,
@@ -270,6 +271,7 @@ export function normalize(raw: unknown): ZikrState {
     orb: "plain",
     questUnder: r.questUnder === true,
     screenTap: r.screenTap !== false,
+    goalRing: r.goalRing === true,
     starFlow: r.starFlow !== false,
     orbit: r.orbit === true,
     galaxy: r.galaxy === true,
@@ -386,6 +388,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     orb: local.orb,
     questUnder: local.questUnder,
     screenTap: local.screenTap,
+    goalRing: local.goalRing,
     starFlow: local.starFlow,
     orbit: local.orbit,
     galaxy: local.galaxy,
@@ -738,6 +741,7 @@ type Actions = {
   setOrb: (o: OrbId) => void;
   setQuestUnder: (v: boolean) => void;
   setScreenTap: (v: boolean) => void;
+  setGoalRing: (v: boolean) => void;
   setStarFlow: (v: boolean) => void;
   setOrbit: (v: boolean) => void;
   setGalaxy: (v: boolean) => void;
@@ -805,6 +809,7 @@ export const useZikr = create<ZikrState & Actions>()(
       },
       setQuestUnder: (v) => set({ questUnder: v }),
       setScreenTap: (v) => set({ screenTap: v }),
+      setGoalRing: (v) => set({ goalRing: v }),
       setStarFlow: (v) => set({ starFlow: v }),
       setOrbit: (v) => set({ orbit: v }),
       setGalaxy: (v) => set({ galaxy: v }),

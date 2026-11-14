@@ -288,6 +288,12 @@ export function SettingsView({
           onChange={s.setScreenTap}
         />
         <Toggle
+          label={tx(s.lang, "goalRing")}
+          hint={tx(s.lang, "goalRingHint")}
+          on={s.goalRing}
+          onChange={s.setGoalRing}
+        />
+        <Toggle
           label={tx(s.lang, "wisdom")}
           hint={tx(s.lang, "wisdomHint")}
           on={s.showWisdom}
