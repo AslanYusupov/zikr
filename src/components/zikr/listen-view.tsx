@@ -183,6 +183,7 @@ export function ListenDock() {
   const playing = useListen((s) => s.playing);
   const surah = useListen((s) => s.surah);
   const now = useListen((s) => s.now);
+  const dur = useListen((s) => s.dur);
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -200,6 +201,8 @@ export function ListenDock() {
   }, [started, surah, lang]);
 
   if (!started || onScreen || (!playing && now <= 0)) return null;
+  const left = Math.max(0, dur - now);
+  const place = dur > 0 ? Math.min(1, now / dur) : 0;
 
   function step(dir: number) {
     const here = useListen.getState();
@@ -225,6 +228,13 @@ export function ListenDock() {
           <SkipForward className="size-3.5" strokeWidth={1.8} />
         </button>
       </div>
+      <div className="listen-line" aria-hidden>
+        <span style={{ width: `${place * 100}%` }} />
+      </div>
+      <p className="listen-time">
+        <span>{clock(now)}</span>
+        <span>−{clock(left)}</span>
+      </p>
     </div>
   );
 }
