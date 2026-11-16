@@ -331,10 +331,13 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
     // The Madinah text stores shadda and a fatha on the lam of الذين and التي.
     // That fatha is not pronounced. The shadda belongs to the sun letter.
     // اللاتي is different: the fatha and the dagger alif are real, so the lam stays.
-    // الذي / الذين keep the lam in this reading: «Аллазийу», «ал-лазиина».
+    // الذي / الذين and التي keep the lam in this reading: «Аллазийу», «ал-лазиина», «Аллати».
     const after = g[i + 2];
+    const tail = g[i + 3];
+    const yaLike = !!after && (after.ch === "\u064A" || after.ch === "\u0649" || after.ch === "\u06CC");
     const relative =
-      next?.ch === "\u0630" && !!after && (after.ch === "\u064A" || after.ch === "\u0649" || after.ch === "\u06CC");
+      (next?.ch === "\u0630" && yaLike) ||
+      (next?.ch === "\u062A" && yaLike && !after?.v && !after?.sh && !tail);
     if (cur.ch === "\u0644" && articleBase && next && SUN.has(next.ch) && cur.sh && cur.v === "a" && !cur.long && !relative) {
       cur.v = "";
       cur.sh = false;
@@ -370,6 +373,9 @@ function speakWord(glyphs: Glyph[], ru: boolean, waqf: boolean, elideWasl = fals
   if (ru) {
     out = out.replace(/лазии(?!н)/g, "лазийу");
     out = out.replace(/л-лазийу/g, "ллазийу");
+    // التي is «Аллати»: the lam is said, and the long i is written with one и.
+    out = out.replace(/л-латии/g, "л-лати");
+    out = out.replace(/ллатии/g, "ллати");
   }
   return out;
 }
