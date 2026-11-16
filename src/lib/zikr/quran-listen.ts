@@ -15,6 +15,7 @@ type Spot = {
   now: number;
   dur: number;
   started: boolean;
+  dock: boolean;
   onScreen: boolean;
   focus: number;
 };
@@ -34,6 +35,7 @@ export const useListen = create<Spot>(() => ({
   now: 0,
   dur: 0,
   started: false,
+  dock: true,
   onScreen: false,
   focus: 0,
 }));
@@ -130,7 +132,7 @@ export function stopListen() {
     audio.removeAttribute("src");
     audio.load();
   }
-  useListen.setState({ playing: false, started: false, now: 0, dur: 0, fail: false });
+  useListen.setState({ playing: false, started: false, dock: true, now: 0, dur: 0, fail: false });
 }
 
 export function toggleListen() {
@@ -162,6 +164,10 @@ export function setListenLoop(loop: boolean) {
 
 export function setListenMode(mode: ListenMode) {
   useListen.setState({ mode });
+}
+
+export function setListenDock(open: boolean) {
+  useListen.setState({ dock: open });
 }
 
 export function setListenScreen(onScreen: boolean) {

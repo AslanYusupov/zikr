@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play, Repeat, SkipBack, SkipForward, X } from "lucide-react";
+import { ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from "lucide-react";
 import { ayahCount } from "@/lib/zikr/ayah-audio";
 import { loadQuran, type QuranBook } from "@/lib/zikr/quran";
 import { RECITERS, reciterById } from "@/lib/zikr/reciters";
@@ -9,6 +9,7 @@ import { useZikr } from "@/lib/zikr/store";
 import {
   playListen,
   seekListen,
+  setListenDock,
   setListenLoop,
   setListenMode,
   setListenScreen,
@@ -179,6 +180,7 @@ export function ListenView() {
 export function ListenDock() {
   const lang = useZikr((s) => s.lang);
   const onScreen = useListen((s) => s.onScreen);
+  const dock = useListen((s) => s.dock);
   const started = useListen((s) => s.started);
   const playing = useListen((s) => s.playing);
   const surah = useListen((s) => s.surah);
@@ -201,6 +203,13 @@ export function ListenDock() {
   }, [started, surah, lang]);
 
   if (!started || onScreen || (!playing && now <= 0)) return null;
+  if (!dock) {
+    return (
+      <button type="button" className="listen-pin" onClick={() => setListenDock(true)} aria-label="show">
+        {playing ? <Pause className="size-3.5" strokeWidth={1.8} /> : <Play className="size-3.5" strokeWidth={1.8} />}
+      </button>
+    );
+  }
   const left = Math.max(0, dur - now);
   const place = dur > 0 ? Math.min(1, now / dur) : 0;
 
@@ -213,6 +222,9 @@ export function ListenDock() {
 
   return (
     <div className="listen-dock">
+      <button type="button" className="listen-hide" onClick={() => setListenDock(false)} aria-label="hide">
+        <ChevronDown className="size-3.5" strokeWidth={2} />
+      </button>
       <button type="button" className="listen-x" onClick={stopListen} aria-label="close">
         <X className="size-3.5" strokeWidth={2} />
       </button>
