@@ -64,7 +64,11 @@ export function QuestsView({ onBegin }: { onBegin: () => void }) {
       ) : null}
 
       {TIERS.map((tier) => {
-        const list = SUNNAH_QUESTS.filter((q) => q.tier === tier);
+        const list = SUNNAH_QUESTS.filter((q) => q.tier === tier).slice().sort((a, b) => {
+          const doneA = doneToday[a.id] === day ? 1 : 0;
+          const doneB = doneToday[b.id] === day ? 1 : 0;
+          return doneA - doneB;
+        });
         return (
           <section key={tier} className="mt-6">
             <h2 className="text-xs tracking-wide text-gold uppercase">{t(lang, tier === "hard" ? "tierLong" : tier === "medium" ? "tierMid" : "tierEasy")}</h2>
