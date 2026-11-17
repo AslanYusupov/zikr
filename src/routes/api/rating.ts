@@ -35,11 +35,7 @@ export const Route = createFileRoute("/api/rating")({
         }
         try {
           const sql = await getSql();
-          try {
-            await hideCopies(sql);
-          } catch (err) {
-            console.error("[zikr] hide copies", err);
-          }
+          void hideCopies(sql).catch((err) => console.error("[zikr] hide copies", err));
           const publicId = ratingWriteId(rawId) ?? "";
           if (publicId) await noteSeen(sql, publicId);
           const skip = RATING_SKIP_IDS;
