@@ -128,19 +128,12 @@ function keep(url) {
 
 function pass(req) {
   const fail = () => new Response("", { status: 503, headers: { "cache-control": "no-store" } });
-  if (req.method === "GET" || req.method === "HEAD") return fetch(req).catch(fail);
-  return req
-    .text()
-    .then((body) =>
-      fetch(req.url, {
-        method: req.method,
-        headers: req.headers,
-        body,
-        credentials: "same-origin",
-        cache: "no-store",
-      }),
-    )
-    .catch(fail);
+  const once = (ms) => {
+    const init = { method: req.method, cache: "no-store", credentials: "same-origin", signal: AbortSignal.timeout(ms) };
+    if (req.method === "GET" || req.method === "HEAD") return fetch(req.url, init);
+    return req.clone().text().then((body) => fetch(req.url, { ...init, headers: { "content-type": "application/json" }, body }));
+  };
+  return once(20000).catch(() => once(20000)).catch(fail);
 }
 
 self.addEventListener("fetch", (event) => {

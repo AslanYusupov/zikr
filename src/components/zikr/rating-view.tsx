@@ -4,7 +4,7 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 import type { TooltipProps } from "recharts";
 import { invitees, RATING_SKIP_IDS, type Invitee, type PresenceRow, type WorldRow } from "@/lib/zikr/api";
 import { formatNum, bestWeek, goalStreak, recentDays, recordToBeat, thisWeek, todayKey, zikrWord } from "@/lib/zikr/format";
-import { msUntilLiveTick, saveOnline } from "@/lib/zikr/online-count";
+import { saveOnline } from "@/lib/zikr/online-count";
 import { InviteButtons } from "./settings-view";
 import { RewardsView } from "./rewards-view";
 import { t, tx } from "@/lib/zikr/i18n";
@@ -232,7 +232,7 @@ export function RatingView() {
     let flying = false;
     let again = false;
     let ticket = 0;
-    const load = (retry = false) => {
+    const load = () => {
       if (flying) {
         again = true;
         return;
@@ -240,10 +240,16 @@ export function RatingView() {
       flying = true;
       const mine = ++ticket;
       let settled = false;
+      const ctrl = new AbortController();
+      const slow = window.setTimeout(() => {
+        if (settled || stop || mine !== ticket) return;
+        ctrl.abort();
+      }, 12000);
       const finish = (down: boolean) => {
         if (settled || mine !== ticket) return;
         settled = true;
         flying = false;
+        window.clearTimeout(slow);
         setVpn(down);
         setHeld(down && Boolean(bag.current));
         if (again && !stop) {
@@ -251,13 +257,8 @@ export function RatingView() {
           window.setTimeout(() => { if (!stop) load(); }, 400);
           return;
         }
-        if (!retry && down) window.setTimeout(() => { if (!stop && document.visibilityState === "visible") load(true); }, 2000);
+        if (down && !stop) window.setTimeout(() => { if (!stop && document.visibilityState === "visible") load(); }, 3000);
       };
-      const ctrl = new AbortController();
-      const slow = window.setTimeout(() => {
-        if (settled || stop || mine !== ticket) return;
-        ctrl.abort();
-      }, 20000);
       fetch(`/api/rating?id=${publicId}&day=${day}&open=${Date.now()}`, { cache: "no-store", signal: ctrl.signal })
         .then(async (res) => {
           const body = (await res.json().catch(() => null)) as {
@@ -318,15 +319,9 @@ export function RatingView() {
         });
     };
     load();
-    let timer = 0;
-    const arm = () => {
-      timer = window.setTimeout(() => {
-        if (stop) return;
-        load();
-        arm();
-      }, msUntilLiveTick());
-    };
-    arm();
+    const later = window.setInterval(() => {
+      if (!stop && document.visibilityState === "visible") load();
+    }, 8000);
     const onLive = () => load();
     const onWake = () => {
       if (document.visibilityState === "visible") load();
@@ -340,7 +335,7 @@ export function RatingView() {
     link?.addEventListener?.("change", onWake);
     return () => {
       stop = true;
-      window.clearTimeout(timer);
+      window.clearInterval(later);
       window.removeEventListener("zikr-live", onLive);
       window.removeEventListener("online", onWake);
       window.removeEventListener("focus", onWake);
