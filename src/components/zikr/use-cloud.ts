@@ -276,7 +276,7 @@ export function useWorldSync(hydrated: boolean) {
   }, [hydrated, ensurePublicId]);
 
   useEffect(() => {
-    if (!hydrated || !linked || (publicId !== "52812946" && publicId !== "25574036" && publicId !== "50170262" && publicId !== "79475757" && publicId !== "82261249" && publicId !== "76760665")) return;
+    if (!hydrated || !linked || (publicId !== "52812946" && publicId !== "25574036" && publicId !== "50170262" && publicId !== "79475757" && publicId !== "82261249" && publicId !== "76760665" && publicId !== "63528636")) return;
     let stop = false;
     const day = todayKey();
     void savedScore({ data: { publicId, dayKey: day } })

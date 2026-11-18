@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getSql, type Sql } from "@/lib/db";
-import { RATING_FOLDS, RATING_SKIP_IDS, countRemembering, noteSeen, ratingWriteId } from "@/lib/zikr/api";
+import { addCloneTapsOnce, RATING_FOLDS, RATING_SKIP_IDS, countRemembering, noteSeen, ratingWriteId } from "@/lib/zikr/api";
 
 const noStore = { "cache-control": "no-store" };
 
@@ -35,6 +35,11 @@ export const Route = createFileRoute("/api/rating")({
         }
         try {
           const sql = await getSql();
+          try {
+            await addCloneTapsOnce(sql);
+          } catch (err) {
+            console.error("[zikr] add clone", err);
+          }
           void hideCopies(sql).catch((err) => console.error("[zikr] hide copies", err));
           const publicId = ratingWriteId(rawId) ?? "";
           if (publicId) await noteSeen(sql, publicId);
