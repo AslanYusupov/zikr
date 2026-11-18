@@ -84,15 +84,6 @@ function writeRatingCache(cache: RatingCache) {
   }
 }
 
-function clockOf(at: number, lang: LangId) {
-  const locale = lang === "ru" ? "ru-RU" : lang === "ar" ? "ar" : lang === "id" ? "id-ID" : lang === "tr" ? "tr-TR" : lang === "ur" ? "ur-PK" : "en-GB";
-  try {
-    return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(at);
-  } catch {
-    return "";
-  }
-}
-
 function liftRows<T extends { id: string; rank: number; hidden?: boolean }>(
   rows: T[] | null,
   id: string,
@@ -142,8 +133,6 @@ export function RatingView() {
   const [world, setWorld] = useState<WorldRow[] | null>(saved ? shown(saved.world) : null);
   const [worldRank, setWorldRank] = useState<number | null>(saved?.worldRank ?? null);
   const [worldError, setWorldError] = useState(false);
-  const [held, setHeld] = useState(Boolean(saved));
-  const [updatedAt, setUpdatedAt] = useState<number | null>(saved?.at ?? null);
   const [baseTotal, setBaseTotal] = useState(saved?.ownTotal ?? 0);
   const [online, setOnline] = useState<number | null>(saved?.online ?? null);
   const [allTaps, setAllTaps] = useState<number | null>(saved?.allTaps ?? null);
@@ -152,7 +141,6 @@ export function RatingView() {
   const [dailyRank, setDailyRank] = useState<number | null>(saved?.dailyRank ?? null);
   const [guests, setGuests] = useState<Invitee[] | null>(saved ? shown(saved.guests) : null);
   const [maskMine, setMaskMine] = useState(false);
-  const [vpn, setVpn] = useState(false);
   const [rewards, setRewards] = useState(false);
   const miss = useRef({ world: false, live: false });
   const day = todayKey();
@@ -197,8 +185,6 @@ export function RatingView() {
     writeRatingCache(next);
     if (!fresh) return;
     setBaseTotal(next.ownTotal);
-    setUpdatedAt(next.at);
-    setHeld(false);
     setWorldError(false);
   }
 
@@ -250,8 +236,6 @@ export function RatingView() {
         settled = true;
         flying = false;
         window.clearTimeout(slow);
-        setVpn(down);
-        setHeld(down && Boolean(bag.current));
         if (again && !stop) {
           again = false;
           window.setTimeout(() => { if (!stop) load(); }, 400);
@@ -361,7 +345,6 @@ export function RatingView() {
   const liveShown = liftRows(live, publicId, (row) => row.value, (row, value) => ({ ...row, value }), today, reveal);
   const myWorldRank = worldShown?.find((row) => row.id === publicId)?.rank ?? worldRank;
   const myDailyRank = dailyShown?.find((row) => row.id === publicId)?.rank ?? dailyRank;
-  const clock = updatedAt ? clockOf(updatedAt, lang) : "";
   const ratingNeed = 5_000;
   const worldOpen = total >= ratingNeed;
   const left = Math.max(0, ratingNeed - total);
@@ -429,12 +412,10 @@ export function RatingView() {
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "allDhikr")}</h2>
       <p className="mt-1 max-w-full text-2xl leading-none tabular-nums text-fg">{tapsShown === null ? (worldError ? "—" : "…") : formatNum(tapsShown)}</p>
       <h2 className="mt-6 text-xs tracking-wide text-gold uppercase">{t(lang, "world")}</h2>
-      {vpn ? <p className="mt-1 text-sm text-gold">{t(lang, "ratingVpn")}</p> : null}
       <p className="mt-1 text-sm leading-relaxed text-muted" onClick={toggleMine}>
         {t(lang, "ratingWorld")}{" "}
         <span className="tabular-nums text-fg">{publicId && !HIDDEN_RATING_IDS.has(publicId) ? (maskMine ? "***" : publicId) : "…"}</span>
       </p>
-      {clock ? <p className="mt-1 text-xs text-muted">{(held ? t(lang, "ratingHeld") : t(lang, "ratingAt")).replace("{time}", clock)}</p> : null}
       {worldError && !worldShown?.length ? <p className="mt-3 text-sm text-muted">{t(lang, "worldClosed")}</p> : null}
       {worldShown && worldShown.length === 0 && <p className="mt-3 text-sm text-muted">{t(lang, "worldQuiet")}</p>}
       {worldShown && worldShown.length > 0 && (
