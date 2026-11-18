@@ -87,6 +87,7 @@ export type ZikrState = {
   orbit: boolean;
   galaxy: boolean;
   rain: boolean;
+  dayFoot: boolean;
   achievements: number[];
   celebrated: number[];
   chainIndex: number;

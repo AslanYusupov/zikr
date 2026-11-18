@@ -74,6 +74,7 @@ export function initialData(): ZikrState {
     orbit: true,
     galaxy: false,
     rain: false,
+    dayFoot: true,
     achievements: [],
     celebrated: [],
     chainIndex: 0,
@@ -281,6 +282,7 @@ export function normalize(raw: unknown): ZikrState {
     orbit: r.ringSet === true ? r.orbit === true : true,
     galaxy: r.galaxy === true,
     rain: r.rain === true,
+    dayFoot: r.dayFoot !== false,
     achievements,
     celebrated,
     chainIndex: Math.min(1000, clampInt(r.chainIndex, 1000)),
@@ -400,6 +402,7 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
     orbit: local.orbit,
     galaxy: local.galaxy,
     rain: local.rain,
+    dayFoot: local.dayFoot,
     sound: local.sound,
     voice: local.voice,
     volume: local.volume,
@@ -754,6 +757,7 @@ type Actions = {
   setOrbit: (v: boolean) => void;
   setGalaxy: (v: boolean) => void;
   setRain: (v: boolean) => void;
+  setDayFoot: (v: boolean) => void;
   setSound: (s: SoundId) => void;
   setVoice: (v: TapVoice) => void;
   setVolume: (n: number) => void;
@@ -825,6 +829,7 @@ export const useZikr = create<ZikrState & Actions>()(
       setOrbit: (v) => set({ orbit: v }),
       setGalaxy: (v) => set({ galaxy: v }),
       setRain: (v) => set({ rain: v }),
+      setDayFoot: (v) => set({ dayFoot: v }),
       setSound: (s) => set({ sound: s }),
       setVoice: (v) => {
         if (VOICES.includes(v)) set({ voice: v, sound: "on" });

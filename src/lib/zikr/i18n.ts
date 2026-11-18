@@ -814,6 +814,8 @@ const EXTRA = {
   ru: {
     yesterday: "вчера",
     record: "рекорд",
+    dayFoot: "Вчера и рекорд",
+    dayFootHint: "Строка внизу экрана. Можно спрятать",
     statsTitle: "Статистика зикров",
     statsLead: "Сколько раз нажат каждый зикр. Эти числа остаются.",
     achievements: "Достижения",
@@ -949,6 +951,8 @@ const EXTRA = {
   en: {
     yesterday: "yesterday",
     record: "record",
+    dayFoot: "Yesterday and record",
+    dayFootHint: "The line at the bottom. It can be hidden",
     statsTitle: "Dhikr record",
     statsLead: "How many times each dhikr was pressed. These numbers stay.",
     achievements: "Marks",
@@ -1084,6 +1088,8 @@ const EXTRA = {
   ar: {
     yesterday: "أمس",
     record: "رقم",
+    dayFoot: "أمس والرقم",
+    dayFootHint: "السطر أسفل الشاشة. يمكن إخفاؤه",
     statsTitle: "سجل الذكر",
     statsLead: "كم مرة ضُغط كل ذكر. هذه الأعداد تبقى.",
     achievements: "علامات",
@@ -1219,6 +1225,8 @@ const EXTRA = {
   id: {
     yesterday: "kemarin",
     record: "rekor",
+    dayFoot: "Kemarin dan rekor",
+    dayFootHint: "Baris di bawah layar. Bisa disembunyikan",
     statsTitle: "Catatan zikir",
     statsLead: "Berapa kali setiap zikir ditekan. Angka ini tetap.",
     achievements: "Tanda",
@@ -1354,6 +1362,8 @@ const EXTRA = {
   tr: {
     yesterday: "dün",
     record: "rekor",
+    dayFoot: "Dün ve rekor",
+    dayFootHint: "Ekranın altındaki satır. Gizlenebilir",
     statsTitle: "Zikir kaydı",
     statsLead: "Her zikir kaç kez basıldı. Bu sayılar kalır.",
     achievements: "İşaretler",
@@ -1489,6 +1499,8 @@ const EXTRA = {
   ur: {
     yesterday: "کل",
     record: "ریکارڈ",
+    dayFoot: "کل اور ریکارڈ",
+    dayFootHint: "اسکرین کے نیچے والی سطر۔ چھپا سکتے ہیں",
     statsTitle: "ذکر کا ریکارڈ",
     statsLead: "ہر ذکر کتنی بار دبایا گیا۔ یہ اعداد رہتے ہیں۔",
     achievements: "نشانات",

@@ -647,13 +647,15 @@ export function Counter({
               <Stat label={t(s.lang, "total")} value={maskStats ? "***" : formatNum(s.total)} hint={maskStats ? "***" : zikrWord(s.total, s.lang)} onToggle={toggleMask} />
               <Stat label={t(s.lang, "rewards")} value={maskStats ? "***" : formatNum(totalReward)} hint={t(s.lang, "sawabHint")} reward onToggle={toggleMask} />
             </div>
+            {s.dayFoot ? (
             <button
               type="button"
-              className="day-line px-3 pt-1 text-center text-[0.7rem] text-muted"
+              className="day-line w-full px-3 pt-1 text-center text-[0.7rem] text-muted"
               onClick={() => setStatsOpen(true)}
             >
-              {t(s.lang, "today")} {maskStats ? "***" : formatNum(today)} · {tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)} · {tx(s.lang, "record")} {maskStats ? "***" : formatNum(Math.max(s.bestDay, today))}
+              {tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)} · {tx(s.lang, "record")} {maskStats ? "***" : formatNum(Math.max(s.bestDay, today))}
             </button>
+            ) : null}
           </div>
         </div>
         <section className="history-screen" aria-label={tx(s.lang, "statsTitle")}>

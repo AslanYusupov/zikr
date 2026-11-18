@@ -276,6 +276,12 @@ export function SettingsView({
           onChange={s.setOrbit}
         />
         <Toggle
+          label={tx(s.lang, "dayFoot")}
+          hint={tx(s.lang, "dayFootHint")}
+          on={s.dayFoot}
+          onChange={s.setDayFoot}
+        />
+        <Toggle
           label={tx(s.lang, "bigOrb")}
           hint={tx(s.lang, "bigOrbHint")}
           on={!s.goalRing}
