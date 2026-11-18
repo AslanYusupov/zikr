@@ -67,7 +67,7 @@ function line(ru: string, en: string, ar: string, id: string, tr: string, ur: st
 const MURATTAL = line("Муратталь", "Murattal", "مرتل", "Murattal", "Murattal", "مرتل");
 const MUJAWWAD = line("Муджаввад", "Mujawwad", "مجود", "Mujawwad", "Mücevved", "مجود");
 
-/** Десять полных чтений Корана. Стиль — только вид чтения и риваят, без оценки голоса. */
+/** Одиннадцать полных чтений Корана. Стиль — только вид чтения и риваят, без оценки голоса. */
 export const RECITERS: Reciter[] = [
   {
     id: "dosari",
@@ -218,6 +218,21 @@ export const RECITERS: Reciter[] = [
     ),
     files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n), qari("muhammad_ayyoob", n), cloudSurah("ar.muhammadayyub", n), ownArchive("ayyub", n)],
     ayahs: (s, a) => [every("Muhammad_Ayyoub_128kbps", s, a), islamic("ar.muhammadayyoub", 128, s, a)],
+  },
+  {
+    id: "luhaydan",
+    name: line("Мухаммад аль-Люхайдан", "Muhammad al-Luhaidan", "محمد اللحيدان", "Muhammad al-Luhaidan", "Muhammed el-Luhaydân", "محمد اللحیدان"),
+    form: MURATTAL,
+    style: line(
+      "Муратталь. Риваят Хафс от Асима.",
+      "Murattal. Riwayah of Hafs from Asim.",
+      "مرتل. رواية حفص عن عاصم.",
+      "Murattal. Riwayat Hafs dari Asim.",
+      "Murattal. Hafs rivayeti.",
+      "مرتل۔ روایت حفص عن عاصم۔",
+    ),
+    files: (n) => [cdn("muhammad-luhaidan/r1", n), mirror("server8", "lhdan", n), ownArchive("luhaydan", n)],
+    ayahs: (s, a) => [cdn("muhammad-luhaidan/r1", s)],
   },
 ];
 
