@@ -95,7 +95,7 @@ async function metaFor(userId: string): Promise<CloudMeta | null> {
 /** Keep the previous public rating. Mistaken numbers are removed and not written back. */
 const DROPPED_RATING_IDS = ["89020984", "389020984", "31549154", "88880455", "62012303", "60912327", "18532226", "95498997", "25574036", "50170262", "79475757", "39309698"];
 /** A second number made on the same account. Counts stay on the first number. */
-const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946", "82261249": "52812946", "76760665": "52812946", "63528636": "52812946" };
+const FOLDED_IDS: Record<string, string> = { "88880455": "96995742", "62012303": "87278839", "25574036": "52812946", "50170262": "52812946", "79475757": "52812946", "82261249": "52812946", "76760665": "52812946", "63528636": "52812946", "33762288": "52812946", "71763986": "52812946" };
 
 /** Copies and removed numbers. They are not a second person on the board. */
 export const RATING_SKIP_IDS = [...new Set([...DROPPED_RATING_IDS, ...Object.keys(FOLDED_IDS)])];
@@ -484,6 +484,8 @@ export async function addCloneTapsOnce(sql: Awaited<ReturnType<typeof getSql>>) 
     ["82261249", "add-82261249-to-52812946"],
     ["76760665", "add-76760665-to-52812946"],
     ["63528636", "add-63528636-to-52812946"],
+    ["33762288", "add-33762288-to-52812946"],
+    ["71763986", "add-71763986-to-52812946"],
   ] as const) {
     await addOneClone(sql, clone, "52812946", claim);
   }
