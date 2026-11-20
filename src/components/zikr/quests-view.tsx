@@ -184,24 +184,24 @@ function DhikrSunnah({ id, lang, label }: { id: string; lang: LangId; label?: st
           </button>
         </div>
       </div>
-      <p className="mt-2 text-start font-extrabold leading-snug text-fg" style={{ fontSize: `${0.95 * scale}rem` }}>
-        {read}
-      </p>
-      {line.translation ? (
-        <p className="mt-2 text-start leading-relaxed text-fg" style={{ fontSize: `${0.9 * scale}rem` }}>
-          {line.translation}
-        </p>
-      ) : null}
-      <p className="mt-1 text-start leading-snug text-muted" style={{ fontSize: `${0.875 * scale}rem` }}>
-        {line.meaning}
-      </p>
-      <p className="mt-2 text-start leading-relaxed text-fg" style={{ fontSize: `${0.9 * scale}rem` }}>
-        {line.reward}
-      </p>
-      <p className="mt-1 text-start text-xs text-gold">{cite(d.source, lang)}</p>
       <p className="mt-2 text-center font-arabic leading-loose text-fg" dir="rtl" lang="ar" style={{ fontSize: `${1.25 * scale}rem` }}>
         {d.arabic}
       </p>
+      <p className="mt-2 text-center font-extrabold leading-snug text-fg" style={{ fontSize: `${0.95 * scale}rem` }}>
+        {read}
+      </p>
+      {line.translation ? (
+        <p className="mt-2 text-center leading-relaxed text-fg" style={{ fontSize: `${0.9 * scale}rem` }}>
+          {line.translation}
+        </p>
+      ) : null}
+      <p className="mt-1 text-center leading-snug text-muted" style={{ fontSize: `${0.875 * scale}rem` }}>
+        {line.meaning}
+      </p>
+      <p className="mt-2 leading-relaxed text-fg" style={{ fontSize: `${0.9 * scale}rem` }}>
+        {line.reward}
+      </p>
+      <p className="mt-1 text-xs text-gold">{cite(d.source, lang)}</p>
     </div>
   );
 }

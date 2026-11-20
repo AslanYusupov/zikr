@@ -575,6 +575,27 @@ export function Counter({
           </div>
           <RiseLayer rises={rises} wordTop={wordTop} layerRef={riseRef} />
           <div className="stats-dock shrink-0">
+            {quest && step && !s.questUnder ? (
+              <button
+                type="button"
+                className="quest-line mx-3 mb-1.5 w-fit rounded-2xl border border-line bg-surface/80 px-3 py-1.5 text-start"
+                onClick={() => s.setMode(step.dhikrId)}
+                onPointerDown={(e) => {
+                  dragY.current = e.clientY;
+                }}
+                onPointerUp={(e) => {
+                  if (dragY.current !== null && e.clientY - dragY.current > 36) s.setQuestUnder(true);
+                  dragY.current = null;
+                }}
+              >
+                <span className="flex items-center justify-start gap-3 text-start text-xs text-fg">
+                  <span className="min-w-0 truncate">{phraseOf(dhikrById(step.dhikrId), s.lang).short}</span>
+                  <span className="shrink-0 tabular-nums">
+                    {formatNum(s.questStepProgress)} / {formatNum(step.count)}
+                  </span>
+                </span>
+              </button>
+            ) : null}
             {s.showWisdom ? (
               <button
                 type="button"
@@ -618,27 +639,6 @@ export function Counter({
                 ) : null}
                 <p className="reminder-text mt-0.5 text-xs leading-snug text-fg">{shownQuote.text}</p>
                 <p className="reminder-src mt-0.5 text-[0.65rem] text-muted">{shownQuote.source}</p>
-                </span>
-              </button>
-            ) : null}
-            {quest && step && !s.questUnder ? (
-              <button
-                type="button"
-                className="quest-line mx-3 mb-1.5 rounded-2xl border border-line bg-surface/80 px-3 py-1.5 text-center"
-                onClick={() => s.setMode(step.dhikrId)}
-                onPointerDown={(e) => {
-                  dragY.current = e.clientY;
-                }}
-                onPointerUp={(e) => {
-                  if (dragY.current !== null && e.clientY - dragY.current > 36) s.setQuestUnder(true);
-                  dragY.current = null;
-                }}
-              >
-                <span className="flex items-center justify-center gap-3 text-center text-xs text-fg">
-                  <span className="min-w-0 truncate">{phraseOf(dhikrById(step.dhikrId), s.lang).short}</span>
-                  <span className="shrink-0 tabular-nums">
-                    {formatNum(s.questStepProgress)} / {formatNum(step.count)}
-                  </span>
                 </span>
               </button>
             ) : null}
