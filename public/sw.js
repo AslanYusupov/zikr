@@ -129,9 +129,9 @@ function keep(url) {
 function pass(req) {
   const fail = () => new Response("", { status: 503, headers: { "cache-control": "no-store" } });
   const once = (ms) => {
-    const init = { method: req.method, cache: "no-store", credentials: "same-origin", signal: AbortSignal.timeout(ms) };
+    const init = { method: req.method, headers: req.headers, cache: "no-store", credentials: "same-origin", signal: AbortSignal.timeout(ms) };
     if (req.method === "GET" || req.method === "HEAD") return fetch(req.url, init);
-    return req.clone().text().then((body) => fetch(req.url, { ...init, headers: { "content-type": "application/json" }, body }));
+    return req.clone().text().then((body) => fetch(req.url, { ...init, body }));
   };
   return once(20000).catch(() => once(20000)).catch(fail);
 }

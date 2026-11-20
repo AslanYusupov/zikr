@@ -498,7 +498,11 @@ async function recoverPin(): Promise<string> {
   const disk = await idbGet(PID_KEY);
   if (disk && /^\d{8}$/.test(disk)) return canonicalPublicId(disk);
   try {
-    const cache = await caches.open("zikr-ok-v1");
+    const cache = await Promise.race([
+      caches.open("zikr-ok-v1"),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500)),
+    ]);
+    if (!cache) return "";
     const text = (await (await cache.match("/zikr-pin"))?.text())?.trim() ?? "";
     if (/^\d{8}$/.test(text)) return canonicalPublicId(text);
   } catch {
@@ -728,24 +732,30 @@ let holdEmpty = true;
 const durableStorage = {
   getItem: async (name: string) => {
     let local = withPin(withSnap(readLocal(name)));
-    if (!local || savedDetail(local) === 0) {
-      const disk = await Promise.race<string | null>([
-        idbGet(name),
-        new Promise((resolve) => setTimeout(() => resolve(null), 8000)),
-      ]);
-      if (disk && (savedScore(disk) > savedScore(local) || savedDetail(disk) > savedDetail(local))) {
-        local = withPin(withSnap(disk));
-        if (local) writeLocal(name, local);
+    try {
+      if (!local || savedDetail(local) === 0) {
+        const disk = await Promise.race<string | null>([
+          idbGet(name),
+          new Promise((resolve) => setTimeout(() => resolve(null), 8000)),
+        ]);
+        if (disk && (savedScore(disk) > savedScore(local) || savedDetail(disk) > savedDetail(local))) {
+          local = withPin(withSnap(disk));
+          if (local) writeLocal(name, local);
+        }
       }
-    }
-    if (!readPinnedId()) {
-      const recovered = await recoverPin();
-      if (recovered) {
-        pinId(recovered);
-        local = withPin(local);
+      if (!readPinnedId()) {
+        const recovered = await Promise.race([
+          recoverPin(),
+          new Promise<string>((resolve) => setTimeout(() => resolve(""), 2000)),
+        ]);
+        if (recovered) {
+          pinId(recovered);
+          local = withPin(local);
+        }
       }
+    } finally {
+      holdEmpty = false;
     }
-    holdEmpty = false;
     void idbGet(name)
       .then((disk) => {
         if (!disk) return;
