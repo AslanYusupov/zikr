@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { authClient, authEnabled, setStayToken } from "./client";
+import { authClient, authEnabled, repairStaySession, setStayToken } from "./client";
 
 /** Normalized user shape used across the app, auth on or off. */
 export type AppUser = {
@@ -123,6 +123,7 @@ export function useCurrentUserState(): CurrentUserState {
   }, [isPending]);
   // eslint-disable-next-line react-hooks/rules-of-hooks -- same constant branch as useSession
   useEffect(() => {
+    void repairStaySession();
     const retry = () => {
       const stored = readStoredUser();
       if (stored) {

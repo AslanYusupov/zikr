@@ -21,7 +21,7 @@ export const authClient = createAuthClient({
   plugins: [genericOAuthClient()],
   fetchOptions: {
     onRequest(ctx) {
-      const token = getBearerToken() || getStayToken();
+      const token = getBearerToken() || (skipStay ? null : getStayToken());
       if (token) ctx.headers.set("Authorization", `Bearer ${token}`);
       return ctx;
     },
@@ -52,6 +52,7 @@ export { GROK_PROVIDERS };
 const BEARER_KEY = "grok-auth.bearer-token";
 const STAY_KEY = "zikr-auth-token";
 const STAY_COOKIE = "zikr_stay";
+let skipStay = false;
 
 function readStayCookie(): string | null {
   if (typeof document === "undefined") return null;
@@ -100,6 +101,26 @@ export function setStayToken(token: string | null) {
   if (token) document.cookie = `${STAY_COOKIE}=${encodeURIComponent(token)}; Expires=${expires}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
   else document.cookie = `${STAY_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax${secure}`;
   void rememberStay(token);
+}
+
+/** A stale saved token must not hide a cookie that is still signed in. */
+export async function repairStaySession(): Promise<void> {
+  try {
+    const first = await authClient.getSession();
+    if (first.data?.user || (!getStayToken() && !getBearerToken())) return;
+  } catch {
+    if (!getStayToken() && !getBearerToken()) return;
+  }
+  skipStay = true;
+  try {
+    const second = await authClient.getSession();
+    const token = second.data?.session && "token" in second.data.session ? second.data.session.token : null;
+    if (typeof token === "string" && token.length > 10) setStayToken(token);
+  } catch {
+    /* keep the saved token for the next try */
+  } finally {
+    skipStay = false;
+  }
 }
 
 function rememberStay(token: string | null) {

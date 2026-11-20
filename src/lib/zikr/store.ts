@@ -434,6 +434,78 @@ export function mergeState(local: ZikrState, remoteRaw: unknown): ZikrState {
 const SAVE_KEY = "nur-zikr-v1";
 const BACKUP_KEY = "nur-zikr-v1-bak";
 const SNAP_KEY = "zikr-stats-snap";
+const PID_KEY = "zikr-pid";
+
+function cookieValue(name: string): string {
+  if (typeof document === "undefined") return "";
+  const raw = document.cookie.split("; ").find((row) => row.startsWith(`${name}=`))?.slice(name.length + 1) ?? "";
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return "";
+  }
+}
+
+function writeCookie(name: string, value: string) {
+  if (typeof document === "undefined") return;
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
+}
+
+function readPinnedId(): string {
+  let id = "";
+  try {
+    id = localStorage.getItem(PID_KEY) ?? "";
+  } catch {
+    /* private mode */
+  }
+  if (!/^\d{8}$/.test(id)) id = cookieValue("zikr_pid");
+  return /^\d{8}$/.test(id) ? canonicalPublicId(id) : "";
+}
+
+function pinId(id: string) {
+  const real = canonicalPublicId(id);
+  if (!/^\d{8}$/.test(real) || typeof window === "undefined") return;
+  try {
+    localStorage.setItem(PID_KEY, real);
+  } catch {
+    /* private mode */
+  }
+  writeCookie("zikr_pid", real);
+  void idbSet(PID_KEY, real);
+  try {
+    void caches?.open("zikr-ok-v1").then((cache) => cache.put("/zikr-pin", new Response(real))).catch(() => {});
+  } catch {
+    /* cache is optional */
+  }
+}
+
+function withPin(raw: string | null): string | null {
+  const id = readPinnedId();
+  if (!id) return raw;
+  if (!raw) return JSON.stringify({ state: { publicId: id }, version: 5 });
+  try {
+    const parsed = JSON.parse(raw) as { state?: { publicId?: string } };
+    if (!parsed.state) return raw;
+    if (!/^\d{8}$/.test(parsed.state.publicId ?? "")) parsed.state.publicId = id;
+    return JSON.stringify(parsed);
+  } catch {
+    return raw;
+  }
+}
+
+async function recoverPin(): Promise<string> {
+  const disk = await idbGet(PID_KEY);
+  if (disk && /^\d{8}$/.test(disk)) return canonicalPublicId(disk);
+  try {
+    const cache = await caches.open("zikr-ok-v1");
+    const text = (await (await cache.match("/zikr-pin"))?.text())?.trim() ?? "";
+    if (/^\d{8}$/.test(text)) return canonicalPublicId(text);
+  } catch {
+    /* cache is optional */
+  }
+  return "";
+}
 
 function savedDetail(raw: string | null): number {
   if (!raw) return 0;
@@ -651,20 +723,29 @@ async function idbSet(key: string, value: string) {
 
 let idbQueue: Promise<void> = Promise.resolve();
 let allowLowerSave = false;
+let holdEmpty = true;
 
 const durableStorage = {
   getItem: async (name: string) => {
-    let local = withSnap(readLocal(name));
+    let local = withPin(withSnap(readLocal(name)));
     if (!local || savedDetail(local) === 0) {
       const disk = await Promise.race<string | null>([
         idbGet(name),
         new Promise((resolve) => setTimeout(() => resolve(null), 8000)),
       ]);
       if (disk && (savedScore(disk) > savedScore(local) || savedDetail(disk) > savedDetail(local))) {
-        local = withSnap(disk);
+        local = withPin(withSnap(disk));
         if (local) writeLocal(name, local);
       }
     }
+    if (!readPinnedId()) {
+      const recovered = await recoverPin();
+      if (recovered) {
+        pinId(recovered);
+        local = withPin(local);
+      }
+    }
+    holdEmpty = false;
     void idbGet(name)
       .then((disk) => {
         if (!disk) return;
@@ -699,10 +780,17 @@ const durableStorage = {
     const forced = allowLowerSave;
     allowLowerSave = false;
     const next = savedScore(value);
+    if (!forced && holdEmpty && next <= 0) return Promise.resolve();
     const kept = readLocal(name);
     if (!forced && next < savedScore(kept)) return Promise.resolve();
     writeLocal(name, value);
     writeSnap(value);
+    try {
+      const id = (JSON.parse(value) as { state?: { publicId?: string } }).state?.publicId ?? "";
+      if (/^\d{8}$/.test(id)) pinId(id);
+    } catch {
+      /* the count is already stored */
+    }
     idbQueue = idbQueue
       .then(async () => {
         const disk = await idbGet(name);
@@ -844,9 +932,16 @@ export const useZikr = create<ZikrState & Actions>()(
         const current = canonicalPublicId(get().publicId);
         if (/^\d{8}$/.test(current)) {
           if (current !== get().publicId) set({ publicId: current });
+          pinId(current);
           return current;
         }
+        const pinned = readPinnedId();
+        if (pinned) {
+          set({ publicId: pinned });
+          return pinned;
+        }
         const next = makePublicId();
+        pinId(next);
         set({ publicId: next });
         return next;
       },
@@ -1108,13 +1203,27 @@ if (typeof window !== "undefined") {
       for (const at of pending) s.markCelebrated(at);
     }
   };
+  const keepId = () => {
+    const id = readPinnedId();
+    if (!id) return;
+    const s = useZikr.getState();
+    const current = canonicalPublicId(s.publicId);
+    if (!/^\d{8}$/.test(current) || (s.total <= 0 && current !== id)) useZikr.setState({ publicId: id });
+  };
   if (useZikr.persist.hasHydrated()) {
     armed = true;
     releaseStuck();
+    keepId();
   }
   useZikr.persist.onFinishHydration(() => {
     armed = true;
     releaseStuck();
+    keepId();
+    void recoverPin().then((id) => {
+      if (!id) return;
+      pinId(id);
+      keepId();
+    });
   });
   window.addEventListener("pagehide", flush);
   document.addEventListener("visibilitychange", () => {

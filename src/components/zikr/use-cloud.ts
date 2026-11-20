@@ -167,6 +167,44 @@ function rememberSyncKey(key: string) {
     /* private mode */
   }
   document.cookie = `zikr_k=${key}; Max-Age=31536000; Path=/; SameSite=Lax`;
+  try {
+    const req = indexedDB.open("nur-zikr", 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains("kv")) req.result.createObjectStore("kv");
+    };
+    req.onsuccess = () => {
+      req.result.transaction("kv", "readwrite").objectStore("kv").put(key, SYNC_KEY);
+    };
+  } catch {
+    /* the cookie still has the key */
+  }
+}
+
+async function syncKeyFromDisk(): Promise<string> {
+  if (typeof indexedDB === "undefined") return "";
+  try {
+    const req = indexedDB.open("nur-zikr", 1);
+    const db = await new Promise<IDBDatabase | null>((resolve) => {
+      const timer = window.setTimeout(() => resolve(null), 2500);
+      req.onsuccess = () => {
+        window.clearTimeout(timer);
+        resolve(req.result);
+      };
+      req.onerror = () => {
+        window.clearTimeout(timer);
+        resolve(null);
+      };
+    });
+    if (!db) return "";
+    const value = await new Promise<string>((resolve) => {
+      const q = db.transaction("kv", "readonly").objectStore("kv").get(SYNC_KEY);
+      q.onsuccess = () => resolve(typeof q.result === "string" ? q.result : "");
+      q.onerror = () => resolve("");
+    });
+    return validKey(value);
+  } catch {
+    return "";
+  }
 }
 
 function storedSyncKey(): string {
@@ -228,8 +266,7 @@ export function useWorldSync(hydrated: boolean) {
     if (!hydrated) return;
     let stop = false;
     const urlKey = validKey(new URLSearchParams(window.location.search).get("k"));
-    let key = urlKey || storedSyncKey() || makeSyncKey();
-    rememberSyncKey(key);
+    let key = urlKey || storedSyncKey();
     const tgId = telegramUserId();
 
     const pull = async () => {
@@ -244,6 +281,7 @@ export function useWorldSync(hydrated: boolean) {
     const push = async () => {
       const id = useZikr.getState().ensurePublicId();
       const state = snapshot(useZikr.getState());
+      if (state.total <= 0) return;
       const saved = await pushDevice({
         data: { key, publicId: id, total: state.total, payload: JSON.stringify(state), ...(tgId ? { tgId } : {}) },
       });
@@ -258,6 +296,9 @@ export function useWorldSync(hydrated: boolean) {
 
     void (async () => {
       try {
+        if (!key) key = (await syncKeyFromDisk()) || makeSyncKey();
+        if (stop) return;
+        rememberSyncKey(key);
         await pull();
         if (!stop) await push();
       } catch {
