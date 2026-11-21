@@ -1348,6 +1348,8 @@
   overflow-anchor: none;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
+  min-width: 0;
+  max-width: 100%;
   min-height: 0;
   padding-bottom: max(1.25rem, constant(safe-area-inset-bottom));
   padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
@@ -1359,6 +1361,8 @@ details.fold {
   background: var(--surface);
   border-radius: 1.15rem;
   margin-top: .65rem;
+  max-width: 100%;
+  min-width: 0;
   overflow: hidden;
 }
 @supports (color:color-mix(in lab, red, red)) {
@@ -4310,15 +4314,26 @@ html[data-os="android"] .home-switch button {
 .day-line {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   justify-items: center;
   align-items: baseline;
   text-align: center;
   column-gap: .4rem;
   overflow-wrap: normal;
 }
-.day-bit { min-width: 0; text-align: center; white-space: nowrap; }
+.day-bit {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .day-num {
   display: inline-block;
+  max-width: 100%;
   color: var(--fg);
   font-variant-numeric: tabular-nums;
   text-align: center;

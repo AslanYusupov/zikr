@@ -347,13 +347,15 @@ export function SettingsView({
             </button>
           ))}
         </div>
-        <div className="mt-2 flex gap-2">
+        <div className="mt-2 flex w-full min-w-0 max-w-full gap-2">
           <input
             inputMode="numeric"
+            enterKeyHint="done"
             value={ownGoal}
             placeholder={t(s.lang, "goalOwn")}
             onChange={(event) => setOwnGoal(event.target.value.replace(/\D/g, "").slice(0, 7))}
-            className="h-10 min-w-0 flex-1 rounded-full border border-line bg-chip px-3 text-sm text-fg"
+            className="h-11 w-0 min-w-0 flex-1 rounded-full border border-line bg-chip px-3 text-fg"
+            style={{ fontSize: 16 }}
           />
           <button
             type="button"
@@ -363,7 +365,7 @@ export function SettingsView({
               s.setGoal(n);
               setOwnGoal("");
             }}
-            className="h-10 rounded-full bg-gold px-3 text-sm text-ink"
+            className="h-11 shrink-0 rounded-full bg-gold px-3 text-sm text-ink"
           >
             {t(s.lang, "goalSet")}
           </button>

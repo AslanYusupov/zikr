@@ -657,7 +657,7 @@ export function Counter({
                 </span>
               </button>
             ) : null}
-            <div className="grid grid-cols-3 gap-1.5 px-3">
+            <div className="grid min-w-0 grid-cols-3 gap-1.5 px-3">
               <Stat label={t(s.lang, "today")} value={maskStats ? "***" : formatNum(today)} hint={maskStats ? "***" : `${formatNum(today)} / ${formatNum(s.goal)}`} onToggle={toggleMask} />
               <Stat label={t(s.lang, "total")} value={maskStats ? "***" : formatNum(s.total)} hint={maskStats ? "***" : zikrWord(s.total, s.lang)} onToggle={toggleMask} />
               <Stat label={t(s.lang, "rewards")} value={maskStats ? "***" : formatNum(totalReward)} hint={t(s.lang, "sawabHint")} reward onToggle={toggleMask} />
@@ -856,7 +856,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
 function Stat({ label, value, hint, reward, onToggle }: { label: string; value: string; hint?: string; reward?: boolean; onToggle: () => void }) {
   if (reward) {
     return (
-      <button type="button" onClick={onToggle} className="w-full appearance-none rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
+      <button type="button" onClick={onToggle} className="w-full min-w-0 overflow-hidden appearance-none rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
         <p className="truncate text-[0.68rem] font-bold text-muted">{label}</p>
         <p className="stat-value mt-0.5 text-base leading-none text-fg tabular-nums" suppressHydrationWarning>
           {value}
@@ -871,12 +871,12 @@ function Stat({ label, value, hint, reward, onToggle }: { label: string; value: 
     );
   }
   return (
-    <button type="button" onClick={onToggle} className="w-full appearance-none rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
+    <button type="button" onClick={onToggle} className="w-full min-w-0 overflow-hidden appearance-none rounded-2xl border border-line bg-surface px-1.5 py-1.5 text-center">
       <p className="truncate text-[0.68rem] font-bold text-muted">{label}</p>
       <p className="stat-value mt-0.5 text-base leading-none text-fg tabular-nums" suppressHydrationWarning>
         {value}
       </p>
-      <p className="mt-0.5 line-clamp-2 text-[0.62rem] leading-snug text-muted">{hint}</p>
+      <p className="mt-0.5 line-clamp-2 text-[0.62rem] leading-snug text-muted" style={{ overflowWrap: "anywhere" }}>{hint}</p>
     </button>
   );
 }
