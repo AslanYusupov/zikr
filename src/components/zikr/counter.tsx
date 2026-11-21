@@ -317,6 +317,9 @@ export function Counter({
   const compact = showPhrase && (hasArabic ? arabic.length > 90 : name.length > 90);
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
+  const goalLeft = Math.max(0, s.goal - today);
+  const yestLeft = Math.max(0, yesterday - today);
+  const recLeft = Math.max(0, s.bestDay - today);
   const quoteIndex = quoteIndexOf(quoteAt);
   const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
@@ -653,7 +656,13 @@ export function Counter({
               className="day-line w-full px-3 pt-1 text-center text-[0.7rem] text-muted"
               onClick={() => setStatsOpen(true)}
             >
-              {tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)} · {tx(s.lang, "record")} {maskStats ? "***" : formatNum(Math.max(s.bestDay, today))}
+              <span>{tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)}</span>
+              <span className="day-drop" key={`y-${maskStats ? "x" : yestLeft}`}>−{maskStats ? "***" : formatNum(yestLeft)}</span>
+              <span>·</span>
+              <span>{tx(s.lang, "record")} {maskStats ? "***" : formatNum(Math.max(s.bestDay, today))}</span>
+              <span className="day-drop" key={`r-${maskStats ? "x" : recLeft}`}>−{maskStats ? "***" : formatNum(recLeft)}</span>
+              <span>·</span>
+              <span>{tx(s.lang, "left")} <span className="day-drop" key={`g-${maskStats ? "x" : goalLeft}`}>{maskStats ? "***" : formatNum(goalLeft)}</span></span>
             </button>
             ) : null}
           </div>

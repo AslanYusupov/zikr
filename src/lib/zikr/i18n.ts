@@ -814,6 +814,7 @@ const EXTRA = {
   ru: {
     yesterday: "вчера",
     record: "рекорд",
+    left: "ещё",
     dayFoot: "Вчера и рекорд",
     dayFootHint: "Строка внизу экрана. Можно спрятать",
     statsTitle: "Статистика зикров",
@@ -951,6 +952,7 @@ const EXTRA = {
   en: {
     yesterday: "yesterday",
     record: "record",
+    left: "left",
     dayFoot: "Yesterday and record",
     dayFootHint: "The line at the bottom. It can be hidden",
     statsTitle: "Dhikr record",
@@ -1088,6 +1090,7 @@ const EXTRA = {
   ar: {
     yesterday: "أمس",
     record: "رقم",
+    left: "بقي",
     dayFoot: "أمس والرقم",
     dayFootHint: "السطر أسفل الشاشة. يمكن إخفاؤه",
     statsTitle: "سجل الذكر",
@@ -1225,6 +1228,7 @@ const EXTRA = {
   id: {
     yesterday: "kemarin",
     record: "rekor",
+    left: "sisa",
     dayFoot: "Kemarin dan rekor",
     dayFootHint: "Baris di bawah layar. Bisa disembunyikan",
     statsTitle: "Catatan zikir",
@@ -1362,6 +1366,7 @@ const EXTRA = {
   tr: {
     yesterday: "dün",
     record: "rekor",
+    left: "kaldı",
     dayFoot: "Dün ve rekor",
     dayFootHint: "Ekranın altındaki satır. Gizlenebilir",
     statsTitle: "Zikir kaydı",
@@ -1499,6 +1504,7 @@ const EXTRA = {
   ur: {
     yesterday: "کل",
     record: "ریکارڈ",
+    left: "باقی",
     dayFoot: "کل اور ریکارڈ",
     dayFootHint: "اسکرین کے نیچے والی سطر۔ چھپا سکتے ہیں",
     statsTitle: "ذکر کا ریکارڈ",
