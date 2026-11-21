@@ -669,12 +669,12 @@ export function Counter({
               onClick={() => setStatsOpen(true)}
             >
               <span>{tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)}</span>
-              <span className={yestGap > 0 ? "day-rise" : "day-drop"} key={`y-${maskStats ? "x" : yestGap}`}>{dayMark(yestGap, maskStats)}</span>
+              <span className="day-num">{dayMark(yestGap, maskStats)}</span>
               <span>·</span>
               <span>{tx(s.lang, "record")} {maskStats ? "***" : formatNum(recordBar)}</span>
-              <span className={recGap > 0 ? "day-rise" : "day-drop"} key={`r-${maskStats ? "x" : recGap}`}>{dayMark(recGap, maskStats)}</span>
+              <span className="day-num">{dayMark(recGap, maskStats)}</span>
               <span>·</span>
-              <span>{tx(s.lang, "left")} <span className={goalGap > 0 ? "day-rise" : "day-drop"} key={`g-${maskStats ? "x" : goalGap}`}>{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
+              <span>{tx(s.lang, "left")} <span className="day-num">{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
             </button>
             ) : null}
           </div>
