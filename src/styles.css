@@ -4307,7 +4307,16 @@ html[data-os="android"] .home-switch button {
 }
 .app-nav button { min-width: 0; text-align: center; }
 .day-line, .stat-value { overflow-wrap: anywhere; }
-.day-line { display: flex; flex-wrap: nowrap; justify-content: flex-start; align-items: baseline; column-gap: .35rem; white-space: nowrap; }
+.day-line {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-items: center;
+  align-items: baseline;
+  text-align: center;
+  column-gap: .4rem;
+  overflow-wrap: normal;
+}
+.day-bit { min-width: 0; text-align: center; white-space: nowrap; }
 .day-num {
   display: inline-block;
   color: var(--fg);

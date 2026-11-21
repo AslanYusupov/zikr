@@ -665,16 +665,12 @@ export function Counter({
             {s.dayFoot ? (
             <button
               type="button"
-              className="day-line w-full px-3 pt-1 text-left text-[0.7rem] text-muted"
+              className="day-line w-full px-3 pt-1 text-center text-[0.7rem] text-muted"
               onClick={() => setStatsOpen(true)}
             >
-              <span>{tx(s.lang, "goal")} <span className="day-num">{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
-              <span>·</span>
-              <span>{tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)}</span>
-              <span className="day-num">{dayMark(yestGap, maskStats)}</span>
-              <span>·</span>
-              <span>{tx(s.lang, "record")} {maskStats ? "***" : formatNum(recordBar)}</span>
-              <span className="day-num">{dayMark(recGap, maskStats)}</span>
+              <span className="day-bit">{tx(s.lang, "goal")} <span className="day-num">{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
+              <span className="day-bit">{tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)} <span className="day-num">{dayMark(yestGap, maskStats)}</span></span>
+              <span className="day-bit">{tx(s.lang, "record")} {maskStats ? "***" : formatNum(recordBar)} <span className="day-num">{dayMark(recGap, maskStats)}</span></span>
             </button>
             ) : null}
           </div>
