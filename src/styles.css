@@ -4307,7 +4307,7 @@ html[data-os="android"] .home-switch button {
 }
 .app-nav button { min-width: 0; text-align: center; }
 .day-line, .stat-value { overflow-wrap: anywhere; }
-.day-line { display: flex; flex-wrap: nowrap; justify-content: center; align-items: baseline; column-gap: .35rem; white-space: nowrap; }
+.day-line { display: flex; flex-wrap: nowrap; justify-content: flex-start; align-items: baseline; column-gap: .35rem; white-space: nowrap; }
 .day-num {
   display: inline-block;
   color: var(--fg);
