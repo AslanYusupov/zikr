@@ -668,7 +668,7 @@ export function Counter({
               className="day-line w-full px-3 pt-1 text-left text-[0.7rem] text-muted"
               onClick={() => setStatsOpen(true)}
             >
-              <span>{tx(s.lang, "goal")} {tx(s.lang, "left")} <span className="day-num">{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
+              <span>{tx(s.lang, "goal")} <span className="day-num">{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
               <span>·</span>
               <span>{tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)}</span>
               <span className="day-num">{dayMark(yestGap, maskStats)}</span>
