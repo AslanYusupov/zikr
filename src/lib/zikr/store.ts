@@ -48,7 +48,7 @@ export function initialData(): ZikrState {
     xp: 0,
     byDhikr: emptyCounts(),
     days: {},
-    goal: 100,
+    goal: 1000,
     mode: "subhanallah",
     pool: DHIKR.filter((d) => d.primary).map((d) => d.id),
     sound: "on",
@@ -1181,7 +1181,7 @@ export const useZikr = create<ZikrState & Actions>()(
     {
       name: SAVE_KEY,
       storage: createJSONStorage(() => durableStorage),
-      version: 5,
+      version: 6,
       migrate: (persisted, fromVersion) => {
         let next = normalize(persisted);
         if (fromVersion < 3) {
@@ -1192,6 +1192,7 @@ export const useZikr = create<ZikrState & Actions>()(
           next = { ...next, orbit: true };
         }
         if (fromVersion < 5) next = { ...next, vibrate: true };
+        if (fromVersion < 6 && next.goal < 1000) next = { ...next, goal: 1000 };
         return next;
       },
       merge: (persisted, current) => ({ ...(current as ZikrState & Actions), ...normalize(persisted) }),
@@ -1203,7 +1204,7 @@ if (typeof window !== "undefined") {
   let armed = false;
   const flush = () => {
     if (!armed) return;
-    const raw = JSON.stringify({ state: snapshot(useZikr.getState()), version: 5 });
+    const raw = JSON.stringify({ state: snapshot(useZikr.getState()), version: 6 });
     void durableStorage.setItem(SAVE_KEY, raw);
   };
   const releaseStuck = () => {
