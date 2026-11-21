@@ -169,6 +169,13 @@ function quoteHold(text: string): number {
   return Math.round(Math.min(50000, Math.max(12000, ms)));
 }
 
+function dayMark(gap: number, hidden: boolean): string {
+  if (hidden) return "***";
+  if (gap > 0) return `+${formatNum(gap)}`;
+  if (gap < 0) return `−${formatNum(-gap)}`;
+  return "0";
+}
+
 export function Counter({
   onNotice,
   onOpenLibrary,
@@ -317,9 +324,14 @@ export function Counter({
   const compact = showPhrase && (hasArabic ? arabic.length > 90 : name.length > 90);
   const totalReward = rewardPoints(s.total + s.quranLetters);
   const yesterday = s.days[addDays(day, -1)]?.total ?? 0;
-  const goalLeft = Math.max(0, s.goal - today);
-  const yestLeft = Math.max(0, yesterday - today);
-  const recLeft = Math.max(0, s.bestDay - today);
+  let prior = 0;
+  for (const [key, log] of Object.entries(s.days)) {
+    if (key !== day && log.total > prior) prior = log.total;
+  }
+  const recordBar = Math.max(prior, s.bestDay > today ? s.bestDay : 0);
+  const yestGap = today - yesterday;
+  const recGap = today - recordBar;
+  const goalGap = today - s.goal;
   const quoteIndex = quoteIndexOf(quoteAt);
   const quote = QUOTES[quoteIndex] ?? QUOTES[0];
   const shownQuote = localQuote(quote, s.lang);
@@ -657,12 +669,12 @@ export function Counter({
               onClick={() => setStatsOpen(true)}
             >
               <span>{tx(s.lang, "yesterday")} {maskStats ? "***" : formatNum(yesterday)}</span>
-              <span className="day-drop" key={`y-${maskStats ? "x" : yestLeft}`}>−{maskStats ? "***" : formatNum(yestLeft)}</span>
+              <span className={yestGap > 0 ? "day-rise" : "day-drop"} key={`y-${maskStats ? "x" : yestGap}`}>{dayMark(yestGap, maskStats)}</span>
               <span>·</span>
-              <span>{tx(s.lang, "record")} {maskStats ? "***" : formatNum(Math.max(s.bestDay, today))}</span>
-              <span className="day-drop" key={`r-${maskStats ? "x" : recLeft}`}>−{maskStats ? "***" : formatNum(recLeft)}</span>
+              <span>{tx(s.lang, "record")} {maskStats ? "***" : formatNum(recordBar)}</span>
+              <span className={recGap > 0 ? "day-rise" : "day-drop"} key={`r-${maskStats ? "x" : recGap}`}>{dayMark(recGap, maskStats)}</span>
               <span>·</span>
-              <span>{tx(s.lang, "left")} <span className="day-drop" key={`g-${maskStats ? "x" : goalLeft}`}>{maskStats ? "***" : formatNum(goalLeft)}</span></span>
+              <span>{tx(s.lang, "left")} <span className={goalGap > 0 ? "day-rise" : "day-drop"} key={`g-${maskStats ? "x" : goalGap}`}>{maskStats ? "***" : goalGap > 0 ? `+${formatNum(goalGap)}` : goalGap < 0 ? formatNum(-goalGap) : "0"}</span></span>
             </button>
             ) : null}
           </div>
