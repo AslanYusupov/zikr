@@ -2159,6 +2159,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   position: relative;
   z-index: 6;
   flex-shrink: 0;
+  max-height: 30vh;
   max-height: 30svh;
   margin-top: .35rem;
   overflow: hidden;
@@ -2167,6 +2168,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 }
 .phrase-scroll {
   min-height: 0;
+  max-height: 30vh;
   max-height: 30svh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -2225,11 +2227,15 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 }
 .reminder {
   padding: .35rem .65rem .4rem;
+  max-height: 7.2rem;
+  max-height: min(18vh, 7.2rem);
   max-height: min(18svh, 7.2rem);
   overflow: hidden;
 }
 .reminder-scroll {
   display: block;
+  max-height: 6.4rem;
+  max-height: min(16vh, 6.4rem);
   max-height: min(16svh, 6.4rem);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -2283,11 +2289,15 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 }
 .orb-slot .orb {
   pointer-events: auto;
-  aspect-ratio: 1;
   background: var(--orb);
+  width: min(34vw,8.6rem);
   width: min(34vw,8.6rem,24svh);
-  height: auto;
+  height: min(34vw,8.6rem);
+  height: min(34vw,8.6rem,24svh);
   box-shadow: 0 0 0 1.5px #ffffffb8, 0 0 36px var(--glow);
+}
+@supports (aspect-ratio: 1) {
+  .orb-slot .orb { aspect-ratio: 1; height: auto; }
 }
 .orb.orb-bare {
   background: transparent;
@@ -3517,7 +3527,11 @@ html, body {
   position: fixed;
   inset: 0;
   width: 100%;
+  height: 100vh;
+  height: var(--app-h, 100vh);
   height: var(--app-h, 100dvh);
+  max-height: 100vh;
+  max-height: var(--app-h, 100vh);
   max-height: var(--app-h, 100dvh);
   overflow: hidden;
   overscroll-behavior: none;
@@ -4225,10 +4239,47 @@ html, body {
 }
 
 html[data-os="ios"] .app-nav {
+  padding-bottom: .55rem;
+  padding-bottom: max(.55rem, constant(safe-area-inset-bottom));
   padding-bottom: max(.55rem, env(safe-area-inset-bottom));
 }
+html[data-os="ios"] .nav-pill {
+  bottom: .22rem;
+  bottom: max(.22rem, constant(safe-area-inset-bottom));
+  bottom: max(.22rem, env(safe-area-inset-bottom));
+}
 html[data-os="ios"] header.safe-top {
+  padding-top: .45rem;
+  padding-top: max(.45rem, constant(safe-area-inset-top));
   padding-top: max(.45rem, env(safe-area-inset-top));
+}
+html[data-os="ios"] .shell-main {
+  padding-left: constant(safe-area-inset-left);
+  padding-right: constant(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+@media (max-height: 740px) {
+  html[data-os="ios"] .orb-slot { padding: 1% .8rem 0; }
+  html[data-os="ios"] .orb-slot .orb { width: min(30vw, 6.6rem); height: min(30vw, 6.6rem); }
+  html[data-os="ios"] .phrase-read,
+  html[data-os="ios"] .phrase-scroll { max-height: 7.4rem; margin-top: .1rem; }
+  html[data-os="ios"] .reminder { max-height: 4.2rem; padding: .2rem .5rem .24rem; }
+  html[data-os="ios"] .home-switch button { min-height: 2rem; font-size: .66rem; }
+  html[data-os="ios"] .stats-dock { padding-bottom: .15rem; }
+}
+@media (max-height: 640px) {
+  html[data-os="ios"] .orb-slot .orb { width: min(26vw, 5.2rem); height: min(26vw, 5.2rem); }
+  html[data-os="ios"] .phrase-read,
+  html[data-os="ios"] .phrase-scroll { max-height: 4.8rem; }
+  html[data-os="ios"] .app-nav button { min-height: 2.55rem; font-size: .6rem; }
+  html[data-os="ios"] .day-line { font-size: .58rem; padding-top: 0; }
+}
+@media (max-width: 340px) {
+  html[data-os="ios"] .day-line { font-size: .56rem; column-gap: .15rem; }
+  html[data-os="ios"] .app-nav button { font-size: .56rem; padding-inline: 0; }
+  html[data-os="ios"] header.safe-top .font-arabic { font-size: 1.05rem; }
+  html[data-os="ios"] .stat-value { font-size: .78rem; }
 }
 html[data-os="android"] {
   -webkit-text-size-adjust: none;
