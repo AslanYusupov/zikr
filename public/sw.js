@@ -108,7 +108,6 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
-    await self.clients.claim();
     const html = await siteHtml();
     const mark = html ? await storeFresh(html) : "";
     if (mark) await openFresh(mark);
@@ -183,17 +182,24 @@ self.addEventListener("fetch", (event) => {
         } catch {
           /* the saved page still opens */
         }
+        try {
+          const live = await fetch(self.location.origin + "/?open=" + Date.now(), {
+            cache: "no-store",
+            signal: AbortSignal.timeout(8000),
+          });
+          if (live.ok) {
+            const html = await live.text();
+            if (html.includes("<html") && html.includes("zikr-build")) return page(html);
+          }
+        } catch {
+          /* the saved copy opens */
+        }
         if (saved) {
           try {
             return page(await saved.clone().text());
           } catch {
             return saved;
           }
-        }
-        const html = await siteHtml();
-        if (html) {
-          await cache.put("/index.html", page(html));
-          return page(html);
         }
         return offline();
       }
