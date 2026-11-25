@@ -323,6 +323,20 @@ export type SunnahQuest = {
 /** Только числа, которые названы в достоверных сообщениях. Следующий шаг не выдуман. */
 export const SUNNAH_QUESTS: SunnahQuest[] = [
   {
+    id: "three-surahs",
+    tier: "easy",
+    tierLabel: "Лёгкое",
+    title: "Три последние суры",
+    points: 90,
+    source: "Абу Давуд, ат-Тирмизи",
+    note: "Утром и вечером: аль-Ихлас, аль-Фаляк и ан-Нас, каждую три раза. Нажал три раза — открывается следующая. Вечером прочитай их снова.",
+    steps: [
+      { dhikrId: "ikhlas", count: 3, label: "Аль-Ихлас" },
+      { dhikrId: "falaq", count: 3, label: "Аль-Фаляк" },
+      { dhikrId: "nas", count: 3, label: "Ан-Нас" },
+    ],
+  },
+  {
     id: "raditu-morning",
     tier: "easy",
     tierLabel: "Лёгкое",

@@ -9,11 +9,21 @@ const LABELS: Record<string, Record<LangId, string>> = {
   "Сотый раз": { ru: "Сотый раз", en: "The hundredth", ar: "المرة المتممة للمئة", id: "Yang keseratus", tr: "Yüzüncü", ur: "سوواں" },
   "После намаза": { ru: "После намаза", en: "After the prayer", ar: "بعد الصلاة", id: "Setelah salat", tr: "Namazdan sonra", ur: "نماز کے بعد" },
   "Ночью": { ru: "Ночью", en: "At night", ar: "في الليل", id: "Di malam hari", tr: "Gece", ur: "رات کو" },
+  "Аль-Ихлас": { ru: "Аль-Ихлас", en: "Al-Ikhlas", ar: "الإخلاص", id: "Al-Ikhlas", tr: "İhlâs", ur: "اخلاص" },
+  "Аль-Фаляк": { ru: "Аль-Фаляк", en: "Al-Falaq", ar: "الفلق", id: "Al-Falaq", tr: "Felak", ur: "فلق" },
+  "Ан-Нас": { ru: "Ан-Нас", en: "An-Nas", ar: "الناس", id: "An-Nas", tr: "Nâs", ur: "ناس" },
 };
 
 type Line = { title: string; note: string };
 
 const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
+  "three-surahs": {
+    en: { title: "The last three surahs", note: "Morning and evening: al-Ikhlas, al-Falaq and an-Nas, each three times. After three presses the next one opens. In the evening, read them again." },
+    ar: { title: "السور الثلاث الأخيرة", note: "صباحًا ومساءً: الإخلاص والفلق والناس، كل واحدة ثلاث مرات. بعد ثلاث ضغطات تُفتح التالية. وفي المساء اقرأها مرة أخرى." },
+    id: { title: "Tiga surah terakhir", note: "Pagi dan petang: al-Ikhlas, al-Falaq dan an-Nas, masing-masing tiga kali. Setelah tiga ketukan, surah berikutnya terbuka. Petang nanti baca lagi." },
+    tr: { title: "Son üç sure", note: "Sabah ve akşam: İhlâs, Felak ve Nâs, her biri üç kez. Üç kez basınca sonrakisi açılır. Akşam yeniden oku." },
+    ur: { title: "آخری تین سورتیں", note: "صبح اور شام: اخلاص، فلق اور ناس، ہر ایک تین بار۔ تین بار دبانے کے بعد اگلی کھلتی ہے۔ شام کو پھر پڑھیں۔" },
+  },
   "raditu-morning": {
     en: { title: "Raditu billahi", note: "Three times: “I am pleased with Allah as Lord, with Islam as religion, and with Muhammad as prophet.” Morning and evening are separate: three now, and three again in the evening." },
     ar: { title: "رضيت بالله", note: "ثلاث مرات: «رضيت بالله ربًا، وبالإسلام دينًا، وبمحمد نبيًا». الصباح والمساء كلٌّ على حدة: الآن ثلاث، وفي المساء ثلاث أخرى." },
