@@ -439,8 +439,9 @@ export function Counter({
             {hasArabic ? (
             <p
               className={cn(
-                "phrase-arabic mx-auto max-w-sm font-arabic leading-snug font-bold text-fg",
-                compact ? "text-sm" : arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
+                "phrase-arabic mx-auto max-w-sm font-arabic font-bold text-fg",
+                arabic.includes("\n") && "whitespace-pre-line leading-loose",
+                arabic.includes("\n") ? "text-lg" : compact ? "text-sm" : arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
               )}
               dir="rtl"
               lang="ar"

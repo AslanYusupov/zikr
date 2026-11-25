@@ -18,11 +18,11 @@ type Line = { title: string; note: string };
 
 const COPY: Record<string, Record<Exclude<LangId, "ru">, Line>> = {
   "three-surahs": {
-    en: { title: "The last three surahs", note: "Morning and evening, each three times. The Prophet ﷺ said: “Qul huwa Allahu ahad” and the two surahs of refuge, three times morning and evening, will suffice you against everything. After three presses the next one opens. In the evening, read them again." },
-    ar: { title: "السور الثلاث الأخيرة", note: "صباحًا ومساءً، كل واحدة ثلاث مرات. قال النبي ﷺ: «قل هو الله أحد» والمعوذتان، ثلاثًا حين تصبح وثلاثًا حين تمسي، تكفيك من كل شيء. بعد ثلاث ضغطات تُفتح التالية. وفي المساء اقرأها مرة أخرى." },
-    id: { title: "Tiga surah terakhir", note: "Pagi dan petang, masing-masing tiga kali. Nabi ﷺ bersabda: “Qul huwallahu ahad” dan dua surah perlindungan, tiga kali pagi dan petang, cukup bagimu dari segala sesuatu. Setelah tiga ketukan, surah berikutnya terbuka. Petang nanti baca lagi." },
-    tr: { title: "Son üç sure", note: "Sabah ve akşam, her biri üç kez. Peygamber ﷺ buyurdu: “Kul huvallahu ehad” ve iki sığınma suresi, sabah üç ve akşam üç, sana her şeye karşı yeter. Üç kez basınca sonrakisi açılır. Akşam yeniden oku." },
-    ur: { title: "آخری تین سورتیں", note: "صبح اور شام، ہر ایک تین بار۔ نبی ﷺ نے فرمایا: «قل هو اللہ احد» اور دو پناہ کی سورتیں، صبح تین اور شام تین، تجھے ہر چیز سے کافی ہوں گی۔ تین بار دبانے کے بعد اگلی کھلتی ہے۔ شام کو پھر پڑھیں۔" },
+    en: { title: "The last three surahs", note: "Morning and evening, each three times. The Prophet ﷺ said: recite “Qul huwa Allahu ahad” and the two surahs of refuge three times when evening comes and when morning comes — they will suffice you against everything. After three presses the next one opens. In the evening, read them again." },
+    ar: { title: "السور الثلاث الأخيرة", note: "صباحًا ومساءً، كل واحدة ثلاث مرات. قال النبي ﷺ: «قل هو الله أحد والمعوذتين حين تمسي وحين تصبح ثلاث مرات تكفيك من كل شيء». بعد ثلاث ضغطات تُفتح التالية. وفي المساء اقرأها مرة أخرى." },
+    id: { title: "Tiga surah terakhir", note: "Pagi dan petang, masing-masing tiga kali. Nabi ﷺ bersabda: bacalah “Qul huwallahu ahad” dan dua surah perlindungan tiga kali ketika petang dan ketika pagi — itu cukup bagimu dari segala sesuatu. Setelah tiga ketukan, surah berikutnya terbuka. Petang nanti baca lagi." },
+    tr: { title: "Son üç sure", note: "Sabah ve akşam, her biri üç kez. Peygamber ﷺ buyurdu: akşam olunca ve sabah olunca “Kul huvallahu ehad” ile iki sığınma suresini üç kez oku — bu sana her şeye karşı yeter. Üç kez basınca sonrakisi açılır. Akşam yeniden oku." },
+    ur: { title: "آخری تین سورتیں", note: "صبح اور شام، ہر ایک تین بار۔ نبی ﷺ نے فرمایا: جب شام ہو اور جب صبح ہو تو «قل هو اللہ احد» اور دو پناہ کی سورتیں تین بار پڑھو — یہ تجھے ہر چیز سے کافی ہوں گی۔ تین بار دبانے کے بعد اگلی کھلتی ہے۔ شام کو پھر پڑھیں۔" },
   },
   "raditu-morning": {
     en: { title: "Raditu billahi", note: "Three times: “I am pleased with Allah as Lord, with Islam as religion, and with Muhammad as prophet.” Morning and evening are separate: three now, and three again in the evening." },
