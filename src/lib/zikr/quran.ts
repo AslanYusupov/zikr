@@ -164,6 +164,23 @@ export function ikhlasShare(book: QuranBook): number {
   return Math.floor(mushafLetters(book) / 3);
 }
 
+/**
+ * Буквы, которые чтение в Азкарах пишет в награду так же, как чтение в Коране.
+ * Три суры — с бисмиллях. Ихлас — ещё треть мусхафа, как награда суры в Коране.
+ * Курси — 2:255. Последние два аята — 2:285 и 2:286.
+ */
+const AZKAR_QURAN_LETTERS: Record<string, number> = {
+  ikhlas: 66 + 109_264,
+  falaq: 90,
+  nas: 99,
+  kursi: 184,
+  baqarah: 314,
+};
+
+export function azkarReadingLetters(id: string): number {
+  return AZKAR_QURAN_LETTERS[id] ?? 0;
+}
+
 function applyRasm(book: QuranBook): QuranBook {
   book.bismillahLetters = rasmLetters(book.bismillah);
   for (const surah of book.surahs) {

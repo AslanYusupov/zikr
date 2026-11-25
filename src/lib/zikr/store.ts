@@ -5,6 +5,7 @@ import { todayKey } from "./format";
 import { levelFromXp } from "./levels";
 import { ALLAH_NAMES } from "./names";
 import { sunnahQuestById } from "./quests";
+import { azkarReadingLetters } from "./quran";
 import type { DayArchive, DayLog, FontId, LangId, OrbId, RewardArchive, RingColor, SoundId, TapResult, TapVoice, ThemeId, ZikrState } from "./types";
 
 const THEMES: ThemeId[] = ["firdaus", "rayyan", "salat", "sadaqa", "jihad", "kazimin", "tawba", "ayman", "black", "wine", "ivory", "roses", "sea", "desert", "cosmos", "peaks", "lake", "jungle", "subhah", "amethyst", "amber", "jade"];
@@ -1138,8 +1139,10 @@ export const useZikr = create<ZikrState & Actions>()(
         }
         const beforeLevel = levelFromXp(s.xp).level;
         const afterLevel = levelFromXp(xpNext).level;
+        const quranLetters = Math.min(CAP, s.quranLetters + azkarReadingLetters(id));
         set({
           total,
+          quranLetters,
           xp: xpNext,
           byDhikr,
           days: trimDays({ ...s.days, [day]: nextLog }),
