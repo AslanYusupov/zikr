@@ -439,9 +439,8 @@ export function Counter({
             {hasArabic ? (
             <p
               className={cn(
-                "phrase-arabic mx-auto max-w-sm font-arabic font-bold text-fg",
-                arabic.includes("\n") && "whitespace-pre-line leading-loose",
-                arabic.includes("\n") ? "text-lg" : compact ? "text-sm" : arabic.length > 110 ? "text-sm" : arabic.length > 70 ? "text-base" : arabic.length > 36 ? "text-lg" : "text-2xl",
+                "phrase-arabic mx-auto w-full font-arabic font-bold text-fg",
+                arabic.includes("\n") && "whitespace-pre-line",
               )}
               dir="rtl"
               lang="ar"
@@ -449,7 +448,7 @@ export function Counter({
               {arabicShown}
             </p>
             ) : null}
-            <p className={cn("mt-0.5 font-extrabold leading-snug text-fg", phrase.id === "sayyid" ? "text-sm" : !hasArabic ? "text-sm" : name.length > 90 ? "text-[0.68rem]" : name.length > 42 ? "text-xs" : "text-sm")}>{read}</p>
+            <p dir="ltr" className="phrase-line text-fg">{read}</p>
             {nameIndex >= 0 ? (
               virtue && showPhrase ? (
                 <div className="mt-1 text-xs leading-snug text-fg">

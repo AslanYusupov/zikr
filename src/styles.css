@@ -2158,13 +2158,26 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
 }
 .phrase-scroll {
   min-height: 0;
+  width: 100%;
   max-height: 8.2rem;
   max-height: min(18vh, 8.2rem);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding: .45rem 1rem .85rem;
+  box-sizing: border-box;
+  padding-top: .45rem;
+  padding-bottom: .85rem;
+  padding-left: max(.85rem, env(safe-area-inset-left));
+  padding-right: max(.85rem, env(safe-area-inset-right));
+  text-align: center;
+}
+.phrase-scroll p {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 .phrase-slide-left { animation: phrase-from-right .22s ease; }
 .phrase-slide-right { animation: phrase-from-left .22s ease; }
@@ -3123,10 +3136,36 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   }
 }
 .phrase-arabic {
+  display: block;
+  width: 100%;
+  direction: rtl;
+  text-align: center;
   overflow-wrap: anywhere;
-  text-wrap: balance;
-  line-height: 2.15;
+  text-wrap: wrap;
+  line-height: 2.05;
+  font-size: clamp(1.05rem, 5.4vw, 1.7rem);
 }
+.phrase-line {
+  display: block;
+  width: 100%;
+  margin-top: .2rem;
+  direction: ltr;
+  text-align: center;
+  overflow-wrap: anywhere;
+  font-size: clamp(.72rem, 3.6vw, .95rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+.reminder,
+.reminder-scroll,
+.reminder-ar,
+.reminder-text,
+.reminder-src {
+  text-align: center;
+}
+.reminder-ar { direction: rtl; }
+.reminder-text,
+.reminder-src { direction: ltr; }
 .stat-value {
   font-family: var(--font-display);
   letter-spacing: -.02em;
