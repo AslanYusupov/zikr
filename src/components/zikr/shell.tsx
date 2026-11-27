@@ -151,22 +151,32 @@ export function Shell() {
       if (stop) return;
       try {
         const cache = await caches.open("zikr-ok-v1");
-        if (await cache.match("/index.html")) return;
-        const res = await fetch("/?open=" + Date.now(), { cache: "no-store" });
-        const html = await res.text();
-        if (!res.ok || !html.includes("/assets/") || !html.includes("zikr-build")) return;
-        const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
-        if (!needed.length) return;
+        if (!(await cache.match("/index.html"))) {
+          const res = await fetch("/?open=" + Date.now(), { cache: "no-store" });
+          const html = await res.text();
+          if (res.ok && html.includes("/assets/") && html.includes("zikr-build")) {
+            const needed = [...new Set([...html.matchAll(/\/assets\/[A-Za-z0-9._-]+\.(?:js|css)/g)].map((match) => match[0]))];
+            if (needed.length) {
+              await Promise.all(
+                needed.map(async (src) => {
+                  if (stop || (await cache.match(src))) return;
+                  const file = await fetch(src, { cache: "no-store" });
+                  if (!file.ok) throw new Error("asset");
+                  await cache.put(src, file.clone());
+                }),
+              );
+              if (!stop) await cache.put("/index.html", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
+            }
+          }
+        }
+        const pack = ["/quran.json", "/quran-mean/ru.json", "/quran-mean/en.json", "/manifest.webmanifest", "/fonts/amiri-400.woff2", "/fonts/amiri-700.woff2", "/fonts/inter-cyr-700.woff2", "/fonts/inter-latin-700.woff2", "/cosmos.jpg", "/mecca.jpg", "/icon-180.png"];
         await Promise.all(
-          needed.map(async (src) => {
+          pack.map(async (src) => {
             if (stop || (await cache.match(src))) return;
             const file = await fetch(src, { cache: "no-store" });
-            if (!file.ok) throw new Error("asset");
-            await cache.put(src, file.clone());
+            if (file.ok) await cache.put(src, file.clone());
           }),
         );
-        if (stop) return;
-        await cache.put("/index.html", new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } }));
       } catch {
         /* the next open can still take the saved copy */
       }

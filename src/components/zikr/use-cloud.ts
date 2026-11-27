@@ -91,6 +91,13 @@ export function useCloud(hydrated: boolean) {
     };
 
     const pull = async () => {
+      if (typeof navigator !== "undefined" && navigator.onLine === false) {
+        if (!stop) {
+          setStatus("local");
+          setReady(true);
+        }
+        return;
+      }
       setStatus("saving");
       try {
         const remote = await loadSave();
@@ -367,6 +374,7 @@ export function useWorldSync(hydrated: boolean) {
     let lastSnap = 0;
     let wait: number | null = null;
     const send = () => {
+      if (typeof navigator !== "undefined" && navigator.onLine === false) return;
       const state = useZikr.getState();
       const day = todayKey();
       const dayTotal = state.days[day]?.total ?? 0;

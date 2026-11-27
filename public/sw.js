@@ -1,6 +1,42 @@
 const SHELL = "zikr-ok-v1";
 let audioOn = false;
 
+const PACK = [
+  "/quran.json",
+  "/quran-mean/ru.json",
+  "/quran-mean/en.json",
+  "/quran-mean/id.json",
+  "/quran-mean/tr.json",
+  "/quran-mean/ur.json",
+  "/manifest.webmanifest",
+  "/favicon.svg",
+  "/icon-180.png",
+  "/fonts/amiri-400.woff2",
+  "/fonts/amiri-700.woff2",
+  "/fonts/amiri-r-400.woff2",
+  "/fonts/amiri-r-700.woff2",
+  "/fonts/inter-cyr-500.woff2",
+  "/fonts/inter-cyr-700.woff2",
+  "/fonts/inter-latin-500.woff2",
+  "/fonts/inter-latin-700.woff2",
+  "/cosmos.jpg",
+  "/mecca.jpg",
+  "/desert.jpg",
+  "/jungle.jpg",
+  "/lake.jpg",
+  "/peaks.jpg",
+  "/roses.jpg",
+  "/shore.jpg",
+  "/maldives.jpg",
+  "/andromeda.jpg",
+  "/orbit-moon.webp",
+  "/orbit-sun.webp",
+];
+
+function line() {
+  return !(self.navigator && self.navigator.onLine === false);
+}
+
 function clean(html) {
   return html
     .replace(/<script\b[^>]*\bsrc\s*=\s*["'][^"']*(?:grok\.com|grok-app-builder\/extensions\.js)[^"']*["'][^>]*>\s*<\/script>/gi, "")
@@ -17,10 +53,11 @@ function stampOf(html) {
 }
 
 async function siteHtml() {
+  if (!line()) return "";
   try {
     const res = await fetch(self.location.origin + "/?open=" + Date.now(), {
       cache: "no-store",
-      signal: AbortSignal.timeout(20000),
+      signal: AbortSignal.timeout(6000),
     });
     if (!res.ok) return "";
     const html = await res.text();
@@ -57,7 +94,7 @@ async function storeFresh(html) {
       missing.map(async (src) => {
         const res = await fetch(self.location.origin + src + "?open=" + Date.now(), {
           cache: "no-store",
-          signal: AbortSignal.timeout(20000),
+          signal: AbortSignal.timeout(8000),
         });
         if (!res.ok) throw new Error("miss");
         await cache.put(src, res.clone());
@@ -123,12 +160,37 @@ function keep(url) {
 
 function pass(req) {
   const fail = () => new Response("", { status: 503, headers: { "cache-control": "no-store" } });
-  const once = (ms) => {
-    const init = { method: req.method, headers: req.headers, cache: "no-store", credentials: "same-origin", signal: AbortSignal.timeout(ms) };
-    if (req.method === "GET" || req.method === "HEAD") return fetch(req.url, init);
-    return req.clone().text().then((body) => fetch(req.url, { ...init, body }));
+  if (!line()) return Promise.resolve(fail());
+  const init = {
+    method: req.method,
+    headers: req.headers,
+    cache: "no-store",
+    credentials: "same-origin",
+    signal: AbortSignal.timeout(5000),
   };
-  return once(20000).catch(() => once(20000)).catch(fail);
+  const once =
+    req.method === "GET" || req.method === "HEAD"
+      ? fetch(req.url, init)
+      : req.clone().text().then((body) => fetch(req.url, { ...init, body }));
+  return once.catch(fail);
+}
+
+async function warm(cache) {
+  if (!line()) return;
+  const missing = [];
+  for (const src of PACK) {
+    if (!(await cache.match(src))) missing.push(src);
+  }
+  await Promise.all(
+    missing.map(async (src) => {
+      try {
+        const res = await fetch(self.location.origin + src, { cache: "no-store", signal: AbortSignal.timeout(12000) });
+        if (res.ok) await cache.put(src, res.clone());
+      } catch {
+        /* one file can wait for the next open */
+      }
+    }),
+  );
 }
 
 self.addEventListener("fetch", (event) => {
@@ -171,6 +233,7 @@ self.addEventListener("fetch", (event) => {
           .then(async (html) => {
             const mark = html ? await storeFresh(html) : "";
             if (mark) await openFresh(mark);
+            await warm(cache);
           })
           .catch(() => undefined);
         try {
@@ -182,14 +245,20 @@ self.addEventListener("fetch", (event) => {
         const html = await siteHtml();
         if (html) {
           await cache.put("/index.html", page(html));
+          try {
+            event.waitUntil(warm(cache));
+          } catch {
+            /* the page is already stored */
+          }
           return page(html);
         }
         return offline();
       }
       const hit = await cache.match(url.pathname);
       if (hit) return hit;
+      if (!line()) return new Response("", { status: 504 });
       try {
-        const res = await fetch(url.pathname, { cache: "no-store", signal: AbortSignal.timeout(20000) });
+        const res = await fetch(url.pathname, { cache: "no-store", signal: AbortSignal.timeout(8000) });
         if (!res.ok) return hit || new Response("", { status: 504 });
         await cache.put(url.pathname, res.clone());
         return res;

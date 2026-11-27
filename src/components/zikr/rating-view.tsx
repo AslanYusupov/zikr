@@ -219,6 +219,7 @@ export function RatingView() {
     let again = false;
     let ticket = 0;
     const load = () => {
+      if (navigator.onLine === false) return;
       if (flying) {
         again = true;
         return;

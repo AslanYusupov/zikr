@@ -131,7 +131,7 @@ const DICT = {
     ratingLock: "Всемирный список откроется после 5 000 поминаний.",
     ratingOpen: "Открыть рейтинг",
     ratingScale: "Шкала до 5 000",
-    ratingVpn: "Для обновления включите VPN.",
+    ratingVpn: "Список обновится, когда появится сеть. Счёт на телефоне на месте.",
   },
   en: {
     zikr: "Dhikr",
@@ -263,7 +263,7 @@ const DICT = {
     ratingLock: "The world list opens after 5,000 remembrances.",
     ratingOpen: "Open the rank",
     ratingScale: "Scale to 5,000",
-    ratingVpn: "Turn on a VPN to refresh.",
+    ratingVpn: "The list updates when the network is back. Your count stays on this phone.",
   },
   ar: {
     zikr: "ذكر",
@@ -395,7 +395,7 @@ const DICT = {
     ratingLock: "القائمة العالمية تُفتح بعد 5٬000 ذكر.",
     ratingOpen: "افتح الترتيب",
     ratingScale: "المقياس حتى 5٬000",
-    ratingVpn: "للتحديث شغّل VPN.",
+    ratingVpn: "تتحدث القائمة حين تعود الشبكة. العدّ باقٍ في الهاتف.",
   },
   id: {
     zikr: "Zikir",
@@ -527,7 +527,7 @@ const DICT = {
     ratingLock: "Daftar dunia terbuka setelah 5.000 zikir.",
     ratingOpen: "Buka peringkat",
     ratingScale: "Skala sampai 5.000",
-    ratingVpn: "Nyalakan VPN untuk memperbarui.",
+    ratingVpn: "Daftar diperbarui saat jaringan kembali. Hitungan tetap di telepon.",
   },
   tr: {
     zikr: "Zikir",
@@ -659,7 +659,7 @@ const DICT = {
     ratingLock: "Dünya listesi 5.000 zikirden sonra açılır.",
     ratingOpen: "Sıralamayı aç",
     ratingScale: "5.000'e kadar ölçek",
-    ratingVpn: "Güncellemek için VPN açın.",
+    ratingVpn: "Liste ağ gelince güncellenir. Sayı bu telefonda durur.",
   },
   ur: {
     zikr: "ذکر",
@@ -791,7 +791,7 @@ const DICT = {
     ratingLock: "عالمی فہرست 5,000 ذکر کے بعد کھلے گی۔",
     ratingOpen: "درجہ کھولیں",
     ratingScale: "5,000 تک پیمانہ",
-    ratingVpn: "تازہ کرنے کے لیے VPN چلائیں۔",
+    ratingVpn: "فہرست نیٹ ورک آنے پر تازہ ہوگی۔ گنتی فون پر رہتی ہے۔",
   },
 } as const;
 
