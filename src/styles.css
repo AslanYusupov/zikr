@@ -3142,8 +3142,7 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   text-align: center;
   overflow-wrap: anywhere;
   text-wrap: wrap;
-  line-height: 2.05;
-  font-size: clamp(1.05rem, 5.4vw, 1.7rem);
+  line-height: 2.15;
 }
 .phrase-line {
   display: block;
@@ -3152,7 +3151,6 @@ html:is([data-theme=black],[data-theme=wine],[data-theme=ivory],[data-theme=rose
   direction: ltr;
   text-align: center;
   overflow-wrap: anywhere;
-  font-size: clamp(.72rem, 3.6vw, .95rem);
   font-weight: 800;
   line-height: 1.35;
 }
