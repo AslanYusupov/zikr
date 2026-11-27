@@ -66,6 +66,7 @@ export function ListenView() {
 
   function chooseMode(next: ListenMode) {
     if (next === mode) return;
+    if (next === "ayah" && reciter.ayahs(surah, 1).length === 0) return;
     if (playing) playListen(reciterId, surah, 1, next);
     else setListenMode(next);
   }
@@ -91,8 +92,8 @@ export function ListenView() {
         <p className="font-arabic text-xl leading-none text-gold" dir="rtl" lang="ar">اسْتَمِعْ لِلْقُرْآنِ</p>
         <h2 className="mt-1 text-base text-fg">{copy.title}</h2>
         <p className="listen-hafs">{copy.hafs}</p>
-        <div className="listen-mode">
-          <button type="button" className={mode === "ayah" ? "on" : ""} onClick={() => chooseMode("ayah")}>{copy.ayah}</button>
+        <div className={cn("listen-mode", reciter.ayahs(1, 1).length === 0 && "solo")}>
+          <button type="button" className={mode === "ayah" ? "on" : ""} onClick={() => chooseMode("ayah")} hidden={reciter.ayahs(1, 1).length === 0}>{copy.ayah}</button>
           <button type="button" className={mode === "whole" ? "on" : ""} onClick={() => chooseMode("whole")}>{copy.whole}</button>
         </div>
       </div>
@@ -103,7 +104,10 @@ export function ListenView() {
             key={item.id}
             type="button"
             className={cn("listen-card", item.id === reciterId && "on")}
-            onClick={() => playListen(item.id, surah, mode === "ayah" ? ayah : 1, mode)}
+            onClick={() => {
+              const next = item.ayahs(surah, 1).length ? mode : "whole";
+              playListen(item.id, surah, next === "ayah" ? ayah : 1, next);
+            }}
           >
             <span className="listen-name">{item.name[lang]}</span>
             <span className="listen-form">{item.form[lang]}</span>

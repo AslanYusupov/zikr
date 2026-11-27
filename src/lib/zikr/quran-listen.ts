@@ -109,7 +109,7 @@ export function playListen(id: string, nextSurah: number, nextAyah: number, next
       if (mine !== token || el.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
       move();
     };
-    timer = window.setTimeout(move, 8000);
+    timer = window.setTimeout(move, 20000);
     const begun = () => window.clearTimeout(timer);
     el.addEventListener("playing", begun, { once: true });
     el.src = url;

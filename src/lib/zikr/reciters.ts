@@ -1,5 +1,5 @@
 import type { LangId } from "./types";
-import { ayahFile, globalAyah } from "./ayah-audio";
+import { ayahFile } from "./ayah-audio";
 
 type Line = Record<LangId, string>;
 
@@ -16,48 +16,8 @@ function pad(surah: number) {
   return String(surah).padStart(3, "0");
 }
 
-function cdn(path: string, surah: number) {
-  return `https://cdn.mp3quran.net/audio/${path}/${pad(surah)}.mp3`;
-}
-
-function mirror(server: string, folder: string, surah: number) {
-  return `https://${server}.mp3quran.net/${folder}/${pad(surah)}.mp3`;
-}
-
-function qari(folder: string, surah: number) {
-  return `https://download.quranicaudio.com/quran/${folder}/${pad(surah)}.mp3`;
-}
-
-function qdc(path: string, surah: number, padded = false) {
-  return `https://download.quranicaudio.com/qdc/${path}/${padded ? pad(surah) : String(surah)}.mp3`;
-}
-
-function cloudSurah(edition: string, surah: number) {
-  return `https://cdn.islamic.network/quran/audio-surah/128/${edition}/${surah}.mp3`;
-}
-
-function dosariArchive(surah: number) {
-  return `https://github.com/AslanYusupov/zikr-quran-audio/releases/download/quran-dosari/${pad(surah)}.mp3`;
-}
-
-function ownArchive(id: string, surah: number) {
-  return `https://github.com/AslanYusupov/zikr-quran-${id}/releases/download/quran-${id}/${pad(surah)}.mp3`;
-}
-
-function every(folder: string, surah: number, ayah: number) {
-  return `https://everyayah.com/data/${folder}/${ayahFile(surah, ayah)}.mp3`;
-}
-
-function islamic(edition: string, bitrate: 64 | 128, surah: number, ayah: number) {
-  return `https://cdn.islamic.network/quran/audio/${bitrate}/${edition}/${globalAyah(surah, ayah)}.mp3`;
-}
-
-function quranCom(surah: number, ayah: number) {
-  const file = ayahFile(surah, ayah);
-  return [
-    `https://audio.qurancdn.com/Alafasy/mp3/${file}.mp3`,
-    `https://verses.quran.com/Alafasy/mp3/${file}.mp3`,
-  ];
+function github(repo: string, tag: string, file: string) {
+  return `https://github.com/AslanYusupov/${repo}/releases/download/${tag}/${file}`;
 }
 
 function line(ru: string, en: string, ar: string, id: string, tr: string, ur: string): Line {
@@ -68,7 +28,7 @@ const MURATTAL = line("Муратталь", "Murattal", "مرتل", "Murattal", 
 const MUJAWWAD = line("Муджаввад", "Mujawwad", "مجود", "Mujawwad", "Mücevved", "مجود");
 
 /** Одиннадцать полных чтений Корана. Стиль — только вид чтения и риваят, без оценки голоса. */
-export const RECITERS: Reciter[] = [
+const READERS: Reciter[] = [
   {
     id: "dosari",
     name: line("Ясир ад-Дусари", "Yasser al-Dosari", "ياسر الدوسري", "Yasir ad-Dusari", "Yasir ed-Devserî", "یاسر الدوسری"),
@@ -81,8 +41,8 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("yasser-dosari/r1", n), mirror("server11", "yasser", n), qari("yasser_ad-dussary", n), dosariArchive(n)],
-    ayahs: (s, a) => [every("Yasser_Ad-Dussary_128kbps", s, a)],
+    files: (n) => [github("zikr-quran-audio", "quran-dosari", `${pad(n)}.mp3`)],
+    ayahs: () => [],
   },
   {
     id: "afasy",
@@ -96,8 +56,8 @@ export const RECITERS: Reciter[] = [
       "Murattal. Hafs rivayeti.",
       "مرتل۔ روایت حفص عن عاصم۔",
     ),
-    files: (n) => [cdn("mishary-alafasy/r1", n), mirror("server8", "afs", n), qari("mishaari_raashid_al_3afaasee", n), cloudSurah("ar.alafasy", n), qdc("mishari_al_afasy/murattal", n), ownArchive("afasy", n)],
-    ayahs: (s, a) => [every("Alafasy_128kbps", s, a), islamic("ar.alafasy", 128, s, a), ...quranCom(s, a)],
+    files: (n) => [github("zikr-quran-afasy", "quran-afasy", `afasy-${pad(n)}.mp3`)],
+    ayahs: (s, a) => [`/api/ayah/${ayahFile(s, a)}`],
   },
   {
     id: "sudais",
@@ -111,8 +71,8 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("abdulrahman-sudais/r1", n), mirror("server11", "sds", n), qari("abdurrahmaan_as-sudays", n), qdc("abdurrahmaan_as_sudais/murattal", n), ownArchive("sudais", n)],
-    ayahs: (s, a) => [every("Abdurrahmaan_As-Sudais_192kbps", s, a), islamic("ar.abdurrahmaansudais", 64, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "shuraim",
@@ -126,8 +86,8 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("saud-shuraim/r1", n), mirror("server7", "shur", n), qari("sa3ood_al-shuraym", n), ownArchive("shuraim", n)],
-    ayahs: (s, a) => [every("Saood_ash-Shuraym_128kbps", s, a), islamic("ar.saoodshuraym", 64, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "muaiqly",
@@ -141,8 +101,8 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Haram imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد الحرام۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("maher-muaiqly/r1", n), mirror("server12", "maher", n), qari("maher_256", n), ownArchive("muaiqly", n)],
-    ayahs: (s, a) => [every("MaherAlMuaiqly128kbps", s, a), islamic("ar.mahermuaiqly", 128, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "husary",
@@ -156,8 +116,8 @@ export const RECITERS: Reciter[] = [
       "Öğretici murattal. Hafs rivayeti. Yavaş, duraklar açık.",
       "تعلیمی مرتل۔ روایت حفص۔ آہستہ، واضح وقفوں کے ساتھ۔",
     ),
-    files: (n) => [cdn("mahmoud-husary/r1", n), mirror("server13", "husr", n), qari("mahmood_khaleel_al-husaree", n), ownArchive("husary", n)],
-    ayahs: (s, a) => [every("Husary_128kbps", s, a), islamic("ar.husary", 128, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "minshawi",
@@ -171,8 +131,8 @@ export const RECITERS: Reciter[] = [
       "Mücevved. Hafs rivayeti. Makamlı kıraat.",
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
-    files: (n) => [cdn("muhammad-minshawi/r2", n), qari("minshawi_mujawwad", n), cloudSurah("ar.muhammadsiddiqalminshawimujawwad", n), qdc("siddiq_al-minshawi/mujawwad", n, true), ownArchive("minshawi", n)],
-    ayahs: (s, a) => [islamic("ar.minshawimujawwad", 64, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "basit",
@@ -186,8 +146,8 @@ export const RECITERS: Reciter[] = [
       "Mücevved. Hafs rivayeti. Makamlı kıraat.",
       "مجود۔ روایت حفص۔ لحنی تلاوت۔",
     ),
-    files: (n) => [cdn("abdulbasit-abdulsamad/r1", n), qari("abdulbaset_mujawwad", n), cloudSurah("ar.abdulbasitmujawwad", n), ownArchive("basit", n)],
-    ayahs: (s, a) => [every("Abdul_Basit_Mujawwad_128kbps", s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "hudhaify",
@@ -201,8 +161,8 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Nebevî imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("ali-hudhaifi/r1", n), mirror("server9", "hthfi", n), qari("huthayfi", n), ownArchive("hudhaify", n)],
-    ayahs: (s, a) => [every("Hudhaify_128kbps", s, a), islamic("ar.hudhaify", 128, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "ayyub",
@@ -216,8 +176,8 @@ export const RECITERS: Reciter[] = [
       "Mescid-i Nebevî imamı. Murattal. Hafs rivayeti.",
       "امامِ مسجد نبوی۔ مرتل۔ روایت حفص۔",
     ),
-    files: (n) => [cdn("muhammad-ayyub/r1", n), mirror("server8", "ayyub", n), qari("muhammad_ayyoob", n), cloudSurah("ar.muhammadayyub", n), ownArchive("ayyub", n)],
-    ayahs: (s, a) => [every("Muhammad_Ayyoub_128kbps", s, a), islamic("ar.muhammadayyoub", 128, s, a)],
+    files: () => [],
+    ayahs: () => [],
   },
   {
     id: "luhaydan",
@@ -231,10 +191,12 @@ export const RECITERS: Reciter[] = [
       "Murattal. Hafs rivayeti.",
       "مرتل۔ روایت حفص عن عاصم۔",
     ),
-    files: (n) => [cdn("muhammad-luhaidan/r1", n), mirror("server8", "lhdan", n), ownArchive("luhaydan", n)],
-    ayahs: (s, a) => [cdn("muhammad-luhaidan/r1", s)],
+    files: (n) => [github("zikr-quran-luhaydan", "quran-luhaydan", `${pad(n)}.mp3`)],
+    ayahs: () => [],
   },
 ];
+
+export const RECITERS = READERS.filter((item) => item.files(1).length > 0);
 
 export function reciterById(id: string): Reciter {
   return RECITERS.find((item) => item.id === id) ?? RECITERS[0]!;

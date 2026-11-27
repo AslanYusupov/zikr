@@ -10,7 +10,7 @@ import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
-import { ayahFile, keepAyah, remoteAyahUrls } from "@/lib/zikr/ayah-audio";
+import { ayahFile, keepAyah } from "@/lib/zikr/ayah-audio";
 import { playListen, setListenLoop, stopListen, useListen } from "@/lib/zikr/quran-listen";
 import { TajweedView } from "./tajweed-view";
 import { ListenView } from "./listen-view";
@@ -257,7 +257,7 @@ export function QuranView() {
       setLooping(null);
       setNote(hearFail(lang));
     };
-    const urls = [...remoteAyahUrls(surahNo, ayahNo), `/api/ayah/${ayahFile(surahNo, ayahNo)}`];
+    const urls = [`/api/ayah/${ayahFile(surahNo, ayahNo)}`];
     let step = 0;
     const attempt = () => {
       if (mine !== playToken.current) return;
@@ -275,7 +275,7 @@ export function QuranView() {
         window.clearTimeout(timer);
         attempt();
       };
-      timer = window.setTimeout(move, 8000);
+      timer = window.setTimeout(move, 20000);
       el.onerror = () => {
         if (mine !== playToken.current || el.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
         move();

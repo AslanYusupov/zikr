@@ -46,7 +46,7 @@ export function remoteAyahUrls(surah: number, ayah: number) {
 }
 
 export function ayahSources(surah: number, ayah: number) {
-  return [`/api/ayah/${ayahFile(surah, ayah)}`, ...remoteAyahUrls(surah, ayah)];
+  return [`/api/ayah/${ayahFile(surah, ayah)}`];
 }
 
 export function ayahCount(surah: number) {
