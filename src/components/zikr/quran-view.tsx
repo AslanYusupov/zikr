@@ -10,7 +10,7 @@ import { transliterate } from "@/lib/zikr/translit";
 import { playTap } from "@/lib/zikr/sound";
 import { useZikr } from "@/lib/zikr/store";
 import { cn } from "@/lib/cn";
-import { loadAyahUrl } from "@/lib/zikr/ayah-audio";
+import { ayahFile, keepAyah, remoteAyahUrls } from "@/lib/zikr/ayah-audio";
 import { playListen, setListenLoop, stopListen, useListen } from "@/lib/zikr/quran-listen";
 import { TajweedView } from "./tajweed-view";
 import { ListenView } from "./listen-view";
@@ -146,7 +146,6 @@ export function QuranView() {
   const audio = useRef<HTMLAudioElement | null>(null);
   const loopingRef = useRef<string | null>(null);
   const playToken = useRef(0);
-  const blobUrl = useRef<string | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
   const [looping, setLooping] = useState<string | null>(null);
   const listenPlaying = useListen((s) => s.playing);
@@ -215,7 +214,6 @@ export function QuranView() {
       el.pause();
       el.removeEventListener("ended", ended);
       el.src = "";
-      if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
       el.remove();
       loopingRef.current = null;
       audio.current = null;
@@ -259,25 +257,46 @@ export function QuranView() {
       setLooping(null);
       setNote(hearFail(lang));
     };
-    void loadAyahUrl(surahNo, ayahNo).then((url) => {
-      if (mine !== playToken.current) {
-        if (url) URL.revokeObjectURL(url);
-        return;
-      }
-      if (!url) {
+    const urls = [...remoteAyahUrls(surahNo, ayahNo), `/api/ayah/${ayahFile(surahNo, ayahNo)}`];
+    let step = 0;
+    const attempt = () => {
+      if (mine !== playToken.current) return;
+      if (step >= urls.length) {
         fail();
         return;
       }
-      if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
-      blobUrl.current = url;
+      const url = urls[step]!;
+      step += 1;
+      let moved = false;
+      let timer = 0;
+      const move = () => {
+        if (moved || mine !== playToken.current) return;
+        moved = true;
+        window.clearTimeout(timer);
+        attempt();
+      };
+      timer = window.setTimeout(move, 8000);
+      el.onerror = () => {
+        if (mine !== playToken.current || el.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
+        move();
+      };
+      el.addEventListener("playing", () => window.clearTimeout(timer), { once: true });
       el.src = url;
-      void el.play().catch((err: unknown) => {
+      void el.play().then(() => {
+        window.clearTimeout(timer);
+      }).catch((err: unknown) => {
         if (mine !== playToken.current) return;
         const name = err && typeof err === "object" && "name" in err ? String((err as { name: string }).name) : "";
         if (name === "AbortError") return;
-        fail();
+        if (name === "NotAllowedError" && step === 1) {
+          fail();
+          return;
+        }
+        move();
       });
-    });
+    };
+    attempt();
+    void keepAyah(surahNo, ayahNo);
   }
 
   function toggleAyah(key: string, surahNo: number, ayahNo: number) {

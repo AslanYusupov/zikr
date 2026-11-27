@@ -98,23 +98,30 @@ export function playListen(id: string, nextSurah: number, nextAyah: number, next
     const url = urls[step]!;
     step += 1;
     let moved = false;
+    let timer = 0;
     const move = () => {
       if (moved || mine !== token) return;
       moved = true;
+      window.clearTimeout(timer);
       attempt();
     };
     el.onerror = () => {
       if (mine !== token || el.error?.code === MediaError.MEDIA_ERR_ABORTED) return;
       move();
     };
+    timer = window.setTimeout(move, 8000);
+    const begun = () => window.clearTimeout(timer);
+    el.addEventListener("playing", begun, { once: true });
     el.src = url;
     void el.play().then(() => {
+      begun();
       if (mine !== token) return;
       if (!want) el.pause();
     }).catch((error: unknown) => {
       const name = error instanceof DOMException ? error.name : "";
       if (mine !== token || name === "AbortError") return;
       if (name === "NotAllowedError") {
+        begun();
         useListen.setState({ playing: false });
         return;
       }

@@ -57,10 +57,10 @@ export const Route = createFileRoute("/api/ayah/$id")({
       GET: async ({ params }) => {
         const parsed = parseAyahFile(params.id);
         if (!parsed) return new Response("Not found", { status: 404 });
-        const own = await fromPack(params.id);
-        if (own) return own;
         const remote = await fromRemote(parsed.surah, parsed.ayah);
         if (remote) return remote;
+        const own = await fromPack(params.id);
+        if (own) return own;
         return new Response("Not found", { status: 404 });
       },
     },

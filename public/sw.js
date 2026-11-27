@@ -203,6 +203,7 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/auth/") || url.pathname === "/login") return;
+  if (url.pathname.startsWith("/api/ayah/")) return;
   const api = url.pathname.startsWith("/api/") || url.pathname.startsWith("/_server") || url.pathname.startsWith("/auth/");
   if (req.method !== "GET") {
     if (api) event.respondWith(pass(req));
